@@ -1,0 +1,5 @@
+# dune build folder
+_build/
+
+# merlin file
+.merlin
