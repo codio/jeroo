@@ -1,5 +1,5 @@
 before_script:
-  - apt install -y -qq software-properties-common
+  # - apt install -y -qq software-properties-common
   - add-apt-repository ppa:avsm/ppa
   - curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -
   - apt-get update -qq && apt-get -y -qq upgrade
