@@ -6,8 +6,9 @@ before_script:
   - apt-get update -qq && apt-get -y -qq upgrade
   - apt-get install -y -qq opam 
   - opam init
-  - eval 'opam env'
+  - eval `opam env`
   - opam switch create 4.06.1
+  - eval `opam env`
   - ocaml --version
   - opam install -y dune menhir js_of_ocaml-compiler js_of_ocaml-ppx js_of_ocaml
 
