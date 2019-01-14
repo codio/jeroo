@@ -1,0 +1,20 @@
+before_script:
+  - apt install -y -qq software-properties-common
+  - add-apt-repository ppa:avsm/ppa
+  - curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -
+  - apt-get update -qq && apt-get -y -qq upgrade
+  - apt-get install -y -qq opam nodejs
+  - opam init
+  - eval 'opam env'
+  - opam switch create 4.06.1
+  - ocaml --version
+  - opam install -y dune menhir js_of_ocaml-compiler js_of_ocaml-ppx js_of_ocaml
+
+build-frontend:
+  script:
+    - cd src/compiler
+    - dune build ./jaroo_compiler.bc.js
+    - cd ../..
+    - ng build --prod
+
+
