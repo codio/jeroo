@@ -1,6 +1,7 @@
 image: node:8-jessie
 before_script:
   - apt-get update -qq && apt-get -y -qq upgrade
+  - apt install -y -qq software-properties-common
   - add-apt-repository ppa:avsm/ppa
   - apt-get -y update
   - apt-get install opam
