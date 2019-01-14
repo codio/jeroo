@@ -1,9 +1,7 @@
 image: node:8-jessie
 before_script:
   - apt-get update -qq && apt-get -y -qq upgrade
-  - apt install -y -qq software-properties-common
-  - add-apt-repository ppa:avsm/ppa
-  - apt-get install -y -qq opam 
+  - sh <(curl -sL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh)
   - opam --version
   - opam init -a
   - eval `opam config env`
