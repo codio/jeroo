@@ -17,13 +17,14 @@ before_script:
   - apt-get install nodejs -y
   - node -v
   - npm -v
+  - npm install -g yarn
 
 build-frontend:
   script:
     - cd src/compiler
     - dune build ./jeroo_compiler.bc.js
     - cd ../..
-    - npm install
-    - ng build --prod
+    - yarn install
+    - yarn build
 
 
