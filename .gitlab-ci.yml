@@ -21,7 +21,7 @@ before_script:
 build-frontend:
   script:
     - cd src/compiler
-    - dune build ./jaroo_compiler.bc.js
+    - dune build ./jeroo_compiler.bc.js
     - cd ../..
     - npm install
     - ng build --prod
