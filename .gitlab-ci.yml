@@ -4,7 +4,7 @@ before_script:
   - apt install -y -qq software-properties-common
   - add-apt-repository ppa:avsm/ppa
   - apt-get -y update
-  - apt-get install opam
+  - apt-get install opam -y
   - opam --version
   - opam init -a
   - eval `opam config env`
