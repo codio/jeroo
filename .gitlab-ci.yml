@@ -1,7 +1,7 @@
 image: ubuntu:18.04
 before_script:
   - apt-get update -qq && apt-get -y -qq upgrade
-  - apt-get install -y make
+  - apt-get install -y make gcc
   - apt install -y -qq software-properties-common
   - add-apt-repository ppa:avsm/ppa
   - apt-get -y update
