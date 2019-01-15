@@ -1,6 +1,7 @@
 image: ubuntu:18.04
 before_script:
   - apt-get update -qq && apt-get -y -qq upgrade
+  - apg-get install -y make
   - apt install -y -qq software-properties-common
   - add-apt-repository ppa:avsm/ppa
   - apt-get -y update
