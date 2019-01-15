@@ -9,7 +9,7 @@ before_script:
   - opam --version
   - opam init -a
   - eval `opam config env`
-  - opam switch create 4.06.1
+  - opam switch create 4.07.1
   - eval `opam config env`
   - ocaml --version
   - opam install -y dune menhir js_of_ocaml-compiler js_of_ocaml-ppx js_of_ocaml
