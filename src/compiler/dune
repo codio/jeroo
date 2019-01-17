@@ -1,7 +1,5 @@
 (executable
   (name jeroo_compiler)
-  (libraries js_of_ocaml)
+  (libraries js_of_ocaml Lib)
   (preprocess (pps js_of_ocaml-ppx))
 )
-(ocamllex lexer)
-(menhir (modules parser))

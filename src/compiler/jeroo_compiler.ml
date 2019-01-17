@@ -1,4 +1,5 @@
 open Js_of_ocaml
+open Lib
 
 let ocaml_str_of_js_str (s : Js.js_string Js.t) =
   let length = s##.length in
