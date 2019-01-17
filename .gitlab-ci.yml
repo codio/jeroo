@@ -34,8 +34,8 @@ lint-typescript:
 
 test:
   script:
-    - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-    - dpkg -i google-chrome-stable_current_amd64.deb
+    - curl https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb --output google-chrome.deb
+    - dpkg -i google-chrome.deb
     - cd src/compiler
     - dune build ./jeroo_compiler.bc.js
     - dune runtest
