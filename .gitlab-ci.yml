@@ -4,8 +4,8 @@ before_script:
   - apt-get install -y make gcc m4
   - apt install -y -qq software-properties-common
   - add-apt-repository ppa:avsm/ppa
-  - apt-get -y update
-  - apt-get install opam -y
+  - apt-get -y -qq update
+  - apt-get install opam -y -qq
   - opam --version
   - opam init --bare
   - eval `opam env`
@@ -14,7 +14,7 @@ before_script:
   - ocaml --version
   - opam install -y dune menhir js_of_ocaml-compiler js_of_ocaml-ppx js_of_ocaml ounit
   - curl -sL https://deb.nodesource.com/setup_10.x | bash -
-  - apt-get install nodejs -y
+  - apt-get install nodejs -y -qq
   - node -v
   - npm -v
   - npm install -g yarn
@@ -22,10 +22,10 @@ before_script:
 build:
   script:
     - cd src/compiler
-    - dune build ./jeroo_compiler.bc.js
+    - dune build ./jeroo_compiler.bc.js --profile release
     - cd ../..
     - yarn install
-    - yarn build
+    - yarn build -- --prod
 
 lint-typescript:
   script:
@@ -35,8 +35,8 @@ lint-typescript:
 test:
   script:
     - curl https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb --output google-chrome.deb
-    - dpkg -i google-chrome.deb
-    - apt-get install -f
+    - dpkg -i google-chrome.deb || true
+    - apt-get install -f -y
     - cd src/compiler
     - dune build ./jeroo_compiler.bc.js
     - dune runtest
