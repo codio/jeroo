@@ -36,10 +36,11 @@ test:
   script:
     - curl https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb --output google-chrome.deb
     - dpkg -i google-chrome.deb || true
-    - apt-get install -f -y
+    - apt-get install -f -y -qq
     - cd src/compiler
     - dune build ./jeroo_compiler.bc.js
     - dune runtest
     - cd ../..
-    - yarn test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
-    - yarn e2e -- --protractor-config=e2e/protractor-ci.conf.js
+    - yarn install
+    - yarn test --no-watch --no-progress --browsers=ChromeHeadlessCI
+    - yarn e2e --protractor-config=e2e/protractor-ci.conf.js
