@@ -72,6 +72,12 @@ let parse_not_precedence _test_ctxt =
       `IfStmt(`BinOpExpr(`UnOpExpr(`Not, `TrueExpr), `And, `FalseExpr), `BlockStmt([], []))
     ]))]
 
+let parse_paren_precedence _test_ctxt =
+  let code = "method main() { if (true && (false && false)) {} }" in
+  let ast = parse_string code in
+  assert_equal ast [("main"), ([], [
+      `IfStmt(`BinOpExpr(`TrueExpr, `And, `BinOpExpr(`FalseExpr, `And, `FalseExpr)), `BlockStmt([], []))
+    ])]
 let parse_comment _test_ctxt =
   let code = "// this is a comment\n method main() { }" in
   let ast = parse_string code in
@@ -101,6 +107,7 @@ let suite =
     "Parse Or">:: parse_or;
     "Parse Not">:: parse_not;
     "Parse Not Precedence">:: parse_not_precedence;
+    "Parse Paren Precedence">:: parse_paren_precedence;
     "Parse comments">:: parse_comment;
     "Parse ml-comment">:: parse_ml_comment;
     "Parse obj call">:: parse_obj_call;
