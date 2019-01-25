@@ -12,6 +12,7 @@
 %token JEROO
 %token EOF
 
+%right EQ
 %left OR
 %left AND
 %right NEW
@@ -33,7 +34,6 @@ block:
 
 decl:
 | JEROO id = ID EQ NEW JEROO LPAREN args = arguments RPAREN SEMICOLON { ("Jeroo", id, `UnOpExpr(`New, `FxnAppExpr(`IdExpr("Jeroo"), args))) }
-
 
 stmt:
 | s = open_stmt { s }
@@ -66,6 +66,7 @@ arith_expr:
 | e1 = expr AND e2 = expr { `BinOpExpr(e1, `And, e2) }
 | e1 = expr OR e2 = expr { `BinOpExpr(e1, `Or, e2) }
 | e1 = expr DOT e2 = expr { `BinOpExpr(e1, `Dot, e2) }
+| e1 = arith_expr EQ e2 = arith_expr { `BinOpExpr(e1, `Eq, e2) }
 | NEW e = expr { `UnOpExpr (`New, e) }
 | NOT e = expr { `UnOpExpr(`Not, e) }
 
