@@ -14,7 +14,7 @@ let ocaml_str_of_js_str (s : Js.js_string Js.t) =
 let compile code =
   let code = ocaml_str_of_js_str code in
   let lexbuf = Lexing.from_string code in
-  Parser.main Lexer.token lexbuf
+  Parser.translation_unit Lexer.token lexbuf
 
 let _ =
   Js.export "compiler"
