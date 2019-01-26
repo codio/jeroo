@@ -1,30 +1,10 @@
 {
 open Parser
 exception Error of string
-
-let lex_poss_keyword word =
-  match word with
-  | "true" -> TRUE
-  | "false" -> FALSE
-  | "LEFT" -> LEFT
-  | "RIGHT" -> RIGHT
-  | "AHEAD" -> AHEAD
-  | "HERE" -> HERE
-  | "NORTH" -> NORTH
-  | "SOUTH" -> SOUTH
-  | "EAST" -> EAST
-  | "WEST" -> WEST
-  | "if" -> IF
-  | "else" -> ELSE
-  | "while" -> WHILE
-  | "new" -> NEW
-  | "method" -> METHOD
-  | "Jeroo" -> JEROO
-  | _ -> ID word
 }
 
-let digit = '-'? ['0'-'9']+
-let letter = ['a'-'z''A'-'Z''_']
+let digit = ['0'-'9']
+let letter = ['a'-'z' 'A'-'Z' '_']
 
 let id = letter (letter | digit)*
 let int_constant = digit+
@@ -43,8 +23,38 @@ rule token = parse
   { token lexbuf }
 | int_constant as i
   { INT (int_of_string i) }
+| "true"
+  { TRUE }
+| "false"
+  { FALSE }
+| "LEFT"
+  { LEFT }
+| "RIGHT"
+  { RIGHT }
+| "AHEAD"
+  { AHEAD }
+| "HERE"
+  { HERE }
+| "NORTH"
+  { NORTH }
+| "SOUTH"
+  { SOUTH }
+| "EAST"
+  { EAST }
+| "WEST"
+  { WEST }
+| "if"
+  { IF }
+| "else"
+  { ELSE }
+| "while"
+  { WHILE }
+| "new"
+  { NEW }
+| "method"
+  { METHOD }
 | id as i
-  { lex_poss_keyword i }
+  { ID i }
 | "&&"
   { AND }
 | "||"
