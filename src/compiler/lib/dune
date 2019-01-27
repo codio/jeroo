@@ -1,7 +1,7 @@
 (library
   (name Lib)
 )
-(ocamllex lexer)
-(menhir (modules parser)
+(ocamllex JavaLexer VBLexer)
+(menhir (modules JavaParser VBParser)
 (flags ("--explain" "--dump"))
 )
