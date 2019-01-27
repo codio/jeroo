@@ -1,5 +1,5 @@
 {
-open Parser
+open JavaParser
 exception Error of string
 }
 
@@ -7,7 +7,7 @@ let digit = ['0'-'9']
 let letter = ['a'-'z' 'A'-'Z' '_']
 
 let id = letter (letter | digit)*
-let int_constant = digit+
+let int_constant = '-'? digit+
 
 let comment = "//" [^'\n']* '\n'
 let ml_comment = "/*" [^'*']* [^'/']* "*/"
