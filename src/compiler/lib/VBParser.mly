@@ -18,7 +18,11 @@
 %%
 
 translation_unit:
-| fs = separated_nonempty_list(NEWLINE, fxn) EOF { fs }
+| fs = fxns EOF { fs }
+
+fxns:
+| NEWLINE? { [] }
+| NEWLINE? f = fxn fs = fxns NEWLINE? { f :: fs }
 
 fxn:
 | SUB id = ID LPAREN RPAREN b = block END SUB { (id, b) }

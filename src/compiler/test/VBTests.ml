@@ -134,6 +134,28 @@ let parse_and_or_precedence _test_ctxt =
       `IfStmt(`BinOpExpr(`TrueExpr, `Or, `BinOpExpr(`FalseExpr, `And, `TrueExpr)), `BlockStmt [])
     ])]
 
+let parse_arbitrary_newlines _test_ctxt =
+  let code = "\n\n\n\n sub main()\n\n\n\n end sub\n\n\n" in
+  let ast = parse_string code in
+  assert_equal ast [("main", [])]
+
+let parse_fxn_list _test_ctxt =
+  let code = "sub main()\n end sub\n sub foo()\n end sub\n" in
+  let ast = parse_string code in
+  assert_equal ast [("main", []); ("foo", [])]
+
+let parse_stmt_list _test_ctxt =
+  let code = "sub main()\n if true then\n end if\n while (true)\n end while\n end sub" in
+  let ast = parse_string code in
+  assert_equal ast [("main", [`IfStmt(`TrueExpr, `BlockStmt []); `WhileStmt(`TrueExpr, `BlockStmt [])])]
+
+let parse_negative_int _test_ctxt =
+  let code = "sub main()\n foo(-1)\n end sub" in
+  let ast = parse_string code in
+  assert_equal ast [("main"), [
+      `ExprStmt(`FxnAppExpr(`IdExpr("foo"), [`IntExpr(-1)]))
+    ]]
+
 let suite =
   "Visual Basic Parsing">::: [
     "Parse Method">:: parse_method;
@@ -155,4 +177,8 @@ let suite =
     "Parse Not Precedence">:: parse_not_precedence;
     "Parse Parenthesis Precedence">:: parse_paren_precedence;
     "Parse And Or Precedence">:: parse_and_or_precedence;
+    "Parse Arbitrary Newlines">:: parse_arbitrary_newlines;
+    "Parse fxn list">:: parse_fxn_list;
+    "Parse Stmt List">:: parse_stmt_list;
+    "Parse negative int">:: parse_negative_int;
   ]

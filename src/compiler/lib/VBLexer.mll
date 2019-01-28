@@ -4,10 +4,10 @@
 }
 
 let whitespace = [' ' '\t' '\r']+
-let newline = '\n'
+let newline = '\n'+
 let comment = "'" [^'\n']* newline
 
-let digit = ['0'-'9']
+let digit = '-'? ['0'-'9']
 let letter = ['a'-'z' 'A'-'Z' '_']
 
 (* VB is case insensitive *)
