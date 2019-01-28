@@ -11,36 +11,25 @@ before_script:
   - eval `opam env`
   - opam switch create 4.07.1
   - eval `opam env`
-  - ocaml --version
+  - ocamlc --version
   - opam install -y dune menhir js_of_ocaml-compiler js_of_ocaml-ppx js_of_ocaml ounit
   - curl -sL https://deb.nodesource.com/setup_10.x | bash -
   - apt-get install nodejs -y -qq
   - node -v
   - npm -v
   - npm install -g yarn
+  - curl https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb --output google-chrome.deb
+  - dpkg -i google-chrome.deb || true
+  - apt-get install -f -y -qq
 
 build:
   script:
     - cd src/compiler
+    - dune runtest
     - dune build ./jeroo_compiler.bc.js --profile release
     - cd ../..
     - yarn install
-    - yarn build --prod
-
-lint-typescript:
-  script:
-    - yarn install
     - yarn lint
-
-test:
-  script:
-    - curl https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb --output google-chrome.deb
-    - dpkg -i google-chrome.deb || true
-    - apt-get install -f -y -qq
-    - cd src/compiler
-    - dune build ./jeroo_compiler.bc.js
-    - dune runtest
-    - cd ../..
-    - yarn install
     - yarn test --no-watch --no-progress --browsers=ChromeHeadlessCI
     - yarn e2e --protractor-config=e2e/protractor-ci.conf.js
+    - yarn build --prod
