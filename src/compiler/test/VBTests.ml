@@ -149,6 +149,13 @@ let parse_stmt_list _test_ctxt =
   let ast = parse_string code in
   assert_equal ast [("main", [`IfStmt(`TrueExpr, `BlockStmt []); `WhileStmt(`TrueExpr, `BlockStmt [])])]
 
+let parse_negative_int _test_ctxt =
+  let code = "sub main()\n foo(-1)\n end sub" in
+  let ast = parse_string code in
+  assert_equal ast [("main"), [
+      `ExprStmt(`FxnAppExpr(`IdExpr("foo"), [`IntExpr(-1)]))
+    ]]
+
 let suite =
   "Visual Basic Parsing">::: [
     "Parse Method">:: parse_method;
@@ -173,4 +180,5 @@ let suite =
     "Parse Arbitrary Newlines">:: parse_arbitrary_newlines;
     "Parse fxn list">:: parse_fxn_list;
     "Parse Stmt List">:: parse_stmt_list;
+    "Parse negative int">:: parse_negative_int;
   ]

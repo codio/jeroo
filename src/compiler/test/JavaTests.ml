@@ -90,12 +90,34 @@ let parse_ml_comment _test_ctxt =
   let ast = parse_string code in
   assert_equal ast [("main", [])]
 
+let parse_fxn_app _test_ctxt =
+  let code = "method main() { foo(); }" in
+  let ast = parse_string code in
+  assert_equal ast [("main", [
+      `ExprStmt(`FxnAppExpr(`IdExpr("foo"), []))
+    ])]
+
 let parse_obj_call _test_ctxt =
   let code = "method main() { j.someFxn(1, NORTH);  }" in
   let ast = parse_string code in
   assert_equal ast [("main", [
       `ExprStmt(`BinOpExpr(`IdExpr("j"), `Dot, `FxnAppExpr(`IdExpr("someFxn"), [`IntExpr(1); `NorthExpr])))
     ])]
+
+let parse_negative_int _test_ctxt =
+  let code = "method main() { foo(-1); }" in
+  let ast = parse_string code in
+  assert_equal ast [("main"), [
+      `ExprStmt(`FxnAppExpr(`IdExpr("foo"), [`IntExpr(-1)]))
+    ]]
+
+let parse_stmt_list _test_ctxt =
+  let code = "method main() { a.b(); c(); }" in
+  let ast = parse_string code in
+  assert_equal ast [("main"), [
+      `ExprStmt(`BinOpExpr(`IdExpr("a"), `Dot, `FxnAppExpr(`IdExpr("b"), [])));
+      `ExprStmt(`FxnAppExpr(`IdExpr("c"), []))
+    ]]
 
 let suite =
   "Java Parsing">::: [
@@ -112,5 +134,8 @@ let suite =
     "Parse Paren Precedence">:: parse_paren_precedence;
     "Parse comments">:: parse_comment;
     "Parse ml-comment">:: parse_ml_comment;
+    "Parse Function Application">:: parse_fxn_app;
     "Parse obj call">:: parse_obj_call;
+    "Parse Negative Int">:: parse_negative_int;
+    "Parse Stmt List">:: parse_stmt_list;
   ]
