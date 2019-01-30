@@ -47,8 +47,7 @@
 ** Boolean Logic
 *** TRUE
     - Description:
-  
-    Push a 1 onto the top of the cmp stack.
+      Push a 1 onto the top of the cmp stack.
 *** FALSE
     - Description:
 
@@ -84,8 +83,8 @@
 *** OR
     - Description:
 
-     Pop the top two elements off the comparison stack and perform a logical or on the two elements and
-     push the result onto the top of the cmp stack.
+      Pop the top two elements off the comparison stack and perform a logical or on the two elements and
+      push the result onto the top of the cmp stack.
 ** Functions
 *** RETR
     - Description:
