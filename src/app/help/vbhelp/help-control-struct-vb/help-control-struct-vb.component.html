@@ -1,0 +1,132 @@
+<h1>Control Structures (VB.NET Style)</h1>
+
+A control structure determines the order in which statements will be executed.  In addition to sequential execution, the Jeroo language supports three control structures
+<ul>
+	<li> if
+	<li> if-else
+	<li> cascaded if (a variation on if-else)
+	<li> pretest while
+</ul> 
+<br>
+<br>
+<h3>The<i> if </i>Structure</h3>
+The <i>if</i> structure is used to define an optional block of code. 
+<br>
+<br>
+
+<table  border="1" cellpadding="5">
+	<tr>
+		<td><font size="3" color="#000000" face="courier">
+<b>If</b> <i>condition</i> <b> Then</b><br>
+<pre>    '-- true block  </pre>
+
+<b>End If</b>
+<br>
+<pre>'-- next statement</pre>
+			</font>
+</table>
+
+<ul>
+	<li> If the condition is true, execute the "true block " exactly once,<br> 
+		 and continue with the "next statement".
+	<li> If the condition is false, skip the "true block", <br>
+		 and resume execution with the "next statement".
+	<li> Do not go back and recheck the condition.
+</ul>
+<br>
+<br>
+
+<h3>The<i> if-else</i> Structure</h3>
+The <i>if-else</i> structure is used to define alternate blocks of code.   <br>
+Only one of the blocks will be executed.
+<br>
+<br>
+
+<table  border="1" cellpadding="5">
+	<tr>
+		<td><font size="3" color="#000000" face="courier">
+<b>If</b> <i>condition</i> <b> Then</b><br>
+<pre>    '-- true block  </pre>
+
+<b>Else</b><br>
+<pre>    '-- false block  </pre>
+<br>
+<b>End If</b><br>
+<pre>'-- next statement</pre>
+			</font>
+</table>
+
+<ul>
+	<li> If the condition is true, execute the "true block " exactly once, <br>
+		 and resume execution with the "next statement".
+	<li> If the condition is false, execute the "false block" exactly once,<br> 
+		 and resume execution with the "next statement".
+	<li> Do not go back and recheck the condition.
+</ul>
+<br>
+<br>
+
+<h3>The <i>cascaded if</i> Structure</h3>
+The <i>cascaded if</i> is a variation on the if-else structure.  <br>
+The <i>cascaded if</i> is used to define three or more blocks of code.   <br>
+Only one of the blocks will be executed.
+<br>
+<br>
+
+<table  border="1" cellpadding="5">
+	<tr>
+		<td><font size="3" color="#000000" face="courier">
+<b>If</b> <i>condition-0</i> <b>Then</b><br>
+<pre>    '-- block-0  </pre>
+<br>
+<b>ElseIf</b> <i>condition-1</i> <b>Then</b><br>
+<pre>    '-- block-1  </pre>
+<BR>
+'-- other else-if blocks go here<br>
+<br>
+<br>
+<b>ElseIf </b> <i>condition-n</i> <b>Then</b><br>
+<pre>    '-- block-n  </pre>
+<br>
+<b>Else</b><br>
+<pre>    '-- default block  </pre>
+<br><b>End If</b>
+
+
+<pre>'-- next statement</pre>
+			</font>
+</table>
+
+<ul>
+	<li> Jeroo checks the conditions in the order that they appear.
+	<li> When the first true condition is located, the corresponding block will be executed,
+		 and all other blocks and conditions will be skipped.
+	<li> If all conditions are false, the default block will be executed.
+	<li> After a block has been executed, execution resumes with the "next statement".
+</ul>
+<br>
+<br>
+
+<h3>The<i> pretest while </i>Structure</h3>
+The <i>pretest while</i> structure (also called a while loop) is used to define a block of code that will be executed repeatedly as long as a specified condition is true. 
+<br>
+<br>
+
+<table  border="1" cellpadding="5">
+	<tr>
+		<td><font size="3" color="#000000" face="courier">
+<b>While</b> <i>condition</i> <b></b><br>
+<br>
+<pre>    '-- loop body  </pre>
+<b>End While</b>
+<br>
+<pre>'-- next statement</pre>
+			</font>
+</table>
+
+<ul>
+	<li> When the condition is true, execute the "loop body " once,<br> 
+		 then go back and reevaluate the condition.
+	<li> When the condition is false, skip the "loop body", <br>
+		 and resume execution with the "next statement".
+</ul>
