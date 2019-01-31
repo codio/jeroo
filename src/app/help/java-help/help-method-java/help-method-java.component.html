@@ -1,0 +1,52 @@
+<h1>Methods (Java/C++/C# Style)</h1>
+
+A Jeroo program must contain exactly one main method, and usually contains several user-defined Jeroo methods
+<br>
+<br>
+<h3>Main Method</h3>
+Every Jeroo program must have exactly one main method.  
+<br>
+<br>
+<table  border="1" cellpadding="5">
+	<tr>
+		<td><font size="3" color="#000000" face="courier">
+<b>method main()<br>
+&#123;</b><br>
+<pre>    // declare and instantiate all Jeroos
+
+   // use the Jeroos to solve the problem
+</pre>
+<b>&#123;</b>
+			</font>
+</table>
+<ul>
+	<li> All Jeroos must be declared and instantiated at the 
+		 beginning of the main method.
+	<li> The rest of the main method is used to direct the actions of the 
+             Jeroos by sending them messages to execute predefined or
+             user-defined methods.
+</ul>
+<br>
+<br>
+<h3>User-Defined Jeroo Methods</h3>
+A Jeroo program can have any number of user-defined Jeroo methods.  
+<br>
+<br>
+<table  border="1" cellpadding="5">
+	<tr>
+		<td><font size="3" color="#000000" face="courier">
+<b>method</b> <i>identifier</i><b> ()<br>
+&#123;</b><br>
+<pre>    // body of the method
+</pre>
+<b>&#125;</b>
+			</font>
+</table>
+<ul>
+	<li> A user-defined method extends the capabilites of every Jeroo.
+	<li> The source code in a user-defined Jeroo method must invoke a
+		 method directly, instead of sending a message to a specific Jeroo.
+	<li> A user-defined Jeroo method can invoke other user-defined Jeroo
+		 methods, even itself (recursion).
+	<li> User-defined Jeroo methods can appear in any order in the source code.
+</ul>
