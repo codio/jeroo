@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>Change Matrix</h2>
+<div>
+    Please enter a value between 1 and 50
+</div>
+<br>
+
+<mat-dialog-content [formGroup]="form">
+  
+    <mat-form-field>
+        <input matInput
+                placeholder="X Value: "
+                formControlName="xValue">
+        <mat-error>
+            Value must be between 1 and 50
+        </mat-error>
+    </mat-form-field>
+    &nbsp;
+    <mat-form-field>
+        <input matInput
+                placeholder="Y Value: "
+                formControlName="yValue">
+        <mat-error>
+            Value must be between 1 and 50
+        </mat-error>
+    </mat-form-field>
+    <div>
+      Warning: Changing the Matrix Size will Clear the Board!
+      <br>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button class="mat-raised-button" (click)="close()">Close</button>
+    
+    <button class="mat-raised-button mat-primary" [disabled]="!form.valid" (click)="save()">Save</button>
+</mat-dialog-actions>
