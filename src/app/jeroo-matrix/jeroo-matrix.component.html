@@ -1,0 +1,38 @@
+<div class=bordered>
+  <button mat-button (click)="openDialog()">Change Size</button>
+  <img src="assets/images/grass.jpg" alt='G' (mousedown)="selectTile(matrixService.getGrassType())">
+  <img src="assets/images/water.jpg" alt='W' (mousedown)="selectTile(matrixService.getWaterType())">
+  <img src="assets/images/flower.jpg" alt='F' (mousedown)="selectTile(matrixService.getFlowerType())">
+  <img src="assets/images/net.jpg" alt='N' (mousedown)="selectTile(matrixService.getNetType())">
+  <img src="assets/images/clear.jpg" alt='C' (mousedown)="selectTile(matrixService.getClearType())">
+</div>
+
+<br>
+
+<div class=matrix align=center>
+<p>
+  <li *ngFor="let rowBoard of matrixService.getMatrix(); let row = index">
+    <span *ngFor="let boardValue of rowBoard; let column = index">
+      <span *ngIf="boardValue === matrixService.getWaterType()">
+          <img src="assets/images/water.jpg" [ngStyle]="{'max-width': getPixel()}" (mousedown)="onClick($event, row, column)" (mouseover)="onMouseOver($event, row, column)" (mouseup)="mouseUp()" />
+      </span>
+      <span *ngIf="boardValue === matrixService.getGrassType()">
+          <img src="assets/images/grass.jpg" [ngStyle]="{'max-width': getPixel()}" alt="G" (mousedown)="onClick($event, row, column)" (mouseover)="onMouseOver($event, row, column)" (mouseup)="mouseUp()" />
+      </span>
+      <span *ngIf="boardValue === matrixService.getFlowerType()">
+        <img src="assets/images/flower.jpg" [ngStyle]="{'max-width': getPixel()}" alt="F" (mousedown)="onClick($event, row, column)" (mouseover)="onMouseOver($event, row, column)" (mouseup)="mouseUp()" />
+      </span>
+      <span *ngIf="boardValue === matrixService.getNetType()">
+        <img src="assets/images/net.jpg" [ngStyle]="{'max-width': getPixel()}" alt="N" (mousedown)="onClick($event, row, column)" (mouseover)="onMouseOver($event, row, column)" (mouseup)="mouseUp()" />
+      </span>
+    </span>
+  </li>
+</p>
+</div>
+
+<div class=bordered>
+  <h2 *ngIf="currentXLocation===(matrixService.getMaxXSize() - 1) || currentXLocation===-1 || currentYLocation===(matrixService.getMaxYSize() - 1) || currentYLocation===-1; else display_coor">
+    Cursor Location: Off the Island
+  </h2>
+  <ng-template #display_coor><h2>Cursor Location: ({{currentYLocation}},{{currentXLocation}})</h2></ng-template>
+</div>
