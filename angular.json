@@ -30,7 +30,9 @@
               "src/styles.scss",
               "src/jeroo-theme.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "src/compiler/_build/default/JerooCompiler.bc.js"
+            ]
           },
           "configurations": {
             "production": {

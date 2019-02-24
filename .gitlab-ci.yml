@@ -26,7 +26,7 @@ build:
   script:
     - cd src/compiler
     - dune runtest
-    - dune build ./jeroo_compiler.bc.js --profile release
+    - dune build ./JerooCompiler.bc.js --profile release
     - cd ../..
     - yarn install
     - yarn lint

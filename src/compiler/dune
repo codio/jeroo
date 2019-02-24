@@ -1,5 +1,5 @@
 (executable
-  (name jeroo_compiler)
+  (name JerooCompiler)
   (libraries js_of_ocaml Lib)
   (preprocess (pps js_of_ocaml-ppx))
 )
