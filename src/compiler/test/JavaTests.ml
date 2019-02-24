@@ -1,123 +1,448 @@
 open OUnit2
 open Lib
+open AST
 
 let parse_string s =
-  let lexbuf = Lexing.from_string s in
-  JavaParser.translation_unit JavaLexer.token lexbuf
+  let lexbuf = Lexing.from_string s in JavaParser.translation_unit JavaLexer.token lexbuf
 
 let parse_method _test_ctxt =
-  let code = "method main() { }" in
+  let code = "@Java\n @@\n method main() { }" in
   let ast = parse_string code in
-  assert_equal ast [("main", [])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [];
+      start_lnum = 1;
+      end_lnum = 1;
+    };
+  } in
+  assert_equal ast expected
 
 let parse_decl _test_ctxt =
-  let code = "method main() { Jeroo j = new Jeroo(1, 2); }" in
+  let code = "@Java\n @@\n method main() { Jeroo j = new Jeroo(1, 2); }" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `DeclStmt("Jeroo", "j", `UnOpExpr(`New, `FxnAppExpr(`IdExpr("Jeroo"), [`IntExpr(1); `IntExpr(2)])))
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.DeclStmt("Jeroo", "j", {
+            a = AST.UnOpExpr(AST.New, {
+                a = AST.FxnAppExpr({
+                    a = AST.IdExpr("Jeroo");
+                    lnum = 1;
+                  },
+                    [
+                      {
+                        a = AST.IntExpr(1);
+                        lnum = 1;
+                      };
+                      {
+                        a = AST.IntExpr(2);
+                        lnum = 1;
+                      }
+                    ]);
+                lnum = 1;
+              });
+            lnum = 1;
+          })
+      ];
+      start_lnum = 1;
+      end_lnum = 1;
+    };
+  } in
+  assert_equal ast expected
 
 let parse_if_stmt _test_ctxt =
-  let code = "method main() { if (true) { } }" in
+  let code = "@Java\n @@\n method main() { if (true) { } }" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `IfStmt(`TrueExpr, `BlockStmt [])
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.IfStmt({
+            a = AST.TrueExpr;
+            lnum = 1;
+          }, AST.BlockStmt [], 1)
+      ];
+      start_lnum = 1;
+      end_lnum = 1;
+    };
+  } in
+  assert_equal ast expected
 
 let parse_if_else_stmt _test_ctxt =
-  let code = "method main() { if (true) { } else { }}" in
+  let code = "@Java\n @@\n method main() { if (true) { } else { }}" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `IfElseStmt(`TrueExpr, `BlockStmt([]), `BlockStmt([]))
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.IfElseStmt({
+            a = AST.TrueExpr;
+            lnum = 1;
+          }, AST.BlockStmt [], AST.BlockStmt [], 1);
+      ];
+      start_lnum = 1;
+      end_lnum = 1;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_dangling_if _test_ctxt =
-  let code = "method main() { if (true) if (false) {} else { }}" in
+  let code = "@Java\n @@\n method main() { if (true) if (false) {} else { }}" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `IfStmt(`TrueExpr, `IfElseStmt(`FalseExpr, `BlockStmt([]), `BlockStmt([])))
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.IfStmt({
+            a = AST.TrueExpr;
+            lnum = 1;
+          }, AST.IfElseStmt({
+            a =AST.FalseExpr;
+            lnum = 1;
+          }, AST.BlockStmt [], AST.BlockStmt [], 1), 1);
+      ];
+      start_lnum = 1;
+      end_lnum = 1;
+    };
+  } in
+  assert_equal ast expected
 
 let parse_while_stmt _test_ctxt =
-  let code = "method main() { while(true) { }}" in
+  let code = "@Java\n @@\n method main() { while(true) { }}" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `WhileStmt(`TrueExpr, `BlockStmt([]))
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.WhileStmt({
+            a = AST.TrueExpr;
+            lnum = 1;
+          }, AST.BlockStmt [], 1)
+      ];
+      start_lnum = 1;
+      end_lnum = 1;
+    };
+  } in
+  assert_equal ast expected
 
 let parse_and _test_ctxt =
-  let code = "method main() { if (true && true) { }}" in
+  let code = "@Java\n @@\n method main() { if (true && true) { }}" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `IfStmt(`BinOpExpr(`TrueExpr, `And, `TrueExpr), `BlockStmt([]))
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [AST.IfStmt({
+          a = AST.BinOpExpr({
+              a = AST.TrueExpr;
+              lnum = 1;
+            }, AST.And, {
+                a = AST.TrueExpr;
+                lnum = 1;
+              });
+          lnum = 1;
+        }, AST.BlockStmt [], 1)];
+      start_lnum = 1;
+      end_lnum = 1;
+    };
+  } in
+  assert_equal ast expected
 
 let parse_or _test_ctxt =
-  let code = "method main() { if (true || true) { }}" in
+  let code = "@Java\n @@\n method main() { if (true || true) { }}" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `IfStmt(`BinOpExpr(`TrueExpr, `Or, `TrueExpr), `BlockStmt([]))
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.IfStmt({
+            a = AST.BinOpExpr({
+                a = AST.TrueExpr;
+                lnum = 1;
+              }, AST.Or, {
+                  a = AST.TrueExpr;
+                  lnum = 1;
+                });
+            lnum = 1;
+          }, AST.BlockStmt [], 1);
+      ];
+      start_lnum = 1;
+      end_lnum = 1;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_not _test_ctxt =
-  let code = "method main() { if (!true) {} }" in
+  let code = "@Java\n @@\n method main() { if (!true) {} }" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `IfStmt(`UnOpExpr(`Not, `TrueExpr), `BlockStmt([]))
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.IfStmt({
+            a = AST.UnOpExpr(AST.Not, {
+                a = AST.TrueExpr;
+                lnum = 1;
+              });
+            lnum = 1;
+          }, AST.BlockStmt [], 1);
+      ];
+      start_lnum = 1;
+      end_lnum = 1;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_not_precedence _test_ctxt =
-  let code = "method main() { if (!true && false) {}}" in
+  let code = "@Java\n @@\n method main() { if (!true && false) {}}" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `IfStmt(`BinOpExpr(`UnOpExpr(`Not, `TrueExpr), `And, `FalseExpr), `BlockStmt([]))
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.IfStmt({
+            a = AST.BinOpExpr({
+                a = AST.UnOpExpr(AST.Not, {
+                    a = AST.TrueExpr;
+                    lnum = 1;
+                  });
+                lnum = 1;
+              }, AST.And, {
+                  a = AST.FalseExpr;
+                  lnum = 1;
+                });
+            lnum = 1;
+          }, AST.BlockStmt [], 1);
+      ];
+      start_lnum = 1;
+      end_lnum = 1;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_paren_precedence _test_ctxt =
-  let code = "method main() { if (true && (false && false)) {} }" in
+  let code = "@Java\n @@\n method main() { if (true && (false && false)) {} }" in
   let ast = parse_string code in
-  assert_equal ast [("main"), [
-      `IfStmt(`BinOpExpr(`TrueExpr, `And, `BinOpExpr(`FalseExpr, `And, `FalseExpr)), `BlockStmt([]))
-    ]]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.IfStmt({
+            a = AST.BinOpExpr({
+                a = AST.TrueExpr;
+                lnum = 1;
+              }, AST.And, {
+                  a = AST.BinOpExpr({
+                      a = AST.FalseExpr;
+                      lnum = 1;
+                    }, AST.And, {
+                        a = AST.FalseExpr;
+                        lnum = 1;
+                      });
+                  lnum = 1;
+                });
+            lnum = 1;
+          }, AST.BlockStmt [], 1)
+      ];
+      start_lnum = 1;
+      end_lnum = 1;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_comment _test_ctxt =
-  let code = "// this is a comment\n method main() { }" in
+  let code = "// this is a comment\n @Java\n @@\n method main() { }" in
   let ast = parse_string code in
-  assert_equal ast [("main", [])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [];
+      start_lnum = 1;
+      end_lnum = 1;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_ml_comment _test_ctxt =
-  let code = "/* this is a *\n\n\n* multi line comment */method main() {}" in
+  let code = "@Java\n @@\n /* this is a *\n\n\n* multi line comment */method main() {}" in
   let ast = parse_string code in
-  assert_equal ast [("main", [])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [];
+      start_lnum = 4;
+      end_lnum = 4;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_fxn_app _test_ctxt =
-  let code = "method main() { foo(); }" in
+  let code = "@Java\n @@\n method main() { foo(); }" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `ExprStmt(`FxnAppExpr(`IdExpr("foo"), []))
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.ExprStmt({
+            a = AST.FxnAppExpr({
+                a = AST.IdExpr("foo");
+                lnum = 1;
+              }, []);
+            lnum = 1;
+          });
+      ];
+      start_lnum = 1;
+      end_lnum = 1;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_obj_call _test_ctxt =
-  let code = "method main() { j.someFxn(1, NORTH);  }" in
+  let code = "@Java\n @@\n method main() { j.someFxn(1, NORTH);  }" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `ExprStmt(`BinOpExpr(`IdExpr("j"), `Dot, `FxnAppExpr(`IdExpr("someFxn"), [`IntExpr(1); `NorthExpr])))
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.ExprStmt({
+            a = AST.BinOpExpr({
+                a = AST.IdExpr("j");
+                lnum = 1;
+              }, AST.Dot, {
+                  a = AST.FxnAppExpr({
+                      a = AST.IdExpr("someFxn");
+                      lnum = 1;
+                    }, [
+                        {
+                          a = AST.IntExpr(1);
+                          lnum = 1;
+                        };
+                        {
+                          a = AST.NorthExpr;
+                          lnum = 1;
+                        }
+                      ]);
+                  lnum = 1;
+                });
+            lnum = 1;
+          })
+      ];
+      start_lnum = 1;
+      end_lnum = 1;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_negative_int _test_ctxt =
-  let code = "method main() { foo(-1); }" in
+  let code = "@Java\n @@\n method main() { foo(-1); }" in
   let ast = parse_string code in
-  assert_equal ast [("main"), [
-      `ExprStmt(`FxnAppExpr(`IdExpr("foo"), [`IntExpr(-1)]))
-    ]]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.ExprStmt({
+            a = AST.FxnAppExpr({
+                a = AST.IdExpr("foo");
+                lnum = 1;
+              }, [{
+                a = AST.IntExpr(-1);
+                lnum = 1;
+              }]);
+            lnum = 1;
+          })
+      ];
+      start_lnum = 1;
+      end_lnum = 1;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_stmt_list _test_ctxt =
-  let code = "method main() { a.b(); c(); }" in
+  let code = "@Java\n @@\n method main() { a.b(); c(); }" in
   let ast = parse_string code in
-  assert_equal ast [("main"), [
-      `ExprStmt(`BinOpExpr(`IdExpr("a"), `Dot, `FxnAppExpr(`IdExpr("b"), [])));
-      `ExprStmt(`FxnAppExpr(`IdExpr("c"), []))
-    ]]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.ExprStmt({
+            a = AST.BinOpExpr({
+                a = AST.IdExpr("a");
+                lnum = 1;
+              }, AST.Dot, {
+                  a = AST.FxnAppExpr({
+                      a = AST.IdExpr("b");
+                      lnum = 1;
+                    }, []);
+                  lnum = 1;
+                });
+            lnum = 1;
+          });
+        AST.ExprStmt({
+            a = AST.FxnAppExpr({
+                a = AST.IdExpr("c");
+                lnum = 1;
+              }, []);
+            lnum = 1;
+          })
+      ];
+      start_lnum = 1;
+      end_lnum = 1;
+    }
+  } in
+  assert_equal ast expected
+
+let parse_extension_method _test_ctxt =
+  let code = "@Java\n method foo() {\n hop(); \n}\n @@\n method main() {\n hop();\n \n}" in
+  let ast = parse_string code in
+  let expected = {
+    extension_fxns = [{
+        id = "foo";
+        stmts = [
+          AST.ExprStmt({
+              a = AST.FxnAppExpr({
+                  a = AST.IdExpr("hop");
+                  lnum = 2;
+                }, []);
+              lnum = 2;
+            })
+        ];
+        start_lnum = 1;
+        end_lnum = 3;
+      }];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.ExprStmt {
+          a = AST.FxnAppExpr({
+              a = AST.IdExpr("hop");
+              lnum = 2;
+            }, []);
+          lnum = 2;
+        }
+      ];
+      start_lnum = 1;
+      end_lnum = 4;
+    }
+  } in
+  assert_equal ast expected
 
 let suite =
   "Java Parsing">::: [
@@ -138,4 +463,5 @@ let suite =
     "Parse obj call">:: parse_obj_call;
     "Parse Negative Int">:: parse_negative_int;
     "Parse Stmt List">:: parse_stmt_list;
+    "Parse Extension Method">:: parse_extension_method;
   ]

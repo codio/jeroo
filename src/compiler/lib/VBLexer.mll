@@ -1,11 +1,13 @@
 {
-  open VBParser
-  exception Error of string
+open VBParser
+open Lexing
+
+exception Error of string
 }
 
 let whitespace = [' ' '\t' '\r']+
-let newline = '\n'+
-let comment = "'" [^'\n']* newline
+let newline = '\n'
+let comment = "'" [^'\n']* '\n'
 
 let digit = '-'? ['0'-'9']
 let letter = ['a'-'z' 'A'-'Z' '_']
@@ -45,68 +47,88 @@ rule token = parse
 | whitespace
   { token lexbuf }
 | comment
-  { token lexbuf }
+  { new_line lexbuf; token lexbuf }
+| "@VB\n"
+  { HEADER }
+| "@@\n"
+  { LexingUtils.reset_lnum lexbuf; MAIN_METH_SEP }
 | int_constant as i
-  { INT (int_of_string i) }
+  { INT ((int_of_string i), (LexingUtils.get_lnum lexbuf)) }
 | d i m
-  { DIM }
+  { DIM (LexingUtils.get_lnum lexbuf) }
 | a s
-  { AS }
+  { AS (LexingUtils.get_lnum lexbuf) }
 | n e w
-  { NEW }
+  { NEW (LexingUtils.get_lnum lexbuf) }
 | s u b
-  { SUB }
+  { SUB (LexingUtils.get_lnum lexbuf) }
 | w h i l e
-  { WHILE }
+  { WHILE (LexingUtils.get_lnum lexbuf) }
 | i f
-  { IF }
+  { IF (LexingUtils.get_lnum lexbuf) }
 | t h e n
-  { THEN }
+  { THEN (LexingUtils.get_lnum lexbuf) }
 | e l s e i f
-  { ELSEIF }
+  { ELSEIF (LexingUtils.get_lnum lexbuf) }
 | e l s e
-  { ELSE }
+  { ELSE (LexingUtils.get_lnum lexbuf) }
 | e n d
-  { END }
+  { END (LexingUtils.get_lnum lexbuf) }
 | l e f t
-  { LEFT }
+  { LEFT (LexingUtils.get_lnum lexbuf) }
 | r i g h t
-  { RIGHT }
+  { RIGHT (LexingUtils.get_lnum lexbuf) }
 | a h e a d
-  { AHEAD }
+  { AHEAD (LexingUtils.get_lnum lexbuf) }
 | h e r e
-  { HERE }
+  { HERE (LexingUtils.get_lnum lexbuf) }
 | n o r t h
-  { NORTH }
+  { NORTH (LexingUtils.get_lnum lexbuf) }
 | e a s t
-  { EAST }
+  { EAST (LexingUtils.get_lnum lexbuf) }
 | s o u t h
-  { SOUTH }
+  { SOUTH (LexingUtils.get_lnum lexbuf) }
 | w e s t
-  { WEST }
+  { WEST (LexingUtils.get_lnum lexbuf) }
 | t r u e
-  { TRUE }
+  { TRUE (LexingUtils.get_lnum lexbuf) }
 | f a l s e
-  { FALSE }
+  { FALSE (LexingUtils.get_lnum lexbuf) }
 | a n d
-  { AND }
+  { AND (LexingUtils.get_lnum lexbuf) }
 | o r
-  { OR }
+  { OR (LexingUtils.get_lnum lexbuf) }
 | n o t
-  { NOT }
+  { NOT (LexingUtils.get_lnum lexbuf) }
+| j e r o o
+  { ID ("Jeroo", (LexingUtils.get_lnum lexbuf)) }
+| h a s f l o w e r
+  { ID ("hasFlower", (LexingUtils.get_lnum lexbuf)) }
+| i s f a c i n g
+  { ID ("isFacing", (LexingUtils.get_lnum lexbuf)) }
+| i s f l o w e r
+  { ID ("isFlower", (LexingUtils.get_lnum lexbuf)) }
+| i s j e r o o
+  { ID ("isJeroo", (LexingUtils.get_lnum lexbuf)) }
+| i s n e t
+  { ID ("isNet", (LexingUtils.get_lnum lexbuf)) }
+| i s w a t e r
+  {ID ("isWater", (LexingUtils.get_lnum lexbuf)) }
+| i s c l e a r
+  {ID ("isClear", (LexingUtils.get_lnum lexbuf)) }
 | identifier as id
-  { ID (String.lowercase_ascii id) }
+  { ID ((String.lowercase_ascii id), (LexingUtils.get_lnum lexbuf)) }
 | '='
-  { EQ }
+  { EQ (LexingUtils.get_lnum lexbuf)}
 | '('
-  { LPAREN }
+  { LPAREN (LexingUtils.get_lnum lexbuf)}
 | ')'
-  { RPAREN }
+  { RPAREN (LexingUtils.get_lnum lexbuf)}
 | ','
-  { COMMA }
+  { COMMA (LexingUtils.get_lnum lexbuf)}
 | '.'
-  { DOT }
+  { DOT (LexingUtils.get_lnum lexbuf) }
 | newline
-  { NEWLINE }
+  { new_line lexbuf; NEWLINE }
 | eof
   { EOF }

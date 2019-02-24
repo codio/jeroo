@@ -1,0 +1,13 @@
+@Java
+method foo() {
+hop();
+}
+@@
+method main() {
+Jeroo j = new Jeroo(2, 1, 4, NORTH);
+j.foo();
+hop();
+while(j.hasFlower()) {
+j.turn(LEFT);
+}
+}

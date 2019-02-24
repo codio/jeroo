@@ -1,5 +1,7 @@
 {
 open JavaParser
+open Lexing
+
 exception Error of string
 }
 
@@ -12,71 +14,82 @@ let int_constant = '-'? digit+
 let comment = "//" [^'\n']* '\n'
 let ml_comment = "/*" [^'*']* [^'/']* "*/"
 
-let whitespace = ['\n''\r'' ' '\t']+
+let whitespace = ['\r' ' ' '\t']+
+let newline = '\n'
 
 rule token = parse
 | whitespace
   { token lexbuf }
+| newline
+  { new_line lexbuf; token lexbuf }
 | comment
-  { token lexbuf }
-| ml_comment
-  { token lexbuf }
+  { new_line lexbuf; token lexbuf }
+| ml_comment as text
+  { let num_lines =
+      text
+      |> String.to_seq
+      |> Seq.fold_left (fun accum ele -> if ele = '\n' then 1 + accum else accum) 0
+    in LexingUtils.next_n_lines num_lines lexbuf; token lexbuf }
+| "@Java\n"
+  { HEADER }
+| "@@\n"
+  { LexingUtils.reset_lnum lexbuf; MAIN_METH_SEP }
 | int_constant as i
-  { INT (int_of_string i) }
+  { INT ((int_of_string i), (LexingUtils.get_lnum lexbuf)) }
 | "true"
-  { TRUE }
+  { TRUE (LexingUtils.get_lnum lexbuf) }
 | "false"
-  { FALSE }
+  { FALSE (LexingUtils.get_lnum lexbuf) }
 | "LEFT"
-  { LEFT }
+  { LEFT (LexingUtils.get_lnum lexbuf) }
 | "RIGHT"
-  { RIGHT }
+  { RIGHT (LexingUtils.get_lnum lexbuf) }
 | "AHEAD"
-  { AHEAD }
+  { AHEAD (LexingUtils.get_lnum lexbuf) }
 | "HERE"
-  { HERE }
+  { HERE (LexingUtils.get_lnum lexbuf) }
 | "NORTH"
-  { NORTH }
+  { NORTH (LexingUtils.get_lnum lexbuf) }
 | "SOUTH"
-  { SOUTH }
+  { SOUTH (LexingUtils.get_lnum lexbuf) }
 | "EAST"
-  { EAST }
+  { EAST (LexingUtils.get_lnum lexbuf) }
 | "WEST"
-  { WEST }
+  { WEST (LexingUtils.get_lnum lexbuf) }
 | "if"
-  { IF }
+  { IF (LexingUtils.get_lnum lexbuf) }
 | "else"
-  { ELSE }
+  { ELSE (LexingUtils.get_lnum lexbuf) }
 | "while"
-  { WHILE }
+  { WHILE (LexingUtils.get_lnum lexbuf) }
 | "new"
-  { NEW }
+  { NEW (LexingUtils.get_lnum lexbuf) }
 | "method"
-  { METHOD }
+  { METHOD (LexingUtils.get_lnum lexbuf) }
 | id as i
-  { ID i }
+  { ID (i, (LexingUtils.get_lnum lexbuf)) }
 | "&&"
-  { AND }
+  { AND (LexingUtils.get_lnum lexbuf) }
 | "||"
-  { OR }
+  { OR (LexingUtils.get_lnum lexbuf) }
 | "!"
-  { NOT }
+  { NOT (LexingUtils.get_lnum lexbuf) }
 | "="
-  { EQ }
+  { EQ (LexingUtils.get_lnum lexbuf) }
 | ";"
-  { SEMICOLON }
+  { SEMICOLON (LexingUtils.get_lnum lexbuf) }
 | ","
-  { COMMA }
+  { COMMA (LexingUtils.get_lnum lexbuf) }
 | "."
-  { DOT }
+  { DOT (LexingUtils.get_lnum lexbuf) }
 | '('
-  { LPAREN }
+  { LPAREN (LexingUtils.get_lnum lexbuf) }
 | ')'
-  { RPAREN }
+  { RPAREN (LexingUtils.get_lnum lexbuf) }
 | '{'
-  { LBRACKET }
+  { LBRACKET (LexingUtils.get_lnum lexbuf) }
 | '}'
-  { RBRACKET }
+  { RBRACKET (LexingUtils.get_lnum lexbuf) }
 | eof
   { EOF }
 | _

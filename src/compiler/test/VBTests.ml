@@ -1,160 +1,550 @@
 open OUnit2
 open Lib
+open AST
 
 let parse_string s =
   let lexbuf = Lexing.from_string s in
   VBParser.translation_unit VBLexer.token lexbuf
 
 let parse_method _test_ctxt =
-  let code = "sub main() \n end sub" in
+  let code = "@VB\n @@\n sub main() \n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main", [])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [];
+      start_lnum = 1;
+      end_lnum = 2;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_decl _test_ctxt =
-  let code = "sub main() \n dim j as jeroo = new jeroo(1, 2) \n end sub" in
+  let code = "@VB\n @@\n sub main() \n dim j as jeroo = new jeroo(1, 2) \n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `DeclStmt("jeroo", "j", `UnOpExpr(`New, `FxnAppExpr(`IdExpr("jeroo"), [`IntExpr(1); `IntExpr(2)])))
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.DeclStmt("Jeroo", "j", {
+            a = AST.UnOpExpr(AST.New, {
+                a = AST.FxnAppExpr({
+                    a = AST.IdExpr("Jeroo");
+                    lnum = 2;
+                  }, [
+                      {
+                        a = AST.IntExpr(1);
+                        lnum = 2;
+                      };
+                      {
+                        a = AST.IntExpr(2);
+                        lnum = 2;
+                      };
+                    ]);
+                lnum = 2;
+              });
+            lnum = 2;
+          })
+      ];
+      start_lnum = 1;
+      end_lnum = 3;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_if_stmt _test_ctxt =
-  let code = "sub main() \n if (true) then \n end if \n end sub" in
+  let code = "@VB\n @@\n sub main() \n if (true) then \n end if \n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `IfStmt(`TrueExpr, `BlockStmt [])
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.IfStmt({
+            a = AST.TrueExpr;
+            lnum = 2;
+          }, AST.BlockStmt [], 2)
+      ];
+      start_lnum = 1;
+      end_lnum = 4;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_if_stmt_no_paren _test_ctxt =
-  let code = "sub main() \n if true then \n end if \n end sub" in
+  let code = "@VB\n @@\n sub main() \n if true then \n end if \n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `IfStmt(`TrueExpr, `BlockStmt [])
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.IfStmt({
+            a = AST.TrueExpr;
+            lnum = 2;
+          }, AST.BlockStmt [], 2)
+      ];
+      start_lnum = 1;
+      end_lnum = 4;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_elseif_stmt _test_ctxt =
-  let code = "sub main()\n if (true) then\n elseif (false) then\n end if\n end sub" in
+  let code = "@VB\n @@\n sub main()\n if (true) then\n elseif (false) then\n end if\n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `IfElseStmt(`TrueExpr, `BlockStmt [], `IfStmt(`FalseExpr, `BlockStmt []))
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.IfElseStmt({
+            a = AST.TrueExpr;
+            lnum = 2;
+          }, AST.BlockStmt [], AST.IfStmt({
+            a = AST.FalseExpr;
+            lnum = 3;
+          }, AST.BlockStmt [], 3), 2)
+      ];
+      start_lnum = 1;
+      end_lnum = 5;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_elseif_no_paren_stmt _test_ctxt =
-  let code = "sub main()\n if true then\n elseif false then\n end if\n end sub" in
+  let code = "@VB\n @@\n sub main()\n if true then\n elseif false then\n end if\n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `IfElseStmt(`TrueExpr, `BlockStmt [], `IfStmt(`FalseExpr, `BlockStmt []))
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.IfElseStmt({
+            a = AST.TrueExpr;
+            lnum = 2;
+          }, AST.BlockStmt [], AST.IfStmt({
+            a = AST.FalseExpr;
+            lnum = 3;
+          }, AST.BlockStmt [], 3), 2)
+      ];
+      start_lnum = 1;
+      end_lnum = 5;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_elseif_list_stmt _test_ctxt =
-  let code = "sub main()\n if (true) then\n elseif (false) then\n elseif (true) then\n else\n end if\n end sub" in
+  let code = "@VB\n @@\n sub main()\n if (true) then\n elseif (false) then\n elseif (true) then\n else\n end if\n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `IfElseStmt(`TrueExpr, `BlockStmt [], `IfElseStmt(`FalseExpr, `BlockStmt [], `IfElseStmt(`TrueExpr, `BlockStmt [], `BlockStmt [])))
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.IfElseStmt({
+            a = AST.TrueExpr;
+            lnum = 2;
+          }, AST.BlockStmt [], AST.IfElseStmt({
+            a = AST.FalseExpr;
+            lnum = 3;
+          }, AST.BlockStmt [], AST.IfElseStmt({
+            a = AST.TrueExpr;
+            lnum = 4;
+          }, AST.BlockStmt [], AST.BlockStmt [], 4), 3), 2)
+      ];
+      start_lnum = 1;
+      end_lnum = 7;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_elseif_list_no_paren_stmt _test_ctxt =
-  let code = "sub main()\n if true then\n elseif false then\n elseif true then\n else\n end if\n end sub" in
+  let code = "@VB\n @@\n sub main()\n if true then\n elseif false then\n elseif true then\n else\n end if\n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `IfElseStmt(`TrueExpr, `BlockStmt [], `IfElseStmt(`FalseExpr, `BlockStmt [], `IfElseStmt(`TrueExpr, `BlockStmt [], `BlockStmt [])))
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.IfElseStmt({
+            a = AST.TrueExpr;
+            lnum = 2;
+          }, AST.BlockStmt [], AST.IfElseStmt({
+            a = AST.FalseExpr;
+            lnum = 3;
+          }, AST.BlockStmt [], AST.IfElseStmt({
+            a = AST.TrueExpr;
+            lnum = 4;
+          }, AST.BlockStmt [], AST.BlockStmt [], 4), 3), 2)
+      ];
+      start_lnum = 1;
+      end_lnum = 7;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_while_stmt _test_ctxt =
-  let code = "sub main() \n while (true) \n end while \n end sub" in
+  let code = "@VB\n @@\n sub main() \n while (true) \n end while \n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `WhileStmt(`TrueExpr, `BlockStmt [])
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.WhileStmt({
+            a = AST.TrueExpr;
+            lnum = 2;
+          }, AST.BlockStmt [], 2)
+      ];
+      start_lnum = 1;
+      end_lnum = 4;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_while_no_paren _test_ctxt =
-  let code = "sub main() \n while true \n end while \n end sub" in
+  let code = "@VB\n @@\n sub main() \n while true \n end while \n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `WhileStmt(`TrueExpr, `BlockStmt [])
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.WhileStmt({
+            a = AST.TrueExpr;
+            lnum = 2;
+          }, AST.BlockStmt [], 2)
+      ];
+      start_lnum = 1;
+      end_lnum = 4;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_and _test_ctxt =
-  let code = "sub main() \n if true and true then \n end if \n end sub" in
+  let code = "@VB\n @@\n sub main() \n if true and true then \n end if \n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `IfStmt(`BinOpExpr(`TrueExpr, `And, `TrueExpr), `BlockStmt [])
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.IfStmt({
+            a = AST.BinOpExpr({
+                a = AST.TrueExpr;
+                lnum = 2;
+              }, AST.And, {
+                  a = AST.TrueExpr;
+                  lnum = 2;
+                });
+            lnum = 2;
+          }, AST.BlockStmt [], 2)
+      ];
+      start_lnum = 1;
+      end_lnum = 4;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_or _test_ctxt =
-  let code = "sub main() \n if true or true then \n end if \n end sub" in
+  let code = "@VB\n @@\n sub main() \n if true or true then \n end if \n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `IfStmt(`BinOpExpr(`TrueExpr, `Or, `TrueExpr), `BlockStmt [])
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.IfStmt({
+            a = AST.BinOpExpr({
+                a = AST.TrueExpr;
+                lnum = 2;
+              }, AST.Or, {
+                  a = AST.TrueExpr;
+                  lnum = 2;
+                });
+            lnum = 2;
+          }, AST.BlockStmt [], 2)
+      ];
+      start_lnum = 1;
+      end_lnum = 4;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_not _test_ctxt =
-  let code = "sub main() \n if not false then \n end if \n end sub" in
+  let code = "@VB\n @@\n sub main() \n if not false then \n end if \n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `IfStmt(`UnOpExpr(`Not, `FalseExpr), `BlockStmt [])
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.IfStmt({
+            a = AST.UnOpExpr(AST.Not, {
+                a = AST.FalseExpr;
+                lnum = 2;
+              });
+            lnum = 2;
+          }, AST.BlockStmt [], 2)
+      ];
+      start_lnum = 1;
+      end_lnum = 4;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_comment _test_ctxt =
-  let code = "'asdfasdf \n sub main() \n end sub" in
+  let code = "@VB\n @@\n 'asdfasdf \n sub main() \n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main", [])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [];
+      start_lnum = 2;
+      end_lnum = 3;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_fxn_call _test_ctxt =
-  let code = "sub main() \n foobar(20, five, north) \n end sub" in
+  let code = "@VB\n @@\n sub main() \n foobar(20, five, north) \n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `ExprStmt(`FxnAppExpr(`IdExpr("foobar"), [`IntExpr(20); `IdExpr("five"); `NorthExpr])
-      )])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.ExprStmt({
+            a = AST.FxnAppExpr({
+                a = AST.IdExpr("foobar");
+                lnum = 2;
+              }, [
+                  {
+                    a = AST.IntExpr(20);
+                    lnum = 2;
+                  };
+                  {
+                    a = AST.IdExpr("five");
+                    lnum = 2;
+                  };
+                  {
+                    a = AST.NorthExpr;
+                    lnum = 2;
+                  }
+                ]);
+            lnum = 2;
+          })
+      ];
+      start_lnum = 1;
+      end_lnum = 3;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_obj_fxn_call _test_ctxt =
-  let code = "sub main() \n foo.bar(AHEAD) \n end sub" in
+  let code = "@VB\n @@\n sub main() \n foo.bar(AHEAD) \n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `ExprStmt(`BinOpExpr(`IdExpr("foo"), `Dot, `FxnAppExpr(`IdExpr("bar"), [`AheadExpr])))
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.ExprStmt({
+            a = AST.BinOpExpr({
+                a = AST.IdExpr("foo");
+                lnum = 2;
+              }, AST.Dot, {
+                  a = AST.FxnAppExpr({
+                      a = AST.IdExpr("bar");
+                      lnum = 2;
+                    }, [{
+                      a = AST.AheadExpr;
+                      lnum = 2;
+                    }]);
+                  lnum = 2
+                });
+            lnum = 2;
+          })
+      ];
+      start_lnum = 1;
+      end_lnum = 3;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_not_precedence _test_ctxt =
-  let code = "sub main()\n if true and not false then\n end if\n end sub" in
+  let code = "@VB\n @@\n sub main()\n if true and not false then\n end if\n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `IfStmt(`BinOpExpr(`TrueExpr, `And, `UnOpExpr(`Not, `FalseExpr)), `BlockStmt [])
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.IfStmt({
+            a = AST.BinOpExpr({
+                a = AST.TrueExpr;
+                lnum = 2;
+              }, AST.And, {
+                  a = AST.UnOpExpr(AST.Not, {
+                      a = AST.FalseExpr;
+                      lnum = 2;
+                    });
+                  lnum = 2;
+                });
+            lnum = 2;
+          }, AST.BlockStmt [], 2)
+      ];
+      start_lnum = 1;
+      end_lnum = 4;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_paren_precedence _test_ctxt =
-  let code = "sub main()\n if not (true and false) then\n end if\n end sub" in
+  let code = "@VB\n @@\n sub main()\n if not (true and false) then\n end if\n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `IfStmt(`UnOpExpr(`Not, `BinOpExpr(`TrueExpr, `And, `FalseExpr)), `BlockStmt [])
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.IfStmt({
+            a = AST.UnOpExpr(AST.Not, {
+                a = AST.BinOpExpr({
+                    a = AST.TrueExpr;
+                    lnum = 2;
+                  }, AST.And, {
+                      a = AST.FalseExpr;
+                      lnum = 2;
+                    });
+                lnum = 2;
+              });
+            lnum = 2
+          }, AST.BlockStmt [], 2)
+      ];
+      start_lnum = 1;
+      end_lnum = 4;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_and_or_precedence _test_ctxt =
-  let code = "sub main()\n if true or false and true then\n end if\n end sub" in
+  let code = "@VB\n @@\n sub main()\n if true or false and true then\n end if\n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main", [
-      `IfStmt(`BinOpExpr(`TrueExpr, `Or, `BinOpExpr(`FalseExpr, `And, `TrueExpr)), `BlockStmt [])
-    ])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.IfStmt({
+            a = AST.BinOpExpr({
+                a = AST.TrueExpr;
+                lnum = 2;
+              }, AST.Or, {
+                  a = AST.BinOpExpr({
+                      a = AST.FalseExpr;
+                      lnum = 2;
+                    }, AST.And, {
+                        a = AST.TrueExpr;
+                        lnum = 2;
+                      });
+                  lnum = 2;
+                });
+            lnum = 2;
+          }, AST.BlockStmt [], 2)
+      ];
+      start_lnum = 1;
+      end_lnum = 4;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_arbitrary_newlines _test_ctxt =
-  let code = "\n\n\n\n sub main()\n\n\n\n end sub\n\n\n" in
+  let code = "@VB\n\n @@\n\n\n sub main()\n\n\n\n end sub\n   \n   \n" in
   let ast = parse_string code in
-  assert_equal ast [("main", [])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [];
+      start_lnum = 3;
+      end_lnum = 7;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_fxn_list _test_ctxt =
-  let code = "sub main()\n end sub\n sub foo()\n end sub\n" in
+  let code = "@VB\n sub foo()\n end sub\n @@\n sub main()\n end sub\n\n\n" in
   let ast = parse_string code in
-  assert_equal ast [("main", []); ("foo", [])]
+  let expected = {
+    extension_fxns = [
+      {
+        id = "foo";
+        stmts = [];
+        start_lnum = 1;
+        end_lnum = 2;
+      }
+    ];
+    main_fxn = {
+      id = "main";
+      stmts = [];
+      start_lnum = 1;
+      end_lnum = 2;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_stmt_list _test_ctxt =
-  let code = "sub main()\n if true then\n end if\n while (true)\n end while\n end sub" in
+  let code = "@VB\n @@\n sub main()\n if true then\n end if\n while (true)\n end while\n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main", [`IfStmt(`TrueExpr, `BlockStmt []); `WhileStmt(`TrueExpr, `BlockStmt [])])]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.IfStmt({
+            a = AST.TrueExpr;
+            lnum = 2;
+          }, AST.BlockStmt [], 2);
+        AST.WhileStmt({
+            a = AST.TrueExpr;
+            lnum = 4;
+          }, AST.BlockStmt [], 4);
+      ];
+      start_lnum = 1;
+      end_lnum = 6;
+    }
+  } in
+  assert_equal ast expected
 
 let parse_negative_int _test_ctxt =
-  let code = "sub main()\n foo(-1)\n end sub" in
+  let code = "@VB\n @@\n sub main()\n foo(-1)\n end sub" in
   let ast = parse_string code in
-  assert_equal ast [("main"), [
-      `ExprStmt(`FxnAppExpr(`IdExpr("foo"), [`IntExpr(-1)]))
-    ]]
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.ExprStmt({
+            a = AST.FxnAppExpr({
+                a = AST.IdExpr("foo");
+                lnum = 2;
+              }, [{
+                a = AST.IntExpr(-1);
+                lnum = 2;
+              }]);
+            lnum = 2;
+          })
+      ];
+      start_lnum = 1;
+      end_lnum = 3;
+    }
+  } in
+  assert_equal ast expected
 
 let suite =
   "Visual Basic Parsing">::: [

@@ -1,0 +1,10 @@
+@VB
+
+sub foo()
+hop(3)
+end sub
+@@
+sub main()
+dim j as Jeroo = new Jeroo()
+j.foo()
+end sub
