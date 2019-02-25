@@ -1,35 +1,46 @@
-image: ubuntu:18.04
-before_script:
-  - apt-get update -qq && apt-get -y -qq upgrade
-  - apt-get install -y make gcc m4
-  - apt install -y -qq software-properties-common
-  - add-apt-repository ppa:avsm/ppa
-  - apt-get -y -qq update
-  - apt-get install opam -y -qq
-  - opam --version
-  - opam init --bare
-  - eval `opam env`
-  - opam switch create 4.07.1
-  - eval `opam env`
-  - ocamlc --version
-  - opam install -y dune menhir js_of_ocaml-compiler js_of_ocaml-ppx js_of_ocaml ounit
-  - curl -sL https://deb.nodesource.com/setup_10.x | bash -
-  - apt-get install nodejs -y -qq
-  - node -v
-  - npm -v
-  - npm install -g yarn
-  - curl https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb --output google-chrome.deb
-  - dpkg -i google-chrome.deb || true
-  - apt-get install -f -y -qq
+image: docker:latest
 
-build:
+stages:
+  - build-ocaml
+  - build-angular
+  - test-angular
+
+build-ocaml:
+  image: ocaml/opam2:alpine-3.9-ocaml-4.07
+  stage: build-ocaml
+  artifacts:
+    paths:
+      - src/compiler/_build/
   script:
+    - sudo apk update
+    - sudo apk add m4
+    - opam update
+    - ocamlc --version
+    - opam --version
+    - opam install -y dune menhir js_of_ocaml-compiler js_of_ocaml-ppx js_of_ocaml ounit
     - cd src/compiler
     - dune runtest
     - dune build ./JerooCompiler.bc.js --profile release
-    - cd ../..
+
+build-angular:
+  image: node:8.15-alpine
+  stage: build-angular
+  artifacts:
+    paths:
+      - dist/
+  script:
+    - yarn --version
     - yarn install
     - yarn lint
+    - yarn build --prod
+
+test-angular:
+  image: timbru31/node-chrome:slim
+  stage: test-angular
+  script:
+    - apt-get update && apt-get install -y procps
+    - google-chrome-stable --version
+    - yarn --version
+    - yarn install
     - yarn test --no-watch --no-progress --browsers=ChromeHeadlessCI
     - yarn e2e --protractor-config=e2e/protractor-ci.conf.js
-    - yarn build --prod
