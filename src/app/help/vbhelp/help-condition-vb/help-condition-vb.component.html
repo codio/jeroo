@@ -1,89 +1,98 @@
 <h1>Conditions (VB.NET Style)</h1>
 
-A condition is just a Boolean expression -- an expression that is either <b>true</b> or <b>false</b>.  
+A condition is just a Boolean expression -- an expression that is either <b>true</b> or <b>false</b>.
 <ul>
-	<li>Conditions are used to define selection and repetition control structures
-	<li>In Jeroo, a Boolean expression is any valid combination of Boolean operators
-		and invocations of Boolean methods.
-	<li>There are two Boolean constants: <b>TRUE</b> and <b>FALSE</b>
-	<li>There are three Boolean operators:
-		<font size="3" color="#000000" face="courier"><b>NOT</b>,
-			<b> AND</b>, and <b>OR</b>.</font><br>
-	<li>In the absence of parentheses to indicate otherwise,
-		every NOT operator will be evaluated first,
-		every AND operator will be evaluated second, and
-		every OR operator will be evaluated third.
+    <li>Conditions are used to define selection and repetition control structures
+    <li>In Jeroo, a Boolean expression is any valid combination of Boolean operators
+        and invocations of Boolean methods.
+    <li>There are two Boolean constants: <b>TRUE</b> and <b>FALSE</b>
+    <li>There are three Boolean operators:
+        <font size="3" color="#000000" face="courier"><b>NOT</b>,
+            <b> AND</b>, and <b>OR</b>.</font><br>
+    <li>In the absence of parentheses to indicate otherwise,
+        every NOT operator will be evaluated first,
+        every AND operator will be evaluated second, and
+        every OR operator will be evaluated third.
 </ul>
 <br>
 <br>
 
 
-<table  border="1" cellpadding="5">
-	<tr>
-		<td>
-			<table border="0">
-				<tr><td colspan="2">
-					<font size="3" color="#000000" face="courier">
-					Operator:  <b>NOT</b>
-					</font>
-				</td></tr>
-				<tr>
-					<td width="5%">  </td>
-					<td>Suppose that <b>P</b> represents a Boolean expression.<br>
-						The expression <b>NOT P</b> has the opposite truth value.
-						<br>
-						<br>
-<pre>Code example:
+<table border="1" cellpadding="5">
+    <tr>
+        <td>
+            <table border="0">
+                <tr>
+                    <td colspan="2">
+                        <font size="3" color="#000000" face="courier">
+                            Operator: <b>NOT</b>
+                        </font>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="5%"> </td>
+                    <td>Suppose that <b>P</b> represents a Boolean expression.<br>
+                        The expression <b>NOT P</b> has the opposite truth value.
+                        <br>
+                        <br>
+                        <pre>Code example:
      <b>NOT Kim.isWater(LEFT) </b></pre>
-					</td></tr>
-			</table>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<table border="0">
-				<tr><td colspan="2">
-					<font size="3" color="#000000" face="courier">
-					Operator: <b>AND</b>
-					</font>
-				</td></tr>
-				<tr>
-					<td width="5%">  </td>
-					<td>Suppose that <b>P</b> and <b>Q</b>
-						 represent Boolean expressions.<br>
-					      The expression<b> P AND Q</b> is only true when
-						both <b>P</b> and <b>Q</b> are true.
-						<br>
-						<br>
-<pre>Code example:
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table border="0">
+                <tr>
+                    <td colspan="2">
+                        <font size="3" color="#000000" face="courier">
+                            Operator: <b>AND</b>
+                        </font>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="5%"> </td>
+                    <td>Suppose that <b>P</b> and <b>Q</b>
+                        represent Boolean expressions.<br>
+                        The expression<b> P AND Q</b> is only true when
+                        both <b>P</b> and <b>Q</b> are true.
+                        <br>
+                        <br>
+                        <pre>Code example:
      <b>Kim.hasFlower() AND Kim.isNet(AHEAD)</b></pre>
-					</td></tr>
-			</table>
-		</td>
-	</tr>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
 
-	<tr>
-		<td>
-			<table border="0">
-				<tr><td colspan="2">
-					<font size="3" color="#000000" face="courier">
-					Operator: <b>OR</b>
-					</font>
-				</td></tr>
-				<tr>
-					<td width="5%">  </td>
-					<td>Suppose that <b>P</b> and <b>Q</b>
-						 represent Boolean expressions.<br>
-					      The expression<b> P OR Q</b> is only false when
-						both <b>P</b> and <b>Q</b> are false.
-						<br>
-						<br>
-<pre>Code example:
+    <tr>
+        <td>
+            <table border="0">
+                <tr>
+                    <td colspan="2">
+                        <font size="3" color="#000000" face="courier">
+                            Operator: <b>OR</b>
+                        </font>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="5%"> </td>
+                    <td>Suppose that <b>P</b> and <b>Q</b>
+                        represent Boolean expressions.<br>
+                        The expression<b> P OR Q</b> is only false when
+                        both <b>P</b> and <b>Q</b> are false.
+                        <br>
+                        <br>
+                        <pre>Code example:
      <b> Pat.isJeroo(LEFT) OR Pat.isJeroo(RIGHT)</b></pre>
-					</td></tr>
+                    </td>
+                </tr>
 
-			</table>
-		</td>
-	</tr>
+            </table>
+        </td>
+    </tr>
 
 </table>

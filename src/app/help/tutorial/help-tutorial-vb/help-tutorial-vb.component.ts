@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-help-tutorial-vb',
-  templateUrl: './help-tutorial-vb.component.html',
-  styleUrls: ['./help-tutorial-vb.component.scss']
+    selector: 'app-help-tutorial-vb',
+    templateUrl: './help-tutorial-vb.component.html'
 })
 export class HelpTutorialVbComponent implements OnInit {
 
-  constructor() { }
+    constructor() { }
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+    }
 
 }

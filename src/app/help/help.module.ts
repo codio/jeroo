@@ -27,6 +27,8 @@ import { HelpRelativeComponent } from './general/help-relative/help-relative.com
 import { HelpTutorialJavaComponent } from './tutorial/help-tutorial-java/help-tutorial-java.component';
 import { HelpTutorialPythonComponent } from './tutorial/help-tutorial-python/help-tutorial-python.component';
 import { HelpTutorialVbComponent } from './tutorial/help-tutorial-vb/help-tutorial-vb.component';
+import { HelpRoutingModule } from './help-routing.module';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
     declarations: [
@@ -58,6 +60,8 @@ import { HelpTutorialVbComponent } from './tutorial/help-tutorial-vb/help-tutori
         HelpTutorialVbComponent
     ],
     imports: [
+        HelpRoutingModule,
+        CommonModule,
         MaterialModule
     ],
     exports: [

@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-help-relative',
-  templateUrl: './help-relative.component.html',
-  styleUrls: ['./help-relative.component.scss']
+    selector: 'app-help-relative',
+    templateUrl: './help-relative.component.html'
 })
 export class HelpRelativeComponent implements OnInit {
 
-  constructor() { }
+    constructor() { }
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+    }
 
 }

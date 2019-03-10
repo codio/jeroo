@@ -17,7 +17,10 @@ import {
     faStepForward,
     faPlay,
     faPause,
-    faStop
+    faStop,
+    faBars,
+    faEraser,
+    faPrint
 } from '@fortawesome/free-solid-svg-icons';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
@@ -26,7 +29,6 @@ import { JerooMatrixComponent } from './jeroo-matrix/jeroo-matrix.component';
 import { MatrixDialogComponent } from './matrix-dialog/matrix-dialog.component';
 import { MaterialModule } from './material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HelpModule } from './help/help.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 
 library.add(
@@ -43,7 +45,10 @@ library.add(
     faStepForward,
     faPlay,
     faPause,
-    faStop
+    faStop,
+    faBars,
+    faEraser,
+    faPrint
 );
 
 @NgModule({
@@ -58,10 +63,8 @@ library.add(
         AppRoutingModule,
         MaterialModule,
         BrowserAnimationsModule,
-        HelpModule,
         FormsModule,
         ReactiveFormsModule,
-        HelpModule,
         FontAwesomeModule
     ],
     providers: [],

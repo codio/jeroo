@@ -89,7 +89,9 @@
               "src/jeroo-theme.scss",
               "src/styles.scss"
             ],
-            "scripts": [],
+            "scripts": [
+              "src/compiler/_build/default/JerooCompiler.bc.js"
+            ],
             "assets": [
               "src/favicon.ico",
               "src/assets"

@@ -4,54 +4,56 @@ A Jeroo program must contain a main section, and usually contains several user-d
 <br>
 <br>
 <h3>Main Section</h3>
-Every Jeroo program must include a main section.  Code for the main section is written in the <b><i>main</i></b> tab of the editor, and must have the following form.  
+Every Jeroo program must include a main section. Code for the main section is written in the <b><i>main</i></b> tab of the editor, and must have the following form.
 <br>
 <br>
-<table  border="1" cellpadding="5">
-	<tr>
-		<td><font size="3" color="#000000" face="courier">
-<br>
-<pre>#-- declare and instantiate all Jeroos
+<table border="1" cellpadding="5">
+    <tr>
+        <td>
+            <font size="3" color="#000000" face="courier">
+                <br>
+                <pre>#-- declare and instantiate all Jeroos
 
 #-- use the Jeroos to solve the problem
 </pre>
-</font>
+            </font>
 </table>
 <ul>
-	<li> All Jeroos must be declared and instantiated at the 
-		 beginning of the main section.
-	<li> The rest of the main section is used to direct the actions of the 
-             Jeroos by sending them messages to execute predefined or
-             user-defined methods.
+    <li> All Jeroos must be declared and instantiated at the
+        beginning of the main section.
+    <li> The rest of the main section is used to direct the actions of the
+        Jeroos by sending them messages to execute predefined or
+        user-defined methods.
 </ul>
 <br>
 <br>
 <h3>User-Defined Jeroo Methods</h3>
-A Jeroo program can have any number of user-defined Jeroo methods.  
+A Jeroo program can have any number of user-defined Jeroo methods.
 <br>
 <br>
-<table  border="1" cellpadding="5">
-	<tr>
-		<td><font size="3" color="#000000" face="courier">
-<b>def</b> <i>identifier</i><b>(self):</b><br>
-<br>
-<pre>    #-- body of the method (indented)
+<table border="1" cellpadding="5">
+    <tr>
+        <td>
+            <font size="3" color="#000000" face="courier">
+                <b>def</b> <i>identifier</i><b>(self):</b><br>
+                <br>
+                <pre>    #-- body of the method (indented)
 </pre>
-			</font>
+            </font>
 </table>
-<ul>	
-      <li> A user-defined method extends the capabilites of every Jeroo.
-	<li> The source code in a user-defined Jeroo method must invoke a
-		 method directly, instead of sending a message to a specific Jeroo.
-             For example, <b>hop()</b> instead of <b>jessica.hop()</b>.
-	<li> A user-defined Jeroo method can invoke other user-defined Jeroo
-		 methods.  It can even invoke itself; this is called <i>recursion</i>.
-	<li> User-defined Jeroo methods can appear in any order in the source code.
-	<li> <b>SYNTAX NOTE:</b>  <br>
-             <ul>
-                  <li> The first line of the body must be indented further than <b>def</b>.  
-                  <li> The  body includes all lines that are indented 
-                         at least as far as the first line of the body.  
-                  <li> The "next statement" should be indented exactly as far as <b>def</b>.
-            </ul>
+<ul>
+    <li> A user-defined method extends the capabilites of every Jeroo.
+    <li> The source code in a user-defined Jeroo method must invoke a
+        method directly, instead of sending a message to a specific Jeroo.
+        For example, <b>hop()</b> instead of <b>jessica.hop()</b>.
+    <li> A user-defined Jeroo method can invoke other user-defined Jeroo
+        methods. It can even invoke itself; this is called <i>recursion</i>.
+    <li> User-defined Jeroo methods can appear in any order in the source code.
+    <li> <b>SYNTAX NOTE:</b> <br>
+        <ul>
+            <li> The first line of the body must be indented further than <b>def</b>.
+            <li> The body includes all lines that are indented
+                at least as far as the first line of the body.
+            <li> The "next statement" should be indented exactly as far as <b>def</b>.
+        </ul>
 </ul>

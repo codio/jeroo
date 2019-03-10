@@ -1,90 +1,99 @@
 <h1>Conditions (Java/C++/C# Style)</h1>
 
-A condition is just a Boolean expression -- an expression that is either <b>true</b> or <b>false</b>.  
+A condition is just a Boolean expression -- an expression that is either <b>true</b> or <b>false</b>.
 <ul>
-	<li>Conditions are used to define selection and repetition control structures   
-	<li>In Jeroo, a Boolean expression is any valid combination of Boolean constants, operators 
-		and invocations of Boolean methods.
-	<li>There are two Boolean constants: <b>true</b> and <b>false</b>
-	<li>There are three Boolean operators: 
-		<font size="3" color="#000000" face="courier"><b>!, &&, ||</b></font><br> 
-		These operators represent "not", "and", and "or", respectively.  
-	<li>In the absence of parentheses to indicate otherwise, 
-		every "not" operator will be evaluated first, 
-		every "and" operator will be evaluated second, and 
-		every "or" operator will be evaluated third.
+    <li>Conditions are used to define selection and repetition control structures
+    <li>In Jeroo, a Boolean expression is any valid combination of Boolean constants, operators
+        and invocations of Boolean methods.
+    <li>There are two Boolean constants: <b>true</b> and <b>false</b>
+    <li>There are three Boolean operators:
+        <font size="3" color="#000000" face="courier"><b>!, &&, ||</b></font><br>
+        These operators represent "not", "and", and "or", respectively.
+    <li>In the absence of parentheses to indicate otherwise,
+        every "not" operator will be evaluated first,
+        every "and" operator will be evaluated second, and
+        every "or" operator will be evaluated third.
 </ul>
 <br>
 <br>
 
 
-<table  border="1" cellpadding="5">
-	<tr>
-		<td>
-			<table border="0">
-				<tr><td colspan="2">
-					<font size="3" color="#000000" face="courier">
-					Operator:  <b>!</b><br>
-					Meaning: not
-					</font>
-				</td></tr>
-				<tr>
-					<td width="5%">  </td>
-					<td>Suppose that <b>P</b> represents a Boolean expression.<br> 
-						The expression <b>!P</b> has the opposite truth value.
-						<br>
-						<br>
-						Code example: <b>! Kim.isWater(LEFT) </b>
-					</td></tr>
-			</table>
-		</td>
-	</tr>
-	
-	<tr>
-		<td>
-			<table border="0">
-				<tr><td colspan="2">
-					<font size="3" color="#000000" face="courier">
-					Operator: <b>&&</b><br>
-					Meaning: and
-					</font>
-				</td></tr>
-				<tr>
-					<td width="5%">  </td>
-					<td>Suppose that <b>P</b> and <b>Q</b> 
-						 represent Boolean expressions.<br>
-					      The expression<b> P && Q</b> is only true when 
-						both <b>P</b> and <b>Q</b> are true.
-						<br>
-						<br>
-						Code example:  <b> Kim.hasFlower() && Kim.isNet(AHEAD)</b>
-					</td></tr>
-			</table>
-		</td>
-	</tr>
+<table border="1" cellpadding="5">
+    <tr>
+        <td>
+            <table border="0">
+                <tr>
+                    <td colspan="2">
+                        <font size="3" color="#000000" face="courier">
+                            Operator: <b>!</b><br>
+                            Meaning: not
+                        </font>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="5%"> </td>
+                    <td>Suppose that <b>P</b> represents a Boolean expression.<br>
+                        The expression <b>!P</b> has the opposite truth value.
+                        <br>
+                        <br>
+                        Code example: <b>! Kim.isWater(LEFT) </b>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
 
-	<tr>
-		<td>
-			<table border="0">
-				<tr><td colspan="2">
-					<font size="3" color="#000000" face="courier">
-					Operator: <b>||</b><br>
-					Meaning: or
-					</font>
-				</td></tr>
-				<tr>
-					<td width="5%">  </td>
-					<td>Suppose that <b>P</b> and <b>Q</b> 
-						 represent Boolean expressions.<br>
-					      The expression<b> P || Q</b> is only false when 
-						both <b>P</b> and <b>Q</b> are false.
-						<br>
-						<br>
-						Code example:  <b> Pat.isJeroo(LEFT) || Pat.isJeroo(RIGHT)</b>
-					</td></tr>
+    <tr>
+        <td>
+            <table border="0">
+                <tr>
+                    <td colspan="2">
+                        <font size="3" color="#000000" face="courier">
+                            Operator: <b>&&</b><br>
+                            Meaning: and
+                        </font>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="5%"> </td>
+                    <td>Suppose that <b>P</b> and <b>Q</b>
+                        represent Boolean expressions.<br>
+                        The expression<b> P && Q</b> is only true when
+                        both <b>P</b> and <b>Q</b> are true.
+                        <br>
+                        <br>
+                        Code example: <b> Kim.hasFlower() && Kim.isNet(AHEAD)</b>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
 
-			</table>
-		</td>
-	</tr>
+    <tr>
+        <td>
+            <table border="0">
+                <tr>
+                    <td colspan="2">
+                        <font size="3" color="#000000" face="courier">
+                            Operator: <b>||</b><br>
+                            Meaning: or
+                        </font>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="5%"> </td>
+                    <td>Suppose that <b>P</b> and <b>Q</b>
+                        represent Boolean expressions.<br>
+                        The expression<b> P || Q</b> is only false when
+                        both <b>P</b> and <b>Q</b> are false.
+                        <br>
+                        <br>
+                        Code example: <b> Pat.isJeroo(LEFT) || Pat.isJeroo(RIGHT)</b>
+                    </td>
+                </tr>
+
+            </table>
+        </td>
+    </tr>
 
 </table>
