@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 @Component({
     selector: 'app-help-action',
-    templateUrl: './help-action.component.html',
-    styleUrls: ['./help-action.component.scss']
+    templateUrl: './help-action.component.html'
 })
 export class HelpActionComponent implements OnInit {
 
@@ -11,4 +10,3 @@ export class HelpActionComponent implements OnInit {
     ngOnInit() {
     }
 }
-

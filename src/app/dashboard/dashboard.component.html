@@ -14,133 +14,198 @@
         <main>
             <!--Toolbar Area-->
             <mat-toolbar color="primary">
-                <div class="d-lg-none">
-                    <button mat-icon-button (click)="sidenav.toggle()">
-                        <mat-icon>menu</mat-icon>
+                <mat-toolbar-row>
+                    <div class="d-lg-none">
+                        <button mat-icon-button (click)="sidenav.toggle()">
+                            <fa-icon icon="bars"></fa-icon>
+                        </button>
+                    </div>
+                    <div class="menu-button">
+                        Welcome to Jeroo
+                    </div>
+                    <div class="d-none d-lg-block">
+                        <button class="menu-button" mat-button [matMenuTriggerFor]="file">Source File</button>
+                        <button class="menu-button" mat-button [matMenuTriggerFor]="edit">Source Edit</button>
+                        <button class="menu-button" mat-button [matMenuTriggerFor]="run">Run</button>
+                        <button class="menu-button" mat-button [matMenuTriggerFor]="speed">Run Speed</button>
+                        <button class="menu-button" mat-button [matMenuTriggerFor]="islandfile">Island File</button>
+                        <button class="menu-button" mat-button [matMenuTriggerFor]="islandedit">Island Edit</button>
+                        <button class="menu-button" mat-button [matMenuTriggerFor]="help">Help</button>
+                    </div>
+                </mat-toolbar-row>
+                <mat-toolbar-row>
+                    <button mat-icon-button matTooltip="New File">
+                        <fa-icon icon="file"></fa-icon>
                     </button>
-                </div>
-                <div>
-                    Welcome to Jeroo
-                </div>
-                <div class="d-none d-lg-block">
-                    <button class="menu-button" mat-raised-button [matMenuTriggerFor]="file">Source File</button>
-                    <mat-menu #file="matMenu">
-                        <button mat-menu-item>
-                            <fa-icon icon="file"></fa-icon><span class="col-1">New</span>
-                        </button>
-                        <button mat-menu-item>
-                            <fa-icon icon="folder"></fa-icon><span class="col-1">Open</span>
-                        </button>
-                        <mat-divider></mat-divider>
-                        <button mat-menu-item>
-                            <fa-icon icon="save"></fa-icon><span class="col-1">Save</span>
-                        </button>
-                        <button mat-menu-item>
-                            <fa-icon icon="save"></fa-icon><span class="col-1">Save As</span>
-                        </button>
-                        <mat-divider></mat-divider>
-                        <button mat-menu-item>
-                            <fa-icon icon="folder-open"></fa-icon><span class="col-1">Print</span>
-                        </button>
-                    </mat-menu>
-                    <button class="menu-button" mat-raised-button [matMenuTriggerFor]="edit">Source Edit</button>
-                    <mat-menu #edit="matMenu">
-                        <button mat-menu-item>
-                            <fa-icon icon="cut"></fa-icon><span class="col-1">Cut</span>
-                        </button>
-                        <button mat-menu-item>
-                            <fa-icon icon="copy"></fa-icon><span class="col-1">Copy</span>
-                        </button>
-                        <button mat-menu-item>
-                            <fa-icon icon="paste"></fa-icon><span class="col-1">Paste</span>
-                        </button>
-                        <mat-divider></mat-divider>
-                        <button mat-menu-item>
-                            <fa-icon icon="undo"></fa-icon><span class="col-1">Undo Last Edit</span>
-                        </button>
-                        <button mat-menu-item>
-                            <fa-icon icon="redo"></fa-icon><span class="col-1">Redo Last Undo</span>
-                        </button>
-                        <mat-divider></mat-divider>
-                        <button mat-menu-item>Comment Lines</button>
-                        <button mat-menu-item>Uncomment Lines</button>
-                        <mat-divider></mat-divider>
-                        <button mat-menu-item>Indent Lines</button>
-                        <button mat-menu-item>UnIndent Lines</button>
-                        <mat-divider></mat-divider>
-                        <button mat-menu-item>Set Prefrences</button>
-                        <button mat-menu-item>Select Font</button>
-                    </mat-menu>
-                    <button class="menu-button" mat-raised-button [matMenuTriggerFor]="run">Run</button>
-                    <mat-menu #run="matMenu">
-                        <button mat-menu-item>
-                            <fa-icon icon="step-backward"></fa-icon><span class="col-1">Reset</span>
-                        </button>
-                        <button mat-menu-item>
-                            <fa-icon icon="play"></fa-icon><span class="col-1">Run Stepwise</span>
-                        </button>
-                        <button mat-menu-item>
-                            <fa-icon icon="step-forward"></fa-icon><span class="col-1">Run Continuously</span>
-                        </button>
-                        <button mat-menu-item>
-                            <fa-icon icon="pause"></fa-icon><span class="col-1">Pause</span>
-                        </button>
-                        <button mat-menu-item>
-                            <fa-icon icon="stop"></fa-icon><span class="col-1">Stop Run</span>
-                        </button>
-                    </mat-menu>
-                    <button class="menu-button" mat-raised-button [matMenuTriggerFor]="speed">Run Speed</button>
-                    <mat-menu #speed="matMenu">
-                        <mat-radio-group>
-                            <div mat-menu-item>
-                                <mat-radio-button value="1">1 - slow</mat-radio-button>
-                            </div>
-                            <div mat-menu-item>
-                                <mat-radio-button value="2">2</mat-radio-button>
-                            </div>
-                            <div mat-menu-item>
-                                <mat-radio-button value="3">3 - medium</mat-radio-button>
-                            </div>
-                            <div mat-menu-item>
-                                <mat-radio-button value="4">4</mat-radio-button>
-                            </div>
-                            <div mat-menu-item>
-                                <mat-radio-button value="5">5 - fast</mat-radio-button>
-                            </div>
-                            <div mat-menu-item>
-                                <mat-radio-button value="6">6 - max</mat-radio-button>
-                            </div>
-                        </mat-radio-group>
-                    </mat-menu>
-                    <button class="menu-button" mat-raised-button [matMenuTriggerFor]="islandfile">Island File</button>
-                    <mat-menu #islandfile="matMenu">
-                        <button mat-menu-item>New</button>
-                        <button mat-menu-item>Open</button>
-                        <mat-divider></mat-divider>
-                        <button mat-menu-item>Save</button>
-                        <button mat-menu-item>Save As</button>
-                        <mat-divider></mat-divider>
-                        <button mat-menu-item>Print</button>
-                    </mat-menu>
-                    <button class="menu-button" mat-raised-button [matMenuTriggerFor]="islandedit">Island Edit</button>
-                    <mat-menu #islandedit="matMenu">
-                        <button mat-menu-item>Plant Flowers</button>
-                        <button mat-menu-item>Set Nets</button>
-                        <button mat-menu-item>Add Water</button>
-                        <mat-divider></mat-divider>
-                        <button mat-menu-item>Clear Island</button>
-                    </mat-menu>
-                    <button class="menu-button" mat-raised-button [matMenuTriggerFor]="help">Help</button>
-                    <mat-menu #help="matMenu">
-                        <a mat-menu-item href={{getHelpUrl()}} target="_blank">Help</a>
-                        <a mat-menu-item href={{getTutorialUrl()}} target="_blank">Tutorial</a>
-                    </mat-menu>
-                </div>
+                    <button mat-icon-button matTooltip="Open File">
+                        <fa-icon icon="folder"></fa-icon>
+                    </button>
+                    <button mat-icon-button matTooltip="Save">
+                        <fa-icon icon="save"></fa-icon>
+                    </button>
+                    <mat-divider [vertical]="true"></mat-divider>
+                    <button mat-icon-button matTooltip="Cut">
+                        <fa-icon icon="cut"></fa-icon>
+                    </button>
+                    <button mat-icon-button matTooltip="Copy">
+                        <fa-icon icon="copy"></fa-icon>
+                    </button>
+                    <button mat-icon-button matTooltip="Paste">
+                        <fa-icon icon="paste"></fa-icon>
+                    </button>
+                    <button mat-icon-button matTooltip="Undo">
+                        <fa-icon icon="undo"></fa-icon>
+                    </button>
+                    <button mat-icon-button matTooltip="Redo">
+                        <fa-icon icon="redo"></fa-icon>
+                    </button>
+                    <mat-divider [vertical]="true"></mat-divider>
+                    <button mat-icon-button matTooltip="Step Backwards">
+                        <fa-icon icon="step-backward"></fa-icon>
+                    </button>
+                    <button mat-icon-button matTooltip="Play">
+                        <fa-icon icon="play"></fa-icon>
+                    </button>
+                    <button mat-icon-button matTooltip="Step Forwards">
+                        <fa-icon icon="step-forward"></fa-icon>
+                    </button>
+                    <mat-divider [vertical]="true"></mat-divider>
+                    <mat-slider class="menu-button" thumbLabel min="1" max="6" value="3" tickInterval="1"></mat-slider>
+                    <mat-divider [vertical]="true"></mat-divider>
+                    <button mat-icon-button matTooltip="Create new island layout" (click)="clearMap()">
+                        <fa-icon icon="eraser"></fa-icon>
+                    </button>
+                    <button mat-icon-button matTooltip="Open an island file" (click)="openMapFile()">
+                        <fa-icon icon="folder"></fa-icon>
+                    </button>
+                    <button mat-icon-button matTooltip="Save the island to a file" (click)="saveMapFile()">
+                        <fa-icon icon="save"></fa-icon>
+                    </button>
+                    <button mat-icon-button matTooltip="Print the island layout" (click)="printMap()">
+                        <fa-icon icon="print"></fa-icon>
+                    </button>
+                </mat-toolbar-row>
             </mat-toolbar>
+            <!-- Menu Properties -->
+            <mat-menu #file="matMenu">
+                <ng-template matMenuContent>
+                    <button mat-menu-item>
+                        <fa-icon icon="file"></fa-icon><span class="col-1">New</span>
+                    </button>
+                    <button mat-menu-item>
+                        <fa-icon icon="folder"></fa-icon><span class="col-1">Open</span>
+                    </button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item>
+                        <fa-icon icon="save"></fa-icon><span class="col-1">Save</span>
+                    </button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item>
+                        <fa-icon icon="folder-open"></fa-icon><span class="col-1">Print</span>
+                    </button>
+                </ng-template>
+            </mat-menu>
+            <mat-menu #edit="matMenu">
+                <ng-template matMenuContent>
+                    <button mat-menu-item>
+                        <fa-icon icon="cut"></fa-icon><span class="col-1">Cut</span>
+                    </button>
+                    <button mat-menu-item>
+                        <fa-icon icon="copy"></fa-icon><span class="col-1">Copy</span>
+                    </button>
+                    <button mat-menu-item>
+                        <fa-icon icon="paste"></fa-icon><span class="col-1">Paste</span>
+                    </button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item>
+                        <fa-icon icon="undo"></fa-icon><span class="col-1">Undo Last Edit</span>
+                    </button>
+                    <button mat-menu-item>
+                        <fa-icon icon="redo"></fa-icon><span class="col-1">Redo Last Undo</span>
+                    </button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item>Comment Lines</button>
+                    <button mat-menu-item>Uncomment Lines</button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item>Indent Lines</button>
+                    <button mat-menu-item>UnIndent Lines</button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item>Set Prefrences</button>
+                    <button mat-menu-item>Select Font</button>
+                </ng-template>
+            </mat-menu>
+            <mat-menu #run="matMenu">
+                <ng-template matMenuContent>
+                    <button mat-menu-item>
+                        <fa-icon icon="step-backward"></fa-icon><span class="col-1">Reset</span>
+                    </button>
+                    <button mat-menu-item>
+                        <fa-icon icon="play"></fa-icon><span class="col-1">Run Stepwise</span>
+                    </button>
+                    <button mat-menu-item>
+                        <fa-icon icon="step-forward"></fa-icon><span class="col-1">Run Continuously</span>
+                    </button>
+                    <button mat-menu-item>
+                        <fa-icon icon="pause"></fa-icon><span class="col-1">Pause</span>
+                    </button>
+                    <button mat-menu-item>
+                        <fa-icon icon="stop"></fa-icon><span class="col-1">Stop Run</span>
+                    </button>
+                </ng-template>
+            </mat-menu>
+            <mat-menu #speed="matMenu">
+                <ng-template matMenuContent>
+                    <mat-radio-group>
+                        <div mat-menu-item>
+                            <mat-radio-button value="1">1 - slow</mat-radio-button>
+                        </div>
+                        <div mat-menu-item>
+                            <mat-radio-button value="2">2</mat-radio-button>
+                        </div>
+                        <div mat-menu-item>
+                            <mat-radio-button value="3">3 - medium</mat-radio-button>
+                        </div>
+                        <div mat-menu-item>
+                            <mat-radio-button value="4">4</mat-radio-button>
+                        </div>
+                        <div mat-menu-item>
+                            <mat-radio-button value="5">5 - fast</mat-radio-button>
+                        </div>
+                        <div mat-menu-item>
+                            <mat-radio-button value="6">6 - max</mat-radio-button>
+                        </div>
+                    </mat-radio-group>
+                </ng-template>
+            </mat-menu>
+            <mat-menu #islandfile="matMenu">
+                <ng-template matMenuContent>
+                    <button mat-menu-item (click)="clearMap()">New</button>
+                    <button mat-menu-item (click)="openMapFile()">Open</button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item (click)="saveMapFile()">Save</button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item (click)="printMap()">Print</button>
+                </ng-template>
+            </mat-menu>
+            <mat-menu #islandedit="matMenu">
+                <ng-template matMenuContent>
+                    <button mat-menu-item>Plant Flowers</button>
+                    <button mat-menu-item>Set Nets</button>
+                    <button mat-menu-item>Add Water</button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item>Clear Island</button>
+                </ng-template>
+            </mat-menu>
+            <mat-menu #help="matMenu">
+                <ng-template matMenuContent>
+                    <a mat-menu-item routerLink="{{getHelpUrl()}}" target="_blank">Help</a>
+                    <a mat-menu-item routerLink="{{getTutorialUrl()}}" target="_blank">Tutorial</a>
+                </ng-template>
+            </mat-menu>
             <!--Text tabs Area-->
             <div class="row">
                 <div class="col-lg-7">
-                    <mat-tab-group>
+                    <mat-tab-group color="accent">
                         <mat-tab label="Main Method">
                             <textarea class="method-code" id="method-code"></textarea>
                         </mat-tab>
@@ -160,10 +225,14 @@
                     </div>
                 </div>
                 <!--Matrix Area-->
-                <div class=" col-lg-5">
-                    <app-jeroo-matrix></app-jeroo-matrix>
+                <div class="col-lg-5">
+                    <app-jeroo-matrix #jerooMatrix></app-jeroo-matrix>
                 </div>
             </div>
         </main>
     </mat-sidenav-content>
 </mat-sidenav-container>
+<!-- map file input -->
+<input #mapFileInput class="invisible" type="file" file-accept="jev" (change)="mapFileSelected($event.target.files[0])" />
+<!-- file saver input -->
+<a #mapSaver class="invisible"></a>

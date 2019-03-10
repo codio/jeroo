@@ -1,141 +1,249 @@
 import { Injectable } from '@angular/core';
+import { TileType } from './matrixConstants';
+import { fromEvent } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class MatrixService {
 
-  matrixHolder = [[]];
+    private rows = 24;
+    private cols = 24;
+    private tsize = 28;
+    private tiles: TileType[] = [];
+    private imageAtlas: HTMLImageElement;
 
-  currentValue = 'W';
+    constructor() {
+        this.resetMap();
+    }
 
-  widthSize = 26;
-  heightSize = 26;
-  maxXSize = this.widthSize - 1;
-  maxYSize = this.heightSize - 1;
-
-  waterType = 'W';
-  grassType = 'G';
-  flowerType = 'F';
-  netType = 'N';
-  clearType = 'C';
-
-  constructor() { }
-
-  // create a board with a given size, and set it to the default values
-  // (water on top/sides, grass everywhere else)
-  generateBoard(xSize: number, ySize: number) {
-    const arr = [];
-
-    for (let row = 0; row < ySize; row++) {
-      arr[row] = [];
-      for (let column = 0; column < xSize; column++) {
-        // if row == 0 or max use water OR if column == 0 or max
-        if (row === 0 || row === (ySize - 1) || column === 0 || column === (xSize - 1)) {
-          arr[row][column] = this.waterType;
-        } else {
-          arr[row][column] = this.grassType;
+    /**
+     * Resets the tile map to all grass
+     */
+    public resetMap() {
+        this.tiles = [];
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.cols; col++) {
+                this.tiles.push(TileType.Grass);
+            }
         }
-      }
     }
 
-    this.matrixHolder = arr;
-
-  }
-
-  drawBoard() {
-    this.generateBoard(this.widthSize, this.heightSize);
-  }
-
-  // getters and setters for variables
-  getMatrix() {
-    return this.matrixHolder;
-  }
-
-  setWidthSize(wSize: number) {
-    this.widthSize = wSize;
-  }
-
-  getWidthSize() {
-    return this.widthSize;
-  }
-
-  setHeightSize(hSize: number) {
-    this.heightSize = hSize;
-  }
-
-  getHeightSize() {
-    return this.heightSize;
-  }
-
-  setMaxXSize() {
-    this.maxXSize = this.widthSize - 1;
-  }
-
-  getMaxXSize() {
-    return this.maxXSize;
-  }
-
-  setMaxYSize() {
-    this.maxYSize = this.heightSize - 1;
-  }
-
-  getMaxYSize() {
-    return this.maxYSize;
-  }
-
-  setCurrentValue(newValue: string) {
-    switch (newValue) {
-      case this.waterType: {
-        this.currentValue = this.waterType;
-        break;
-      }
-      case this.grassType: {
-        this.currentValue = this.grassType;
-        break;
-      }
-      case this.netType: {
-        this.currentValue = this.netType;
-        break;
-      }
-      case this.flowerType: {
-        this.currentValue = this.flowerType;
-        break;
-      }
+    /**
+     * @returns The number of rows in the matrix.
+     */
+    getRows() {
+        return this.rows;
     }
-  }
 
-  getCurrentValue() {
-    return this.currentValue;
-  }
+    /**
+     * @param rows The new number of rows in the matrix.
+     */
+    setRows(rows: number) {
+        this.rows = rows;
+    }
 
-  getWaterType() {
-    return this.waterType;
-  }
+    /**
+      * @returns The number of columns in the matrix.
+      */
+    getCols() {
+        return this.cols;
+    }
 
-  getGrassType() {
-    return this.grassType;
-  }
+    /**
+      * @param cols The number of columns in the matrix.
+      */
+    setCols(cols: number) {
+        this.cols = cols;
+    }
 
-  getFlowerType() {
-    return this.flowerType;
-  }
+    /**
+      * @param col The column of the tile.
+      * @param row The row of the tile.
+      * @returns the tile at the specified column and row.
+      */
+    getTile(col: number, row: number) {
+        return this.tiles[row * this.cols + col];
+    }
 
-  getNetType() {
-    return this.netType;
-  }
+    /**
+      * @param col The column of the tile.
+      * @param row The row of the tile.
+      * @param tile The tile type of the tile.
+      */
+    setTile(col: number, row: number, tile: TileType) {
+        this.tiles[row * this.cols + col] = tile;
+    }
 
-  getClearType() {
-    return this.clearType;
-  }
+    /**
+      * @returns the size of a tile sprite in pixels.
+      */
+    getTsize() {
+        return this.tsize;
+    }
 
-  getBoardValueAt(row: number, column: number) {
-    return this.matrixHolder[row][column];
-  }
+    /**
+      * Renders the tilemap to a 2D rendering context.
+      * @param context 2D rendering context.
+      */
+    render(context: CanvasRenderingContext2D) {
+        if (this.imageAtlas == null) {
+            this.getTileAtlasObs().subscribe(imageAtlas => {
+                this.renderTiles(context, imageAtlas);
+                this.imageAtlas = imageAtlas;
+            });
+        } else {
+            this.renderTiles(context, this.imageAtlas);
+        }
+    }
 
-  setBoardValueAt(row: number, column: number) {
-    this.matrixHolder[row][column] = this.currentValue;
-  }
-  // getters and setters for variables
+    private renderTiles(context: CanvasRenderingContext2D, imageAtlas: HTMLImageElement) {
+        // fill the top row with water
+        for (let col = 0; col < this.cols + 2; col++) {
+            this.renderTile(context, imageAtlas, TileType.Water, col, 0);
+        }
+        for (let row = 0; row < this.rows; row++) {
+            // fill in the left water tile
+            this.renderTile(context, imageAtlas, TileType.Water, 0, row + 1);
+            for (let col = 0; col < this.cols; col++) {
+                const tile = this.getTile(col, row);
+                this.renderTile(context, imageAtlas, tile, col + 1, row + 1);
+            }
+            // fill in the right water tile
+            this.renderTile(context, imageAtlas, TileType.Water, this.cols + 1, row + 1);
+        }
+        // fill the bottom row with water
+        for (let col = 0; col < this.cols + 2; col++) {
+            this.renderTile(context, imageAtlas, TileType.Water, col, this.rows + 1);
+        }
+    }
 
+    private renderTile(context: CanvasRenderingContext2D, imageAtlas: HTMLImageElement, tileType: TileType, col: number, row: number) {
+        const offset = this.tileTypeToNumber(tileType);
+        context.drawImage(
+            imageAtlas,
+            offset * this.tsize,
+            0,
+            this.tsize,
+            this.tsize,
+            col * this.tsize,
+            row * this.tsize,
+            this.tsize,
+            this.tsize
+        );
+    }
+
+    private tileTypeToNumber(tileType: TileType) {
+        if (tileType === TileType.Grass) {
+            return 0;
+        } else if (tileType === TileType.Water) {
+            return 1;
+        } else if (tileType === TileType.Flower) {
+            return 2;
+        } else if (tileType === TileType.Net) {
+            return 3;
+        } else {
+            throw new Error('Unknown TileType');
+        }
+    }
+
+    private getTileAtlasObs() {
+        const image = new Image();
+        const imageObservable = fromEvent(image, 'load');
+        image.src = 'assets/images/JerooTilesSpritesheet.png';
+        return imageObservable.pipe(map(() => image));
+    }
+
+    /**
+      * Converts the current jeroo map into a string.
+      * @returns The map in string form.
+      */
+    toString() {
+        let mapContents = '';
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.cols; col++) {
+                const tile = this.tileTypeToString(this.getTile(col, row));
+                mapContents += tile;
+            }
+            mapContents += '\n';
+        }
+        return mapContents;
+    }
+
+    /**
+      * Converts a TileType to a string
+      * @param tileType tileType to convert
+      * @returns string representation of a TileType
+      */
+    tileTypeToString(tileType: TileType) {
+        if (tileType === TileType.Grass) {
+            return '.';
+        } else if (tileType === TileType.Water) {
+            return 'W';
+        } else if (tileType === TileType.Flower) {
+            return 'F';
+        } else if (tileType === TileType.Net) {
+            return 'N';
+        } else {
+            throw new Error('Invalid TileType');
+        }
+    }
+
+    /**
+      * Set the current map to a map string.
+      * @param s String of the map contents.
+      */
+    genMapFromString(s: string) {
+        if (s !== '') {
+            const lines = s.trim().split('\n');
+            const rows = lines.length;
+            const cols = lines[0].length;
+            const oldRows = this.getRows();
+            const oldCols = this.getCols();
+            this.setRows(rows);
+            this.setCols(cols);
+
+            try {
+                for (let row = 0; row < rows; row++) {
+                    if (lines[row].length !== cols) {
+                        throw new Error('Jagged maps are not allowed');
+                    }
+                    for (let col = 0; col < cols; col++) {
+                        const char = lines[row].charAt(col);
+                        this.setTile(col, row, this.stringToTileType(char));
+                    }
+                }
+            } catch (e) {
+                // reset the rows and cols to their previous values
+                // re-throw the exception
+                this.setRows(oldRows);
+                this.setCols(oldCols);
+                throw e;
+            }
+        } else {
+            this.setRows(0);
+            this.setCols(0);
+        }
+    }
+
+
+    /**
+      * Convert a character to a TileType.
+      * @param char character to convert.
+      * @returns Converted tile.
+      */
+    stringToTileType(char: string) {
+        if (char === '.') {
+            return TileType.Grass;
+        } else if (char === 'W') {
+            return TileType.Water;
+        } else if (char === 'F') {
+            return TileType.Flower;
+        } else if (char === 'N') {
+            return TileType.Net;
+        } else {
+            throw new Error('Invalid TileType in map');
+        }
+    }
 }

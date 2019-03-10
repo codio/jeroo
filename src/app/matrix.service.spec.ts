@@ -1,245 +1,138 @@
 import { TestBed } from '@angular/core/testing';
+import { TileType } from './matrixConstants';
 
 import { MatrixService } from './matrix.service';
 
 describe('MatrixService', () => {
 
-  beforeEach(() => TestBed.configureTestingModule({}));
+    beforeEach(() => TestBed.configureTestingModule({}));
 
-  it('should be created', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    expect(service).toBeTruthy();
-  });
+    it('get and set correctly find entities', () => {
+        const service: MatrixService = TestBed.get(MatrixService);
+        service.setTile(1, 1, TileType.Water);
+        expect(service.getTile(1, 1)).toBe(TileType.Water);
+    });
 
-  // generateBoard(xSize: number, ySize: number)
-  // drawBoard()
-  // getMatrix()
-  it('should create the base array and return with getMatrix', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    service.drawBoard();
-    expect(service.getMatrix()).toEqual([[ 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W',
-                                          'W', 'W', 'W', 'W', 'W', 'W', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-                                          'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W',
-                                          'W', 'W', 'W', 'W', 'W', 'W', 'W' ]]);
-  });
+    it('reset map resets map', () => {
+        const service: MatrixService = TestBed.get(MatrixService);
+        service.setTile(1, 1, TileType.Water);
+        service.resetMap();
+        expect(service.getTile(1, 1)).toBe(TileType.Grass);
+    });
 
-  // getWidthSize()
-  it('widthSize should be returned with getWidthSize', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    // will always default to size 26
-    expect(service.getWidthSize()).toEqual(26);
-  });
+    it('toString correctly converts map to a string', () => {
+        const service: MatrixService = TestBed.get(MatrixService);
+        service.setTile(5, 5, TileType.Water);
+        service.setTile(1, 2, TileType.Flower);
+        service.setTile(23, 23, TileType.Net);
 
-  // setWidthSize(wSize: number)
-  it('widthSize should change with setWidthSize', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    service.setWidthSize(15);
-    expect(service.getWidthSize()).toEqual(15);
-  });
+        const actual = service.toString();
+        const expected =
+            '........................\n' +
+            '........................\n' +
+            '.F......................\n' +
+            '........................\n' +
+            '........................\n' +
+            '.....W..................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '.......................N\n';
+        expect(actual).toBe(expected);
+    });
 
-  // getHeightSize()
-  it('heightSize should be returned with getHeightSize', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    // will always default to size 26
-    expect(service.getHeightSize()).toEqual(26);
-  });
+    it('genMapFromString correctly loads a map from a string', () => {
+        const service: MatrixService = TestBed.get(MatrixService);
+        const map =
+            'W......................W\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........NNN.............\n' +
+            '........FFF.............\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            '........................\n' +
+            'W......................W\n';
+        service.genMapFromString(map);
+        const lines = map.trim().split('\n');
+        for (let row = 0; row < lines.length; row++) {
+            for (let col = 0; col < lines[0].length; col++) {
+                const actual = service.getTile(col, row);
+                const expected = service.stringToTileType(lines[row].charAt(col));
+                expect(actual).toBe(expected);
+            }
+        }
+    });
 
-  // setHeightSize(hSize: number)
-  it('heightSize should change with setHeightSize', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    service.setHeightSize(15);
-    expect(service.getHeightSize()).toEqual(15);
-  });
+    it('genMapFromString correctly adjusts size of map', () => {
+        const service: MatrixService = TestBed.get(MatrixService);
+        const map =
+            '.....\n' +
+            '.....\n' +
+            '.....\n';
+        service.genMapFromString(map);
+        expect(service.getCols()).toBe(5);
+        expect(service.getRows()).toBe(3);
+    });
 
-  // getMaxXSize()
-  it('getMaxXSize should return the maxXSize', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    // maxXSize will default to 25 (widthSize - 1)
-    expect(service.getMaxXSize()).toEqual(25);
-  });
+    it('genMapFromString throws error on unknown TileType', () => {
+        const service: MatrixService = TestBed.get(MatrixService);
+        const oldRows = service.getRows();
+        const oldCols = service.getCols();
+        const map =
+            '.XYZW\n' +
+            '...GG\n';
+        expect(() => service.genMapFromString(map)).toThrow(new Error('Invalid TileType in map'));
+        expect(service.getRows()).toBe(oldRows);
+        expect(service.getCols()).toBe(oldCols);
+    });
 
-  // setMaxXSize()
-  it('setMaxXSize should set a new maxXSize', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    service.setWidthSize(43);
-    // should be set to 42 (widthSize - 1)
-    service.setMaxXSize();
-    expect(service.getMaxXSize()).toEqual(42);
-  });
+    it('genMapFromString throws error on jagged map', () => {
+        const service: MatrixService = TestBed.get(MatrixService);
+        const oldRows = service.getRows();
+        const oldCols = service.getCols();
+        const map =
+            '.....\n' +
+            '..\n';
+        expect(() => service.genMapFromString(map)).toThrow(new Error('Jagged maps are not allowed'));
+        expect(service.getRows()).toBe(oldRows);
+        expect(service.getCols()).toBe(oldCols);
+    });
 
-  // getMaxYSize()
-  it('getMaxYSize should return the maxYSize', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    // maxYSize will default to 25 (heightSize - 1)
-    expect(service.getMaxYSize()).toEqual(25);
-  });
-
-  // setMaxYSize()
-  it('setMaxYSize should set a new maxYSize', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    service.setHeightSize(43);
-    // should be set to 42 (widthSize - 1)
-    service.setMaxYSize();
-    expect(service.getMaxYSize()).toEqual(42);
-  });
-
-  // getCurrentValue()
-  it('should get a current value for editing', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    // default value for editing is 'W'
-    expect(service.getCurrentValue()).toEqual('W');
-  });
-
-  // setCurrentValue(newValue: string)
-  it('should set a new current value for editing', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    service.setCurrentValue('N');
-    expect(service.getCurrentValue()).toEqual('N');
-  });
-
-  // getWaterType()
-  it('should return proper waterType from getWaterType', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    expect(service.getWaterType()).toEqual('W');
-  });
-
-  // getGrassType()
-  it('should return proper grassType from getGrassType', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    expect(service.getGrassType()).toEqual('G');
-  });
-
-  // getFlowerType()
-  it('should return proper flowerType from getFlowerType', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    expect(service.getFlowerType()).toEqual('F');
-  });
-
-  // getNetType()
-  it('should return proper netType from getNetType', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    expect(service.getNetType()).toEqual('N');
-  });
-
-  // getClearType()
-  it('should return proper clearType from getClearType', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    expect(service.getClearType()).toEqual('C');
-  });
-
-  // getBoardValueAt(row: number, column: number)
-  it('should return the value at a specific spot in the matrix', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    service.drawBoard();
-    // should be water on default board
-    expect(service.getBoardValueAt(0, 1)).toEqual('W');
-    // should be grass on default board
-    expect(service.getBoardValueAt(4, 15)).toEqual('G');
-  });
-
-  // setBoardValueAt(row: number, column: number)
-  it('should set the value at a specific spot in the matrix to currentValue', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    service.drawBoard();
-    service.setBoardValueAt(5, 14);
-    // current value defaults to water
-    expect(service.getBoardValueAt(5, 14)).toEqual('W');
-    service.setCurrentValue('N');
-    service.setBoardValueAt(3, 23);
-    expect(service.getBoardValueAt(3, 23)).toEqual('N');
-  });
-
-  it('should create an array of any size (1 - 50)', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    service.setWidthSize(3);
-    service.setHeightSize(7);
-    service.setMaxXSize();
-    service.setMaxYSize();
-    service.drawBoard();
-    expect(service.getMatrix()).toEqual([[ 'W', 'W', 'W' ],
-                                         [ 'W', 'G', 'W' ],
-                                         [ 'W', 'G', 'W' ],
-                                         [ 'W', 'G', 'W' ],
-                                         [ 'W', 'G', 'W' ],
-                                         [ 'W', 'G', 'W' ],
-                                         [ 'W', 'W', 'W' ]]);
-  });
-
-  it('should all work together to create and edit the matrix', () => {
-    const service: MatrixService = TestBed.get(MatrixService);
-    service.drawBoard();
-    service.setWidthSize(14);
-    service.setHeightSize(14);
-    service.setMaxXSize();
-    service.setMaxYSize();
-    service.drawBoard();
-    service.setCurrentValue(service.getNetType());
-    service.setBoardValueAt(4, 7);
-    service.setBoardValueAt(4, 8);
-    service.setCurrentValue(service.getFlowerType());
-    service.setBoardValueAt(12, 2);
-    expect(service.getMatrix()).toEqual([[ 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'N', 'N', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'G', 'F', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'W' ],
-                                         [ 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' ]]);
-  });
-
+    it('genMapFromString empty string creates empty map', () => {
+        const service: MatrixService = TestBed.get(MatrixService);
+        const map = '';
+        service.genMapFromString(map);
+        expect(service.getCols()).toBe(0);
+        expect(service.getRows()).toBe(0);
+    });
 });
