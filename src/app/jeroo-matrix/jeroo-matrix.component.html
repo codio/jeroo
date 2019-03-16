@@ -20,7 +20,7 @@
 </div>
 <div class="d-flex justify-content-center">
     <div *ngIf="mouseRow !== null && mouseColumn !== null; else elseBlock">
-        Cursor Location: ({{mouseRow}}, {{mouseColumn}})
+        Cursor Location: ({{mouseColumn}}, {{mouseRow}})
     </div>
     <ng-template #elseBlock>
         Cursor off of map
