@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { TileType } from './matrixConstants';
 
 import { MatrixService } from './matrix.service';
+import { CardinalDirection } from './jerooConstants';
+import { Jeroo } from './jeroo';
 
 describe('MatrixService', () => {
 
@@ -13,11 +15,26 @@ describe('MatrixService', () => {
         expect(service.getTile(1, 1)).toBe(TileType.Water);
     });
 
+    it('get and set jeroo gets and sets a jeroo', () => {
+        const service: MatrixService = TestBed.get(MatrixService);
+        const jeroo = new Jeroo(0, 1, 1, 1, CardinalDirection.East);
+        service.setJeroo(1, 1, jeroo);
+        expect(service.getJeroo(1, 1)).toBe(jeroo);
+    });
+
     it('reset map resets map', () => {
         const service: MatrixService = TestBed.get(MatrixService);
         service.setTile(1, 1, TileType.Water);
         service.resetMap();
         expect(service.getTile(1, 1)).toBe(TileType.Grass);
+    });
+
+    it('reset jeroos resets the jeroo array', () => {
+        const service: MatrixService = TestBed.get(MatrixService);
+        const jeroo = new Jeroo(0, 1, 1, 1, CardinalDirection.East);
+        service.setJeroo(1, 1, jeroo);
+        service.resetJeroos();
+        expect(service.getJeroo(1, 1)).toBeNull();
     });
 
     it('toString correctly converts map to a string', () => {

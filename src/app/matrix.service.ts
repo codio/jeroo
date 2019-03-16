@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { TileType } from './matrixConstants';
 import { fromEvent } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Jeroo } from './jeroo';
+
 
 @Injectable({
     providedIn: 'root'
@@ -13,9 +15,20 @@ export class MatrixService {
     private tsize = 28;
     private tiles: TileType[] = [];
     private imageAtlas: HTMLImageElement;
+    private jeroos: Jeroo[] = [];
 
     constructor() {
         this.resetMap();
+        this.resetJeroos();
+    }
+
+    public resetJeroos() {
+        this.jeroos = [];
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.cols; col++) {
+                this.jeroos.push(null);
+            }
+        }
     }
 
     /**
@@ -76,6 +89,14 @@ export class MatrixService {
         this.tiles[row * this.cols + col] = tile;
     }
 
+    getJeroo(col: number, row: number) {
+        return this.jeroos[row * this.cols + col];
+    }
+
+    setJeroo(col: number, row: number, jeroo: Jeroo) {
+        this.jeroos[row * this.cols + col] = jeroo;
+    }
+
     /**
       * @returns the size of a tile sprite in pixels.
       */
@@ -107,8 +128,13 @@ export class MatrixService {
             // fill in the left water tile
             this.renderTile(context, imageAtlas, TileType.Water, 0, row + 1);
             for (let col = 0; col < this.cols; col++) {
-                const tile = this.getTile(col, row);
-                this.renderTile(context, imageAtlas, tile, col + 1, row + 1);
+                const jeroo = this.getJeroo(col, row);
+                if (jeroo !== null) {
+                    this.renderJeroo(context, imageAtlas, jeroo);
+                } else {
+                    const tile = this.getTile(col, row);
+                    this.renderTile(context, imageAtlas, tile, col + 1, row + 1);
+                }
             }
             // fill in the right water tile
             this.renderTile(context, imageAtlas, TileType.Water, this.cols + 1, row + 1);
@@ -117,6 +143,24 @@ export class MatrixService {
         for (let col = 0; col < this.cols + 2; col++) {
             this.renderTile(context, imageAtlas, TileType.Water, col, this.rows + 1);
         }
+    }
+
+    private renderJeroo(context: CanvasRenderingContext2D, imageAtlas: HTMLImageElement, jeroo: Jeroo) {
+        const jerooOffset = jeroo.getId() + 1;
+        const directionOffset = jeroo.getDirection();
+        const col = jeroo.getX() + 1;
+        const row = jeroo.getY() + 1;
+        context.drawImage(
+            imageAtlas,
+            directionOffset * this.tsize,
+            jerooOffset * this.tsize,
+            this.tsize,
+            this.tsize,
+            col * this.tsize,
+            row * this.tsize,
+            this.tsize,
+            this.tsize
+        );
     }
 
     private renderTile(context: CanvasRenderingContext2D, imageAtlas: HTMLImageElement, tileType: TileType, col: number, row: number) {
@@ -226,7 +270,6 @@ export class MatrixService {
             this.setCols(0);
         }
     }
-
 
     /**
       * Convert a character to a TileType.

@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { MatrixService } from '../matrix.service';
 import { SelectedLanguage } from './SelectedLanguage';
 import { JerooMatrixComponent } from '../jeroo-matrix/jeroo-matrix.component';
+import { BytecodeInterpreterService } from '../bytecode-interpreter.service';
 
 interface Language {
     value: SelectedLanguage;
@@ -25,7 +26,35 @@ export class DashboardComponent {
         { viewValue: 'PYTHON', value: SelectedLanguage.Python }
     ];
 
-    constructor(private matrixService: MatrixService) { }
+    mainMethodCode = '';
+    extensionMethodCode = '';
+
+    constructor(private bytecodeService: BytecodeInterpreterService, private matrixService: MatrixService) { }
+
+    runCode() {
+        const jerooCode = this.createJerooCode();
+        const result = JerooCompiler.compile(jerooCode);
+        const context = this.jerooMatrix.getCanvas().getContext('2d');
+        if (result.successful) {
+            const instructions = result.bytecode;
+            this.bytecodeService.executeInstructions(instructions, this.matrixService, context);
+        }
+    }
+
+    private createJerooCode() {
+        let jerooCode = '';
+        if (this.selectedLanguage === SelectedLanguage.Java) {
+            jerooCode += '@Java\n';
+        } else if (this.selectedLanguage === SelectedLanguage.Vb) {
+            jerooCode += '@VB\n';
+        } else {
+            throw new Error('Unsupported Language');
+        }
+        jerooCode += this.extensionMethodCode;
+        jerooCode += '\n@@\n';
+        jerooCode += this.mainMethodCode;
+        return jerooCode;
+    }
 
     clearMap() {
         this.matrixService.resetMap();

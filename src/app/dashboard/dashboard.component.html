@@ -142,7 +142,7 @@
                     <button mat-menu-item>
                         <fa-icon icon="play"></fa-icon><span class="col-1">Run Stepwise</span>
                     </button>
-                    <button mat-menu-item>
+                    <button mat-menu-item (click)="runCode()">
                         <fa-icon icon="step-forward"></fa-icon><span class="col-1">Run Continuously</span>
                     </button>
                     <button mat-menu-item>
@@ -207,10 +207,10 @@
                 <div class="col-lg-7">
                     <mat-tab-group color="accent">
                         <mat-tab label="Main Method">
-                            <textarea class="method-code" id="method-code"></textarea>
+                            <textarea class="method-code" [(ngModel)]="mainMethodCode"></textarea>
                         </mat-tab>
                         <mat-tab label="Jeroo Methods">
-                            <textarea class="method-code" id="method-code"></textarea>
+                            <textarea class="method-code" [(ngModel)]="extensionMethodCode"></textarea>
                         </mat-tab>
                     </mat-tab-group>
                     <div align="center">
