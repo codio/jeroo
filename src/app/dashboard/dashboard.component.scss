@@ -1,8 +1,3 @@
-.method-code {
-  height: 450px;
-  width: 100%;
-}
-
 .menu-button {
   margin-left: 5px;
   margin-right: 5px;
@@ -24,4 +19,9 @@ mat-divider {
 
 .invisible {
   display: none;
+}
+
+.shortcut-tip {
+  float: right;
+  color: #999999;
 }

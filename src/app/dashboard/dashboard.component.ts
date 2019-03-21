@@ -1,7 +1,8 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { MatrixService } from '../matrix.service';
 import { SelectedLanguage } from './SelectedLanguage';
 import { JerooMatrixComponent } from '../jeroo-matrix/jeroo-matrix.component';
+import { TextEditorComponent } from '../text-editor/text-editor.component';
 import { BytecodeInterpreterService } from '../bytecode-interpreter.service';
 
 interface Language {
@@ -14,10 +15,12 @@ interface Language {
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent {
+export class DashboardComponent implements AfterViewInit {
     @ViewChild('mapFileInput') mapFileInput: ElementRef;
     @ViewChild('jerooMatrix') jerooMatrix: JerooMatrixComponent;
     @ViewChild('mapSaver') mapSaver: ElementRef;
+    @ViewChild('mainMethodTextEditor') mainMethodTextEditor: TextEditorComponent;
+    @ViewChild('extensionMethodsTextEditor') extensionMethodsTextEditor: TextEditorComponent;
 
     selectedLanguage = SelectedLanguage.Java;
     languages: Language[] = [
@@ -26,13 +29,17 @@ export class DashboardComponent {
         { viewValue: 'PYTHON', value: SelectedLanguage.Python }
     ];
 
-    mainMethodCode = '';
-    extensionMethodCode = '';
+    selectedEditor: TextEditorComponent = null;
 
     constructor(private bytecodeService: BytecodeInterpreterService, private matrixService: MatrixService) { }
 
+    ngAfterViewInit() {
+        this.selectedEditor = this.mainMethodTextEditor;
+    }
+
     runCode() {
         const jerooCode = this.createJerooCode();
+        console.log(jerooCode);
         const result = JerooCompiler.compile(jerooCode);
         const context = this.jerooMatrix.getCanvas().getContext('2d');
         if (result.successful) {
@@ -50,9 +57,9 @@ export class DashboardComponent {
         } else {
             throw new Error('Unsupported Language');
         }
-        jerooCode += this.extensionMethodCode;
+        jerooCode += this.extensionMethodsTextEditor.getText();
         jerooCode += '\n@@\n';
-        jerooCode += this.mainMethodCode;
+        jerooCode += this.mainMethodTextEditor.getText();
         return jerooCode;
     }
 
@@ -114,8 +121,9 @@ export class DashboardComponent {
         printWindow.close();
     }
 
-    setSelectedLanguage(selectedLanguage: SelectedLanguage) {
-        this.selectedLanguage = selectedLanguage;
+    onSelectedLanguageChange() {
+        this.mainMethodTextEditor.setMode(this.selectedLanguage);
+        this.extensionMethodsTextEditor.setMode(this.selectedLanguage);
     }
 
     getHelpUrl() {
@@ -136,5 +144,37 @@ export class DashboardComponent {
         } else {
             throw new Error('Invalid Language');
         }
+    }
+
+    onEditorTabIndexChange(index: number) {
+        if (index === 0) {
+            this.selectedEditor = this.mainMethodTextEditor;
+        } else if (index === 1) {
+            this.selectedEditor = this.extensionMethodsTextEditor;
+        }
+    }
+
+    onUndoClick() {
+        this.selectedEditor.undo();
+    }
+
+    onRedoClick() {
+        this.selectedEditor.redo();
+    }
+
+    onToggleCommentLines() {
+        this.selectedEditor.toggleComment();
+    }
+
+    onIndentSelectionClick() {
+        this.selectedEditor.indentSelection();
+    }
+
+    onUnindentSelectionClick() {
+        this.selectedEditor.unindentSelection();
+    }
+
+    onFormatSelectionClick() {
+        this.selectedEditor.formatSelection();
     }
 }

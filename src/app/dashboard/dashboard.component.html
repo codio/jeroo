@@ -44,19 +44,10 @@
                         <fa-icon icon="save"></fa-icon>
                     </button>
                     <mat-divider [vertical]="true"></mat-divider>
-                    <button mat-icon-button matTooltip="Cut">
-                        <fa-icon icon="cut"></fa-icon>
-                    </button>
-                    <button mat-icon-button matTooltip="Copy">
-                        <fa-icon icon="copy"></fa-icon>
-                    </button>
-                    <button mat-icon-button matTooltip="Paste">
-                        <fa-icon icon="paste"></fa-icon>
-                    </button>
-                    <button mat-icon-button matTooltip="Undo">
+                    <button mat-icon-button matTooltip="Undo" (click)="onUndoClick()">
                         <fa-icon icon="undo"></fa-icon>
                     </button>
-                    <button mat-icon-button matTooltip="Redo">
+                    <button mat-icon-button matTooltip="Redo" (click)="onRedoClick()">
                         <fa-icon icon="redo"></fa-icon>
                     </button>
                     <mat-divider [vertical]="true"></mat-divider>
@@ -107,31 +98,20 @@
             </mat-menu>
             <mat-menu #edit="matMenu">
                 <ng-template matMenuContent>
-                    <button mat-menu-item>
-                        <fa-icon icon="cut"></fa-icon><span class="col-1">Cut</span>
+                    <button mat-menu-item (click)="onUndoClick()">
+                        <fa-icon icon="undo"></fa-icon><span class="col-1">Undo Last Edit</span><span class="shortcut-tip">Ctrl+z</span>
                     </button>
-                    <button mat-menu-item>
-                        <fa-icon icon="copy"></fa-icon><span class="col-1">Copy</span>
-                    </button>
-                    <button mat-menu-item>
-                        <fa-icon icon="paste"></fa-icon><span class="col-1">Paste</span>
+                    <button mat-menu-item (click)="onRedoClick()">
+                        <fa-icon icon="redo"></fa-icon><span class="col-1">Redo Last Undo</span><span class="shortcut-tip">Ctrl+Shift+Z</span>
                     </button>
                     <mat-divider></mat-divider>
-                    <button mat-menu-item>
-                        <fa-icon icon="undo"></fa-icon><span class="col-1">Undo Last Edit</span>
-                    </button>
-                    <button mat-menu-item>
-                        <fa-icon icon="redo"></fa-icon><span class="col-1">Redo Last Undo</span>
-                    </button>
+                    <button mat-menu-item (click)="onToggleCommentLines()">Comment Lines<span class="shortcut-tip">Ctrl+/</span></button>
                     <mat-divider></mat-divider>
-                    <button mat-menu-item>Comment Lines</button>
-                    <button mat-menu-item>Uncomment Lines</button>
-                    <mat-divider></mat-divider>
-                    <button mat-menu-item>Indent Lines</button>
-                    <button mat-menu-item>UnIndent Lines</button>
+                    <button mat-menu-item (click)="onFormatSelectionClick()">Format Selection<span class="shortcut-tip">Ctrl+Shift+F</span></button>
+                    <button mat-menu-item (click)="onIndentSelectionClick()">Indent Selection<span class="shortcut-tip">Tab</span></button>
+                    <button mat-menu-item (click)="onUnindentSelectionClick()">Un-Indent Selection<span class="shortcut-tip">Shift+Tab</span></button>
                     <mat-divider></mat-divider>
                     <button mat-menu-item>Set Prefrences</button>
-                    <button mat-menu-item>Select Font</button>
                 </ng-template>
             </mat-menu>
             <mat-menu #run="matMenu">
@@ -205,18 +185,18 @@
             <!--Text tabs Area-->
             <div class="row">
                 <div class="col-lg-7">
-                    <mat-tab-group color="accent">
+                    <mat-tab-group color="accent" (selectedIndexChange)="onEditorTabIndexChange($event)">
                         <mat-tab label="Main Method">
-                            <textarea class="method-code" [(ngModel)]="mainMethodCode"></textarea>
+                            <app-text-editor #mainMethodTextEditor></app-text-editor>
                         </mat-tab>
                         <mat-tab label="Jeroo Methods">
-                            <textarea class="method-code" [(ngModel)]="extensionMethodCode"></textarea>
+                            <app-text-editor #extensionMethodsTextEditor></app-text-editor>
                         </mat-tab>
                     </mat-tab-group>
                     <div align="center">
                         <h4>Current Language Style</h4>
                         <mat-form-field>
-                            <mat-select required [(ngModel)]="selectedLanguage">
+                            <mat-select required [(ngModel)]="selectedLanguage" (ngModelChange)="onSelectedLanguageChange()">
                                 <mat-option *ngFor="let language of languages" [value]="language.value">
                                     {{language.viewValue}}
                                 </mat-option>
