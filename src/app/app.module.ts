@@ -30,6 +30,7 @@ import { MatrixDialogComponent } from './matrix-dialog/matrix-dialog.component';
 import { MaterialModule } from './material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { TextEditorComponent } from './text-editor/text-editor.component';
 
 library.add(
     faFile,
@@ -57,6 +58,7 @@ library.add(
         DashboardComponent,
         JerooMatrixComponent,
         MatrixDialogComponent,
+        TextEditorComponent,
     ],
     imports: [
         BrowserModule,
