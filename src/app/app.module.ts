@@ -22,6 +22,7 @@ import {
     faEraser,
     faPrint
 } from '@fortawesome/free-solid-svg-icons';
+import { HotkeyModule } from 'angular2-hotkeys';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -67,7 +68,8 @@ library.add(
         BrowserAnimationsModule,
         FormsModule,
         ReactiveFormsModule,
-        FontAwesomeModule
+        FontAwesomeModule,
+        HotkeyModule.forRoot()
     ],
     providers: [],
     bootstrap: [AppComponent],

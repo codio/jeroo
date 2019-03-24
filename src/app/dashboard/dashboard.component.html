@@ -6,7 +6,6 @@
             <button class="menu-button" mat-menu-item [matMenuTriggerFor]="run">Run</button>
             <button class="menu-button" mat-menu-item [matMenuTriggerFor]="speed">Run Speed</button>
             <button class="menu-button" mat-menu-item [matMenuTriggerFor]="islandfile">Island File</button>
-            <button class="menu-button" mat-menu-item [matMenuTriggerFor]="islandedit">Island Edit</button>
             <button class="menu-button" mat-menu-item [matMenuTriggerFor]="help">Help</button>
         </mat-nav-list>
     </mat-sidenav>
@@ -29,7 +28,6 @@
                         <button class="menu-button" mat-button [matMenuTriggerFor]="run">Run</button>
                         <button class="menu-button" mat-button [matMenuTriggerFor]="speed">Run Speed</button>
                         <button class="menu-button" mat-button [matMenuTriggerFor]="islandfile">Island File</button>
-                        <button class="menu-button" mat-button [matMenuTriggerFor]="islandedit">Island Edit</button>
                         <button class="menu-button" mat-button [matMenuTriggerFor]="help">Help</button>
                     </div>
                 </mat-toolbar-row>
@@ -51,22 +49,28 @@
                         <fa-icon icon="redo"></fa-icon>
                     </button>
                     <mat-divider [vertical]="true"></mat-divider>
-                    <button mat-icon-button matTooltip="Step Backwards">
+                    <button mat-icon-button matTooltip="Reset the program and the island" [disabled]="resetBtnDisabled()" (click)="onResetClick()">
                         <fa-icon icon="step-backward"></fa-icon>
                     </button>
-                    <button mat-icon-button matTooltip="Play">
+                    <button mat-icon-button matTooltip="Run the program step-by-step" [disabled]="runBtnDisabled()" (click)="onRunStepwiseClick()">
                         <fa-icon icon="play"></fa-icon>
                     </button>
-                    <button mat-icon-button matTooltip="Step Forwards">
+                    <button mat-icon-button matTooltip="Run the program continuously" [disabled]="runBtnDisabled()" (click)="onRunContiniousClick()">
                         <fa-icon icon="step-forward"></fa-icon>
                     </button>
+                    <button mat-icon-button matTooltip="Pause a currently running program" [disabled]="pauseBtnDisabled()" (click)="onPauseClick()">
+                        <fa-icon icon="pause"></fa-icon>
+                    </button>
+                    <button mat-icon-button matTooltip="Stop a running program" [disabled]="stopBtnDisabled()" (click)="onStopClick()">
+                        <fa-icon icon="stop"></fa-icon>
+                    </button>
                     <mat-divider [vertical]="true"></mat-divider>
-                    <mat-slider class="menu-button" thumbLabel min="1" max="6" value="3" tickInterval="1"></mat-slider>
+                    <mat-slider class="menu-button" [(ngModel)]="speedIndex" (change)="onSpeedIndexChange()" min="1" max="6" tickInterval="1" thumbLabel></mat-slider>
                     <mat-divider [vertical]="true"></mat-divider>
-                    <button mat-icon-button matTooltip="Create new island layout" (click)="clearMap()">
+                    <button mat-icon-button matTooltip="Create new island layout" [disabled]="!reset" (click)="clearMap()">
                         <fa-icon icon="eraser"></fa-icon>
                     </button>
-                    <button mat-icon-button matTooltip="Open an island file" (click)="openMapFile()">
+                    <button mat-icon-button matTooltip="Open an island file" [disabled]="!reset" (click)="openMapFile()">
                         <fa-icon icon="folder"></fa-icon>
                     </button>
                     <button mat-icon-button matTooltip="Save the island to a file" (click)="saveMapFile()">
@@ -99,7 +103,7 @@
             <mat-menu #edit="matMenu">
                 <ng-template matMenuContent>
                     <button mat-menu-item (click)="onUndoClick()">
-                        <fa-icon icon="undo"></fa-icon><span class="col-1">Undo Last Edit</span><span class="shortcut-tip">Ctrl+z</span>
+                        <fa-icon icon="undo"></fa-icon><span class="col-1">Undo Last Edit</span><span class="shortcut-tip">Ctrl+Z</span>
                     </button>
                     <button mat-menu-item (click)="onRedoClick()">
                         <fa-icon icon="redo"></fa-icon><span class="col-1">Redo Last Undo</span><span class="shortcut-tip">Ctrl+Shift+Z</span>
@@ -116,64 +120,48 @@
             </mat-menu>
             <mat-menu #run="matMenu">
                 <ng-template matMenuContent>
-                    <button mat-menu-item>
-                        <fa-icon icon="step-backward"></fa-icon><span class="col-1">Reset</span>
+                    <button mat-menu-item [disabled]="resetBtnDisabled()" (click)="onResetClick()">
+                        <fa-icon icon="step-backward"></fa-icon><span class="col-1">Reset<span class="shortcut-tip">F2</span></span>
                     </button>
-                    <button mat-menu-item>
-                        <fa-icon icon="play"></fa-icon><span class="col-1">Run Stepwise</span>
+                    <button mat-menu-item [disabled]="runBtnDisabled()" (click)="onRunStepwiseClick()">
+                        <fa-icon icon="play"></fa-icon><span class="col-1">Run Stepwise<span class="shortcut-tip">F3</span></span>
                     </button>
-                    <button mat-menu-item (click)="runCode()">
-                        <fa-icon icon="step-forward"></fa-icon><span class="col-1">Run Continuously</span>
+                    <button mat-menu-item [disabled]="runBtnDisabled()" (click)="onRunContiniousClick()">
+                        <fa-icon icon="step-forward"></fa-icon><span class="col-1">Run Continuously<span class="shortcut-tip">F4</span></span>
                     </button>
-                    <button mat-menu-item>
-                        <fa-icon icon="pause"></fa-icon><span class="col-1">Pause</span>
+                    <button mat-menu-item [disabled]="pauseBtnDisabled()" (click)="onPauseClick()">
+                        <fa-icon icon="pause"></fa-icon><span class="col-1">Pause<span class="shortcut-tip">F5</span></span>
                     </button>
-                    <button mat-menu-item>
-                        <fa-icon icon="stop"></fa-icon><span class="col-1">Stop Run</span>
+                    <button mat-menu-item [disabled]="stopBtnDisabled()" (click)="onStopClick()">
+                        <fa-icon icon="stop"></fa-icon><span class="col-1">Stop Run<span class="shortcut-tip">F6</span></span>
                     </button>
                 </ng-template>
             </mat-menu>
             <mat-menu #speed="matMenu">
                 <ng-template matMenuContent>
-                    <mat-radio-group>
-                        <div mat-menu-item>
-                            <mat-radio-button value="1">1 - slow</mat-radio-button>
-                        </div>
-                        <div mat-menu-item>
-                            <mat-radio-button value="2">2</mat-radio-button>
-                        </div>
-                        <div mat-menu-item>
-                            <mat-radio-button value="3">3 - medium</mat-radio-button>
-                        </div>
-                        <div mat-menu-item>
-                            <mat-radio-button value="4">4</mat-radio-button>
-                        </div>
-                        <div mat-menu-item>
-                            <mat-radio-button value="5">5 - fast</mat-radio-button>
-                        </div>
-                        <div mat-menu-item>
-                            <mat-radio-button value="6">6 - max</mat-radio-button>
+                    <mat-radio-group [(ngModel)]="speedIndex">
+                        <div mat-menu-item *ngFor="let speed of speedsRadio" (click)="onSpeedRadioClick(speed.value)">
+                            <mat-radio-button class="speed-radio-btn" [value]="speed.value">{{ speed.name }}</mat-radio-button>
                         </div>
                     </mat-radio-group>
                 </ng-template>
             </mat-menu>
             <mat-menu #islandfile="matMenu">
                 <ng-template matMenuContent>
-                    <button mat-menu-item (click)="clearMap()">New</button>
-                    <button mat-menu-item (click)="openMapFile()">Open</button>
+                    <button mat-menu-item (click)="clearMap()">
+                        <fa-icon icon="eraser"></fa-icon><span class="col-1">New<span class="shortcut-tip">Ctrl+Shift+N</span></span>
+                    </button>
+                    <button mat-menu-item (click)="openMapFile()">
+                        <fa-icon icon="folder"></fa-icon><span class="col-1">Open<span class="shortcut-tip">Ctrl+Shift+O</span></span>
+                    </button>
                     <mat-divider></mat-divider>
-                    <button mat-menu-item (click)="saveMapFile()">Save</button>
+                    <button mat-menu-item (click)="saveMapFile()">
+                        <fa-icon icon="save"></fa-icon><span class="col-1">Save<span class="shortcut-tip">Ctrl+Shift+S</span></span>
+                    </button>
                     <mat-divider></mat-divider>
-                    <button mat-menu-item (click)="printMap()">Print</button>
-                </ng-template>
-            </mat-menu>
-            <mat-menu #islandedit="matMenu">
-                <ng-template matMenuContent>
-                    <button mat-menu-item>Plant Flowers</button>
-                    <button mat-menu-item>Set Nets</button>
-                    <button mat-menu-item>Add Water</button>
-                    <mat-divider></mat-divider>
-                    <button mat-menu-item>Clear Island</button>
+                    <button mat-menu-item (click)="printMap()">
+                        <fa-icon icon="print"></fa-icon><span class="col-1">Print<span class="shortcut-tip">Ctrl+Shift+P</span></span>
+                    </button>
                 </ng-template>
             </mat-menu>
             <mat-menu #help="matMenu">

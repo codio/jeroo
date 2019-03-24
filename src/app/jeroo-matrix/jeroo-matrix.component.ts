@@ -6,7 +6,8 @@ import { MatrixDialogComponent } from '../matrix-dialog/matrix-dialog.component'
 
 @Component({
     selector: 'app-jeroo-matrix',
-    templateUrl: './jeroo-matrix.component.html'
+    templateUrl: './jeroo-matrix.component.html',
+    styleUrls: ['./jeroo-matrix.component.scss']
 })
 export class JerooMatrixComponent implements AfterViewInit {
     @ViewChild('jerooGameCanvas') jerooGameCanvas: ElementRef;
@@ -17,6 +18,7 @@ export class JerooMatrixComponent implements AfterViewInit {
     private selectedTileType: TileType = null;
     mouseRow: number = null;
     mouseColumn: number = null;
+    editingEnabled = true;
 
     constructor(private matrixService: MatrixService, private dialog: MatDialog) { }
 
@@ -38,10 +40,12 @@ export class JerooMatrixComponent implements AfterViewInit {
 
         const dialogRef = this.dialog.open(MatrixDialogComponent, dialogConfig);
         dialogRef.afterClosed().subscribe(data => {
-            this.matrixService.setCols(+data.xValue);
-            this.matrixService.setRows(+data.yValue);
-            this.matrixService.resetMap();
-            this.redraw();
+            if (this.editingEnabled) {
+                this.matrixService.setCols(+data.xValue);
+                this.matrixService.setRows(+data.yValue);
+                this.matrixService.resetMap();
+                this.redraw();
+            }
         });
     }
 
@@ -56,12 +60,18 @@ export class JerooMatrixComponent implements AfterViewInit {
     }
 
     clearMap() {
-        this.matrixService.resetMap();
-        this.matrixService.render(this.context);
+        if (this.editingEnabled) {
+            this.matrixService.resetMap();
+            this.matrixService.render(this.context);
+        }
     }
 
     getCanvas() {
         return this.canvas;
+    }
+
+    getContext() {
+        return this.context;
     }
 
     selectedTileTypeChange(tileType: string) {
@@ -118,7 +128,7 @@ export class JerooMatrixComponent implements AfterViewInit {
         if (tileCol >= 0 && tileRow >= 0
             && tileCol < cols && tileRow < rows) {
             // update the col and row
-            if (this.mouseDown && this.selectedTileType !== null) {
+            if (this.editingEnabled && this.mouseDown && this.selectedTileType !== null) {
                 // only re-render if we change the map
                 if (this.matrixService.getTile(tileCol, tileRow) !== this.selectedTileType) {
                     this.matrixService.setTile(tileCol, tileRow, this.selectedTileType);
@@ -131,5 +141,13 @@ export class JerooMatrixComponent implements AfterViewInit {
             this.mouseRow = null;
             this.mouseDown = false;
         }
+    }
+
+    enableEditing() {
+        this.editingEnabled = true;
+    }
+
+    disableEditing() {
+        this.editingEnabled = false;
     }
 }
