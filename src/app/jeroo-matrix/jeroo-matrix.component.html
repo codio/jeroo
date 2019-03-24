@@ -15,7 +15,7 @@
     </mat-button-toggle-group>
 </div>
 <div class="d-flex justify-content-center">
-    <canvas #jerooGameCanvas (mousedown)="canvasMouseDown($event)" (mouseup)="canvasMouseUp()" (mousemove)="canvasMouseMove($event)">
+    <canvas #jerooGameCanvas [className]="editingEnabled ? 'default-cursor' : 'not-allowed-cursor'" (mousedown)="canvasMouseDown($event)" (mouseup)="canvasMouseUp()" (mousemove)="canvasMouseMove($event)">
     </canvas>
 </div>
 <div class="d-flex justify-content-center">
@@ -27,6 +27,6 @@
     </ng-template>
 </div>
 <div class="d-flex justify-content-center">
-    <button mat-button (click)="openDialog()">Change Size</button>
-    <button mat-button (click)="clearMap()">Clear Map</button>
+    <button mat-button [disabled]="!editingEnabled" (click)="openDialog()">Change Size</button>
+    <button mat-button [disabled]="!editingEnabled" (click)="clearMap()">Clear Map</button>
 </div>

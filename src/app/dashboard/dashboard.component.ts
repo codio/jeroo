@@ -1,4 +1,5 @@
 import { Component, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
+import { HotkeysService, Hotkey } from 'angular2-hotkeys';
 import { MatrixService } from '../matrix.service';
 import { SelectedLanguage } from './SelectedLanguage';
 import { JerooMatrixComponent } from '../jeroo-matrix/jeroo-matrix.component';
@@ -8,6 +9,11 @@ import { BytecodeInterpreterService } from '../bytecode-interpreter.service';
 interface Language {
     value: SelectedLanguage;
     viewValue: string;
+}
+
+interface Speed {
+    name: string;
+    value: number;
 }
 
 @Component({
@@ -28,23 +34,137 @@ export class DashboardComponent implements AfterViewInit {
         { viewValue: 'VB.NET', value: SelectedLanguage.Vb },
         { viewValue: 'PYTHON', value: SelectedLanguage.Python }
     ];
-
+    private speeds = [475, 350, 225, 125, 25, 2];
+    speedIndex = 3;
+    speedsRadio: Speed[] = [
+        { name: '1 - Slow', value: 1 },
+        { name: '2', value: 2 },
+        { name: '3 - Medium', value: 3 },
+        { name: '4', value: 4 },
+        { name: '5 - Fast', value: 5 },
+        { name: '6 - Max', value: 6 }
+    ];
+    selectedSpeedRadio = this.speedsRadio[2].value;
     selectedEditor: TextEditorComponent = null;
+    reset = true;
+    executing = false;
+    paused = false;
+    stopped = false;
 
-    constructor(private bytecodeService: BytecodeInterpreterService, private matrixService: MatrixService) { }
+    constructor(
+        private bytecodeService: BytecodeInterpreterService,
+        private matrixService: MatrixService,
+        private hotkeysService: HotkeysService
+    ) {
+        this.hotkeysService.add(new Hotkey('f2', (_event: KeyboardEvent): boolean => {
+            this.onResetClick();
+            return false;
+        }));
+        this.hotkeysService.add(new Hotkey('f3', (_event: KeyboardEvent): boolean => {
+            this.onRunStepwiseClick();
+            return false;
+        }));
+        this.hotkeysService.add(new Hotkey('f4', (_event: KeyboardEvent): boolean => {
+            this.onRunContiniousClick();
+            return false;
+        }));
+        this.hotkeysService.add(new Hotkey('f5', (_event: KeyboardEvent): boolean => {
+            this.onPauseClick();
+            return false;
+        }));
+        this.hotkeysService.add(new Hotkey('f6', (_event: KeyboardEvent): boolean => {
+            this.onStopClick();
+            return false;
+        }));
+        this.hotkeysService.add(new Hotkey('ctrl+shift+n', (_event: KeyboardEvent): boolean => {
+            this.clearMap();
+            return false;
+        }));
+        this.hotkeysService.add(new Hotkey('ctrl+shift+o', (_event: KeyboardEvent): boolean => {
+            this.openMapFile();
+            return false;
+        }));
+        this.hotkeysService.add(new Hotkey('ctrl+shift+s', (_event: KeyboardEvent): boolean => {
+            this.saveMapFile();
+            return false;
+        }));
+        this.hotkeysService.add(new Hotkey('ctrl+shift+p', (_event: KeyboardEvent): boolean => {
+            this.printMap();
+            return false;
+        }));
+    }
 
     ngAfterViewInit() {
         this.selectedEditor = this.mainMethodTextEditor;
+        const instructionSpeed = this.speeds[this.speedIndex - 1];
+        this.bytecodeService.setInstructionSpeed(instructionSpeed);
     }
 
-    runCode() {
-        const jerooCode = this.createJerooCode();
-        console.log(jerooCode);
-        const result = JerooCompiler.compile(jerooCode);
-        const context = this.jerooMatrix.getCanvas().getContext('2d');
-        if (result.successful) {
-            const instructions = result.bytecode;
-            this.bytecodeService.executeInstructions(instructions, this.matrixService, context);
+    onUndoClick() {
+        this.selectedEditor.undo();
+    }
+
+    onRedoClick() {
+        this.selectedEditor.redo();
+    }
+
+    onToggleCommentLines() {
+        this.selectedEditor.toggleComment();
+    }
+
+    onIndentSelectionClick() {
+        this.selectedEditor.indentSelection();
+    }
+
+    onUnindentSelectionClick() {
+        this.selectedEditor.unindentSelection();
+    }
+
+    onFormatSelectionClick() {
+        this.selectedEditor.formatSelection();
+    }
+
+    onRunStepwiseClick() {
+        if (!this.runBtnDisabled()) {
+            const context = this.jerooMatrix.getContext();
+            if (this.reset) {
+                const jerooCode = this.createJerooCode();
+                const result = JerooCompiler.compile(jerooCode);
+                if (result.successful) {
+                    const instructions = result.bytecode;
+                    this.bytecodeService.executeInstructionsStepwise(instructions, this.matrixService, context,
+                        () => this.pause(),
+                        () => this.stop()
+                    );
+                }
+            } else {
+                this.bytecodeService.resumeExecutionStepwise(this.matrixService, context,
+                    () => this.pause(),
+                    () => this.stop()
+                );
+            }
+            this.execute();
+        }
+    }
+
+    onRunContiniousClick() {
+        if (!this.runBtnDisabled()) {
+            const context = this.jerooMatrix.getContext();
+            if (this.reset) {
+                const jerooCode = this.createJerooCode();
+                const result = JerooCompiler.compile(jerooCode);
+                if (result.successful) {
+                    const instructions = result.bytecode;
+                    this.bytecodeService.executeInstructionsContinious(instructions, this.matrixService, context,
+                        () => this.stop()
+                    );
+                }
+            } else {
+                this.bytecodeService.resumeExecutionContinious(this.matrixService, context,
+                    () => this.stop()
+                );
+            }
+            this.execute();
         }
     }
 
@@ -63,9 +183,75 @@ export class DashboardComponent implements AfterViewInit {
         return jerooCode;
     }
 
+    onResetClick() {
+        if (!this.resetBtnDisabled()) {
+            this.resetState();
+            const context = this.jerooMatrix.getCanvas().getContext('2d');
+            this.bytecodeService.reset(this.matrixService, context);
+        }
+    }
+
+    onPauseClick() {
+        if (!this.pauseBtnDisabled()) {
+            this.pause();
+            this.bytecodeService.pauseExecution();
+        }
+    }
+
+    onStopClick() {
+        if (!this.stopBtnDisabled()) {
+            this.stop();
+            this.bytecodeService.stopExecution();
+        }
+    }
+
+    private stop() {
+        this.stopped = true;
+        this.executing = false;
+        this.reset = false;
+        this.paused = false;
+        this.jerooMatrix.disableEditing();
+    }
+
+    private execute() {
+        this.executing = true;
+        this.reset = false;
+        this.paused = false;
+        this.stopped = false;
+        this.jerooMatrix.disableEditing();
+    }
+
+    private resetState() {
+        this.reset = true;
+        this.executing = false;
+        this.paused = false;
+        this.stopped = false;
+        this.jerooMatrix.enableEditing();
+    }
+
+    private pause() {
+        this.paused = true;
+        this.executing = false;
+        this.stopped = false;
+        this.reset = false;
+        this.jerooMatrix.disableEditing();
+    }
+
+    onSpeedRadioClick(speedValue: number) {
+        this.speedIndex = speedValue;
+        this.onSpeedIndexChange();
+    }
+
+    onSpeedIndexChange() {
+        const instructionSpeed = this.speeds[this.speedIndex - 1];
+        this.bytecodeService.setInstructionSpeed(instructionSpeed);
+    }
+
     clearMap() {
-        this.matrixService.resetMap();
-        this.jerooMatrix.redraw();
+        if (this.reset) {
+            this.matrixService.resetMap();
+            this.jerooMatrix.redraw();
+        }
     }
 
     openMapFile() {
@@ -73,13 +259,15 @@ export class DashboardComponent implements AfterViewInit {
     }
 
     mapFileSelected(file: File) {
-        const reader = new FileReader();
-        reader.readAsText(file, 'UTF-8');
-        reader.onload = (readerEvent: any) => {
-            const content: string = readerEvent.target.result;
-            this.matrixService.genMapFromString(content);
-            this.jerooMatrix.redraw();
-        };
+        if (this.reset) {
+            const reader = new FileReader();
+            reader.readAsText(file, 'UTF-8');
+            reader.onload = (readerEvent: any) => {
+                const content: string = readerEvent.target.result;
+                this.matrixService.genMapFromString(content);
+                this.jerooMatrix.redraw();
+            };
+        }
     }
 
     saveMapFile() {
@@ -154,27 +342,19 @@ export class DashboardComponent implements AfterViewInit {
         }
     }
 
-    onUndoClick() {
-        this.selectedEditor.undo();
+    resetBtnDisabled() {
+        return !this.paused && !this.stopped && !this.reset && !this.stopped;
     }
 
-    onRedoClick() {
-        this.selectedEditor.redo();
+    runBtnDisabled() {
+        return !this.paused && !this.reset;
     }
 
-    onToggleCommentLines() {
-        this.selectedEditor.toggleComment();
+    pauseBtnDisabled() {
+        return !this.executing;
     }
 
-    onIndentSelectionClick() {
-        this.selectedEditor.indentSelection();
-    }
-
-    onUnindentSelectionClick() {
-        this.selectedEditor.unindentSelection();
-    }
-
-    onFormatSelectionClick() {
-        this.selectedEditor.formatSelection();
+    stopBtnDisabled() {
+        return !this.executing && !this.paused;
     }
 }
