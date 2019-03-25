@@ -4,6 +4,7 @@ stages:
   - build-ocaml
   - build-angular
   - test-angular
+  - generate-documentation
 
 build-ocaml:
   image: ocaml/opam2:alpine-3.9-ocaml-4.07
@@ -44,3 +45,31 @@ test-angular:
     - yarn install
     - yarn test --no-watch --no-progress --browsers=ChromeHeadlessCI
     - yarn e2e --protractor-config=e2e/protractor-ci.conf.js
+
+generate-typescript-documentation:
+  image: node:8.15-alpine
+  stage: generate-documentation
+  artifacts:
+    paths:
+      - docs
+  script:
+    - yarn --version
+    - yarn install
+    - yarn doc --out docs src/
+
+generate-ocaml-documentation:
+  image: ocaml/opam2:alpine-3.9-ocaml-4.07
+  stage: generate-documentation
+  artifacts:
+    paths:
+      - src/compiler/_build/default/_doc/_html
+  script:
+    - sudo apk update
+    - sudo apk add m4
+    - opam update
+    - ocamlc --version
+    - opam --version
+    - opam install dune odoc menhir
+    - odoc --version
+    - cd src/compiler
+    - dune build lib @doc-private
