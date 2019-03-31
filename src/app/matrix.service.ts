@@ -97,6 +97,10 @@ export class MatrixService {
         this.jeroos[row * this.cols + col] = jeroo;
     }
 
+    isInBounds(col: number, row: number) {
+        return col >= 0 && col < this.cols && row >= 0 && row < this.rows;
+    }
+
     /**
       * @returns the size of a tile sprite in pixels.
       */

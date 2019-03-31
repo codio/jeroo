@@ -289,6 +289,18 @@ export class BytecodeInterpreterService {
                 this.cmpStack.push(isJeroo);
                 break;
             }
+            case 'ISFLWR': {
+                const direction = numberToRelativeDirection(command.a);
+                const isFlower = this.getCurrentJeroo().isFlower(direction, matService);
+                this.cmpStack.push(isFlower);
+                break;
+            }
+            case 'FACING': {
+                const direction = numberToCardinalDirection(command.a);
+                const isFacing = this.getCurrentJeroo().isFacing(direction);
+                this.cmpStack.push(isFacing);
+                break;
+            }
             case 'NOT': {
                 const not = !this.cmpStack[this.cmpStack.length - 1];
                 this.cmpStack.push(not);

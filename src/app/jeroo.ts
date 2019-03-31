@@ -112,6 +112,9 @@ export class Jeroo {
        */
     hop(matrixService: MatrixService) {
         const nextLocation = this.getLocation(RelativeDirection.Ahead);
+        if (!matrixService.isInBounds(nextLocation.x, nextLocation.y)) {
+            throw new Error('LOGIC ERROR: Jeroo is out of bounds');
+        }
         const nextTile = matrixService.getTile(nextLocation.x, nextLocation.y);
         if (nextTile === TileType.Water) {
             throw new Error('LOGIC ERROR: Jeroo is on water');
@@ -219,6 +222,15 @@ export class Jeroo {
     isJeroo(lookDirection: RelativeDirection, matrixService: MatrixService) {
         const location = this.getLocation(lookDirection);
         return matrixService.getJeroo(location.x, location.y) !== null;
+    }
+
+    isFlower(lookDirection: RelativeDirection, matrixService: MatrixService) {
+        const location = this.getLocation(lookDirection);
+        return matrixService.getTile(location.x, location.y) === TileType.Flower;
+    }
+
+    isFacing(direction: CardinalDirection) {
+        return this.direction === direction;
     }
 
     private getLocation(direction: RelativeDirection): Point {

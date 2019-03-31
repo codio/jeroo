@@ -130,20 +130,23 @@ export class DashboardComponent implements AfterViewInit {
             if (this.reset) {
                 const jerooCode = this.createJerooCode();
                 const result = JerooCompiler.compile(jerooCode);
-                if (result.successful) {
+                if (result.successful === true) {
                     const instructions = result.bytecode;
                     this.bytecodeService.executeInstructionsStepwise(instructions, this.matrixService, context,
                         () => this.pause(),
                         () => this.stop()
                     );
+                    this.execute();
+                } else {
+                    console.log(result.error);
                 }
             } else {
                 this.bytecodeService.resumeExecutionStepwise(this.matrixService, context,
                     () => this.pause(),
                     () => this.stop()
                 );
+                this.execute();
             }
-            this.execute();
         }
     }
 
@@ -158,13 +161,16 @@ export class DashboardComponent implements AfterViewInit {
                     this.bytecodeService.executeInstructionsContinious(instructions, this.matrixService, context,
                         () => this.stop()
                     );
+                    this.execute();
+                } else {
+                    console.log(result.error);
                 }
             } else {
                 this.bytecodeService.resumeExecutionContinious(this.matrixService, context,
                     () => this.stop()
                 );
+                this.execute();
             }
-            this.execute();
         }
     }
 
@@ -186,7 +192,7 @@ export class DashboardComponent implements AfterViewInit {
     onResetClick() {
         if (!this.resetBtnDisabled()) {
             this.resetState();
-            const context = this.jerooMatrix.getCanvas().getContext('2d');
+            const context = this.jerooMatrix.getContext();
             this.bytecodeService.reset(this.matrixService, context);
         }
     }

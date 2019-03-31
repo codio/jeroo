@@ -168,6 +168,22 @@ let codegen_jeroo_decl_invalid_args _test_ctxt =
                       {
                         a = AST.IntExpr(2);
                         lnum = 2;
+                      };
+                      {
+                        a = AST.IntExpr(2);
+                        lnum = 2;
+                      };
+                      {
+                        a = AST.IntExpr(2);
+                        lnum = 2;
+                      };
+                      {
+                        a = AST.SouthExpr;
+                        lnum = 2;
+                      };
+                      {
+                        a = AST.IntExpr(2);
+                        lnum = 2;
                       }
                     ]);
                 lnum = 2;
