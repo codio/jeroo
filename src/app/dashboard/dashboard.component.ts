@@ -138,7 +138,7 @@ export class DashboardComponent implements AfterViewInit {
                     );
                     this.execute();
                 } else {
-                    console.log(result.error);
+                    console.error(result.error);
                 }
             } else {
                 this.bytecodeService.resumeExecutionStepwise(this.matrixService, context,
@@ -163,7 +163,7 @@ export class DashboardComponent implements AfterViewInit {
                     );
                     this.execute();
                 } else {
-                    console.log(result.error);
+                    console.error(result.error);
                 }
             } else {
                 this.bytecodeService.resumeExecutionContinious(this.matrixService, context,
