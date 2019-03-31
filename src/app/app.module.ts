@@ -32,6 +32,7 @@ import { MaterialModule } from './material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TextEditorComponent } from './text-editor/text-editor.component';
+import { StorageServiceModule } from 'angular-webstorage-service';
 
 library.add(
     faFile,
@@ -69,6 +70,7 @@ library.add(
         FormsModule,
         ReactiveFormsModule,
         FontAwesomeModule,
+        StorageServiceModule,
         HotkeyModule.forRoot()
     ],
     providers: [],

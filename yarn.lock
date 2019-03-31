@@ -390,6 +390,10 @@
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.39.tgz#e177e699ee1b8c22d23174caaa7422644389509f"
   integrity sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==
 
+"@types/hammerjs@^2.0.36":
+  version "2.0.36"
+  resolved "https://registry.yarnpkg.com/@types/hammerjs/-/hammerjs-2.0.36.tgz#17ce0a235e9ffbcdcdf5095646b374c2bf615a4c"
+  integrity sha512-7TUK/k2/QGpEAv/BCwSHlYu3NXZhQ9ZwBYpzr9tjlPIL2C5BeGhH3DmVavRx3ZNyELX5TLC91JTz/cen6AAtIQ==
 "@types/events@*":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@types/events/-/events-3.0.0.tgz#2862f3f58a9a7f7c3e78d79f130dd4d71c25c2a7"
@@ -774,6 +778,10 @@ amdefine@>=0.0.4:
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
   integrity sha1-SlKCrBZHKek2Gbz9OtFR+BfOkfU=
 
+angular-webstorage-service@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/angular-webstorage-service/-/angular-webstorage-service-1.0.2.tgz#caa21ae8deba822666dc0aaa49124b94a72664ed"
+  integrity sha512-LPTAW+P3DlACdCfOd2Cpg4jqciIIfsIZjQafVl5IrjrcoplpUiOImrKo+R0jfVIZ/V04OJWKDDGqLm9YraDIcw==
 angular2-hotkeys@^2.1.4:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/angular2-hotkeys/-/angular2-hotkeys-2.1.4.tgz#7411601aea425fada77a6f1274018cb6b8961afe"
