@@ -11,7 +11,7 @@ declare interface Instruction {
 declare interface CompilationResult {
     successful: boolean;
     bytecode?: Instruction[];
-    error_message?: string;
+    error?: string;
 }
 
 declare interface JerooCompilerModule {

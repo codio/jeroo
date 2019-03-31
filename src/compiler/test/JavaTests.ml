@@ -444,6 +444,13 @@ let parse_extension_method _test_ctxt =
   } in
   assert_equal ast expected
 
+let parse_syntax_error _test_ctxt =
+  let code = "@Java\n@@\n method main() { Jeroo j = new Jeroo() }" in
+  assert_raises (Compiler.ParserException {
+      message = "expected ';' at the end of declaration\n";
+      lnum = 1
+    }) (fun () -> Compiler.compile code)
+
 let suite =
   "Java Parsing">::: [
     "Parse Method">:: parse_method;
@@ -464,4 +471,5 @@ let suite =
     "Parse Negative Int">:: parse_negative_int;
     "Parse Stmt List">:: parse_stmt_list;
     "Parse Extension Method">:: parse_extension_method;
+    "Parse Syntax Error">:: parse_syntax_error;
   ]

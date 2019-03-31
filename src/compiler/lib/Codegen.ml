@@ -199,6 +199,25 @@ let codegen translation_unit =
                 message = "Invalid arguments, isWater requires a relative direction"
               })
           end
+        | "isClear" -> begin match args with
+            | meta_e :: [] ->
+              let relative_dir = relative_dir_of_expr meta_e in
+              let instrs = [
+                Bytecode.ISJEROO (relative_dir, pane_num, line_num);
+                Bytecode.ISWATER (relative_dir, pane_num, line_num);
+                Bytecode.ISNET (relative_dir, pane_num, line_num);
+                Bytecode.ISFLWR (relative_dir, pane_num, line_num);
+                Bytecode.OR (pane_num, line_num);
+                Bytecode.OR (pane_num, line_num);
+                Bytecode.OR (pane_num, line_num);
+                Bytecode.NOT (pane_num, line_num)
+              ] |> List.to_seq in
+              Queue.add_seq code_queue instrs
+            | _ -> raise (SemanticException {
+                lnum = line_num;
+                message = "Invalid arguments, isClear requires a relative direction"
+              })
+          end
         | _ ->
           (* calling a user-defined function *)
           if Hashtbl.mem fxn_tbl id then
@@ -225,6 +244,8 @@ let codegen translation_unit =
     match args with
     | [] ->
       Bytecode.NEW (id_loc, 0, 0, 0, Bytecode.North, line_num)
+    | { a = AST.IntExpr(num_flowers); _ } :: [] ->
+      Bytecode.NEW (id_loc, 0, 0, num_flowers, Bytecode.North, line_num)
     | { a = AST.IntExpr(x); _ } :: { a = AST.IntExpr(y); _ } :: [] ->
       Bytecode.NEW (id_loc, x, y, 0, Bytecode.North, line_num)
     | { a = AST.IntExpr(x); _ } :: { a = AST.IntExpr(y); _ } :: { a = AST.IntExpr(num_flowers); _ } :: [] ->

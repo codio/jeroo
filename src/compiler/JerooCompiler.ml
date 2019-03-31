@@ -13,15 +13,25 @@ let _ =
           (object%js
             val successful = Js.bool true
             val bytecode = Js.def bytecode [@@jsoo.optdef]
-            val error_message = Js.undefined [@@jsoo.optdef]
+            val error = Js.undefined [@@jsoo.optdef]
           end)
-        with Codegen.SemanticException e ->
-          let error_message = (Printf.sprintf "Semantic exception on line %d: %s\n" e.lnum e.message)
-                              |> Js.string
+        with
+        | e ->
+          let error_message = match e with
+            | Codegen.SemanticException e ->
+              (Printf.sprintf "Semantic error on line %d: %s\n" e.lnum e.message)
+              |> Js.string
+            | Compiler.ParserException e ->
+              (Printf.sprintf "Syntax error on line %d: %s\n" e.lnum e.message)
+              |> Js.string
+            | Compiler.HeaderException e ->
+              (Printf.sprintf "File header error: %s\n" e)
+              |> Js.string
+            | e -> raise e
           in
           (object%js
             val successful = Js.bool false
             val bytecode = Js.undefined [@@jsoo.optdef]
-            val error_message = Js.def error_message [@@jsoo.optdef]
+            val error = Js.def error_message [@@jsoo.optdef]
           end)
     end)

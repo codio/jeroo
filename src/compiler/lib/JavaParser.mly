@@ -23,6 +23,7 @@ open AST
 
 %start <AST.translation_unit> translation_unit
 
+%on_error_reduce expr
 %%
 
 translation_unit:
