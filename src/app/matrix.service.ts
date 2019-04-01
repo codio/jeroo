@@ -10,8 +10,8 @@ import { Jeroo } from './jeroo';
 })
 export class MatrixService {
 
-    private rows = 24;
-    private cols = 24;
+    private rows = 26;
+    private cols = 26;
     private tsize = 28;
     private tiles: TileType[] = [];
     private imageAtlas: HTMLImageElement;
@@ -36,10 +36,18 @@ export class MatrixService {
      */
     public resetMap() {
         this.tiles = [];
-        for (let row = 0; row < this.rows; row++) {
-            for (let col = 0; col < this.cols; col++) {
+        for (let col = 0; col < this.cols; col++) {
+            this.tiles.push(TileType.Water);
+        }
+        for (let row = 0; row < this.rows - 2; row++) {
+            this.tiles.push(TileType.Water);
+            for (let col = 0; col < this.cols - 2; col++) {
                 this.tiles.push(TileType.Grass);
             }
+            this.tiles.push(TileType.Water);
+        }
+        for (let col = 0; col < this.cols; col++) {
+            this.tiles.push(TileType.Water);
         }
     }
 
@@ -124,47 +132,61 @@ export class MatrixService {
     }
 
     private renderTiles(context: CanvasRenderingContext2D, imageAtlas: HTMLImageElement) {
-        // fill the top row with water
-        for (let col = 0; col < this.cols + 2; col++) {
-            this.renderTile(context, imageAtlas, TileType.Water, col, 0);
-        }
         for (let row = 0; row < this.rows; row++) {
-            // fill in the left water tile
-            this.renderTile(context, imageAtlas, TileType.Water, 0, row + 1);
             for (let col = 0; col < this.cols; col++) {
                 const jeroo = this.getJeroo(col, row);
                 if (jeroo !== null) {
                     this.renderJeroo(context, imageAtlas, jeroo);
                 } else {
                     const tile = this.getTile(col, row);
-                    this.renderTile(context, imageAtlas, tile, col + 1, row + 1);
+                    this.renderTile(context, imageAtlas, tile, col, row);
                 }
             }
-            // fill in the right water tile
-            this.renderTile(context, imageAtlas, TileType.Water, this.cols + 1, row + 1);
-        }
-        // fill the bottom row with water
-        for (let col = 0; col < this.cols + 2; col++) {
-            this.renderTile(context, imageAtlas, TileType.Water, col, this.rows + 1);
         }
     }
 
     private renderJeroo(context: CanvasRenderingContext2D, imageAtlas: HTMLImageElement, jeroo: Jeroo) {
         const jerooOffset = jeroo.getId() + 1;
         const directionOffset = jeroo.getDirection();
-        const col = jeroo.getX() + 1;
-        const row = jeroo.getY() + 1;
-        context.drawImage(
-            imageAtlas,
-            directionOffset * this.tsize,
-            jerooOffset * this.tsize,
-            this.tsize,
-            this.tsize,
-            col * this.tsize,
-            row * this.tsize,
-            this.tsize,
-            this.tsize
-        );
+        const col = jeroo.getX();
+        const row = jeroo.getY();
+        if (!jeroo.isInWater() && !jeroo.isInNet()) {
+            context.drawImage(
+                imageAtlas,
+                directionOffset * this.tsize,
+                jerooOffset * this.tsize,
+                this.tsize,
+                this.tsize,
+                col * this.tsize,
+                row * this.tsize,
+                this.tsize,
+                this.tsize
+            );
+        } else if (jeroo.isInWater()) {
+            context.drawImage(
+                imageAtlas,
+                0,
+                5 * this.tsize,
+                this.tsize,
+                this.tsize,
+                col * this.tsize,
+                row * this.tsize,
+                this.tsize,
+                this.tsize
+            );
+        } else if (jeroo.isInNet()) {
+            context.drawImage(
+                imageAtlas,
+                1 * this.tsize,
+                5 * this.tsize,
+                this.tsize,
+                this.tsize,
+                col * this.tsize,
+                row * this.tsize,
+                this.tsize,
+                this.tsize
+            );
+        }
     }
 
     private renderTile(context: CanvasRenderingContext2D, imageAtlas: HTMLImageElement, tileType: TileType, col: number, row: number) {
@@ -209,8 +231,8 @@ export class MatrixService {
       */
     toString() {
         let mapContents = '';
-        for (let row = 0; row < this.rows; row++) {
-            for (let col = 0; col < this.cols; col++) {
+        for (let row = 1; row < this.rows - 1; row++) {
+            for (let col = 1; col < this.cols - 1; col++) {
                 const tile = this.tileTypeToString(this.getTile(col, row));
                 mapContents += tile;
             }
@@ -249,18 +271,26 @@ export class MatrixService {
             const cols = lines[0].length;
             const oldRows = this.getRows();
             const oldCols = this.getCols();
-            this.setRows(rows);
-            this.setCols(cols);
+            this.setRows(rows + 2);
+            this.setCols(cols + 2);
 
             try {
-                for (let row = 0; row < rows; row++) {
-                    if (lines[row].length !== cols) {
+                for (let col = 0; col < cols + 2; col++) {
+                    this.setTile(col, 0, TileType.Water);
+                }
+                for (let row = 1; row < rows + 1; row++) {
+                    if (lines[row - 1].length !== cols) {
                         throw new Error('Jagged maps are not allowed');
                     }
-                    for (let col = 0; col < cols; col++) {
-                        const char = lines[row].charAt(col);
+                    this.setTile(0, row, TileType.Water);
+                    for (let col = 1; col < cols + 1; col++) {
+                        const char = lines[row - 1].charAt(col - 1);
                         this.setTile(col, row, this.stringToTileType(char));
                     }
+                    this.setTile(cols + 1, row, TileType.Water);
+                }
+                for (let col = 0; col < cols + 2; col++) {
+                    this.setTile(col, 0, TileType.Water);
                 }
             } catch (e) {
                 // reset the rows and cols to their previous values

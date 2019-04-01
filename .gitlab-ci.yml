@@ -13,15 +13,16 @@ build-ocaml:
     paths:
       - src/compiler/_build/
   script:
+    - cd src/compiler
     - sudo apk update
     - sudo apk add m4
-    - opam update
+    - opam update && opam upgrade
     - ocamlc --version
     - opam --version
-    - opam install -y dune menhir js_of_ocaml-compiler js_of_ocaml-ppx js_of_ocaml ounit
-    - cd src/compiler
-    - dune runtest
+    - opam install --deps-only .
+    - eval $(opam env)
     - dune build ./JerooCompiler.bc.js --profile release
+    - dune runtest
 
 build-angular:
   image: node:8.15-alpine

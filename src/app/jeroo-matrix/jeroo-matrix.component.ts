@@ -23,7 +23,7 @@ export class JerooMatrixComponent implements AfterViewInit {
     editingEnabled = true;
 
     constructor(private matrixService: MatrixService, private dialog: MatDialog,
-                @Inject(LOCAL_STORAGE) private storage: WebStorageService) { }
+        @Inject(LOCAL_STORAGE) private storage: WebStorageService) { }
 
     ngAfterViewInit() {
         // check if something has been stored in the cache to load if it has
@@ -32,8 +32,8 @@ export class JerooMatrixComponent implements AfterViewInit {
         }
         this.canvas = this.jerooGameCanvas.nativeElement as HTMLCanvasElement;
         this.context = this.canvas.getContext('2d');
-        this.canvas.width = this.matrixService.getTsize() * (this.matrixService.getCols() + 2);
-        this.canvas.height = this.matrixService.getTsize() * (this.matrixService.getRows() + 2);
+        this.canvas.width = this.matrixService.getTsize() * (this.matrixService.getCols());
+        this.canvas.height = this.matrixService.getTsize() * (this.matrixService.getRows());
         this.matrixService.render(this.context);
     }
 
@@ -41,15 +41,15 @@ export class JerooMatrixComponent implements AfterViewInit {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.autoFocus = true;
         dialogConfig.data = {
-            xValue: this.matrixService.getCols(),
-            yValue: this.matrixService.getRows()
+            xValue: this.matrixService.getCols() - 2,
+            yValue: this.matrixService.getRows() - 2
         };
 
         const dialogRef = this.dialog.open(MatrixDialogComponent, dialogConfig);
         dialogRef.afterClosed().subscribe(data => {
             if (this.editingEnabled) {
-                this.matrixService.setCols(+data.xValue);
-                this.matrixService.setRows(+data.yValue);
+                this.matrixService.setCols(+data.xValue + 2);
+                this.matrixService.setRows(+data.yValue + 2);
                 this.matrixService.resetMap();
                 this.redraw();
             }
@@ -61,8 +61,8 @@ export class JerooMatrixComponent implements AfterViewInit {
             this.canvas.width,
             this.canvas.height
         );
-        this.canvas.width = this.matrixService.getTsize() * (this.matrixService.getCols() + 2);
-        this.canvas.height = this.matrixService.getTsize() * (this.matrixService.getRows() + 2);
+        this.canvas.width = this.matrixService.getTsize() * (this.matrixService.getCols());
+        this.canvas.height = this.matrixService.getTsize() * (this.matrixService.getRows());
         // if the board has been resized save into cache
         this.saveInLocal(this.boardCache, this.matrixService.toString());
         this.matrixService.render(this.context);
@@ -153,15 +153,15 @@ export class JerooMatrixComponent implements AfterViewInit {
         const rows = this.matrixService.getRows();
         const pixelsInCol = this.matrixService.getTsize();
         const pixelsInRow = this.matrixService.getTsize();
-        const tileCol = ((pixelX / pixelsInCol) | 0) - 1;
-        const tileRow = ((pixelY / pixelsInRow) | 0) - 1;
+        const tileCol = ((pixelX / pixelsInCol) | 0);
+        const tileRow = ((pixelY / pixelsInRow) | 0);
 
         // update the mouse locations
         this.mouseColumn = tileCol;
         this.mouseRow = tileRow;
 
         if (tileCol >= 0 && tileRow >= 0
-            && tileCol < cols && tileRow < rows) {
+            && tileCol < cols - 2 && tileRow < rows - 2) {
             // update the col and row
             if (this.editingEnabled && this.mouseDown && this.selectedTileType !== null) {
                 // only re-render if we change the map
