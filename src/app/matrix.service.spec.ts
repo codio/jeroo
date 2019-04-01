@@ -39,9 +39,9 @@ describe('MatrixService', () => {
 
     it('toString correctly converts map to a string', () => {
         const service: MatrixService = TestBed.get(MatrixService);
-        service.setTile(5, 5, TileType.Water);
-        service.setTile(1, 2, TileType.Flower);
-        service.setTile(23, 23, TileType.Net);
+        service.setTile(6, 6, TileType.Water);
+        service.setTile(2, 3, TileType.Flower);
+        service.setTile(24, 24, TileType.Net);
 
         const actual = service.toString();
         const expected =
@@ -103,7 +103,7 @@ describe('MatrixService', () => {
         const lines = map.trim().split('\n');
         for (let row = 0; row < lines.length; row++) {
             for (let col = 0; col < lines[0].length; col++) {
-                const actual = service.getTile(col, row);
+                const actual = service.getTile(col + 1, row + 1);
                 const expected = service.stringToTileType(lines[row].charAt(col));
                 expect(actual).toBe(expected);
             }
@@ -117,8 +117,8 @@ describe('MatrixService', () => {
             '.....\n' +
             '.....\n';
         service.genMapFromString(map);
-        expect(service.getCols()).toBe(5);
-        expect(service.getRows()).toBe(3);
+        expect(service.getCols()).toBe(7);
+        expect(service.getRows()).toBe(5);
     });
 
     it('genMapFromString throws error on unknown TileType', () => {

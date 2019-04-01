@@ -243,13 +243,13 @@ let codegen translation_unit =
     let id_loc = Hashtbl.find jeroo_tbl id in
     match args with
     | [] ->
-      Bytecode.NEW (id_loc, 0, 0, 0, Bytecode.North, line_num)
+      Bytecode.NEW (id_loc, 0, 0, 0, Bytecode.East, line_num)
     | { a = AST.IntExpr(num_flowers); _ } :: [] ->
-      Bytecode.NEW (id_loc, 0, 0, num_flowers, Bytecode.North, line_num)
+      Bytecode.NEW (id_loc, 0, 0, num_flowers, Bytecode.East, line_num)
     | { a = AST.IntExpr(x); _ } :: { a = AST.IntExpr(y); _ } :: [] ->
-      Bytecode.NEW (id_loc, x, y, 0, Bytecode.North, line_num)
+      Bytecode.NEW (id_loc, x, y, 0, Bytecode.East, line_num)
     | { a = AST.IntExpr(x); _ } :: { a = AST.IntExpr(y); _ } :: { a = AST.IntExpr(num_flowers); _ } :: [] ->
-      Bytecode.NEW (id_loc, x, y, num_flowers, Bytecode.North, line_num)
+      Bytecode.NEW (id_loc, x, y, num_flowers, Bytecode.East, line_num)
     | { a = AST.IntExpr(x); _ } :: { a = AST.IntExpr(y); _ } :: { a = AST.IntExpr(num_flowers); _ } :: direction :: [] ->
       Bytecode.NEW (id_loc, x, y, num_flowers, (compass_dir_of_expr direction), line_num)
     | _ -> raise (SemanticException {

@@ -1,0 +1,26 @@
+opam-version: "2.0"
+maintainer:   [ "bkonz@unomaha.edu"
+                "bdorn@unomaha.edu" ]
+authors:      "Benjamin Konz"
+homepage:     "http://jeroo.org"
+bug-reports:  "https://gitlab.com/bkonzUNOmaha/jeroo/issues"
+dev-repo:     "git+https://gitlab.com/bkonzUNOmaha/jeroo.git"
+doc:          "https://gitlab.com/bkonzUNOmaha/jeroo/wikis/home"
+              synopsis:     "Virtual package to install and configure the Jeroo Compiler JS lib"
+
+build: [
+  ["dune" "subst"]
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j1" "--no-buffer"]
+]
+
+depends: [
+  "ocaml"           {>= "4.07.1"}
+  "dune"            {build & >= "1.6.3"}
+  "menhir" {>= "20181113"}
+  "core" {>= "0.11.3"}
+  "js_of_ocaml-compiler" {>= "3.3.0"}
+  "js_of_ocaml-ppx" {>= "3.3.0"}
+  "js_of_ocaml" {>= "3.3.0"}
+  "ounit"        {>= "2.0.8"}
+]

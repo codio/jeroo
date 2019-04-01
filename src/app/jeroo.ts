@@ -33,6 +33,8 @@ const STEP: Point[] = [
 ];
 
 export class Jeroo {
+    private inWater = false;
+    private inNet = false;
     /**
        * Create a new Jeroo
        * @param id A unique numerical identifier for this jeroo.
@@ -45,7 +47,8 @@ export class Jeroo {
         private x: number,
         private y: number,
         private numFlowers: number,
-        private direction: CardinalDirection) {
+        private direction: CardinalDirection
+    ) {
         if (numFlowers < 0) {
             throw new Error('INSTANTIATION ERROR: flowers < 0');
         }
@@ -112,23 +115,28 @@ export class Jeroo {
        */
     hop(matrixService: MatrixService) {
         const nextLocation = this.getLocation(RelativeDirection.Ahead);
-        if (!matrixService.isInBounds(nextLocation.x, nextLocation.y)) {
-            throw new Error('LOGIC ERROR: Jeroo is out of bounds');
-        }
         const nextTile = matrixService.getTile(nextLocation.x, nextLocation.y);
-        if (nextTile === TileType.Water) {
-            throw new Error('LOGIC ERROR: Jeroo is on water');
-        } else if (nextTile === TileType.Net) {
-            throw new Error('LOGIC ERROR: Jeroo is on a net');
-        } else if (matrixService.getJeroo(nextLocation.x, nextLocation.y) !== null) {
-            throw new Error('LOGIC ERROR: Jeroo has collided with another jeroo');
-        }
         matrixService.setJeroo(this.getX(), this.getY(), null);
         this.x = nextLocation.x;
         this.y = nextLocation.y;
+        if (matrixService.getJeroo(nextLocation.x, nextLocation.y) !== null) {
+            throw new Error('LOGIC ERROR: Jeroo has collided with another jeroo');
+        }
         matrixService.setJeroo(this.getX(), this.getY(), this);
         if (nextTile === TileType.Flower) {
             this.numFlowers++;
+        }
+        if (!matrixService.isInBounds(nextLocation.x, nextLocation.y)) {
+            this.inWater = true;
+            throw new Error('LOGIC ERROR: Jeroo is out of bounds');
+        }
+        if (nextTile === TileType.Water) {
+            this.inWater = true;
+            throw new Error('LOGIC ERROR: Jeroo is on water');
+        }
+        if (nextTile === TileType.Net) {
+            this.inNet = true;
+            throw new Error('LOGIC ERROR: Jeroo is on a net');
         }
     }
 
@@ -244,5 +252,13 @@ export class Jeroo {
             x: this.x + dx,
             y: this.y + dy
         };
+    }
+
+    isInWater() {
+        return this.inWater;
+    }
+
+    isInNet() {
+        return this.inNet;
     }
 }
