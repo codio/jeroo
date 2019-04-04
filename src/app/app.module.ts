@@ -34,6 +34,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { DisplayErrorMessageComponent } from './display-error-message/display-error-message.component';
 import { TextEditorComponent } from './text-editor/text-editor.component';
 import { StorageServiceModule } from 'angular-webstorage-service';
+import { EditorTabAreaComponent } from './editor-tab-area/editor-tab-area.component';
 
 library.add(
     faFile,
@@ -63,6 +64,7 @@ library.add(
         MatrixDialogComponent,
         DisplayErrorMessageComponent,
         TextEditorComponent,
+        EditorTabAreaComponent,
     ],
     imports: [
         BrowserModule,

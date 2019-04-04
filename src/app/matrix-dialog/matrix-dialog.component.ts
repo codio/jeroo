@@ -33,5 +33,4 @@ export class MatrixDialogComponent implements OnInit {
             yValue: [this.heightValue, [Validators.min(1), Validators.max(50), Validators.pattern('[0-9]*'), Validators.required]]
         });
     }
-
 }

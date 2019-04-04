@@ -15,7 +15,7 @@
     </mat-button-toggle-group>
 </div>
 <div class="d-flex justify-content-center">
-    <canvas #jerooGameCanvas [className]="editingEnabled ? 'default-cursor' : 'not-allowed-cursor'" (mousedown)="canvasMouseDown($event)" (mouseup)="canvasGestureUp()" (mousemove)="canvasMouseMove($event)" (touchstart)="canvasTapDown($event)" (touchend)="canvasGestureUp()" (touchmove)="canvasTapMove($event)" (panstart)="disableScrolling()">
+    <canvas #jerooGameCanvas [className]="editingEnabled ? 'default-cursor' : 'not-allowed-cursor'" (mousedown)="canvasMouseDown($event)" (mouseup)="canvasGestureUp()" (mousemove)="canvasMouseMove($event)" (touchstart)="canvasTapDown($event)" (touchend)="canvasGestureUp()" (touchmove)="canvasTapMove($event)" (panstart)="null">
     </canvas>
 </div>
 <div class="d-flex justify-content-center">
