@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, Inject } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, Inject, Input } from '@angular/core';
 import { MatrixService } from '../matrix.service';
 import { TileType } from '../matrixConstants';
 import { MatDialog, MatDialogConfig } from '@angular/material';
@@ -12,6 +12,7 @@ import { LOCAL_STORAGE, WebStorageService } from 'angular-webstorage-service';
 })
 export class JerooMatrixComponent implements AfterViewInit {
     @ViewChild('jerooGameCanvas') jerooGameCanvas: ElementRef;
+    @Input() editingEnabled: boolean;
 
     private canvas: HTMLCanvasElement;
     private context: CanvasRenderingContext2D;
@@ -20,7 +21,6 @@ export class JerooMatrixComponent implements AfterViewInit {
     private boardCache = 'board';
     mouseRow: number = null;
     mouseColumn: number = null;
-    editingEnabled = true;
 
     constructor(private matrixService: MatrixService, private dialog: MatDialog,
         @Inject(LOCAL_STORAGE) private storage: WebStorageService) { }
@@ -51,6 +51,7 @@ export class JerooMatrixComponent implements AfterViewInit {
                 this.matrixService.setCols(+data.xValue + 2);
                 this.matrixService.setRows(+data.yValue + 2);
                 this.matrixService.resetMap();
+                this.matrixService.resetJeroos();
                 this.redraw();
             }
         });
@@ -69,12 +70,11 @@ export class JerooMatrixComponent implements AfterViewInit {
     }
 
     clearMap() {
-        if (this.editingEnabled) {
-            this.matrixService.resetMap();
-            // if the board is cleared, also save into service incase the size has been changed
-            this.saveInLocal(this.boardCache, this.matrixService.toString());
-            this.matrixService.render(this.context);
-        }
+        this.matrixService.resetMap();
+        this.matrixService.resetJeroos();
+        // if the board is cleared, also save into service incase the size has been changed
+        this.saveInLocal(this.boardCache, this.matrixService.toString());
+        this.matrixService.render(this.context);
     }
 
     getCanvas() {
@@ -123,14 +123,8 @@ export class JerooMatrixComponent implements AfterViewInit {
         this.updateScreenFromMouseEvent(event);
     }
 
-    canvasTapMove(event: any) {
+    canvasTapMove(event: TouchEvent) {
         this.updateScreenFromTapEvent(event);
-    }
-
-    // having a hammerjs action bound to a function will prevent the screen from scrolling while
-    // being on the canvas on mobile devices
-    disableScrolling() {
-
     }
 
     private updateScreenFromMouseEvent(event: MouseEvent) {
@@ -157,11 +151,11 @@ export class JerooMatrixComponent implements AfterViewInit {
         const tileRow = ((pixelY / pixelsInRow) | 0);
 
         // update the mouse locations
-        this.mouseColumn = tileCol;
-        this.mouseRow = tileRow;
+        this.mouseColumn = tileCol - 1;
+        this.mouseRow = tileRow - 1;
 
-        if (tileCol >= 0 && tileRow >= 0
-            && tileCol < cols - 2 && tileRow < rows - 2) {
+        if (tileCol > 0 && tileRow > 0
+            && tileCol < cols - 1 && tileRow < rows - 1) {
             // update the col and row
             if (this.editingEnabled && this.mouseDown && this.selectedTileType !== null) {
                 // only re-render if we change the map
@@ -178,15 +172,7 @@ export class JerooMatrixComponent implements AfterViewInit {
         }
     }
 
-    saveInLocal(key, val): void {
+    saveInLocal(key: string, val: any): void {
         this.storage.set(key, val);
-    }
-
-    enableEditing() {
-        this.editingEnabled = true;
-    }
-
-    disableEditing() {
-        this.editingEnabled = false;
     }
 }

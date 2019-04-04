@@ -1,0 +1,21 @@
+<mat-tab-group color="accent" (selectedIndexChange)="onEditorTabIndexChange($event)">
+    <mat-tab label="Main Method">
+        <app-text-editor #mainMethodTextEditor></app-text-editor>
+    </mat-tab>
+    <mat-tab label="Jeroo Methods">
+        <app-text-editor #extensionMethodsTextEditor></app-text-editor>
+    </mat-tab>
+</mat-tab-group>
+<div align="center">
+    <h4>Current Language Style</h4>
+    <mat-form-field>
+        <mat-select required [(ngModel)]="selectedLanguage" (ngModelChange)="onSelectedLanguageChange()">
+            <mat-option *ngFor="let language of languages" [value]="language.value">
+                {{language.viewValue}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+<div class="col-lg-12">
+    <app-display-error-message></app-display-error-message>
+</div>
