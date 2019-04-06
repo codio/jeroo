@@ -299,12 +299,15 @@ let parse_fxn_app _test_ctxt =
       id = "main";
       stmts = [
         AST.ExprStmt({
-            a = AST.FxnAppExpr({
-                a = AST.IdExpr("foo");
+            a = Some({
+                a = AST.FxnAppExpr({
+                    a = AST.IdExpr("foo");
+                    lnum = 1;
+                  }, []);
                 lnum = 1;
-              }, []);
+              });
             lnum = 1;
-          });
+          })
       ];
       start_lnum = 1;
       end_lnum = 1;
@@ -321,25 +324,29 @@ let parse_obj_call _test_ctxt =
       id = "main";
       stmts = [
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
-                lnum = 1;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("someFxn");
+            a = Some {
+                a = (AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 1;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("someFxn");
+                          lnum = 1;
+                        }, [
+                            {
+                              a = AST.IntExpr(1);
+                              lnum = 1;
+                            };
+                            {
+                              a = AST.NorthExpr;
+                              lnum = 1;
+                            }
+                          ]);
                       lnum = 1;
-                    }, [
-                        {
-                          a = AST.IntExpr(1);
-                          lnum = 1;
-                        };
-                        {
-                          a = AST.NorthExpr;
-                          lnum = 1;
-                        }
-                      ]);
-                  lnum = 1;
-                });
+                    })
+                  );
+                lnum = 1;
+              };
             lnum = 1;
           })
       ];
@@ -358,13 +365,16 @@ let parse_negative_int _test_ctxt =
       id = "main";
       stmts = [
         AST.ExprStmt({
-            a = AST.FxnAppExpr({
-                a = AST.IdExpr("foo");
+            a = Some {
+                a = AST.FxnAppExpr({
+                    a = AST.IdExpr("foo");
+                    lnum = 1;
+                  }, [{
+                    a = AST.IntExpr(-1);
+                    lnum = 1;
+                  }]);
                 lnum = 1;
-              }, [{
-                a = AST.IntExpr(-1);
-                lnum = 1;
-              }]);
+              };
             lnum = 1;
           })
       ];
@@ -383,23 +393,29 @@ let parse_stmt_list _test_ctxt =
       id = "main";
       stmts = [
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("a");
-                lnum = 1;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("b");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("a");
+                    lnum = 1;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("b");
+                          lnum = 1;
+                        }, []);
                       lnum = 1;
-                    }, []);
-                  lnum = 1;
-                });
+                    });
+                lnum = 1;
+              };
             lnum = 1;
           });
         AST.ExprStmt({
-            a = AST.FxnAppExpr({
-                a = AST.IdExpr("c");
+            a = Some {
+                a = AST.FxnAppExpr({
+                    a = AST.IdExpr("c");
+                    lnum = 1;
+                  }, []);
                 lnum = 1;
-              }, []);
+              };
             lnum = 1;
           })
       ];
@@ -417,10 +433,13 @@ let parse_extension_method _test_ctxt =
         id = "foo";
         stmts = [
           AST.ExprStmt({
-              a = AST.FxnAppExpr({
-                  a = AST.IdExpr("hop");
+              a = Some {
+                  a = AST.FxnAppExpr({
+                      a = AST.IdExpr("hop");
+                      lnum = 2;
+                    }, []);
                   lnum = 2;
-                }, []);
+                };
               lnum = 2;
             })
         ];
@@ -430,13 +449,16 @@ let parse_extension_method _test_ctxt =
     main_fxn = {
       id = "main";
       stmts = [
-        AST.ExprStmt {
-          a = AST.FxnAppExpr({
-              a = AST.IdExpr("hop");
-              lnum = 2;
-            }, []);
-          lnum = 2;
-        }
+        AST.ExprStmt({
+            a = Some {
+                a = AST.FxnAppExpr({
+                    a = AST.IdExpr("hop");
+                    lnum = 2;
+                  }, []);
+                lnum = 2;
+              };
+            lnum = 2;
+          })
       ];
       start_lnum = 1;
       end_lnum = 4;
@@ -447,7 +469,7 @@ let parse_extension_method _test_ctxt =
 let parse_syntax_error _test_ctxt =
   let code = "@Java\n@@\n method main() { Jeroo j = new Jeroo() }" in
   assert_raises (Compiler.ParserException {
-      message = "expected ';' at the end of declaration\n";
+      message = "expected one of `;`, `.`, or an operator\n";
       lnum = 1
     }) (fun () -> Compiler.compile code)
 

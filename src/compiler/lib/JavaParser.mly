@@ -60,14 +60,14 @@ closed_stmt:
 simple_stmt:
   | b = block { let (stmts, _, _) = b in AST.BlockStmt(stmts) }
   | ty = ID id = ID EQ e = expr SEMICOLON { let (id, _) = id in let (ty, _) = ty in AST.DeclStmt(ty, id, e) }
-  | e = expr SEMICOLON { AST.ExprStmt(e) }
+  | e = expr? ln = SEMICOLON { AST.ExprStmt({ a = e; lnum = ln }) }
 
 arguments:
   | args = separated_list(COMMA, expr) { args }
 
 expr:
   | e = arith_expr { e }
-  | e = arith_expr ln = LPAREN args = arguments RPAREN { { a = AST.FxnAppExpr(e, args); lnum = ln } }
+  | id_ln = ID ln = LPAREN args = arguments RPAREN { let (id, idln) = id_ln in { a = AST.FxnAppExpr({ a = (AST.IdExpr id); lnum = idln }, args); lnum = ln } }
 
 arith_expr:
   | e = primary_expr { e }

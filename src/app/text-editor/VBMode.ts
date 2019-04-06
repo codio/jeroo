@@ -1,7 +1,7 @@
 export const VBMode: any = {
     start: [
         {
-            regex: /sub|if|elseif|else|while/i,
+            regex: /sub|if|then|elseif|else|while/i,
             token: 'keyword',
             indent: true
         },

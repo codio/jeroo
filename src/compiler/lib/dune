@@ -20,5 +20,5 @@
   )
 )
 (menhir (modules JavaParser VBParser)
-(flags (--table))
+(flags ("--table" "--dump" "--explain"))
 )

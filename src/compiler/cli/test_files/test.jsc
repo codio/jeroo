@@ -1,6 +1,8 @@
 @Java
+method a() {
+foo();
+while(tr) a;
+}
 @@
 method main() {
-Jeroo j = new Jeroo();
-if(j.isClear(RIGHT)) {}
 }

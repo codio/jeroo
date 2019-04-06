@@ -1,6 +1,6 @@
 translation_unit: HEADER MAIN_METH_SEP METHOD ID LPAREN RPAREN LBRACKET RBRACKET WHILE
 ##
-## Ends in an error in state: 77.
+## Ends in an error in state: 78.
 ##
 ## translation_unit -> HEADER list(fxn) MAIN_METH_SEP fxn . EOF [ # ]
 ##
@@ -12,7 +12,7 @@ expected EOF
 
 translation_unit: HEADER MAIN_METH_SEP WHILE
 ##
-## Ends in an error in state: 76.
+## Ends in an error in state: 77.
 ##
 ## translation_unit -> HEADER list(fxn) MAIN_METH_SEP . fxn EOF [ # ]
 ##
@@ -22,24 +22,18 @@ translation_unit: HEADER MAIN_METH_SEP WHILE
 
 expected `method`
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID ID EQ WEST RPAREN
+translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID ID EQ WEST WHILE
 ##
 ## Ends in an error in state: 55.
 ##
-## arith_expr -> expr . AND expr [ SEMICOLON OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . OR expr [ SEMICOLON OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . DOT expr [ SEMICOLON OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . EQ expr [ SEMICOLON OR LPAREN EQ DOT AND ]
-## simple_stmt -> ID ID EQ expr . SEMICOLON [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
+## arith_expr -> expr . AND expr [ SEMICOLON OR EQ DOT AND ]
+## arith_expr -> expr . OR expr [ SEMICOLON OR EQ DOT AND ]
+## arith_expr -> expr . DOT expr [ SEMICOLON OR EQ DOT AND ]
+## arith_expr -> expr . EQ expr [ SEMICOLON OR EQ DOT AND ]
+## simple_stmt -> ID ID EQ expr . SEMICOLON [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## ID ID EQ expr
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 31, spurious reduction of production expr -> arith_expr
 ##
 
 expected one of `;`, `.`, or an operator
@@ -48,7 +42,7 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID ID EQ WHILE
 ##
 ## Ends in an error in state: 54.
 ##
-## simple_stmt -> ID ID EQ . expr SEMICOLON [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
+## simple_stmt -> ID ID EQ . expr SEMICOLON [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## ID ID EQ
@@ -60,7 +54,7 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID ID WHILE
 ##
 ## Ends in an error in state: 53.
 ##
-## simple_stmt -> ID ID . EQ expr SEMICOLON [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
+## simple_stmt -> ID ID . EQ expr SEMICOLON [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## ID ID
@@ -68,12 +62,54 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID ID WHILE
 
 expected `=`
 
+translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID LPAREN WEST COMMA WHILE
+##
+## Ends in an error in state: 38.
+##
+## separated_nonempty_list(COMMA,expr) -> expr COMMA . separated_nonempty_list(COMMA,expr) [ RPAREN ]
+##
+## The known suffix of the stack is as follows:
+## expr COMMA
+##
+
+expected expression
+
+translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID LPAREN WEST WHILE
+##
+## Ends in an error in state: 28.
+##
+## arith_expr -> expr . AND expr [ RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . OR expr [ RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . DOT expr [ RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . EQ expr [ RPAREN OR EQ DOT COMMA AND ]
+## separated_nonempty_list(COMMA,expr) -> expr . [ RPAREN ]
+## separated_nonempty_list(COMMA,expr) -> expr . COMMA separated_nonempty_list(COMMA,expr) [ RPAREN ]
+##
+## The known suffix of the stack is as follows:
+## expr
+##
+
+expected one of `;`, `.`, or an operator
+
+translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID LPAREN WHILE
+##
+## Ends in an error in state: 20.
+##
+## expr -> ID LPAREN . arguments RPAREN [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+##
+## The known suffix of the stack is as follows:
+## ID LPAREN
+##
+
+expected expression
+
 translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID WHILE
 ##
 ## Ends in an error in state: 52.
 ##
-## primary_expr -> ID . [ SEMICOLON OR LPAREN EQ DOT AND ]
-## simple_stmt -> ID . ID EQ expr SEMICOLON [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
+## expr -> ID . LPAREN arguments RPAREN [ SEMICOLON OR EQ DOT AND ]
+## primary_expr -> ID . [ SEMICOLON OR EQ DOT AND ]
+## simple_stmt -> ID . ID EQ expr SEMICOLON [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## ID
@@ -81,13 +117,13 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID WHILE
 
 expected one of `;`, `.`, operator, or a variable declaration
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST RPAREN SEMICOLON
+translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST RPAREN RPAREN
 ##
 ## Ends in an error in state: 51.
 ##
-## closed_stmt -> IF LPAREN expr RPAREN . closed_stmt ELSE closed_stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
-## open_stmt -> IF LPAREN expr RPAREN . stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
-## open_stmt -> IF LPAREN expr RPAREN . closed_stmt ELSE open_stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
+## closed_stmt -> IF LPAREN expr RPAREN . closed_stmt ELSE closed_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
+## open_stmt -> IF LPAREN expr RPAREN . stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
+## open_stmt -> IF LPAREN expr RPAREN . closed_stmt ELSE open_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## IF LPAREN expr RPAREN
@@ -95,12 +131,12 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST RPAREN 
 
 expected statement or block
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST RPAREN WEST SEMICOLON ELSE SEMICOLON
+translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST RPAREN SEMICOLON ELSE RPAREN
 ##
-## Ends in an error in state: 63.
+## Ends in an error in state: 64.
 ##
-## closed_stmt -> IF LPAREN expr RPAREN closed_stmt ELSE . closed_stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
-## open_stmt -> IF LPAREN expr RPAREN closed_stmt ELSE . open_stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
+## closed_stmt -> IF LPAREN expr RPAREN closed_stmt ELSE . closed_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
+## open_stmt -> IF LPAREN expr RPAREN closed_stmt ELSE . open_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## IF LPAREN expr RPAREN closed_stmt ELSE
@@ -108,13 +144,13 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST RPAREN 
 
 expected statement or block
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST RPAREN WEST SEMICOLON SEMICOLON
+translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST RPAREN SEMICOLON RPAREN
 ##
-## Ends in an error in state: 62.
+## Ends in an error in state: 63.
 ##
-## closed_stmt -> IF LPAREN expr RPAREN closed_stmt . ELSE closed_stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
-## open_stmt -> IF LPAREN expr RPAREN closed_stmt . ELSE open_stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
-## stmt -> closed_stmt . [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
+## closed_stmt -> IF LPAREN expr RPAREN closed_stmt . ELSE closed_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
+## open_stmt -> IF LPAREN expr RPAREN closed_stmt . ELSE open_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
+## stmt -> closed_stmt . [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## IF LPAREN expr RPAREN closed_stmt
@@ -122,26 +158,20 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST RPAREN 
 
 expected `else` or statement
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST SEMICOLON
+translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST WHILE
 ##
 ## Ends in an error in state: 50.
 ##
-## arith_expr -> expr . AND expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . OR expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . DOT expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . EQ expr [ RPAREN OR LPAREN EQ DOT AND ]
-## closed_stmt -> IF LPAREN expr . RPAREN closed_stmt ELSE closed_stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
-## open_stmt -> IF LPAREN expr . RPAREN stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
-## open_stmt -> IF LPAREN expr . RPAREN closed_stmt ELSE open_stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
+## arith_expr -> expr . AND expr [ RPAREN OR EQ DOT AND ]
+## arith_expr -> expr . OR expr [ RPAREN OR EQ DOT AND ]
+## arith_expr -> expr . DOT expr [ RPAREN OR EQ DOT AND ]
+## arith_expr -> expr . EQ expr [ RPAREN OR EQ DOT AND ]
+## closed_stmt -> IF LPAREN expr . RPAREN closed_stmt ELSE closed_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
+## open_stmt -> IF LPAREN expr . RPAREN stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
+## open_stmt -> IF LPAREN expr . RPAREN closed_stmt ELSE open_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## IF LPAREN expr
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 31, spurious reduction of production expr -> arith_expr
 ##
 
 expected `)` or operator
@@ -150,9 +180,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WHILE
 ##
 ## Ends in an error in state: 49.
 ##
-## closed_stmt -> IF LPAREN . expr RPAREN closed_stmt ELSE closed_stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
-## open_stmt -> IF LPAREN . expr RPAREN stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
-## open_stmt -> IF LPAREN . expr RPAREN closed_stmt ELSE open_stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
+## closed_stmt -> IF LPAREN . expr RPAREN closed_stmt ELSE closed_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
+## open_stmt -> IF LPAREN . expr RPAREN stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
+## open_stmt -> IF LPAREN . expr RPAREN closed_stmt ELSE open_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## IF LPAREN
@@ -164,9 +194,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF WHILE
 ##
 ## Ends in an error in state: 48.
 ##
-## closed_stmt -> IF . LPAREN expr RPAREN closed_stmt ELSE closed_stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
-## open_stmt -> IF . LPAREN expr RPAREN stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
-## open_stmt -> IF . LPAREN expr RPAREN closed_stmt ELSE open_stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
+## closed_stmt -> IF . LPAREN expr RPAREN closed_stmt ELSE closed_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
+## open_stmt -> IF . LPAREN expr RPAREN stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
+## open_stmt -> IF . LPAREN expr RPAREN closed_stmt ELSE open_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## IF
@@ -174,24 +204,18 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF WHILE
 
 expected `(`
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET LPAREN WEST SEMICOLON
+translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET LPAREN WEST WHILE
 ##
-## Ends in an error in state: 25.
+## Ends in an error in state: 42.
 ##
-## arith_expr -> expr . AND expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . OR expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . DOT expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . EQ expr [ RPAREN OR LPAREN EQ DOT AND ]
-## primary_expr -> LPAREN expr . RPAREN [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
+## arith_expr -> expr . AND expr [ RPAREN OR EQ DOT AND ]
+## arith_expr -> expr . OR expr [ RPAREN OR EQ DOT AND ]
+## arith_expr -> expr . DOT expr [ RPAREN OR EQ DOT AND ]
+## arith_expr -> expr . EQ expr [ RPAREN OR EQ DOT AND ]
+## primary_expr -> LPAREN expr . RPAREN [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
 ##
 ## The known suffix of the stack is as follows:
 ## LPAREN expr
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 31, spurious reduction of production expr -> arith_expr
 ##
 
 expected one of `)`, `.`, or an operator
@@ -200,7 +224,7 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET LPAREN WHILE
 ##
 ## Ends in an error in state: 16.
 ##
-## primary_expr -> LPAREN . expr RPAREN [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
+## primary_expr -> LPAREN . expr RPAREN [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
 ##
 ## The known suffix of the stack is as follows:
 ## LPAREN
@@ -208,27 +232,27 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET LPAREN WHILE
 
 expected expression
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET NEW WEST LPAREN RPAREN WHILE
+translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET NEW WEST WHILE
 ##
 ## Ends in an error in state: 44.
 ##
-## arith_expr -> expr . AND expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . OR expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . DOT expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . EQ expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> NEW expr . [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
+## arith_expr -> expr . AND expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . OR expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . DOT expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . EQ expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> NEW expr . [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
 ##
 ## The known suffix of the stack is as follows:
 ## NEW expr
 ##
 
-expected ';' at the end of declaration
+expected one of `;`, `.`, or an operator
 
 translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET NEW WHILE
 ##
 ## Ends in an error in state: 15.
 ##
-## arith_expr -> NEW . expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
+## arith_expr -> NEW . expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
 ##
 ## The known suffix of the stack is as follows:
 ## NEW
@@ -236,27 +260,40 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET NEW WHILE
 
 expected expression
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET NOT WEST LPAREN RPAREN WHILE
+translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET NOT ID WHILE
+##
+## Ends in an error in state: 19.
+##
+## expr -> ID . LPAREN arguments RPAREN [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## primary_expr -> ID . [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+##
+## The known suffix of the stack is as follows:
+## ID
+##
+
+expected one of `;`, `.`, or an operator
+
+translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET NOT WEST WHILE
 ##
 ## Ends in an error in state: 45.
 ##
-## arith_expr -> expr . AND expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . OR expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . DOT expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . EQ expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> NOT expr . [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
+## arith_expr -> expr . AND expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . OR expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . DOT expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . EQ expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> NOT expr . [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
 ##
 ## The known suffix of the stack is as follows:
 ## NOT expr
 ##
 
-expected one of `;`, `(`, `)`, or an operator
+expected one of `;`, `.`, or an expression
 
 translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET NOT WHILE
 ##
 ## Ends in an error in state: 13.
 ##
-## arith_expr -> NOT . expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
+## arith_expr -> NOT . expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
 ##
 ## The known suffix of the stack is as follows:
 ## NOT
@@ -266,7 +303,7 @@ expected expression
 
 translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET RBRACKET WHILE
 ##
-## Ends in an error in state: 79.
+## Ends in an error in state: 80.
 ##
 ## list(fxn) -> fxn . list(fxn) [ MAIN_METH_SEP ]
 ##
@@ -276,39 +313,51 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET RBRACKET WHILE
 
 expected `@@` (likely due to an error in the input file)
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET SEMICOLON
+translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET RPAREN
 ##
 ## Ends in an error in state: 6.
 ##
-## block -> LBRACKET . list(stmt) RBRACKET [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW METHOD MAIN_METH_SEP LPAREN LEFT LBRACKET INT IF ID HERE FALSE EOF ELSE EAST AHEAD ]
+## block -> LBRACKET . list(stmt) RBRACKET [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW METHOD MAIN_METH_SEP LPAREN LEFT LBRACKET INT IF ID HERE FALSE EOF ELSE EAST AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## LBRACKET
 ##
 
-expected `}`
+expected statement
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST AND WEST LPAREN RPAREN WHILE
+translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET SEMICOLON RPAREN
 ##
-## Ends in an error in state: 39.
+## Ends in an error in state: 70.
 ##
-## arith_expr -> expr . AND expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr AND expr . [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . OR expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . DOT expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . EQ expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
+## list(stmt) -> stmt . list(stmt) [ RBRACKET ]
+##
+## The known suffix of the stack is as follows:
+## stmt
+##
+
+expected statement
+
+translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST AND WEST WHILE
+##
+## Ends in an error in state: 35.
+##
+## arith_expr -> expr . AND expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr AND expr . [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . OR expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . DOT expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . EQ expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
 ##
 ## The known suffix of the stack is as follows:
 ## expr AND expr
 ##
 
-expected one of `;`, `.`, `(`, `)`, or and operator
+expected one of `;`, `.`, or an expression
 
 translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST AND WHILE
 ##
-## Ends in an error in state: 38.
+## Ends in an error in state: 34.
 ##
-## arith_expr -> expr AND . expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
+## arith_expr -> expr AND . expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
 ##
 ## The known suffix of the stack is as follows:
 ## expr AND
@@ -318,9 +367,9 @@ expected expression
 
 translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST DOT WHILE
 ##
-## Ends in an error in state: 29.
+## Ends in an error in state: 31.
 ##
-## arith_expr -> expr DOT . expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
+## arith_expr -> expr DOT . expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
 ##
 ## The known suffix of the stack is as follows:
 ## expr DOT
@@ -328,102 +377,55 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST DOT WHILE
 
 expected expression
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST EQ WEST LPAREN RPAREN WHILE
+translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST EQ WEST WHILE
 ##
 ## Ends in an error in state: 37.
 ##
-## arith_expr -> expr . AND expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . OR expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . DOT expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . EQ expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr EQ expr . [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
+## arith_expr -> expr . AND expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . OR expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . DOT expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . EQ expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr EQ expr . [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
 ##
 ## The known suffix of the stack is as follows:
 ## expr EQ expr
 ##
 
-expected one of `;`, `.`, or an operator
+expected one of `;`, `.`, or an expression
 
 translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST EQ WHILE
 ##
 ## Ends in an error in state: 36.
 ##
-## arith_expr -> expr EQ . expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
+## arith_expr -> expr EQ . expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
 ##
 ## The known suffix of the stack is as follows:
 ## expr EQ
 ##
 
-expected one of `;`, `.`, or an operator
-
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST LPAREN WEST COMMA WHILE
-##
-## Ends in an error in state: 40.
-##
-## separated_nonempty_list(COMMA,expr) -> expr COMMA . separated_nonempty_list(COMMA,expr) [ RPAREN ]
-##
-## The known suffix of the stack is as follows:
-## expr COMMA
-##
-
 expected expression
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST LPAREN WEST SEMICOLON
+translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST OR WEST WHILE
 ##
-## Ends in an error in state: 35.
+## Ends in an error in state: 30.
 ##
-## arith_expr -> expr . AND expr [ RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . OR expr [ RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . DOT expr [ RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . EQ expr [ RPAREN OR LPAREN EQ DOT COMMA AND ]
-## separated_nonempty_list(COMMA,expr) -> expr . [ RPAREN ]
-## separated_nonempty_list(COMMA,expr) -> expr . COMMA separated_nonempty_list(COMMA,expr) [ RPAREN ]
-##
-## The known suffix of the stack is as follows:
-## expr
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 31, spurious reduction of production expr -> arith_expr
-##
-
-expected one of `)`, `,`, `.`, or an operator
-
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST LPAREN WHILE
-##
-## Ends in an error in state: 32.
-##
-## expr -> arith_expr LPAREN . arguments RPAREN [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-##
-## The known suffix of the stack is as follows:
-## arith_expr LPAREN
-##
-
-expected optional expression(s) followed by a `)`
-
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST OR WEST LPAREN RPAREN WHILE
-##
-## Ends in an error in state: 28.
-##
-## arith_expr -> expr . AND expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . OR expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr OR expr . [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . DOT expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . EQ expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
+## arith_expr -> expr . AND expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . OR expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr OR expr . [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . DOT expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . EQ expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
 ##
 ## The known suffix of the stack is as follows:
 ## expr OR expr
 ##
 
-expected one of `;`, `.`, or an operator
+expected one of `;`, `.`, or an expression
 
 translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST OR WHILE
 ##
-## Ends in an error in state: 27.
+## Ends in an error in state: 29.
 ##
-## arith_expr -> expr OR . expr [ SEMICOLON RPAREN OR LPAREN EQ DOT COMMA AND ]
+## arith_expr -> expr OR . expr [ SEMICOLON RPAREN OR EQ DOT COMMA AND ]
 ##
 ## The known suffix of the stack is as follows:
 ## expr OR
@@ -431,46 +433,28 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST OR WHILE
 
 expected expression
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST SEMICOLON SEMICOLON
-##
-## Ends in an error in state: 69.
-##
-## list(stmt) -> stmt . list(stmt) [ RBRACKET ]
-##
-## The known suffix of the stack is as follows:
-## stmt
-##
-
-expected `}`
-
 translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST WHILE
 ##
-## Ends in an error in state: 60.
+## Ends in an error in state: 62.
 ##
-## arith_expr -> expr . AND expr [ SEMICOLON OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . OR expr [ SEMICOLON OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . DOT expr [ SEMICOLON OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . EQ expr [ SEMICOLON OR LPAREN EQ DOT AND ]
-## simple_stmt -> expr . SEMICOLON [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
+## arith_expr -> expr . AND expr [ SEMICOLON OR EQ DOT AND ]
+## arith_expr -> expr . OR expr [ SEMICOLON OR EQ DOT AND ]
+## arith_expr -> expr . DOT expr [ SEMICOLON OR EQ DOT AND ]
+## arith_expr -> expr . EQ expr [ SEMICOLON OR EQ DOT AND ]
+## option(expr) -> expr . [ SEMICOLON ]
 ##
 ## The known suffix of the stack is as follows:
 ## expr
 ##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 31, spurious reduction of production expr -> arith_expr
-##
 
 expected one of `;`, `.`, or an operator
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WHILE LPAREN WEST RPAREN SEMICOLON
+translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WHILE LPAREN WEST RPAREN RPAREN
 ##
 ## Ends in an error in state: 47.
 ##
-## closed_stmt -> WHILE LPAREN expr RPAREN . closed_stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
-## open_stmt -> WHILE LPAREN expr RPAREN . open_stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
+## closed_stmt -> WHILE LPAREN expr RPAREN . closed_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
+## open_stmt -> WHILE LPAREN expr RPAREN . open_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## WHILE LPAREN expr RPAREN
@@ -478,25 +462,19 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WHILE LPAREN WEST RPAR
 
 expected statement or block
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WHILE LPAREN WEST SEMICOLON
+translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WHILE LPAREN WEST WHILE
 ##
 ## Ends in an error in state: 46.
 ##
-## arith_expr -> expr . AND expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . OR expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . DOT expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . EQ expr [ RPAREN OR LPAREN EQ DOT AND ]
-## closed_stmt -> WHILE LPAREN expr . RPAREN closed_stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
-## open_stmt -> WHILE LPAREN expr . RPAREN open_stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
+## arith_expr -> expr . AND expr [ RPAREN OR EQ DOT AND ]
+## arith_expr -> expr . OR expr [ RPAREN OR EQ DOT AND ]
+## arith_expr -> expr . DOT expr [ RPAREN OR EQ DOT AND ]
+## arith_expr -> expr . EQ expr [ RPAREN OR EQ DOT AND ]
+## closed_stmt -> WHILE LPAREN expr . RPAREN closed_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
+## open_stmt -> WHILE LPAREN expr . RPAREN open_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## WHILE LPAREN expr
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 31, spurious reduction of production expr -> arith_expr
 ##
 
 expected `)`, `.`, or an operator
@@ -505,8 +483,8 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WHILE LPAREN WHILE
 ##
 ## Ends in an error in state: 8.
 ##
-## closed_stmt -> WHILE LPAREN . expr RPAREN closed_stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
-## open_stmt -> WHILE LPAREN . expr RPAREN open_stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
+## closed_stmt -> WHILE LPAREN . expr RPAREN closed_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
+## open_stmt -> WHILE LPAREN . expr RPAREN open_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## WHILE LPAREN
@@ -518,8 +496,8 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WHILE WHILE
 ##
 ## Ends in an error in state: 7.
 ##
-## closed_stmt -> WHILE . LPAREN expr RPAREN closed_stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
-## open_stmt -> WHILE . LPAREN expr RPAREN open_stmt [ WHILE WEST TRUE SOUTH RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
+## closed_stmt -> WHILE . LPAREN expr RPAREN closed_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
+## open_stmt -> WHILE . LPAREN expr RPAREN open_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## WHILE
