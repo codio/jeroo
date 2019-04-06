@@ -1,941 +1,161 @@
-translation_unit: HEADER MAIN_METH_SEP NEWLINE MAIN_METH_SEP
-##
-## Ends in an error in state: 135.
-##
-## translation_unit -> HEADER fxns list(NEWLINE) MAIN_METH_SEP list(NEWLINE) . fxn list(NEWLINE) EOF [ # ]
-##
-## The known suffix of the stack is as follows:
-## HEADER fxns list(NEWLINE) MAIN_METH_SEP list(NEWLINE)
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 2, spurious reduction of production list(NEWLINE) -> 
-## In state 3, spurious reduction of production list(NEWLINE) -> NEWLINE list(NEWLINE) 
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER MAIN_METH_SEP SUB ID LPAREN RPAREN NEWLINE END SUB NEWLINE SUB
-##
-## Ends in an error in state: 137.
-##
-## translation_unit -> HEADER fxns list(NEWLINE) MAIN_METH_SEP list(NEWLINE) fxn list(NEWLINE) . EOF [ # ]
-##
-## The known suffix of the stack is as follows:
-## HEADER fxns list(NEWLINE) MAIN_METH_SEP list(NEWLINE) fxn list(NEWLINE)
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 2, spurious reduction of production list(NEWLINE) -> 
-## In state 3, spurious reduction of production list(NEWLINE) -> NEWLINE list(NEWLINE) 
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
 translation_unit: HEADER MAIN_METH_SEP SUB ID LPAREN RPAREN NEWLINE END SUB WHILE
 ##
-## Ends in an error in state: 136.
+## Ends in an error in state: 105.
 ##
-## translation_unit -> HEADER fxns list(NEWLINE) MAIN_METH_SEP list(NEWLINE) fxn . list(NEWLINE) EOF [ # ]
+## translation_unit -> HEADER list(NEWLINE) fxns MAIN_METH_SEP list(NEWLINE) fxn list(NEWLINE) . EOF [ # ]
 ##
 ## The known suffix of the stack is as follows:
-## HEADER fxns list(NEWLINE) MAIN_METH_SEP list(NEWLINE) fxn
+## HEADER list(NEWLINE) fxns MAIN_METH_SEP list(NEWLINE) fxn list(NEWLINE)
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 104, spurious reduction of production list(NEWLINE) ->
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected one of new line or EOF
 
 translation_unit: HEADER MAIN_METH_SEP WHILE
 ##
-## Ends in an error in state: 134.
+## Ends in an error in state: 103.
 ##
-## translation_unit -> HEADER fxns list(NEWLINE) MAIN_METH_SEP . list(NEWLINE) fxn list(NEWLINE) EOF [ # ]
-##
-## The known suffix of the stack is as follows:
-## HEADER fxns list(NEWLINE) MAIN_METH_SEP
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER NEWLINE EOF
-##
-## Ends in an error in state: 4.
-##
-## fxns -> list(NEWLINE) . [ NEWLINE MAIN_METH_SEP ]
-## fxns -> list(NEWLINE) . fxn fxns list(NEWLINE) [ NEWLINE MAIN_METH_SEP ]
+## translation_unit -> HEADER list(NEWLINE) fxns MAIN_METH_SEP list(NEWLINE) . fxn list(NEWLINE) EOF [ # ]
 ##
 ## The known suffix of the stack is as follows:
-## list(NEWLINE)
+## HEADER list(NEWLINE) fxns MAIN_METH_SEP list(NEWLINE)
 ##
 ## WARNING: This example involves spurious reductions.
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 2, spurious reduction of production list(NEWLINE) -> 
-## In state 3, spurious reduction of production list(NEWLINE) -> NEWLINE list(NEWLINE) 
+## In state 102, spurious reduction of production list(NEWLINE) ->
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected `Sub`
 
-translation_unit: HEADER NEWLINE WHILE
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE DIM ID AS ID EQ WEST WHILE
 ##
-## Ends in an error in state: 2.
+## Ends in an error in state: 59.
 ##
-## list(NEWLINE) -> NEWLINE . list(NEWLINE) [ SUB NEWLINE MAIN_METH_SEP EOF ]
-##
-## The known suffix of the stack is as follows:
-## NEWLINE
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE DIM ID AS ID EQ WEST THEN
-##
-## Ends in an error in state: 119.
-##
-## arith_expr -> expr . AND expr [ OR NEWLINE LPAREN EQ DOT AND ]
-## arith_expr -> expr . OR expr [ OR NEWLINE LPAREN EQ DOT AND ]
-## arith_expr -> expr . DOT expr [ OR NEWLINE LPAREN EQ DOT AND ]
-## arith_expr -> expr . EQ expr [ OR NEWLINE LPAREN EQ DOT AND ]
-## stmt -> DIM ID AS ID EQ expr . nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## arith_expr -> expr . AND expr [ OR NEWLINE EQ DOT AND ]
+## arith_expr -> expr . OR expr [ OR NEWLINE EQ DOT AND ]
+## arith_expr -> expr . DOT expr [ OR NEWLINE EQ DOT AND ]
+## arith_expr -> expr . EQ expr [ OR NEWLINE EQ DOT AND ]
+## stmt -> DIM ID AS ID EQ expr . NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## DIM ID AS ID EQ expr
 ##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 35, spurious reduction of production expr -> arith_expr 
-##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected new line
 
 translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE DIM ID AS ID EQ WHILE
 ##
-## Ends in an error in state: 118.
+## Ends in an error in state: 58.
 ##
-## stmt -> DIM ID AS ID EQ . expr nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## stmt -> DIM ID AS ID EQ . expr NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## DIM ID AS ID EQ
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected expression
 
 translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE DIM ID AS ID WHILE
 ##
-## Ends in an error in state: 117.
+## Ends in an error in state: 57.
 ##
-## stmt -> DIM ID AS ID . EQ expr nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## stmt -> DIM ID AS ID . EQ expr NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## DIM ID AS ID
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected `=`
 
 translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE DIM ID AS WHILE
 ##
-## Ends in an error in state: 116.
+## Ends in an error in state: 56.
 ##
-## stmt -> DIM ID AS . ID EQ expr nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## stmt -> DIM ID AS . ID EQ expr NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## DIM ID AS
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected type identifier
 
 translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE DIM ID WHILE
 ##
-## Ends in an error in state: 115.
+## Ends in an error in state: 55.
 ##
-## stmt -> DIM ID . AS ID EQ expr nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## stmt -> DIM ID . AS ID EQ expr NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## DIM ID
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected `As`
 
 translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE DIM WHILE
 ##
-## Ends in an error in state: 114.
+## Ends in an error in state: 54.
 ##
-## stmt -> DIM . ID AS ID EQ expr nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## stmt -> DIM . ID AS ID EQ expr NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## DIM
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected identifier
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE ELSEIF
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE END SUB NEWLINE WHILE
 ##
-## Ends in an error in state: 126.
+## Ends in an error in state: 111.
 ##
-## fxn -> SUB ID LPAREN RPAREN block . END SUB [ SUB NEWLINE MAIN_METH_SEP EOF ]
+## list(extension_fxn) -> extension_fxn . list(extension_fxn) [ MAIN_METH_SEP ]
 ##
 ## The known suffix of the stack is as follows:
-## SUB ID LPAREN RPAREN block
+## extension_fxn
 ##
 ## WARNING: This example involves spurious reductions.
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 9, spurious reduction of production nonempty_list(NEWLINE) -> NEWLINE 
-## In state 11, spurious reduction of production list(stmt) -> 
-## In state 125, spurious reduction of production block -> nonempty_list(NEWLINE) list(stmt) 
+## In state 108, spurious reduction of production nonempty_list(NEWLINE) -> NEWLINE
+## In state 110, spurious reduction of production extension_fxn -> fxn nonempty_list(NEWLINE)
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected `Sub`
 
 translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE END SUB WHILE
 ##
-## Ends in an error in state: 129.
+## Ends in an error in state: 107.
 ##
-## fxns -> list(NEWLINE) fxn . fxns list(NEWLINE) [ NEWLINE MAIN_METH_SEP ]
+## extension_fxn -> fxn . nonempty_list(NEWLINE) [ SUB MAIN_METH_SEP ]
 ##
 ## The known suffix of the stack is as follows:
-## list(NEWLINE) fxn
+## fxn
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected new line
 
 translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE END WHILE
 ##
-## Ends in an error in state: 127.
+## Ends in an error in state: 98.
 ##
-## fxn -> SUB ID LPAREN RPAREN block END . SUB [ SUB NEWLINE MAIN_METH_SEP EOF ]
-##
-## The known suffix of the stack is as follows:
-## SUB ID LPAREN RPAREN block END
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF LPAREN WEST RPAREN THEN NEWLINE ELSE NEWLINE ELSEIF
-##
-## Ends in an error in state: 95.
-##
-## stmt -> IF LPAREN expr RPAREN THEN block ELSE block . END IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## fxn -> SUB ID LPAREN RPAREN NEWLINE block END . SUB [ NEWLINE EOF ]
 ##
 ## The known suffix of the stack is as follows:
-## IF LPAREN expr RPAREN THEN block ELSE block
+## SUB ID LPAREN RPAREN NEWLINE block END
 ##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 9, spurious reduction of production nonempty_list(NEWLINE) -> NEWLINE 
-## In state 11, spurious reduction of production list(stmt) -> 
-## In state 125, spurious reduction of production block -> nonempty_list(NEWLINE) list(stmt) 
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF LPAREN WEST RPAREN THEN NEWLINE ELSE NEWLINE END IF WHILE
-##
-## Ends in an error in state: 97.
-##
-## stmt -> IF LPAREN expr RPAREN THEN block ELSE block END IF . nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## IF LPAREN expr RPAREN THEN block ELSE block END IF
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF LPAREN WEST RPAREN THEN NEWLINE ELSE NEWLINE END WHILE
-##
-## Ends in an error in state: 96.
-##
-## stmt -> IF LPAREN expr RPAREN THEN block ELSE block END . IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## IF LPAREN expr RPAREN THEN block ELSE block END
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF LPAREN WEST RPAREN THEN NEWLINE ELSE WHILE
-##
-## Ends in an error in state: 94.
-##
-## stmt -> IF LPAREN expr RPAREN THEN block ELSE . block END IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## IF LPAREN expr RPAREN THEN block ELSE
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF LPAREN WEST RPAREN THEN NEWLINE ELSEIF WEST THEN NEWLINE END IF WHILE
-##
-## Ends in an error in state: 99.
-##
-## stmt -> IF LPAREN expr RPAREN THEN block elseif_stmt . nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## IF LPAREN expr RPAREN THEN block elseif_stmt
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF LPAREN WEST RPAREN THEN NEWLINE END IF WHILE
-##
-## Ends in an error in state: 69.
-##
-## stmt -> IF LPAREN expr RPAREN THEN block END IF . nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## IF LPAREN expr RPAREN THEN block END IF
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF LPAREN WEST RPAREN THEN NEWLINE END WHILE
-##
-## Ends in an error in state: 68.
-##
-## stmt -> IF LPAREN expr RPAREN THEN block END . IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## IF LPAREN expr RPAREN THEN block END
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF LPAREN WEST RPAREN THEN WHILE
-##
-## Ends in an error in state: 66.
-##
-## stmt -> IF LPAREN expr RPAREN THEN . block END IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-## stmt -> IF LPAREN expr RPAREN THEN . block ELSE block END IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-## stmt -> IF LPAREN expr RPAREN THEN . block elseif_stmt nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## IF LPAREN expr RPAREN THEN
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF LPAREN WEST RPAREN WHILE
-##
-## Ends in an error in state: 65.
-##
-## primary_expr -> LPAREN expr RPAREN . [ THEN OR LPAREN EQ DOT AND ]
-## stmt -> IF LPAREN expr RPAREN . THEN block END IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-## stmt -> IF LPAREN expr RPAREN . THEN block ELSE block END IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-## stmt -> IF LPAREN expr RPAREN . THEN block elseif_stmt nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## IF LPAREN expr RPAREN
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF LPAREN WEST THEN
-##
-## Ends in an error in state: 64.
-##
-## arith_expr -> expr . AND expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . OR expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . DOT expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . EQ expr [ RPAREN OR LPAREN EQ DOT AND ]
-## primary_expr -> LPAREN expr . RPAREN [ THEN OR LPAREN EQ DOT AND ]
-## stmt -> IF LPAREN expr . RPAREN THEN block END IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-## stmt -> IF LPAREN expr . RPAREN THEN block ELSE block END IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-## stmt -> IF LPAREN expr . RPAREN THEN block elseif_stmt nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## IF LPAREN expr
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 35, spurious reduction of production expr -> arith_expr 
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF LPAREN WHILE
-##
-## Ends in an error in state: 63.
-##
-## primary_expr -> LPAREN . expr RPAREN [ THEN OR LPAREN EQ DOT AND ]
-## stmt -> IF LPAREN . expr RPAREN THEN block END IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-## stmt -> IF LPAREN . expr RPAREN THEN block ELSE block END IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-## stmt -> IF LPAREN . expr RPAREN THEN block elseif_stmt nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## IF LPAREN
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST RPAREN
-##
-## Ends in an error in state: 101.
-##
-## arith_expr -> expr . AND expr [ THEN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . OR expr [ THEN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . DOT expr [ THEN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . EQ expr [ THEN OR LPAREN EQ DOT AND ]
-## stmt -> IF expr . THEN block END IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-## stmt -> IF expr . THEN block elseif_stmt nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-## stmt -> IF expr . THEN block ELSE block END IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## IF expr
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 35, spurious reduction of production expr -> arith_expr 
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE NEWLINE ELSEIF
-##
-## Ends in an error in state: 108.
-##
-## stmt -> IF expr THEN block ELSE block . END IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## IF expr THEN block ELSE block
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 9, spurious reduction of production nonempty_list(NEWLINE) -> NEWLINE 
-## In state 11, spurious reduction of production list(stmt) -> 
-## In state 125, spurious reduction of production block -> nonempty_list(NEWLINE) list(stmt) 
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE NEWLINE END IF WHILE
-##
-## Ends in an error in state: 110.
-##
-## stmt -> IF expr THEN block ELSE block END IF . nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## IF expr THEN block ELSE block END IF
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE NEWLINE END WHILE
-##
-## Ends in an error in state: 109.
-##
-## stmt -> IF expr THEN block ELSE block END . IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## IF expr THEN block ELSE block END
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE WHILE
-##
-## Ends in an error in state: 107.
-##
-## stmt -> IF expr THEN block ELSE . block END IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## IF expr THEN block ELSE
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF AHEAD THEN NEWLINE END IF WHILE
-##
-## Ends in an error in state: 112.
-##
-## stmt -> IF expr THEN block elseif_stmt . nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## IF expr THEN block elseif_stmt
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF LPAREN WEST RPAREN THEN NEWLINE ELSE NEWLINE ELSEIF
-##
-## Ends in an error in state: 80.
-##
-## elseif_stmt -> ELSEIF LPAREN expr RPAREN THEN block ELSE block . END IF [ NEWLINE ]
-##
-## The known suffix of the stack is as follows:
-## ELSEIF LPAREN expr RPAREN THEN block ELSE block
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 9, spurious reduction of production nonempty_list(NEWLINE) -> NEWLINE 
-## In state 11, spurious reduction of production list(stmt) -> 
-## In state 125, spurious reduction of production block -> nonempty_list(NEWLINE) list(stmt) 
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF LPAREN WEST RPAREN THEN NEWLINE ELSE NEWLINE END WHILE
-##
-## Ends in an error in state: 81.
-##
-## elseif_stmt -> ELSEIF LPAREN expr RPAREN THEN block ELSE block END . IF [ NEWLINE ]
-##
-## The known suffix of the stack is as follows:
-## ELSEIF LPAREN expr RPAREN THEN block ELSE block END
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF LPAREN WEST RPAREN THEN NEWLINE ELSE WHILE
-##
-## Ends in an error in state: 79.
-##
-## elseif_stmt -> ELSEIF LPAREN expr RPAREN THEN block ELSE . block END IF [ NEWLINE ]
-##
-## The known suffix of the stack is as follows:
-## ELSEIF LPAREN expr RPAREN THEN block ELSE
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF LPAREN WEST RPAREN THEN NEWLINE END WHILE
-##
-## Ends in an error in state: 77.
-##
-## elseif_stmt -> ELSEIF LPAREN expr RPAREN THEN block END . IF [ NEWLINE ]
-##
-## The known suffix of the stack is as follows:
-## ELSEIF LPAREN expr RPAREN THEN block END
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF LPAREN WEST RPAREN THEN WHILE
-##
-## Ends in an error in state: 75.
-##
-## elseif_stmt -> ELSEIF LPAREN expr RPAREN THEN . block elseif_stmt [ NEWLINE ]
-## elseif_stmt -> ELSEIF LPAREN expr RPAREN THEN . block ELSE block END IF [ NEWLINE ]
-## elseif_stmt -> ELSEIF LPAREN expr RPAREN THEN . block END IF [ NEWLINE ]
-##
-## The known suffix of the stack is as follows:
-## ELSEIF LPAREN expr RPAREN THEN
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF LPAREN WEST RPAREN WHILE
-##
-## Ends in an error in state: 74.
-##
-## elseif_stmt -> ELSEIF LPAREN expr RPAREN . THEN block elseif_stmt [ NEWLINE ]
-## elseif_stmt -> ELSEIF LPAREN expr RPAREN . THEN block ELSE block END IF [ NEWLINE ]
-## elseif_stmt -> ELSEIF LPAREN expr RPAREN . THEN block END IF [ NEWLINE ]
-## primary_expr -> LPAREN expr RPAREN . [ THEN OR LPAREN EQ DOT AND ]
-##
-## The known suffix of the stack is as follows:
-## ELSEIF LPAREN expr RPAREN
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF LPAREN WEST THEN
-##
-## Ends in an error in state: 73.
-##
-## arith_expr -> expr . AND expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . OR expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . DOT expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . EQ expr [ RPAREN OR LPAREN EQ DOT AND ]
-## elseif_stmt -> ELSEIF LPAREN expr . RPAREN THEN block elseif_stmt [ NEWLINE ]
-## elseif_stmt -> ELSEIF LPAREN expr . RPAREN THEN block ELSE block END IF [ NEWLINE ]
-## elseif_stmt -> ELSEIF LPAREN expr . RPAREN THEN block END IF [ NEWLINE ]
-## primary_expr -> LPAREN expr . RPAREN [ THEN OR LPAREN EQ DOT AND ]
-##
-## The known suffix of the stack is as follows:
-## ELSEIF LPAREN expr
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 35, spurious reduction of production expr -> arith_expr 
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF LPAREN WHILE
-##
-## Ends in an error in state: 72.
-##
-## elseif_stmt -> ELSEIF LPAREN . expr RPAREN THEN block elseif_stmt [ NEWLINE ]
-## elseif_stmt -> ELSEIF LPAREN . expr RPAREN THEN block ELSE block END IF [ NEWLINE ]
-## elseif_stmt -> ELSEIF LPAREN . expr RPAREN THEN block END IF [ NEWLINE ]
-## primary_expr -> LPAREN . expr RPAREN [ THEN OR LPAREN EQ DOT AND ]
-##
-## The known suffix of the stack is as follows:
-## ELSEIF LPAREN
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST RPAREN
-##
-## Ends in an error in state: 84.
-##
-## arith_expr -> expr . AND expr [ THEN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . OR expr [ THEN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . DOT expr [ THEN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . EQ expr [ THEN OR LPAREN EQ DOT AND ]
-## elseif_stmt -> ELSEIF expr . THEN block elseif_stmt [ NEWLINE ]
-## elseif_stmt -> ELSEIF expr . THEN block ELSE block END IF [ NEWLINE ]
-## elseif_stmt -> ELSEIF expr . THEN block END IF [ NEWLINE ]
-##
-## The known suffix of the stack is as follows:
-## ELSEIF expr
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 35, spurious reduction of production expr -> arith_expr 
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE ELSE NEWLINE ELSEIF
-##
-## Ends in an error in state: 90.
-##
-## elseif_stmt -> ELSEIF expr THEN block ELSE block . END IF [ NEWLINE ]
-##
-## The known suffix of the stack is as follows:
-## ELSEIF expr THEN block ELSE block
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 9, spurious reduction of production nonempty_list(NEWLINE) -> NEWLINE 
-## In state 11, spurious reduction of production list(stmt) -> 
-## In state 125, spurious reduction of production block -> nonempty_list(NEWLINE) list(stmt) 
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE ELSE NEWLINE END WHILE
-##
-## Ends in an error in state: 91.
-##
-## elseif_stmt -> ELSEIF expr THEN block ELSE block END . IF [ NEWLINE ]
-##
-## The known suffix of the stack is as follows:
-## ELSEIF expr THEN block ELSE block END
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE ELSE WHILE
-##
-## Ends in an error in state: 89.
-##
-## elseif_stmt -> ELSEIF expr THEN block ELSE . block END IF [ NEWLINE ]
-##
-## The known suffix of the stack is as follows:
-## ELSEIF expr THEN block ELSE
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE END WHILE
-##
-## Ends in an error in state: 87.
-##
-## elseif_stmt -> ELSEIF expr THEN block END . IF [ NEWLINE ]
-##
-## The known suffix of the stack is as follows:
-## ELSEIF expr THEN block END
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN WHILE
-##
-## Ends in an error in state: 85.
-##
-## elseif_stmt -> ELSEIF expr THEN . block elseif_stmt [ NEWLINE ]
-## elseif_stmt -> ELSEIF expr THEN . block ELSE block END IF [ NEWLINE ]
-## elseif_stmt -> ELSEIF expr THEN . block END IF [ NEWLINE ]
-##
-## The known suffix of the stack is as follows:
-## ELSEIF expr THEN
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WHILE
-##
-## Ends in an error in state: 71.
-##
-## elseif_stmt -> ELSEIF . LPAREN expr RPAREN THEN block elseif_stmt [ NEWLINE ]
-## elseif_stmt -> ELSEIF . expr THEN block elseif_stmt [ NEWLINE ]
-## elseif_stmt -> ELSEIF . LPAREN expr RPAREN THEN block ELSE block END IF [ NEWLINE ]
-## elseif_stmt -> ELSEIF . expr THEN block ELSE block END IF [ NEWLINE ]
-## elseif_stmt -> ELSEIF . LPAREN expr RPAREN THEN block END IF [ NEWLINE ]
-## elseif_stmt -> ELSEIF . expr THEN block END IF [ NEWLINE ]
-##
-## The known suffix of the stack is as follows:
-## ELSEIF
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE END IF WHILE
-##
-## Ends in an error in state: 105.
-##
-## stmt -> IF expr THEN block END IF . nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## IF expr THEN block END IF
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE END WHILE
-##
-## Ends in an error in state: 104.
-##
-## stmt -> IF expr THEN block END . IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## IF expr THEN block END
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN WHILE
-##
-## Ends in an error in state: 102.
-##
-## stmt -> IF expr THEN . block END IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-## stmt -> IF expr THEN . block elseif_stmt nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-## stmt -> IF expr THEN . block ELSE block END IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## IF expr THEN
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WHILE
-##
-## Ends in an error in state: 62.
-##
-## stmt -> IF . LPAREN expr RPAREN THEN block END IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-## stmt -> IF . expr THEN block END IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-## stmt -> IF . LPAREN expr RPAREN THEN block ELSE block END IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-## stmt -> IF . LPAREN expr RPAREN THEN block elseif_stmt nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-## stmt -> IF . expr THEN block elseif_stmt nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-## stmt -> IF . expr THEN block ELSE block END IF nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## IF
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE LPAREN WEST THEN
-##
-## Ends in an error in state: 29.
-##
-## arith_expr -> expr . AND expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . OR expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . DOT expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . EQ expr [ RPAREN OR LPAREN EQ DOT AND ]
-## primary_expr -> LPAREN expr . RPAREN [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-##
-## The known suffix of the stack is as follows:
-## LPAREN expr
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 35, spurious reduction of production expr -> arith_expr 
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE LPAREN WHILE
-##
-## Ends in an error in state: 20.
-##
-## primary_expr -> LPAREN . expr RPAREN [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-##
-## The known suffix of the stack is as follows:
-## LPAREN
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE NEW WEST LPAREN RPAREN WHILE
-##
-## Ends in an error in state: 48.
-##
-## arith_expr -> expr . AND expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . OR expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . DOT expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . EQ expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## arith_expr -> NEW expr . [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-##
-## The known suffix of the stack is as follows:
-## NEW expr
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE NEW WHILE
-##
-## Ends in an error in state: 19.
-##
-## arith_expr -> NEW . expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-##
-## The known suffix of the stack is as follows:
-## NEW
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE NOT WEST LPAREN RPAREN WHILE
-##
-## Ends in an error in state: 49.
-##
-## arith_expr -> expr . AND expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . OR expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . DOT expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . EQ expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## arith_expr -> NOT expr . [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-##
-## The known suffix of the stack is as follows:
-## NOT expr
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE NOT WHILE
-##
-## Ends in an error in state: 17.
-##
-## arith_expr -> NOT . expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-##
-## The known suffix of the stack is as follows:
-## NOT
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE THEN
-##
-## Ends in an error in state: 9.
-##
-## nonempty_list(NEWLINE) -> NEWLINE . [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-## nonempty_list(NEWLINE) -> NEWLINE . nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## NEWLINE
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST AND WEST LPAREN RPAREN WHILE
-##
-## Ends in an error in state: 43.
-##
-## arith_expr -> expr . AND expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr AND expr . [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . OR expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . DOT expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . EQ expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-##
-## The known suffix of the stack is as follows:
-## expr AND expr
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST AND WHILE
-##
-## Ends in an error in state: 42.
-##
-## arith_expr -> expr AND . expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-##
-## The known suffix of the stack is as follows:
-## expr AND
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST DOT WHILE
-##
-## Ends in an error in state: 33.
-##
-## arith_expr -> expr DOT . expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-##
-## The known suffix of the stack is as follows:
-## expr DOT
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST EQ WEST LPAREN RPAREN WHILE
-##
-## Ends in an error in state: 41.
-##
-## arith_expr -> expr . AND expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . OR expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . DOT expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . EQ expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr EQ expr . [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-##
-## The known suffix of the stack is as follows:
-## expr EQ expr
-##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected `Sub`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST EQ WHILE
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE ID LPAREN WEST COMMA WHILE
 ##
 ## Ends in an error in state: 40.
-##
-## arith_expr -> expr EQ . expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-##
-## The known suffix of the stack is as follows:
-## expr EQ
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST LPAREN WEST COMMA WHILE
-##
-## Ends in an error in state: 44.
 ##
 ## separated_nonempty_list(COMMA,expr) -> expr COMMA . separated_nonempty_list(COMMA,expr) [ RPAREN ]
 ##
@@ -943,337 +163,693 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST LPAREN WEST COMMA WHI
 ## expr COMMA
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected expression
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST LPAREN WEST THEN
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE ID LPAREN WEST WHILE
 ##
-## Ends in an error in state: 39.
+## Ends in an error in state: 30.
 ##
-## arith_expr -> expr . AND expr [ RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . OR expr [ RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . DOT expr [ RPAREN OR LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . EQ expr [ RPAREN OR LPAREN EQ DOT COMMA AND ]
+## arith_expr -> expr . AND expr [ RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . OR expr [ RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . DOT expr [ RPAREN OR EQ DOT COMMA AND ]
+## arith_expr -> expr . EQ expr [ RPAREN OR EQ DOT COMMA AND ]
 ## separated_nonempty_list(COMMA,expr) -> expr . [ RPAREN ]
 ## separated_nonempty_list(COMMA,expr) -> expr . COMMA separated_nonempty_list(COMMA,expr) [ RPAREN ]
 ##
 ## The known suffix of the stack is as follows:
 ## expr
 ##
+
+expected one of new line, `.`, or an operator
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE ID LPAREN WHILE
+##
+## Ends in an error in state: 22.
+##
+## expr -> ID LPAREN . arguments RPAREN [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+##
+## The known suffix of the stack is as follows:
+## ID LPAREN
+##
+
+expected expression
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE ID WHILE
+##
+## Ends in an error in state: 21.
+##
+## expr -> ID . LPAREN arguments RPAREN [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## primary_expr -> ID . [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+##
+## The known suffix of the stack is as follows:
+## ID
+##
+
+expected one of new line, `.`, or an operator
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE NEWLINE END IF WHILE
+##
+## Ends in an error in state: 90.
+##
+## stmt -> IF expr THEN NEWLINE block ELSE NEWLINE block END IF . NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## IF expr THEN NEWLINE block ELSE NEWLINE block END IF
+##
+
+expected new line
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE NEWLINE END WHILE
+##
+## Ends in an error in state: 89.
+##
+## stmt -> IF expr THEN NEWLINE block ELSE NEWLINE block END . IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## IF expr THEN NEWLINE block ELSE NEWLINE block END
+##
+
+expected `If`
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE NEWLINE THEN
+##
+## Ends in an error in state: 88.
+##
+## stmt -> IF expr THEN NEWLINE block ELSE NEWLINE block . END IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## IF expr THEN NEWLINE block ELSE NEWLINE block
+##
 ## WARNING: This example involves spurious reductions.
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 35, spurious reduction of production expr -> arith_expr 
+## In state 87, spurious reduction of production list(stmt) ->
+## In state 66, spurious reduction of production block -> list(stmt)
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected statement
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST LPAREN WHILE
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE WHILE
+##
+## Ends in an error in state: 86.
+##
+## stmt -> IF expr THEN NEWLINE block ELSE . NEWLINE block END IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## IF expr THEN NEWLINE block ELSE
+##
+
+expected new line
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE ELSE NEWLINE END IF WHILE
+##
+## Ends in an error in state: 83.
+##
+## elseif_stmt -> ELSEIF expr THEN NEWLINE block ELSE NEWLINE block END IF . NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## ELSEIF expr THEN NEWLINE block ELSE NEWLINE block END IF
+##
+
+expected new line
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE ELSE NEWLINE END WHILE
+##
+## Ends in an error in state: 82.
+##
+## elseif_stmt -> ELSEIF expr THEN NEWLINE block ELSE NEWLINE block END . IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## ELSEIF expr THEN NEWLINE block ELSE NEWLINE block END
+##
+
+expected `If`
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE ELSE NEWLINE THEN
+##
+## Ends in an error in state: 81.
+##
+## elseif_stmt -> ELSEIF expr THEN NEWLINE block ELSE NEWLINE block . END IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## ELSEIF expr THEN NEWLINE block ELSE NEWLINE block
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 80, spurious reduction of production list(stmt) ->
+## In state 66, spurious reduction of production block -> list(stmt)
+##
+
+expected statement
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE ELSE WHILE
+##
+## Ends in an error in state: 79.
+##
+## elseif_stmt -> ELSEIF expr THEN NEWLINE block ELSE . NEWLINE block END IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## ELSEIF expr THEN NEWLINE block ELSE
+##
+
+expected new line
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE END IF WHILE
+##
+## Ends in an error in state: 77.
+##
+## elseif_stmt -> ELSEIF expr THEN NEWLINE block END IF . NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## ELSEIF expr THEN NEWLINE block END IF
+##
+
+expected new line
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE END WHILE
+##
+## Ends in an error in state: 76.
+##
+## elseif_stmt -> ELSEIF expr THEN NEWLINE block END . IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## ELSEIF expr THEN NEWLINE block END
+##
+
+expected `If`
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE THEN
+##
+## Ends in an error in state: 75.
+##
+## elseif_stmt -> ELSEIF expr THEN NEWLINE block . elseif_stmt [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## elseif_stmt -> ELSEIF expr THEN NEWLINE block . ELSE NEWLINE block END IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## elseif_stmt -> ELSEIF expr THEN NEWLINE block . END IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## ELSEIF expr THEN NEWLINE block
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 74, spurious reduction of production list(stmt) ->
+## In state 66, spurious reduction of production block -> list(stmt)
+##
+
+expected statement
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN WHILE
+##
+## Ends in an error in state: 73.
+##
+## elseif_stmt -> ELSEIF expr THEN . NEWLINE block elseif_stmt [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## elseif_stmt -> ELSEIF expr THEN . NEWLINE block ELSE NEWLINE block END IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## elseif_stmt -> ELSEIF expr THEN . NEWLINE block END IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## ELSEIF expr THEN
+##
+
+expected new line
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST WHILE
+##
+## Ends in an error in state: 72.
+##
+## arith_expr -> expr . AND expr [ THEN OR EQ DOT AND ]
+## arith_expr -> expr . OR expr [ THEN OR EQ DOT AND ]
+## arith_expr -> expr . DOT expr [ THEN OR EQ DOT AND ]
+## arith_expr -> expr . EQ expr [ THEN OR EQ DOT AND ]
+## elseif_stmt -> ELSEIF expr . THEN NEWLINE block elseif_stmt [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## elseif_stmt -> ELSEIF expr . THEN NEWLINE block ELSE NEWLINE block END IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## elseif_stmt -> ELSEIF expr . THEN NEWLINE block END IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## ELSEIF expr
+##
+
+expected one of `Then`, `.`, or an operator
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WHILE
+##
+## Ends in an error in state: 71.
+##
+## elseif_stmt -> ELSEIF . expr THEN NEWLINE block elseif_stmt [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## elseif_stmt -> ELSEIF . expr THEN NEWLINE block ELSE NEWLINE block END IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## elseif_stmt -> ELSEIF . expr THEN NEWLINE block END IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## ELSEIF
+##
+
+expected expression
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE END IF WHILE
+##
+## Ends in an error in state: 69.
+##
+## stmt -> IF expr THEN NEWLINE block END IF . NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## IF expr THEN NEWLINE block END IF
+##
+
+expected new line
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE END WHILE
+##
+## Ends in an error in state: 68.
+##
+## stmt -> IF expr THEN NEWLINE block END . IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## IF expr THEN NEWLINE block END
+##
+
+expected `If`
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE THEN
+##
+## Ends in an error in state: 67.
+##
+## stmt -> IF expr THEN NEWLINE block . END IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## stmt -> IF expr THEN NEWLINE block . elseif_stmt [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## stmt -> IF expr THEN NEWLINE block . ELSE NEWLINE block END IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## IF expr THEN NEWLINE block
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 53, spurious reduction of production list(stmt) ->
+## In state 66, spurious reduction of production block -> list(stmt)
+##
+
+expected statement
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN WHILE
+##
+## Ends in an error in state: 52.
+##
+## stmt -> IF expr THEN . NEWLINE block END IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## stmt -> IF expr THEN . NEWLINE block elseif_stmt [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## stmt -> IF expr THEN . NEWLINE block ELSE NEWLINE block END IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## IF expr THEN
+##
+
+expected new line
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST WHILE
+##
+## Ends in an error in state: 51.
+##
+## arith_expr -> expr . AND expr [ THEN OR EQ DOT AND ]
+## arith_expr -> expr . OR expr [ THEN OR EQ DOT AND ]
+## arith_expr -> expr . DOT expr [ THEN OR EQ DOT AND ]
+## arith_expr -> expr . EQ expr [ THEN OR EQ DOT AND ]
+## stmt -> IF expr . THEN NEWLINE block END IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## stmt -> IF expr . THEN NEWLINE block elseif_stmt [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## stmt -> IF expr . THEN NEWLINE block ELSE NEWLINE block END IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## IF expr
+##
+
+expected one of `Then`, `.`, or an operator
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WHILE
+##
+## Ends in an error in state: 50.
+##
+## stmt -> IF . expr THEN NEWLINE block END IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## stmt -> IF . expr THEN NEWLINE block elseif_stmt [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## stmt -> IF . expr THEN NEWLINE block ELSE NEWLINE block END IF NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## IF
+##
+
+expected expression
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE LPAREN WEST WHILE
+##
+## Ends in an error in state: 44.
+##
+## arith_expr -> expr . AND expr [ RPAREN OR EQ DOT AND ]
+## arith_expr -> expr . OR expr [ RPAREN OR EQ DOT AND ]
+## arith_expr -> expr . DOT expr [ RPAREN OR EQ DOT AND ]
+## arith_expr -> expr . EQ expr [ RPAREN OR EQ DOT AND ]
+## primary_expr -> LPAREN expr . RPAREN [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+##
+## The known suffix of the stack is as follows:
+## LPAREN expr
+##
+
+expected one of `)`, `.`, or an operator
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE LPAREN WHILE
+##
+## Ends in an error in state: 18.
+##
+## primary_expr -> LPAREN . expr RPAREN [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+##
+## The known suffix of the stack is as follows:
+## LPAREN
+##
+
+expected expression
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE NEW WEST WHILE
+##
+## Ends in an error in state: 46.
+##
+## arith_expr -> expr . AND expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## arith_expr -> expr . OR expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## arith_expr -> expr . DOT expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## arith_expr -> expr . EQ expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## arith_expr -> NEW expr . [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+##
+## The known suffix of the stack is as follows:
+## NEW expr
+##
+
+expected one of new line, `.`, or an operator
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE NEW WHILE
+##
+## Ends in an error in state: 17.
+##
+## arith_expr -> NEW . expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+##
+## The known suffix of the stack is as follows:
+## NEW
+##
+
+expected expression
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE NOT WEST WHILE
+##
+## Ends in an error in state: 47.
+##
+## arith_expr -> expr . AND expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## arith_expr -> expr . OR expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## arith_expr -> expr . DOT expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## arith_expr -> expr . EQ expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## arith_expr -> NOT expr . [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+##
+## The known suffix of the stack is as follows:
+## NOT expr
+##
+
+expected one of new line, `.`, or an operator
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE NOT WHILE
+##
+## Ends in an error in state: 15.
+##
+## arith_expr -> NOT . expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+##
+## The known suffix of the stack is as follows:
+## NOT
+##
+
+expected expression
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE THEN
+##
+## Ends in an error in state: 97.
+##
+## fxn -> SUB ID LPAREN RPAREN NEWLINE block . END SUB [ NEWLINE EOF ]
+##
+## The known suffix of the stack is as follows:
+## SUB ID LPAREN RPAREN NEWLINE block
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 9, spurious reduction of production list(stmt) ->
+## In state 66, spurious reduction of production block -> list(stmt)
+##
+
+expected statement
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST AND WEST WHILE
+##
+## Ends in an error in state: 37.
+##
+## arith_expr -> expr . AND expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## arith_expr -> expr AND expr . [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## arith_expr -> expr . OR expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## arith_expr -> expr . DOT expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## arith_expr -> expr . EQ expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+##
+## The known suffix of the stack is as follows:
+## expr AND expr
+##
+
+expected one of new line, `.`, or an operator
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST AND WHILE
 ##
 ## Ends in an error in state: 36.
 ##
-## expr -> arith_expr LPAREN . arguments RPAREN [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
+## arith_expr -> expr AND . expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
 ##
 ## The known suffix of the stack is as follows:
-## arith_expr LPAREN
+## expr AND
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected expression
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST OR WEST LPAREN RPAREN WHILE
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST DOT WHILE
+##
+## Ends in an error in state: 33.
+##
+## arith_expr -> expr DOT . expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+##
+## The known suffix of the stack is as follows:
+## expr DOT
+##
+
+expected function call
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST EQ WEST WHILE
+##
+## Ends in an error in state: 39.
+##
+## arith_expr -> expr . AND expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## arith_expr -> expr . OR expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## arith_expr -> expr . DOT expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## arith_expr -> expr . EQ expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## arith_expr -> expr EQ expr . [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+##
+## The known suffix of the stack is as follows:
+## expr EQ expr
+##
+
+expected one of new line, `.`, or an operator
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST EQ WHILE
+##
+## Ends in an error in state: 38.
+##
+## arith_expr -> expr EQ . expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+##
+## The known suffix of the stack is as follows:
+## expr EQ
+##
+
+expected expression
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST OR WEST WHILE
 ##
 ## Ends in an error in state: 32.
 ##
-## arith_expr -> expr . AND expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . OR expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr OR expr . [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . DOT expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## arith_expr -> expr . EQ expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
+## arith_expr -> expr . AND expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## arith_expr -> expr . OR expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## arith_expr -> expr OR expr . [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## arith_expr -> expr . DOT expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
+## arith_expr -> expr . EQ expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
 ##
 ## The known suffix of the stack is as follows:
 ## expr OR expr
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected one of new line, `.`, or an operator
 
 translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST OR WHILE
 ##
 ## Ends in an error in state: 31.
 ##
-## arith_expr -> expr OR . expr [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
+## arith_expr -> expr OR . expr [ THEN RPAREN OR NEWLINE EQ DOT COMMA AND ]
 ##
 ## The known suffix of the stack is as follows:
 ## expr OR
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected expression
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST THEN
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST WHILE
 ##
-## Ends in an error in state: 123.
+## Ends in an error in state: 65.
 ##
-## arith_expr -> expr . AND expr [ OR NEWLINE LPAREN EQ DOT AND ]
-## arith_expr -> expr . OR expr [ OR NEWLINE LPAREN EQ DOT AND ]
-## arith_expr -> expr . DOT expr [ OR NEWLINE LPAREN EQ DOT AND ]
-## arith_expr -> expr . EQ expr [ OR NEWLINE LPAREN EQ DOT AND ]
-## stmt -> expr . nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## arith_expr -> expr . AND expr [ OR NEWLINE EQ DOT AND ]
+## arith_expr -> expr . OR expr [ OR NEWLINE EQ DOT AND ]
+## arith_expr -> expr . DOT expr [ OR NEWLINE EQ DOT AND ]
+## arith_expr -> expr . EQ expr [ OR NEWLINE EQ DOT AND ]
+## option(expr) -> expr . [ NEWLINE ]
 ##
 ## The known suffix of the stack is as follows:
 ## expr
 ##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 35, spurious reduction of production expr -> arith_expr 
-##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST WHILE
-##
-## Ends in an error in state: 35.
-##
-## expr -> arith_expr . [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-## expr -> arith_expr . LPAREN arguments RPAREN [ THEN RPAREN OR NEWLINE LPAREN EQ DOT COMMA AND ]
-##
-## The known suffix of the stack is as follows:
-## arith_expr
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE LPAREN WEST RPAREN NEWLINE ELSEIF
-##
-## Ends in an error in state: 53.
-##
-## stmt -> WHILE LPAREN expr RPAREN block . END WHILE nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## WHILE LPAREN expr RPAREN block
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 9, spurious reduction of production nonempty_list(NEWLINE) -> NEWLINE 
-## In state 11, spurious reduction of production list(stmt) -> 
-## In state 125, spurious reduction of production block -> nonempty_list(NEWLINE) list(stmt) 
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE LPAREN WEST RPAREN NEWLINE END WEST
-##
-## Ends in an error in state: 54.
-##
-## stmt -> WHILE LPAREN expr RPAREN block END . WHILE nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## WHILE LPAREN expr RPAREN block END
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE LPAREN WEST RPAREN NEWLINE END WHILE WHILE
-##
-## Ends in an error in state: 55.
-##
-## stmt -> WHILE LPAREN expr RPAREN block END WHILE . nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## WHILE LPAREN expr RPAREN block END WHILE
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE LPAREN WEST RPAREN WHILE
-##
-## Ends in an error in state: 52.
-##
-## primary_expr -> LPAREN expr RPAREN . [ OR NEWLINE LPAREN EQ DOT AND ]
-## stmt -> WHILE LPAREN expr RPAREN . block END WHILE nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## WHILE LPAREN expr RPAREN
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE LPAREN WEST THEN
-##
-## Ends in an error in state: 51.
-##
-## arith_expr -> expr . AND expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . OR expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . DOT expr [ RPAREN OR LPAREN EQ DOT AND ]
-## arith_expr -> expr . EQ expr [ RPAREN OR LPAREN EQ DOT AND ]
-## primary_expr -> LPAREN expr . RPAREN [ OR NEWLINE LPAREN EQ DOT AND ]
-## stmt -> WHILE LPAREN expr . RPAREN block END WHILE nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## WHILE LPAREN expr
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 35, spurious reduction of production expr -> arith_expr 
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE LPAREN WHILE
-##
-## Ends in an error in state: 50.
-##
-## primary_expr -> LPAREN . expr RPAREN [ OR NEWLINE LPAREN EQ DOT AND ]
-## stmt -> WHILE LPAREN . expr RPAREN block END WHILE nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## WHILE LPAREN
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE WEST NEWLINE ELSEIF
-##
-## Ends in an error in state: 58.
-##
-## stmt -> WHILE expr block . END WHILE nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-##
-## The known suffix of the stack is as follows:
-## WHILE expr block
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 9, spurious reduction of production nonempty_list(NEWLINE) -> NEWLINE 
-## In state 11, spurious reduction of production list(stmt) -> 
-## In state 125, spurious reduction of production block -> nonempty_list(NEWLINE) list(stmt) 
-##
-
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected one of new line, `.`, or an operator
 
 translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE WEST NEWLINE END WEST
 ##
-## Ends in an error in state: 59.
+## Ends in an error in state: 94.
 ##
-## stmt -> WHILE expr block END . WHILE nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## stmt -> WHILE expr NEWLINE block END . WHILE NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
-## WHILE expr block END
+## WHILE expr NEWLINE block END
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected `While`
 
 translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE WEST NEWLINE END WHILE WHILE
 ##
-## Ends in an error in state: 60.
+## Ends in an error in state: 95.
 ##
-## stmt -> WHILE expr block END WHILE . nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## stmt -> WHILE expr NEWLINE block END WHILE . NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
-## WHILE expr block END WHILE
+## WHILE expr NEWLINE block END WHILE
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected new line
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE WEST THEN
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE WEST NEWLINE THEN
 ##
-## Ends in an error in state: 57.
+## Ends in an error in state: 93.
 ##
-## arith_expr -> expr . AND expr [ OR NEWLINE LPAREN EQ DOT AND ]
-## arith_expr -> expr . OR expr [ OR NEWLINE LPAREN EQ DOT AND ]
-## arith_expr -> expr . DOT expr [ OR NEWLINE LPAREN EQ DOT AND ]
-## arith_expr -> expr . EQ expr [ OR NEWLINE LPAREN EQ DOT AND ]
-## stmt -> WHILE expr . block END WHILE nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## stmt -> WHILE expr NEWLINE block . END WHILE NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## WHILE expr NEWLINE block
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 49, spurious reduction of production list(stmt) ->
+## In state 66, spurious reduction of production block -> list(stmt)
+##
+
+expected statement
+
+translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE WEST WHILE
+##
+## Ends in an error in state: 48.
+##
+## arith_expr -> expr . AND expr [ OR NEWLINE EQ DOT AND ]
+## arith_expr -> expr . OR expr [ OR NEWLINE EQ DOT AND ]
+## arith_expr -> expr . DOT expr [ OR NEWLINE EQ DOT AND ]
+## arith_expr -> expr . EQ expr [ OR NEWLINE EQ DOT AND ]
+## stmt -> WHILE expr . NEWLINE block END WHILE NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## WHILE expr
 ##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 35, spurious reduction of production expr -> arith_expr 
-##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected one of new line, `.`, or an operator
 
 translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE WHILE
 ##
-## Ends in an error in state: 12.
+## Ends in an error in state: 10.
 ##
-## stmt -> WHILE . LPAREN expr RPAREN block END WHILE nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
-## stmt -> WHILE . expr block END WHILE nonempty_list(NEWLINE) [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
+## stmt -> WHILE . expr NEWLINE block END WHILE NEWLINE [ WHILE WEST TRUE SOUTH RIGHT NOT NORTH NEWLINE NEW LPAREN LEFT INT IF ID HERE FALSE END ELSEIF ELSE EAST DIM AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## WHILE
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected expression
 
 translation_unit: HEADER SUB ID LPAREN RPAREN WHILE
 ##
 ## Ends in an error in state: 8.
 ##
-## fxn -> SUB ID LPAREN RPAREN . block END SUB [ SUB NEWLINE MAIN_METH_SEP EOF ]
+## fxn -> SUB ID LPAREN RPAREN . NEWLINE block END SUB [ NEWLINE EOF ]
 ##
 ## The known suffix of the stack is as follows:
 ## SUB ID LPAREN RPAREN
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected block
 
 translation_unit: HEADER SUB ID LPAREN WHILE
 ##
 ## Ends in an error in state: 7.
 ##
-## fxn -> SUB ID LPAREN . RPAREN block END SUB [ SUB NEWLINE MAIN_METH_SEP EOF ]
+## fxn -> SUB ID LPAREN . RPAREN NEWLINE block END SUB [ NEWLINE EOF ]
 ##
 ## The known suffix of the stack is as follows:
 ## SUB ID LPAREN
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected `)`
 
 translation_unit: HEADER SUB ID WHILE
 ##
 ## Ends in an error in state: 6.
 ##
-## fxn -> SUB ID . LPAREN RPAREN block END SUB [ SUB NEWLINE MAIN_METH_SEP EOF ]
+## fxn -> SUB ID . LPAREN RPAREN NEWLINE block END SUB [ NEWLINE EOF ]
 ##
 ## The known suffix of the stack is as follows:
 ## SUB ID
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected `(`
 
 translation_unit: HEADER SUB WHILE
 ##
 ## Ends in an error in state: 5.
 ##
-## fxn -> SUB . ID LPAREN RPAREN block END SUB [ SUB NEWLINE MAIN_METH_SEP EOF ]
+## fxn -> SUB . ID LPAREN RPAREN NEWLINE block END SUB [ NEWLINE EOF ]
 ##
 ## The known suffix of the stack is as follows:
 ## SUB
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected identifier
 
 translation_unit: HEADER WHILE
 ##
-## Ends in an error in state: 1.
+## Ends in an error in state: 4.
 ##
-## translation_unit -> HEADER . fxns list(NEWLINE) MAIN_METH_SEP list(NEWLINE) fxn list(NEWLINE) EOF [ # ]
+## translation_unit -> HEADER list(NEWLINE) . fxns MAIN_METH_SEP list(NEWLINE) fxn list(NEWLINE) EOF [ # ]
 ##
 ## The known suffix of the stack is as follows:
-## HEADER
+## HEADER list(NEWLINE)
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 1, spurious reduction of production list(NEWLINE) ->
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected `Sub`
 
 translation_unit: WHILE
 ##
@@ -1285,5 +861,4 @@ translation_unit: WHILE
 ##
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
-
+expected `@VB` (likely due to an error in your input file)

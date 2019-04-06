@@ -123,7 +123,8 @@ export class DashboardComponent {
     onResetClick() {
         if (!this.resetBtnDisabled()) {
             this.jerooEditor.resetState();
-            this.jerooMatrix.clearMap();
+            this.matrixService.resetJeroos();
+            this.jerooMatrix.redraw();
         }
     }
 

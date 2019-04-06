@@ -79,6 +79,14 @@ describe('BytecodeInterpreterService', () => {
             .toThrow(new RuntimeError('INSTANTIATION ERROR: Jeroo started in the water', 0));
     });
 
+    it('assert new outside of bounds throws error', () => {
+        const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
+        const matService: MatrixService = TestBed.get(MatrixService);
+        const newInstr = newInstruction('NEW', 0, 50, -8, 0, 0, 0);
+        expect(() => service.executeBytecode(newInstr, matService))
+            .toThrow(new RuntimeError('INSTANTIATION ERROR: Jeroo started in the water', 0));
+    });
+
     it('assert new on net throws error', () => {
         const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
         const matService: MatrixService = TestBed.get(MatrixService);

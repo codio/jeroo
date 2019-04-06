@@ -15,12 +15,13 @@ build: [
 ]
 
 depends: [
-  "ocaml"           {>= "4.07.1"}
-  "dune"            {build & >= "1.6.3"}
-  "menhir" {>= "20181113"}
-  "core" {>= "0.11.3"}
+  "ocaml"                {>= "4.07.1"}
+  "dune"                 {build & >= "1.6.3"}
+  "menhir"               {>= "20181113"}
   "js_of_ocaml-compiler" {>= "3.3.0"}
-  "js_of_ocaml-ppx" {>= "3.3.0"}
-  "js_of_ocaml" {>= "3.3.0"}
-  "ounit"        {>= "2.0.8"}
+  "js_of_ocaml-ppx"      {>= "3.3.0"}
+  "js_of_ocaml"          {>= "3.3.0"}
+  "ounit"                {>= "2.0.8"}
+  # only for the CLI
+  # "core"                 {>= "0.11.3"}
 ]

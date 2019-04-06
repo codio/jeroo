@@ -88,7 +88,7 @@ export class BytecodeInterpreterService {
             }
             case 'NEW': {
                 const tile = matService.getTile(command.b + 1, command.c + 1);
-                if (tile === TileType.Water) {
+                if (!matService.isInBounds(command.b + 1, command.c + 1) || tile === TileType.Water) {
                     throw new RuntimeError('INSTANTIATION ERROR: Jeroo started in the water', command.f);
                 }
                 if (tile === TileType.Net) {

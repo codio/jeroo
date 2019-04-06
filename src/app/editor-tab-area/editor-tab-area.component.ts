@@ -19,7 +19,8 @@ export interface EditorState {
 
 @Component({
     selector: 'app-editor-tab-area',
-    templateUrl: './editor-tab-area.component.html'
+    templateUrl: './editor-tab-area.component.html',
+    styleUrls: ['./editor-tab-area.component.scss']
 })
 export class EditorTabAreaComponent implements AfterViewInit {
     @ViewChild('mainMethodTextEditor') mainMethodTextEditor: TextEditorComponent;

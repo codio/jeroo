@@ -1,6 +1,6 @@
 @VB
 
-sub foo()
+ub foo()
 hop(3)
 end sub
 @@

@@ -319,23 +319,26 @@ let parse_fxn_call _test_ctxt =
       id = "main";
       stmts = [
         AST.ExprStmt({
-            a = AST.FxnAppExpr({
-                a = AST.IdExpr("foobar");
+            a = Some({
+                a = AST.FxnAppExpr({
+                    a = AST.IdExpr("foobar");
+                    lnum = 2;
+                  }, [
+                      {
+                        a = AST.IntExpr(20);
+                        lnum = 2;
+                      };
+                      {
+                        a = AST.IdExpr("five");
+                        lnum = 2;
+                      };
+                      {
+                        a = AST.NorthExpr;
+                        lnum = 2;
+                      }
+                    ]);
                 lnum = 2;
-              }, [
-                  {
-                    a = AST.IntExpr(20);
-                    lnum = 2;
-                  };
-                  {
-                    a = AST.IdExpr("five");
-                    lnum = 2;
-                  };
-                  {
-                    a = AST.NorthExpr;
-                    lnum = 2;
-                  }
-                ]);
+              });
             lnum = 2;
           })
       ];
@@ -354,19 +357,22 @@ let parse_obj_fxn_call _test_ctxt =
       id = "main";
       stmts = [
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("foo");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("foo");
+                    lnum = 2;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("bar");
+                          lnum = 2;
+                        }, [{
+                          a = AST.AheadExpr;
+                          lnum = 2;
+                        }]);
+                      lnum = 2
+                    });
                 lnum = 2;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("bar");
-                      lnum = 2;
-                    }, [{
-                      a = AST.AheadExpr;
-                      lnum = 2;
-                    }]);
-                  lnum = 2
-                });
+              };
             lnum = 2;
           })
       ];
@@ -470,7 +476,20 @@ let parse_arbitrary_newlines _test_ctxt =
     extension_fxns = [];
     main_fxn = {
       id = "main";
-      stmts = [];
+      stmts = [
+        AST.ExprStmt({
+            a = None;
+            lnum = 4;
+          });
+        AST.ExprStmt({
+            a = None;
+            lnum = 5;
+          });
+        AST.ExprStmt({
+            a = None;
+            lnum = 6;
+          });
+      ];
       start_lnum = 3;
       end_lnum = 7;
     }
@@ -530,13 +549,16 @@ let parse_negative_int _test_ctxt =
       id = "main";
       stmts = [
         AST.ExprStmt({
-            a = AST.FxnAppExpr({
-                a = AST.IdExpr("foo");
+            a = Some {
+                a = AST.FxnAppExpr({
+                    a = AST.IdExpr("foo");
+                    lnum = 2;
+                  }, [{
+                    a = AST.IntExpr(-1);
+                    lnum = 2;
+                  }]);
                 lnum = 2;
-              }, [{
-                a = AST.IntExpr(-1);
-                lnum = 2;
-              }]);
+              };
             lnum = 2;
           })
       ];

@@ -217,7 +217,7 @@ let codegen_jeroo_decl_no_new _test_ctxt =
   } in
   assert_raises (Codegen.SemanticException {
       lnum = 2;
-      message = "Invalid right hand side of declaration, must be a Jeroo constructor"
+      message = "Invalid right hand side of assignment, must be a Jeroo constructor"
     }) (fun () -> Codegen.codegen ast)
 
 let codegen_unknown_decl_type _test_ctxt =
@@ -266,6 +266,42 @@ let codegen_unknown_ctor _test_ctxt =
       message = "Invalid constructor: jer, Jeroo is the only valid constructor"
     }) (fun () -> Codegen.codegen ast)
 
+let codegen_duplicate_jeroo _test_ctxt =
+  let ast = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.DeclStmt("Jeroo", "j", {
+            a = AST.UnOpExpr(AST.New, {
+                a = AST.FxnAppExpr({
+                    a = AST.IdExpr("Jeroo");
+                    lnum = 2;
+                  }, []);
+                lnum = 2;
+              });
+            lnum = 2;
+          });
+        AST.DeclStmt("Jeroo", "j", {
+            a = AST.UnOpExpr(AST.New, {
+                a = AST.FxnAppExpr({
+                    a = AST.IdExpr("Jeroo");
+                    lnum = 3;
+                  }, []);
+                lnum = 3;
+              });
+            lnum = 3;
+          })
+      ];
+      start_lnum = 1;
+      end_lnum = 4;
+    }
+  } in
+  assert_raises (Codegen.SemanticException {
+      lnum = 3;
+      message = "Duplicate Jeroo declaration, j already defined"
+    }) (fun () -> Codegen.codegen ast)
+
 let codegen_jeroo_hop _test_ctxt =
   let ast = {
     extension_fxns = [];
@@ -283,22 +319,25 @@ let codegen_jeroo_hop _test_ctxt =
             lnum = 2;
           });
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
-                lnum = 3;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("hop");
-                      lnum = 3;
-                    }, [
-                        {
-                          a = AST.IntExpr(2);
+            a = Some({
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 3;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("hop");
                           lnum = 3;
-                        }
-                      ]);
-                  lnum = 3;
-                });
-            lnum = 3;
+                        }, [
+                            {
+                              a = AST.IntExpr(2);
+                              lnum = 3;
+                            }
+                          ]);
+                      lnum = 3;
+                    });
+                lnum = 3;
+              });
+            lnum = 3
           })
       ];
       start_lnum = 1;
@@ -350,29 +389,35 @@ let codegen_multiple_jeroos_csr _test_ctxt =
             lnum = 3;
           });
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j1");
-                lnum = 4;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("hop");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j1");
+                    lnum = 4;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("hop");
+                          lnum = 4;
+                        }, []);
                       lnum = 4;
-                    }, []);
-                  lnum = 4;
-                });
+                    });
+                lnum = 4;
+              };
             lnum = 4;
           });
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j2");
-                lnum = 5;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("hop");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j2");
+                    lnum = 5;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("hop");
+                          lnum = 5;
+                        }, []);
                       lnum = 5;
-                    }, []);
-                  lnum = 5;
-                });
+                    });
+                lnum = 5;
+              };
             lnum = 5;
           })
       ];
@@ -409,16 +454,19 @@ let codegen_pick_flower _test_ctxt =
             lnum = 2;
           });
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
-                lnum = 3;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("pick");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 3;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("pick");
+                          lnum = 3;
+                        }, []);
                       lnum = 3;
-                    }, []);
-                  lnum = 3;
-                });
+                    });
+                lnum = 3;
+              };
             lnum = 3;
           })
       ];
@@ -452,16 +500,19 @@ let codegen_plant_flower _test_ctxt =
             lnum = 2;
           });
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
-                lnum = 3;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("plant");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 3;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("plant");
+                          lnum = 3;
+                        }, []);
                       lnum = 3;
-                    }, []);
-                  lnum = 3;
-                });
+                    });
+                lnum = 3;
+              };
             lnum = 3;
           })
       ];
@@ -495,16 +546,19 @@ let codegen_toss_flower _test_ctxt =
             lnum = 2;
           });
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
-                lnum = 3;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("toss");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 3;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("toss");
+                          lnum = 3;
+                        }, []);
                       lnum = 3;
-                    }, []);
-                  lnum = 3;
-                });
+                    });
+                lnum = 3;
+              };
             lnum = 3;
           })
       ];
@@ -538,16 +592,19 @@ let codegen_give_default_args _test_ctxt =
             lnum = 2;
           });
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
-                lnum = 3;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("give");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 3;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("give");
+                          lnum = 3;
+                        }, []);
                       lnum = 3;
-                    }, []);
-                  lnum = 3;
-                });
+                    });
+                lnum = 3;
+              };
             lnum = 3;
           })
       ];
@@ -581,19 +638,22 @@ let codegen_give_in_direction _test_ctxt =
             lnum = 2;
           });
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 3;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("give");
+                          lnum = 3;
+                        }, [{
+                          a = AST.LeftExpr;
+                          lnum = 3;
+                        }]);
+                      lnum = 3;
+                    });
                 lnum = 3;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("give");
-                      lnum = 3;
-                    }, [{
-                      a = AST.LeftExpr;
-                      lnum = 3;
-                    }]);
-                  lnum = 3;
-                });
+              };
             lnum = 3;
           })
       ];
@@ -627,19 +687,22 @@ let codegen_turn _test_ctxt =
             lnum = 2;
           });
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 3;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("turn");
+                          lnum = 3;
+                        }, [{
+                          a = AST.RightExpr;
+                          lnum = 3;
+                        }]);
+                      lnum = 3;
+                    });
                 lnum = 3;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("turn");
-                      lnum = 3;
-                    }, [{
-                      a = AST.RightExpr;
-                      lnum = 3;
-                    }]);
-                  lnum = 3;
-                });
+              };
             lnum = 3;
           })
       ];
@@ -673,16 +736,19 @@ let codegen_has_flower _test_ctxt =
             lnum = 2;
           });
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
-                lnum = 3;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("hasFlower");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 3;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("hasFlower");
+                          lnum = 3;
+                        }, []);
                       lnum = 3;
-                    }, []);
-                  lnum = 3;
-                });
+                    });
+                lnum = 3;
+              };
             lnum = 3;
           })
       ];
@@ -716,19 +782,22 @@ let codegen_is_jeroo _test_ctxt =
             lnum = 2;
           });
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 3;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("isJeroo");
+                          lnum = 3;
+                        }, [{
+                          a = AST.AheadExpr;
+                          lnum = 3;
+                        }]);
+                      lnum = 3;
+                    });
                 lnum = 3;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("isJeroo");
-                      lnum = 3;
-                    }, [{
-                      a = AST.AheadExpr;
-                      lnum = 3;
-                    }]);
-                  lnum = 3;
-                });
+              };
             lnum = 3;
           })
       ];
@@ -762,19 +831,22 @@ let codegen_is_facing _test_ctxt =
             lnum = 2;
           });
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 3;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("isFacing");
+                          lnum = 3;
+                        }, [{
+                          a = AST.SouthExpr;
+                          lnum = 3;
+                        }]);
+                      lnum = 3;
+                    });
                 lnum = 3;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("isFacing");
-                      lnum = 3;
-                    }, [{
-                      a = AST.SouthExpr;
-                      lnum = 3;
-                    }]);
-                  lnum = 3;
-                });
+              };
             lnum = 3;
           })
       ];
@@ -808,19 +880,22 @@ let codegen_is_flower _test_ctxt =
             lnum = 2;
           });
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 3;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("isFlower");
+                          lnum = 3;
+                        }, [{
+                          a = AST.AheadExpr;
+                          lnum = 3;
+                        }]);
+                      lnum = 3;
+                    });
                 lnum = 3;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("isFlower");
-                      lnum = 3;
-                    }, [{
-                      a = AST.AheadExpr;
-                      lnum = 3;
-                    }]);
-                  lnum = 3;
-                });
+              };
             lnum = 3;
           })
       ];
@@ -854,19 +929,22 @@ let codegen_is_net _test_ctxt =
             lnum = 2;
           });
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 3;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("isNet");
+                          lnum = 3;
+                        }, [{
+                          a = AST.LeftExpr;
+                          lnum = 3;
+                        }]);
+                      lnum = 3;
+                    });
                 lnum = 3;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("isNet");
-                      lnum = 3;
-                    }, [{
-                      a = AST.LeftExpr;
-                      lnum = 3;
-                    }]);
-                  lnum = 3;
-                });
+              };
             lnum = 3;
           })
       ];
@@ -900,19 +978,22 @@ let codegen_is_water _test_ctxt =
             lnum = 2;
           });
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 3;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("isWater");
+                          lnum = 3;
+                        }, [{
+                          a = AST.RightExpr;
+                          lnum = 3;
+                        }]);
+                      lnum = 3;
+                    });
                 lnum = 3;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("isWater");
-                      lnum = 3;
-                    }, [{
-                      a = AST.RightExpr;
-                      lnum = 3;
-                    }]);
-                  lnum = 3;
-                });
+              };
             lnum = 3;
           })
       ];
@@ -936,10 +1017,13 @@ let codegen_call_custom_fxn _test_ctxt =
         id = "foo";
         stmts = [
           AST.ExprStmt({
-              a = AST.FxnAppExpr({
-                  a = AST.IdExpr("hop");
+              a = Some {
+                  a = AST.FxnAppExpr({
+                      a = AST.IdExpr("hop");
+                      lnum = 2;
+                    }, []);
                   lnum = 2;
-                }, []);
+                };
               lnum = 2;
             })
         ];
@@ -961,16 +1045,19 @@ let codegen_call_custom_fxn _test_ctxt =
             lnum = 2;
           });
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
-                lnum = 3;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("foo");
+            a = Some({
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 3;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("foo");
+                          lnum = 3;
+                        }, []);
                       lnum = 3;
-                    }, []);
-                  lnum = 3;
-                });
+                    });
+                lnum = 3;
+              });
             lnum = 3;
           })
       ];
@@ -1007,16 +1094,19 @@ let codegen_call_missing_fxn _test_ctxt =
             lnum = 2;
           });
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
-                lnum = 3;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("foo");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 3;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("foo");
+                          lnum = 3;
+                        }, []);
                       lnum = 3;
-                    }, []);
-                  lnum = 3;
-                });
+                    });
+                lnum = 3;
+              };
             lnum = 3;
           })
       ];
@@ -1049,32 +1139,38 @@ let codegen_if_stmt _test_ctxt =
             a = AST.TrueExpr;
             lnum = 3;
           }, AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
-                lnum = 4;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("hop");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 4;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("hop");
+                          lnum = 4;
+                        }, []);
                       lnum = 4;
-                    }, []);
-                  lnum = 4;
-                });
+                    });
+                lnum = 4;
+              };
             lnum = 4;
           }), 3);
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 5;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("turn");
+                          lnum = 5;
+                        }, [{
+                          a = AST.RightExpr;
+                          lnum = 5;
+                        }]);
+                      lnum = 5;
+                    });
                 lnum = 5;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("turn");
-                      lnum = 5;
-                    }, [{
-                      a = AST.RightExpr;
-                      lnum = 5;
-                    }]);
-                  lnum = 5;
-                });
+              };
             lnum = 5;
           })
       ];
@@ -1115,47 +1211,56 @@ let codegen_if_else _test_ctxt =
             a = AST.TrueExpr;
             lnum = 3;
           }, AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
-                lnum = 4;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("hop");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 4;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("hop");
+                          lnum = 4;
+                        }, []);
                       lnum = 4;
-                    }, []);
-                  lnum = 4;
-                });
+                    });
+                lnum = 4;
+              };
             lnum = 4;
           }), AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 6;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("turn");
+                          lnum = 6;
+                        }, [{
+                          a = AST.LeftExpr;
+                          lnum = 6;
+                        }]);
+                      lnum = 6;
+                    });
                 lnum = 6;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("turn");
-                      lnum = 6;
-                    }, [{
-                      a = AST.LeftExpr;
-                      lnum = 6;
-                    }]);
-                  lnum = 6;
-                });
+              };
             lnum = 6;
           }), 3);
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 7;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("turn");
+                          lnum = 7;
+                        }, [{
+                          a = AST.RightExpr;
+                          lnum = 7;
+                        }]);
+                      lnum = 7;
+                    });
                 lnum = 7;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("turn");
-                      lnum = 7;
-                    }, [{
-                      a = AST.RightExpr;
-                      lnum = 7;
-                    }]);
-                  lnum = 7;
-                });
+              };
             lnum = 7;
           })
       ];
@@ -1199,32 +1304,38 @@ let codegen_while _test_ctxt =
             a = AST.TrueExpr;
             lnum = 3;
           }, AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
-                lnum = 4;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("hop");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 4;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("hop");
+                          lnum = 4;
+                        }, []);
                       lnum = 4;
-                    }, []);
-                  lnum = 4;
-                });
+                    });
+                lnum = 4;
+              };
             lnum = 4;
           }), 3);
         AST.ExprStmt({
-            a = AST.BinOpExpr({
-                a = AST.IdExpr("j");
+            a = Some {
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 5;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("turn");
+                          lnum = 5;
+                        }, [{
+                          a = AST.LeftExpr;
+                          lnum = 5;
+                        }]);
+                      lnum = 5;
+                    });
                 lnum = 5;
-              }, AST.Dot, {
-                  a = AST.FxnAppExpr({
-                      a = AST.IdExpr("turn");
-                      lnum = 5;
-                    }, [{
-                      a = AST.LeftExpr;
-                      lnum = 5;
-                    }]);
-                  lnum = 5;
-                });
+              };
             lnum = 5;
           })
       ];
@@ -1246,6 +1357,84 @@ let codegen_while _test_ctxt =
     Bytecode.RETR (0, 6);
   ]
 
+let codegen_unknown_fxn _test_ctxt =
+  let ast = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        ExprStmt({
+            a = Some {
+                a = FxnAppExpr({
+                    a = IdExpr("foo");
+                    lnum = 1;
+                  }, []);
+                lnum = 1;
+              };
+            lnum = 1;
+          })
+      ];
+      start_lnum = 1;
+      end_lnum = 3;
+    }
+  } in
+  assert_raises (Codegen.SemanticException {
+      lnum = 1;
+      message = "Unknown function: foo"
+    }) (fun () -> Codegen.codegen ast)
+
+let codegen_duplicate_fxn _test_ctxt =
+  let ast = {
+    extension_fxns = [{
+        id = "main";
+        stmts = [];
+        start_lnum = 1;
+        end_lnum = 2;
+      }];
+    main_fxn = {
+      id = "main";
+      stmts = [];
+      start_lnum = 1;
+      end_lnum = 2;
+    }
+  } in
+  assert_raises (Codegen.SemanticException {
+      lnum = 1;
+      message = "duplicate function declaration, main already defined"
+    }) (fun () -> Codegen.codegen ast)
+
+let codegen_unknown_jeroo _test_ctxt =
+  let ast = {
+    extension_fxns = [];
+    main_fxn = {
+      id = "main";
+      stmts = [
+        AST.ExprStmt({
+            a = Some({
+                a = AST.BinOpExpr({
+                    a = AST.IdExpr("j");
+                    lnum = 3;
+                  }, AST.Dot, {
+                      a = AST.FxnAppExpr({
+                          a = AST.IdExpr("foo");
+                          lnum = 3;
+                        }, []);
+                      lnum = 3;
+                    });
+                lnum = 3;
+              });
+            lnum = 3;
+          })
+      ];
+      start_lnum = 1;
+      end_lnum = 4;
+    }
+  } in
+  assert_raises (Codegen.SemanticException {
+      lnum = 3;
+      message = "Unknown Jeroo: j"
+    }) (fun () -> Codegen.codegen ast)
+
 let suite =
   "Codegen">::: [
     "Generate jeroo decl with default args">:: codegen_jeroo_decl_no_args;
@@ -1256,6 +1445,7 @@ let suite =
     "Generate jeroo decl no new expr">:: codegen_jeroo_decl_no_new;
     "Generate unknown type throws exception">:: codegen_unknown_decl_type;
     "Generate unknown constructor throws exception">:: codegen_unknown_ctor;
+    "Generate duplicate jeroo throws exception">::codegen_duplicate_jeroo;
     "Generate Jeroo hop">:: codegen_jeroo_hop;
     "Generate CSR for multiple Jeroos">:: codegen_multiple_jeroos_csr;
     "Generate pick instruction">:: codegen_pick_flower;
@@ -1275,4 +1465,7 @@ let suite =
     "Generate if statement">:: codegen_if_stmt;
     "Generate if-else statement">:: codegen_if_else;
     "Generate while statement">:: codegen_while;
+    "Generate unknown function throws exception">:: codegen_unknown_fxn;
+    "Generate duplicate function throws exception">:: codegen_duplicate_fxn;
+    "Generate unknown jeroo throws exception">:: codegen_unknown_jeroo;
   ]
