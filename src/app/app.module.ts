@@ -29,6 +29,7 @@ import { AppComponent } from './app.component';
 import { JerooMatrixComponent } from './jeroo-matrix/jeroo-matrix.component';
 import { MatrixDialogComponent } from './matrix-dialog/matrix-dialog.component';
 import { MaterialModule } from './material.module';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { DisplayErrorMessageComponent } from './display-error-message/display-error-message.component';
@@ -70,6 +71,7 @@ library.add(
         BrowserModule,
         AppRoutingModule,
         MaterialModule,
+        FlexLayoutModule,
         BrowserAnimationsModule,
         FormsModule,
         ReactiveFormsModule,

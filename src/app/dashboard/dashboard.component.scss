@@ -17,20 +17,24 @@ mat-divider {
   margin-right: 8px;
 }
 
-.row {
-  margin-left: auto;
-  margin-right: auto;
-}
-
 .invisible {
   display: none;
+}
+
+.menu-text {
+  padding-left: 10px;
 }
 
 .shortcut-tip {
   float: right;
   color: #999999;
+  padding-left: 10px;
 }
 
 .speed-radio-btn {
   pointer-events: none;
+}
+
+.jeroo-matrix-container {
+  height: 600px;
 }

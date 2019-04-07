@@ -1,4 +1,7 @@
-@import "styles-variables";
-@import '~bootstrap/scss/bootstrap-reboot.scss';
-@import '~bootstrap/scss/bootstrap-grid.scss';
 @import '~codemirror/lib/codemirror.css';
+
+html, body {
+  margin: 0;
+  height: 100%;
+  font-family: 'Roboto', sans-serif;
+}

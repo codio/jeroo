@@ -14,15 +14,13 @@
             <!--Toolbar Area-->
             <mat-toolbar color="primary">
                 <mat-toolbar-row>
-                    <div class="d-lg-none">
+                    <div fxHide.gt-sm>
                         <button mat-icon-button (click)="sidenav.toggle()">
                             <fa-icon icon="bars"></fa-icon>
                         </button>
                     </div>
-                    <div class="menu-button">
-                        Welcome to Jeroo
-                    </div>
-                    <div class="d-none d-lg-block">
+                    <div fxLayout="row" fxLayoutAlign="none center" fxHide.sm>
+                        <img src="/assets/JerooLogo.png" />
                         <button class="menu-button" mat-button [matMenuTriggerFor]="file">Source File</button>
                         <button class="menu-button" mat-button [matMenuTriggerFor]="edit">Source Edit</button>
                         <button class="menu-button" mat-button [matMenuTriggerFor]="run">Run</button>
@@ -31,7 +29,7 @@
                         <button class="menu-button" mat-button [matMenuTriggerFor]="help">Help</button>
                     </div>
                 </mat-toolbar-row>
-                <mat-toolbar-row>
+                <mat-toolbar-row fxHide.sm>
                     <button mat-icon-button matTooltip="New File">
                         <fa-icon icon="file"></fa-icon>
                     </button>
@@ -85,28 +83,28 @@
             <mat-menu #file="matMenu">
                 <ng-template matMenuContent>
                     <button mat-menu-item>
-                        <fa-icon icon="file"></fa-icon><span class="col-1">New</span>
+                        <fa-icon icon="file"></fa-icon><span class="menu-text">New</span>
                     </button>
                     <button mat-menu-item>
-                        <fa-icon icon="folder"></fa-icon><span class="col-1">Open</span>
-                    </button>
-                    <mat-divider></mat-divider>
-                    <button mat-menu-item>
-                        <fa-icon icon="save"></fa-icon><span class="col-1">Save</span>
+                        <fa-icon icon="folder"></fa-icon><span class="menu-text">Open</span>
                     </button>
                     <mat-divider></mat-divider>
                     <button mat-menu-item>
-                        <fa-icon icon="folder-open"></fa-icon><span class="col-1">Print</span>
+                        <fa-icon icon="save"></fa-icon><span class="menu-text">Save</span>
+                    </button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item>
+                        <fa-icon icon="folder-open"></fa-icon><span class="menu-text">Print</span>
                     </button>
                 </ng-template>
             </mat-menu>
             <mat-menu #edit="matMenu">
                 <ng-template matMenuContent>
                     <button mat-menu-item (click)="onUndoClick()">
-                        <fa-icon icon="undo"></fa-icon><span class="col-1">Undo Last Edit</span><span class="shortcut-tip">Ctrl+Z</span>
+                        <fa-icon icon="undo"></fa-icon><span class="menu-text">Undo Last Edit</span><span class="shortcut-tip">Ctrl+Z</span>
                     </button>
                     <button mat-menu-item (click)="onRedoClick()">
-                        <fa-icon icon="redo"></fa-icon><span class="col-1">Redo Last Undo</span><span class="shortcut-tip">Ctrl+Shift+Z</span>
+                        <fa-icon icon="redo"></fa-icon><span class="menu-text">Redo Last Undo</span><span class="shortcut-tip">Ctrl+Shift+Z</span>
                     </button>
                     <mat-divider></mat-divider>
                     <button mat-menu-item (click)="onToggleCommentLines()">Comment Lines<span class="shortcut-tip">Ctrl+/</span></button>
@@ -121,19 +119,19 @@
             <mat-menu #run="matMenu">
                 <ng-template matMenuContent>
                     <button mat-menu-item [disabled]="resetBtnDisabled()" (click)="onResetClick()">
-                        <fa-icon icon="step-backward"></fa-icon><span class="col-1">Reset<span class="shortcut-tip">F2</span></span>
+                        <fa-icon icon="step-backward"></fa-icon><span class="menu-text">Reset<span class="shortcut-tip">F2</span></span>
                     </button>
                     <button mat-menu-item [disabled]="runBtnDisabled()" (click)="onRunStepwiseClick()">
-                        <fa-icon icon="play"></fa-icon><span class="col-1">Run Stepwise<span class="shortcut-tip">F3</span></span>
+                        <fa-icon icon="play"></fa-icon><span class="menu-text">Run Stepwise<span class="shortcut-tip">F3</span></span>
                     </button>
                     <button mat-menu-item [disabled]="runBtnDisabled()" (click)="onRunContiniousClick()">
-                        <fa-icon icon="step-forward"></fa-icon><span class="col-1">Run Continuously<span class="shortcut-tip">F4</span></span>
+                        <fa-icon icon="step-forward"></fa-icon><span class="menu-text">Run Continuously<span class="shortcut-tip">F4</span></span>
                     </button>
                     <button mat-menu-item [disabled]="pauseBtnDisabled()" (click)="onPauseClick()">
-                        <fa-icon icon="pause"></fa-icon><span class="col-1">Pause<span class="shortcut-tip">F5</span></span>
+                        <fa-icon icon="pause"></fa-icon><span class="menu-text">Pause<span class="shortcut-tip">F5</span></span>
                     </button>
                     <button mat-menu-item [disabled]="stopBtnDisabled()" (click)="onStopClick()">
-                        <fa-icon icon="stop"></fa-icon><span class="col-1">Stop Run<span class="shortcut-tip">F6</span></span>
+                        <fa-icon icon="stop"></fa-icon><span class="menu-text">Stop Run<span class="shortcut-tip">F6</span></span>
                     </button>
                 </ng-template>
             </mat-menu>
@@ -148,19 +146,19 @@
             </mat-menu>
             <mat-menu #islandfile="matMenu">
                 <ng-template matMenuContent>
-                    <button mat-menu-item [disabled]="!reset" (click)="clearMap()">
-                        <fa-icon icon="eraser"></fa-icon><span class="col-1">New<span class="shortcut-tip">Ctrl+Shift+N</span></span>
+                    <button mat-menu-item [disabled]="!matrixEditingEnabled()" (click)="clearMap()">
+                        <fa-icon icon="eraser"></fa-icon><span class="menu-text">New<span class="shortcut-tip">Ctrl+Shift+N</span></span>
                     </button>
-                    <button mat-menu-item [disabled]="!reset" (click)="openMapFile()">
-                        <fa-icon icon="folder"></fa-icon><span class="col-1">Open<span class="shortcut-tip">Ctrl+Shift+O</span></span>
+                    <button mat-menu-item [disabled]="!matrixEditingEnabled()" (click)="openMapFile()">
+                        <fa-icon icon="folder"></fa-icon><span class="menu-text">Open<span class="shortcut-tip">Ctrl+Shift+O</span></span>
                     </button>
                     <mat-divider></mat-divider>
                     <button mat-menu-item (click)="saveMapFile()">
-                        <fa-icon icon="save"></fa-icon><span class="col-1">Save<span class="shortcut-tip">Ctrl+Shift+S</span></span>
+                        <fa-icon icon="save"></fa-icon><span class="menu-text">Save<span class="shortcut-tip">Ctrl+Shift+S</span></span>
                     </button>
                     <mat-divider></mat-divider>
                     <button mat-menu-item (click)="printMap()">
-                        <fa-icon icon="print"></fa-icon><span class="col-1">Print<span class="shortcut-tip">Ctrl+Shift+P</span></span>
+                        <fa-icon icon="print"></fa-icon><span class="menu-text">Print<span class="shortcut-tip">Ctrl+Shift+P</span></span>
                     </button>
                 </ng-template>
             </mat-menu>
@@ -171,12 +169,12 @@
                 </ng-template>
             </mat-menu>
             <!--Text tabs Area-->
-            <div class="row">
-                <div class="col-lg-7">
+            <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
+                <div fxFlex="60">
                     <app-editor-tab-area #jerooEditor [(editorState)]="jerooEditorState" [speed]="runtimeSpeed"></app-editor-tab-area>
                 </div>
                 <!--Matrix Area-->
-                <div class="col-lg-5">
+                <div class="jeroo-matrix-container" fxFlex="40">
                     <app-jeroo-matrix #jerooMatrix [editingEnabled]="matrixEditingEnabled()"></app-jeroo-matrix>
                 </div>
             </div>
