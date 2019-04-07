@@ -135,7 +135,7 @@ export class MatrixService {
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
                 const jeroo = this.getJeroo(col, row);
-                if (jeroo !== null) {
+                if (jeroo !== null && jeroo !== undefined) {
                     this.renderJeroo(context, imageAtlas, jeroo);
                 } else {
                     const tile = this.getTile(col, row);

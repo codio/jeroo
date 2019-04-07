@@ -2,19 +2,24 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
+export interface DialogData {
+  xValue: number;
+  yValue: number;
+}
+
 @Component({
     selector: 'app-matrix-dialog',
-    templateUrl: './matrix-dialog.component.html'
+    templateUrl: './matrix-dialog.component.html',
+    styleUrls: ['./matrix-dialog.component.scss']
 })
 export class MatrixDialogComponent implements OnInit {
-
     form: FormGroup;
     widthValue: number;
     heightValue: number;
 
     constructor(private fb: FormBuilder,
-        private dialogRef: MatDialogRef<MatrixDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any) {
+        public dialogRef: MatDialogRef<MatrixDialogComponent>,
+        @Inject(MAT_DIALOG_DATA) data: DialogData) {
         this.widthValue = data.xValue;
         this.heightValue = data.yValue;
     }
