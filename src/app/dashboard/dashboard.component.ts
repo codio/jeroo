@@ -242,4 +242,8 @@ export class DashboardComponent {
     matrixEditingEnabled() {
         return this.jerooEditorState.reset;
     }
+
+    editorEditingEnabled() {
+        return !this.jerooEditorState.executing && !this.jerooEditorState.stopped && !this.jerooEditorState.paused;
+    }
 }

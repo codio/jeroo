@@ -76,7 +76,7 @@ export class EditorTabAreaComponent implements AfterViewInit {
         this.executingState();
         try {
             this.mainMethodTextEditor.setReadOnly(true);
-            this.mainMethodTextEditor.setReadOnly(true);
+            this.extensionMethodsTextEditor.setReadOnly(true);
             this.bytecodeService.executeInstructionsUntilLNumChanges(this.instructions, this.matrixService);
             this.matrixService.render(context);
             if (this.bytecodeService.validInstruction(this.instructions)) {
@@ -178,6 +178,8 @@ export class EditorTabAreaComponent implements AfterViewInit {
             jerooCode += '@Java\n';
         } else if (this.selectedLanguage === SelectedLanguage.Vb) {
             jerooCode += '@VB\n';
+        } else if (this.selectedLanguage === SelectedLanguage.Python) {
+            jerooCode += '@PYTHON\n';
         } else {
             throw new Error('Unsupported Language');
         }
