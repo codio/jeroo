@@ -77,6 +77,9 @@ let parse_vb lexbuf =
       lnum = e.lnum;
     })
 
+let parse_python lexbuf =
+  PythonParser.translation_unit (PythonLexer.token (PythonLexerState.create())) lexbuf
+
 let compile code =
   let lexbuf = Lexing.from_string code in
 
@@ -84,6 +87,7 @@ let compile code =
   let ast = match (String.split_on_char '\n' code) with
     | "@Java" :: _ -> parse_java lexbuf
     | "@VB" :: _ -> parse_vb lexbuf
+    | "@PYTHON" :: _ -> parse_python lexbuf
     | _ -> raise (HeaderException "Malformed Header")
   in
   Codegen.codegen ast

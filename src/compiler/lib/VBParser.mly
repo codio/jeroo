@@ -31,22 +31,22 @@ translation_unit:
   | HEADER NEWLINE* fs = fxns MAIN_METH_SEP NEWLINE* f = fxn NEWLINE* EOF { { extension_fxns = fs; main_fxn = f} }
 
 fxns:
-  |  fs = extension_fxn*  { fs }
+  | fs = extension_fxn*  { fs }
 
 extension_fxn:
   | f = fxn NEWLINE+ { f }
 
 fxn:
   | start_lnum = SUB id = ID LPAREN RPAREN NEWLINE b = block end_lnum = END SUB {
-        let (id, _) = id in
-        let stmts = b in
-        {
-          id = id;
-          stmts = stmts;
-          start_lnum = start_lnum;
-          end_lnum = end_lnum
-        }
-      }
+                                                                              let (id, _) = id in
+                                                                              let stmts = b in
+                                                                              {
+                                                                                id = id;
+                                                                                stmts = stmts;
+                                                                                start_lnum = start_lnum;
+                                                                                end_lnum = end_lnum
+                                                                              }
+                                                                            }
 
 block:
   | stmts = stmt* { stmts }
@@ -63,7 +63,7 @@ stmt:
 (* variable declaration statement *)
   | DIM id = ID AS ty = ID EQ e = expr NEWLINE { let (id, _) = id in let (ty, _) = ty in AST.DeclStmt(ty, id, e) }
 (* expression statement *)
-  | e = expr? ln = NEWLINE { AST.ExprStmt({a = e; lnum = ln}) }
+  | e = expr? ln = NEWLINE { AST.ExprStmt({ a = e; lnum = ln }) }
 
 elseif_stmt:
   | ln = ELSEIF e = expr THEN NEWLINE b = block elseif = elseif_stmt { AST.IfElseStmt(e, AST.BlockStmt(b), elseif, ln) }

@@ -76,12 +76,16 @@ export class TextEditorComponent implements AfterViewInit {
 
     highlightLine(lineNum: number) {
         const line = this.editor.getDoc().getLineHandle(lineNum - 1);
-        this.editor.addLineClass(line, 'background', 'CodeMirror-activeline-background');
+        if (line) {
+            this.editor.addLineClass(line, 'background', 'CodeMirror-activeline-background');
+        }
     }
 
     unhighlightLine(lineNum: number) {
         const line = this.editor.getDoc().getLineHandle(lineNum - 1);
-        this.editor.removeLineClass(line, 'background', 'CodeMirror-activeline-background');
+        if (line) {
+            this.editor.removeLineClass(line, 'background', 'CodeMirror-activeline-background');
+        }
     }
 
     setReadOnly(readOnly: boolean) {

@@ -30,7 +30,7 @@ let compass_dir_of_expr meta_expr =
   | AST.WestExpr -> Bytecode.West
   | _ -> raise (SemanticException {
       lnum = meta_expr.lnum;
-      message = "Invalid type, expression must be NORTH, SOUTH, EAST, or WEST";
+      message = "type error: expression must be NORTH, SOUTH, EAST, or WEST";
     })
 
 (* convert labels to memory locations *)
@@ -42,10 +42,9 @@ let remove_labels bytecode =
   bytecode
   |> Seq.iter (function
       | Bytecode.LABEL (s, _, _) -> Hashtbl.add label_tbl s (!mem_loc)
-      | _ ->
-        (* only increment the counter on non-labels *)
-        (* since they get removed in the instruction set *)
-        mem_loc := !mem_loc + 1
+      (* only increment the counter on non-labels *)
+      (* since they get removed in the instruction set *)
+      | _ -> incr mem_loc
     );
 
   (* swap out the jump to labels to jump to memory locations *)
@@ -282,24 +281,25 @@ and gen_code_decl_stmt codegen_state ty id meta_expr =
         lnum = line_num;
         message = "Duplicate Jeroo declaration, " ^ id ^ " already defined"
       })
-  else
+  else begin
     Hashtbl.add codegen_state.jeroo_tbl id (Hashtbl.length codegen_state.jeroo_tbl);
-  let expr = meta_expr.a in
-  match expr with
-  | AST.UnOpExpr (AST.New, { a = AST.FxnAppExpr ({ a = AST.IdExpr(ctor); _ }, args); _ }) ->
-    if not (String.equal ctor "Jeroo") then
-      raise (SemanticException {
-          lnum = line_num;
-          message = ("Invalid constructor: " ^ ctor ^ ", Jeroo is the only valid constructor")
-        })
-    else begin
-      Queue.add (gen_code_decl codegen_state id args line_num) codegen_state.code_queue;
-      line_num
-    end
-  | _ -> raise (SemanticException {
-      lnum = line_num;
-      message = "Invalid right hand side of assignment, must be a Jeroo constructor"
-    })
+    let expr = meta_expr.a in
+    match expr with
+    | AST.UnOpExpr (AST.New, { a = AST.FxnAppExpr ({ a = AST.IdExpr(ctor); _ }, args); _ }) ->
+      if not (String.equal ctor "Jeroo") then
+        raise (SemanticException {
+            lnum = line_num;
+            message = ("Invalid constructor: " ^ ctor ^ ", Jeroo is the only valid constructor")
+          })
+      else begin
+        Queue.add (gen_code_decl codegen_state id args line_num) codegen_state.code_queue;
+        line_num
+      end
+    | _ -> raise (SemanticException {
+        lnum = line_num;
+        message = "Invalid right hand side of assignment, must be a Jeroo constructor"
+      })
+  end
 
 and gen_code_block_stmt codegen_state stmts pane_num =
   (* fold_left will always return the line number of the last statement executed *)

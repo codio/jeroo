@@ -2,7 +2,7 @@
   (name Lib)
   (libraries menhirLib)
 )
-(ocamllex JavaLexer VBLexer)
+(ocamllex JavaLexer VBLexer PythonLexer)
 (rule
   (targets JavaMessages.ml)
   (deps Java.messages)
@@ -19,6 +19,6 @@
           )
   )
 )
-(menhir (modules JavaParser VBParser)
+(menhir (modules JavaParser VBParser PythonParser)
 (flags ("--table" "--dump" "--explain"))
 )

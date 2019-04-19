@@ -1,0 +1,11 @@
+@PYTHON
+def foo(self):
+    self.hop()
+
+
+
+
+
+
+@@
+j = Jeroo()

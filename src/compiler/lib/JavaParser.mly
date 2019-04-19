@@ -44,7 +44,8 @@ fxn:
 block:
   | start_lnum = LBRACKET stmts = stmt* end_lnum = RBRACKET { (stmts, start_lnum, end_lnum) }
 
-stmt: | s = open_stmt { s }
+stmt:
+  | s = open_stmt { s }
   | s = closed_stmt { s }
 
 open_stmt:
@@ -67,7 +68,7 @@ arguments:
 
 expr:
   | e = arith_expr { e }
-  | id_ln = ID ln = LPAREN args = arguments RPAREN { let (id, idln) = id_ln in { a = AST.FxnAppExpr({ a = (AST.IdExpr id); lnum = idln }, args); lnum = ln } }
+  | id_ln = ID LPAREN args = arguments RPAREN { let (id, ln) = id_ln in { a = AST.FxnAppExpr({ a = (AST.IdExpr id); lnum = ln }, args); lnum = ln } }
 
 arith_expr:
   | e = primary_expr { e }

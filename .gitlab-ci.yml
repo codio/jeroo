@@ -34,7 +34,8 @@ build-angular:
     - yarn --version
     - yarn install
     - yarn lint
-    - yarn build --prod
+# remove the --base-href when the sites moves into the "/" directory
+    - yarn build --base-href=/beta/ --prod
 
 test-angular:
   image: timbru31/node-chrome:slim
