@@ -164,8 +164,16 @@
             </mat-menu>
             <mat-menu #help="matMenu">
                 <ng-template matMenuContent>
-                    <a mat-menu-item routerLink="{{getHelpUrl()}}" target="_blank">Help</a>
-                    <a mat-menu-item routerLink="{{getTutorialUrl()}}" target="_blank">Tutorial</a>
+                    <a mat-menu-item routerLink="{{getHelpUrl()}}" target="_blank"><span>Langauge Summary<span class="shortcut-tip">F8</span></span></a>
+                    <mat-divider ></mat-divider>
+                    <a mat-menu-item routerLink="{{getTutorialUrl()}}" target="_blank"><span>Getting Started Tutorial</span></a>
+                    <mat-divider></mat-divider>
+                    <a mat-menu-item href="http://jeroo.org" target="_blank">Jeroo Home Page</a>
+                    <mat-divider></mat-divider>
+                    <a mat-menu-item (click)="openAboutJeroo()">About Jeroo</a>
+                    <a mat-menu-item (click)="openAwards()">Awards Received</a>
+                    <a mat-menu-item (click)="openHistory()">Jeroo's History</a>
+                    <a mat-menu-item (click)="openCopyright()">Copyright Notice</a>
                 </ng-template>
             </mat-menu>
             <!--Text tabs Area-->
