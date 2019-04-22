@@ -23,7 +23,7 @@ let codegen_jeroo_decl_no_args _test_ctxt =
       end_lnum = 3;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 0, 0, 0, Bytecode.East, 2);
@@ -60,7 +60,7 @@ let codegen_jeroo_decl_set_x_y _test_ctxt =
       end_lnum = 3;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 1, 2, 0, Bytecode.East, 2);
@@ -101,7 +101,7 @@ let codegen_jeroo_decl_set_x_y_flowers _test_ctxt =
       end_lnum = 3;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 1, 2, 5, Bytecode.East, 2);
@@ -146,7 +146,7 @@ let codegen_jeroo_decl_set_x_y_flowers_direction _test_ctxt =
       end_lnum = 3;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 1, 2, 5, Bytecode.South, 2);
@@ -344,7 +344,7 @@ let codegen_jeroo_hop _test_ctxt =
       end_lnum = 4;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 0, 0, 0, Bytecode.East, 2);
@@ -425,7 +425,7 @@ let codegen_multiple_jeroos_csr _test_ctxt =
       end_lnum = 6;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 0, 0, 0, Bytecode.East, 2);
@@ -474,7 +474,7 @@ let codegen_pick_flower _test_ctxt =
       end_lnum = 4;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 0, 0, 0, Bytecode.East, 2);
@@ -520,7 +520,7 @@ let codegen_plant_flower _test_ctxt =
       end_lnum = 4;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 0, 0, 0, Bytecode.East, 2);
@@ -566,7 +566,7 @@ let codegen_toss_flower _test_ctxt =
       end_lnum = 4;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 0, 0, 0, Bytecode.East, 2);
@@ -612,7 +612,7 @@ let codegen_give_default_args _test_ctxt =
       end_lnum = 4;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 0, 0, 0, Bytecode.East, 2);
@@ -661,7 +661,7 @@ let codegen_give_in_direction _test_ctxt =
       end_lnum = 4;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 0, 0, 0, Bytecode.East, 2);
@@ -710,7 +710,7 @@ let codegen_turn _test_ctxt =
       end_lnum = 4;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 0, 0, 0, Bytecode.East, 2);
@@ -756,7 +756,7 @@ let codegen_has_flower _test_ctxt =
       end_lnum = 4;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 0, 0, 0, Bytecode.East, 2);
@@ -805,7 +805,7 @@ let codegen_is_jeroo _test_ctxt =
       end_lnum = 4;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 0, 0, 0, Bytecode.East, 2);
@@ -854,7 +854,7 @@ let codegen_is_facing _test_ctxt =
       end_lnum = 4;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 0, 0, 0, Bytecode.East, 2);
@@ -903,7 +903,7 @@ let codegen_is_flower _test_ctxt =
       end_lnum = 4;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 0, 0, 0, Bytecode.East, 2);
@@ -952,7 +952,7 @@ let codegen_is_net _test_ctxt =
       end_lnum = 4;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 0, 0, 0, Bytecode.East, 2);
@@ -1001,7 +1001,7 @@ let codegen_is_water _test_ctxt =
       end_lnum = 4;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 0, 0, 0, Bytecode.East, 2);
@@ -1065,7 +1065,7 @@ let codegen_call_custom_fxn _test_ctxt =
       end_lnum = 4;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (3, 0, 1);
     Bytecode.HOP (1, 1, 2);
@@ -1178,7 +1178,7 @@ let codegen_if_stmt _test_ctxt =
       end_lnum = 6;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 0, 0, 0, Bytecode.East, 2);
@@ -1268,7 +1268,7 @@ let codegen_if_else _test_ctxt =
       end_lnum = 8;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 0, 0, 0, Bytecode.East, 2);
@@ -1343,7 +1343,7 @@ let codegen_while _test_ctxt =
       end_lnum = 6;
     }
   } in
-  let bytecode = List.of_seq (Codegen.codegen ast) in
+  let bytecode = List.of_seq (fst (Codegen.codegen ast)) in
   assert_equal bytecode [
     Bytecode.JUMP (1, 0, 1);
     Bytecode.NEW (0, 0, 0, 0, Bytecode.East, 2);

@@ -390,4 +390,6 @@ let codegen translation_unit =
   gen_code_main_fxn codegen_state translation_unit.main_fxn;
 
   let code_with_labels = Queue.to_seq codegen_state.code_queue in
-  remove_labels code_with_labels
+  let bytecode = remove_labels code_with_labels in
+  let jeroo_tbl = codegen_state.jeroo_tbl in
+  (bytecode, jeroo_tbl)

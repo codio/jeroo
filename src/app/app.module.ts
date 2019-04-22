@@ -39,6 +39,7 @@ import { DashboardDialogAwardsComponent } from './dashboard-dialog-awards/dashbo
 import { DashboardDialogHistoryComponent } from './dashboard-dialog-history/dashboard-dialog-history.component';
 import { DashboardDialogCopyrightComponent } from './dashboard-dialog-copyright/dashboard-dialog-copyright.component';
 import { EditorTabAreaComponent } from './editor-tab-area/editor-tab-area.component';
+import { JerooStatusComponent } from './jeroo-status/jeroo-status.component';
 import { DashboardDialogAboutComponent } from './dashboard-dialog-about/dashboard-dialog-about.component';
 
 library.add(
@@ -70,6 +71,7 @@ library.add(
         DisplayErrorMessageComponent,
         TextEditorComponent,
         EditorTabAreaComponent,
+        JerooStatusComponent,
         DashboardDialogAboutComponent,
         DashboardDialogAwardsComponent,
         DashboardDialogHistoryComponent,

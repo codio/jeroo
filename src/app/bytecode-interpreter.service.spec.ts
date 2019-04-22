@@ -140,7 +140,7 @@ describe('BytecodeInterpreterService', () => {
     it('assert hop hops the jeroo', () => {
         const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
         const matService: MatrixService = TestBed.get(MatrixService);
-        const newInstr = newInstruction('NEW', 1, 1, 0, 0, 1, 0);
+        const newInstr = newInstruction('NEW', 0, 1, 0, 0, 1, 0);
         const csrInstr = newInstruction('CSR', 0, 0, 0, 0, 0, 0);
         const turnInstr = newInstruction('HOP', 3, 0, 0, 0, 0, 0);
 

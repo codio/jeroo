@@ -18,14 +18,17 @@
 </div>
 <canvas #jerooGameCanvas [className]="editingEnabled ? 'jeroo-matrix default-cursor' : 'jeroo-matrix not-allowed-cursor'" (mousedown)="canvasMouseDown($event)" (mouseup)="canvasGestureUp()" (mousemove)="canvasMouseMove($event)" (touchstart)="canvasTapDown($event)" (touchend)="canvasGestureUp()" (touchmove)="canvasTapMove($event)" (panstart)="null">
 </canvas>
-<div fxLayout="column" fxLayoutAlign=" center">
-    <div class="cursor-loc-container">
+<div fxLayout="column" fxLayoutAlign=" center" fxLayoutGap="10px">
+    <div>
         <div *ngIf="mouseRow !== null && mouseColumn !== null; else elseBlock">
             Cursor Location: ({{mouseColumn}}, {{mouseRow}})
         </div>
         <ng-template #elseBlock>
             Cursor off of map
         </ng-template>
+    </div>
+    <div>
+        <app-jeroo-status></app-jeroo-status>
     </div>
     <div>
         <button mat-button [disabled]="!editingEnabled" (click)="openDialog()">Change Size</button>

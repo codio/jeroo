@@ -6,4 +6,4 @@ exception SemanticException of {
   }
 
 (** compile a syntax tree into a sequence of bytecode instructions *)
-val codegen : AST.translation_unit -> Bytecode.bytecode Seq.t
+val codegen : AST.translation_unit -> (Bytecode.bytecode Seq.t * (string, int) Hashtbl.t )

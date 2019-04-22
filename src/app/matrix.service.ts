@@ -12,9 +12,9 @@ export class MatrixService {
 
     private rows = 26;
     private cols = 26;
-    private tsize = 28;
+    tsize = 28;
     private tiles: TileType[] = [];
-    private imageAtlas: HTMLImageElement;
+    imageAtlas: HTMLImageElement;
     private jeroos: Jeroo[] = [];
 
     constructor() {
@@ -66,33 +66,33 @@ export class MatrixService {
     }
 
     /**
-      * @returns The number of columns in the matrix.
-      */
+     * @returns The number of columns in the matrix.
+     */
     getCols() {
         return this.cols;
     }
 
     /**
-      * @param cols The number of columns in the matrix.
-      */
+     * @param cols The number of columns in the matrix.
+     */
     setCols(cols: number) {
         this.cols = cols;
     }
 
     /**
-      * @param col The column of the tile.
-      * @param row The row of the tile.
-      * @returns the tile at the specified column and row.
-      */
+     * @param col The column of the tile.
+     * @param row The row of the tile.
+     * @returns the tile at the specified column and row.
+     */
     getTile(col: number, row: number) {
         return this.tiles[row * this.cols + col];
     }
 
     /**
-      * @param col The column of the tile.
-      * @param row The row of the tile.
-      * @param tile The tile type of the tile.
-      */
+     * @param col The column of the tile.
+     * @param row The row of the tile.
+     * @param tile The tile type of the tile.
+     */
     setTile(col: number, row: number, tile: TileType) {
         this.tiles[row * this.cols + col] = tile;
     }
@@ -110,16 +110,16 @@ export class MatrixService {
     }
 
     /**
-      * @returns the size of a tile sprite in pixels.
-      */
+     * @returns the size of a tile sprite in pixels.
+     */
     getTsize() {
         return this.tsize;
     }
 
     /**
-      * Renders the tilemap to a 2D rendering context.
-      * @param context 2D rendering context.
-      */
+     * Renders the tilemap to a 2D rendering context.
+     * @param context 2D rendering context.
+     */
     render(context: CanvasRenderingContext2D) {
         if (this.imageAtlas == null) {
             this.getTileAtlasObs().subscribe(imageAtlas => {
@@ -136,7 +136,9 @@ export class MatrixService {
             for (let col = 0; col < this.cols; col++) {
                 const jeroo = this.getJeroo(col, row);
                 if (jeroo !== null && jeroo !== undefined) {
-                    this.renderJeroo(context, imageAtlas, jeroo);
+                    const jerooCol = jeroo.getX();
+                    const jerooRow = jeroo.getY();
+                    this.renderJeroo(context, imageAtlas, jeroo, jerooCol, jerooRow);
                 } else {
                     const tile = this.getTile(col, row);
                     this.renderTile(context, imageAtlas, tile, col, row);
@@ -145,11 +147,9 @@ export class MatrixService {
         }
     }
 
-    private renderJeroo(context: CanvasRenderingContext2D, imageAtlas: HTMLImageElement, jeroo: Jeroo) {
+    renderJeroo(context: CanvasRenderingContext2D, imageAtlas: HTMLImageElement, jeroo: Jeroo, col: number, row: number) {
         const jerooOffset = jeroo.getId() + 1;
         const directionOffset = jeroo.getDirection();
-        const col = jeroo.getX();
-        const row = jeroo.getY();
         if (!jeroo.isInWater() && !jeroo.isInNet()) {
             context.drawImage(
                 imageAtlas,
@@ -218,7 +218,7 @@ export class MatrixService {
         }
     }
 
-    private getTileAtlasObs() {
+    getTileAtlasObs() {
         const image = new Image();
         const imageObservable = fromEvent(image, 'load');
         image.src = 'assets/images/JerooTilesSpritesheet.png';
@@ -226,9 +226,9 @@ export class MatrixService {
     }
 
     /**
-      * Converts the current jeroo map into a string.
-      * @returns The map in string form.
-      */
+     * Converts the current jeroo map into a string.
+     * @returns The map in string form.
+     */
     toString() {
         let mapContents = '';
         for (let row = 1; row < this.rows - 1; row++) {
@@ -242,10 +242,10 @@ export class MatrixService {
     }
 
     /**
-      * Converts a TileType to a string
-      * @param tileType tileType to convert
-      * @returns string representation of a TileType
-      */
+     * Converts a TileType to a string
+     * @param tileType tileType to convert
+     * @returns string representation of a TileType
+     */
     tileTypeToString(tileType: TileType) {
         if (tileType === TileType.Grass) {
             return '.';
@@ -261,9 +261,9 @@ export class MatrixService {
     }
 
     /**
-      * Set the current map to a map string.
-      * @param s String of the map contents.
-      */
+     * Set the current map to a map string.
+     * @param s String of the map contents.
+     */
     genMapFromString(s: string) {
         if (s !== '') {
             const lines = s.trim().split('\n');
@@ -306,10 +306,10 @@ export class MatrixService {
     }
 
     /**
-      * Convert a character to a TileType.
-      * @param char character to convert.
-      * @returns Converted tile.
-      */
+     * Convert a character to a TileType.
+     * @param char character to convert.
+     * @returns Converted tile.
+     */
     stringToTileType(char: string) {
         if (char === '.') {
             return TileType.Grass;
