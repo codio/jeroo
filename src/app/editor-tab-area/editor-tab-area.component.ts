@@ -67,6 +67,7 @@ export class EditorTabAreaComponent implements AfterViewInit {
             if (result.successful) {
                 this.instructions = result.bytecode;
                 this.bytecodeService.reset();
+                this.bytecodeService.jerooMap = result.jerooMap;
             } else {
                 this.messageService.add(result.error);
                 return;
@@ -100,6 +101,7 @@ export class EditorTabAreaComponent implements AfterViewInit {
             if (result.successful) {
                 this.instructions = result.bytecode;
                 this.bytecodeService.reset();
+                this.bytecodeService.jerooMap = result.jerooMap;
             } else {
                 this.messageService.add(result.error);
                 return;

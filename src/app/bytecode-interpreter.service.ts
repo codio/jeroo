@@ -3,7 +3,7 @@ import { MatrixService } from './matrix.service';
 import { Jeroo } from './jeroo';
 import { TileType } from './matrixConstants';
 import { numberToRelativeDirection, numberToCardinalDirection } from './jerooConstants';
-
+import { Subject } from 'rxjs';
 
 export class RuntimeError extends Error {
     constructor(message: string, public line_num: number) {
@@ -17,9 +17,12 @@ export class RuntimeError extends Error {
 export class BytecodeInterpreterService {
     private pc = 0;
     private jerooReg = 0;
-    private jerooArray: Array<Jeroo> = [];
+    jerooArray: Array<Jeroo> = [];
+    jerooMap: any = [];
     private cmpStack: Array<boolean> = [];
     private pcStack: Array<number> = [];
+    private jerooChangeSource = new Subject<Jeroo>();
+    jerooChange$ = this.jerooChangeSource.asObservable();
 
     executeInstructionsUntilLNumChanges(instructions: Array<Instruction>, matrixService: MatrixService) {
         if (this.validInstruction(instructions)) {
@@ -50,6 +53,7 @@ export class BytecodeInterpreterService {
         this.pc = 0;
         this.jerooReg = 0;
         this.jerooArray = [];
+        this.jerooMap = [];
         this.cmpStack = [];
         this.pcStack = [];
     }
@@ -103,7 +107,7 @@ export class BytecodeInterpreterService {
                 try {
                     const direction = numberToCardinalDirection(command.e);
                     const jeroo = new Jeroo(command.a, command.b + 1, command.c + 1, command.d, direction);
-                    this.jerooArray.push(jeroo);
+                    this.jerooArray[command.a] = jeroo;
                     matService.setJeroo(jeroo.getX(), jeroo.getY(), jeroo);
                 } catch (e) {
                     throw new RuntimeError(e.message, command.f);
@@ -112,7 +116,9 @@ export class BytecodeInterpreterService {
             }
             case 'TURN': {
                 const direction = numberToRelativeDirection(command.a);
-                this.getCurrentJeroo().turn(direction);
+                const jeroo = this.getCurrentJeroo();
+                jeroo.turn(direction);
+                this.jerooChangeSource.next(jeroo);
                 break;
             }
             case 'HOP': {
@@ -227,5 +233,9 @@ export class BytecodeInterpreterService {
 
     getCmpStack() {
         return this.cmpStack;
+    }
+
+    getJerooAtIndex(x: number) {
+      return this.jerooArray[x];
     }
 }

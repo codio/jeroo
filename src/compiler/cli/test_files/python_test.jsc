@@ -1,11 +1,6 @@
 @PYTHON
 def foo(self):
-    self.hop()
-
-
-
-
-
-
+    self.hop(3)
 @@
 j = Jeroo()
+j.foo()

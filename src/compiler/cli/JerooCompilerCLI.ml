@@ -10,7 +10,7 @@ let _ =
   if args_length != 2 then failwith "Must have one arg, filename";
   let filename = args.(1) in
   let code = Core.In_channel.read_all filename in
-  let bytecode = Compiler.compile code in
+  let bytecode = fst (Compiler.compile code) in
 
   bytecode
   |> Seq.map (fun code -> match code with

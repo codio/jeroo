@@ -6,13 +6,16 @@ let _ =
     (object%js
       method compile (code : Js.js_string Js.t) =
         try
-          let bytecode = Js.to_bytestring code
-                         |> Compiler.compile
-                         |> JerooCompilerUtils.json_of_bytecode
+          let (bytecode, jeroo_map) = Js.to_bytestring code
+                                      |> Compiler.compile
           in
+          let bytecode_json = bytecode |> JerooCompilerUtils.json_of_bytecode in
+          let map = (object%js end) in
+          Hashtbl.iter (fun k v -> Js.Unsafe.set map v (Js.string k)) jeroo_map;
           (object%js
             val successful = Js.bool true
-            val bytecode = Js.def bytecode [@@jsoo.optdef]
+            val bytecode = Js.def bytecode_json [@@jsoo.optdef]
+            val jerooMap = Js.def map [@@jsoo.optdef]
             val error = Js.undefined [@@jsoo.optdef]
           end)
         with
@@ -32,6 +35,7 @@ let _ =
           (object%js
             val successful = Js.bool false
             val bytecode = Js.undefined [@@jsoo.optdef]
+            val jerooMap = Js.undefined [@@jsoo.optdef]
             val error = Js.def error_message [@@jsoo.optdef]
           end)
     end)

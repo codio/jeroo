@@ -11,6 +11,7 @@ declare interface Instruction {
 declare interface CompilationResult {
     successful: boolean;
     bytecode?: Instruction[];
+    jerooMap?: any[];
     error?: string;
 }
 
