@@ -78,7 +78,40 @@ let parse_vb lexbuf =
     })
 
 let parse_python lexbuf =
-  PythonParser.translation_unit (PythonLexer.token (PythonLexerState.create())) lexbuf
+  let rec loop lexbuf state checkpoint =
+    match checkpoint with
+    | PythonParser.MenhirInterpreter.InputNeeded _ ->
+      let token = PythonLexer.token state lexbuf in
+      let startp = lexbuf.lex_start_p in
+      let endp = lexbuf.lex_curr_p in
+      let checkpoint = PythonParser.MenhirInterpreter.offer checkpoint (token, startp, endp) in
+      loop lexbuf state checkpoint
+    | PythonParser.MenhirInterpreter.Shifting _ | PythonParser.MenhirInterpreter.AboutToReduce _ ->
+      let checkpoint = PythonParser.MenhirInterpreter.resume checkpoint in
+      loop lexbuf state checkpoint
+    | PythonParser.MenhirInterpreter.HandlingError env ->
+      let state = PythonParser.MenhirInterpreter.current_state_number env in
+      let lnum = lexbuf.lex_curr_p.pos_lnum in
+      let message = PythonMessages.message state in
+      raise (ParserException {
+          message = message;
+          lnum = lnum
+        })
+    | PythonParser.MenhirInterpreter.Accepted tree -> tree
+    | PythonParser.MenhirInterpreter.Rejected ->
+      let lnum = lexbuf.lex_curr_p.pos_lnum in
+      raise (ParserException {
+          message = "Syntax Error";
+          lnum = lnum
+        })
+  in
+  try
+    loop lexbuf (PythonLexerState.create ()) (PythonParser.Incremental.translation_unit lexbuf.lex_curr_p)
+  with
+  | PythonLexer.Error e -> raise (ParserException {
+      message = e.message;
+      lnum = e.lnum;
+    })
 
 let compile code =
   let lexbuf = Lexing.from_string code in
