@@ -1,0 +1,602 @@
+translation_unit: HEADER DEF ID LPAREN SELF RPAREN COLON AHEAD NEWLINE WHILE
+##
+## Ends in an error in state: 83.
+##
+## newline_or_fxn_list -> fxn . newline_or_fxn_list [ MAIN_METH_SEP ]
+##
+## The known suffix of the stack is as follows:
+## fxn
+##
+
+expected either EOF or `def`
+
+translation_unit: HEADER DEF ID LPAREN SELF RPAREN COLON WHILE
+##
+## Ends in an error in state: 8.
+##
+## fxn -> DEF ID LPAREN SELF RPAREN COLON . suite [ NEWLINE MAIN_METH_SEP DEF ]
+##
+## The known suffix of the stack is as follows:
+## DEF ID LPAREN SELF RPAREN COLON
+##
+
+expected either a statement or a new indentation level
+
+translation_unit: HEADER DEF ID LPAREN SELF RPAREN WHILE
+##
+## Ends in an error in state: 7.
+##
+## fxn -> DEF ID LPAREN SELF RPAREN . COLON suite [ NEWLINE MAIN_METH_SEP DEF ]
+##
+## The known suffix of the stack is as follows:
+## DEF ID LPAREN SELF RPAREN
+##
+
+expected `:`
+
+translation_unit: HEADER DEF ID LPAREN SELF WHILE
+##
+## Ends in an error in state: 6.
+##
+## fxn -> DEF ID LPAREN SELF . RPAREN COLON suite [ NEWLINE MAIN_METH_SEP DEF ]
+##
+## The known suffix of the stack is as follows:
+## DEF ID LPAREN SELF
+##
+
+expected ')'
+
+translation_unit: HEADER DEF ID LPAREN WHILE
+##
+## Ends in an error in state: 5.
+##
+## fxn -> DEF ID LPAREN . SELF RPAREN COLON suite [ NEWLINE MAIN_METH_SEP DEF ]
+##
+## The known suffix of the stack is as follows:
+## DEF ID LPAREN
+##
+
+expected `self`
+
+translation_unit: HEADER DEF ID WHILE
+##
+## Ends in an error in state: 4.
+##
+## fxn -> DEF ID . LPAREN SELF RPAREN COLON suite [ NEWLINE MAIN_METH_SEP DEF ]
+##
+## The known suffix of the stack is as follows:
+## DEF ID
+##
+
+expected `(`
+
+translation_unit: HEADER DEF WHILE
+##
+## Ends in an error in state: 3.
+##
+## fxn -> DEF . ID LPAREN SELF RPAREN COLON suite [ NEWLINE MAIN_METH_SEP DEF ]
+##
+## The known suffix of the stack is as follows:
+## DEF
+##
+
+expected an identifier
+
+translation_unit: HEADER MAIN_METH_SEP ID EQ WEST WHILE
+##
+## Ends in an error in state: 50.
+##
+## arith_expr -> expr . AND expr [ OR NEWLINE DOT AND ]
+## arith_expr -> expr . OR expr [ OR NEWLINE DOT AND ]
+## arith_expr -> expr . DOT expr [ OR NEWLINE DOT AND ]
+## assignment_stmt -> ID EQ expr . NEWLINE [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE MAIN_METH_SEP LPAREN LEFT INT IF ID HERE FALSE EOF ELSE ELIF EAST DEF DEDENT AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## ID EQ expr
+##
+
+expected either a newline or an operator
+
+translation_unit: HEADER MAIN_METH_SEP ID EQ WHILE
+##
+## Ends in an error in state: 49.
+##
+## assignment_stmt -> ID EQ . expr NEWLINE [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE MAIN_METH_SEP LPAREN LEFT INT IF ID HERE FALSE EOF ELSE ELIF EAST DEF DEDENT AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## ID EQ
+##
+
+expected an expression
+
+translation_unit: HEADER MAIN_METH_SEP ID LPAREN WEST COMMA WHILE
+##
+## Ends in an error in state: 36.
+##
+## separated_nonempty_list(COMMA,expr) -> expr COMMA . separated_nonempty_list(COMMA,expr) [ RPAREN ]
+##
+## The known suffix of the stack is as follows:
+## expr COMMA
+##
+
+expected an expression
+
+translation_unit: HEADER MAIN_METH_SEP ID LPAREN WEST WHILE
+##
+## Ends in an error in state: 28.
+##
+## arith_expr -> expr . AND expr [ RPAREN OR DOT COMMA AND ]
+## arith_expr -> expr . OR expr [ RPAREN OR DOT COMMA AND ]
+## arith_expr -> expr . DOT expr [ RPAREN OR DOT COMMA AND ]
+## separated_nonempty_list(COMMA,expr) -> expr . [ RPAREN ]
+## separated_nonempty_list(COMMA,expr) -> expr . COMMA separated_nonempty_list(COMMA,expr) [ RPAREN ]
+##
+## The known suffix of the stack is as follows:
+## expr
+##
+
+expected either `)` or `,`
+
+translation_unit: HEADER MAIN_METH_SEP ID LPAREN WHILE
+##
+## Ends in an error in state: 20.
+##
+## expr -> ID LPAREN . arguments RPAREN [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+##
+## The known suffix of the stack is as follows:
+## ID LPAREN
+##
+
+expected comma seperated arguments list followed by a `)`
+
+translation_unit: HEADER MAIN_METH_SEP ID WHILE
+##
+## Ends in an error in state: 48.
+##
+## assignment_stmt -> ID . EQ expr NEWLINE [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE MAIN_METH_SEP LPAREN LEFT INT IF ID HERE FALSE EOF ELSE ELIF EAST DEF DEDENT AHEAD ]
+## expr -> ID . LPAREN arguments RPAREN [ OR NEWLINE DOT AND ]
+## primary_expr -> ID . [ OR NEWLINE DOT AND ]
+##
+## The known suffix of the stack is as follows:
+## ID
+##
+
+expected either an `=` or an operator
+
+translation_unit: HEADER MAIN_METH_SEP IF WEST COLON NEWLINE INDENT RPAREN
+##
+## Ends in an error in state: 44.
+##
+## suite -> NEWLINE INDENT . nonempty_list(stmt) DEDENT [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE MAIN_METH_SEP LPAREN LEFT INT IF ID HERE FALSE EOF ELSE ELIF EAST DEF DEDENT AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## NEWLINE INDENT
+##
+
+expected a statement
+
+translation_unit: HEADER MAIN_METH_SEP IF WEST COLON NEWLINE INDENT WEST NEWLINE RPAREN
+##
+## Ends in an error in state: 74.
+##
+## nonempty_list(stmt) -> stmt . [ DEDENT ]
+## nonempty_list(stmt) -> stmt . nonempty_list(stmt) [ DEDENT ]
+##
+## The known suffix of the stack is as follows:
+## stmt
+##
+
+expected either a dedent or a statement
+
+translation_unit: HEADER MAIN_METH_SEP IF WEST COLON NEWLINE WHILE
+##
+## Ends in an error in state: 43.
+##
+## suite -> NEWLINE . INDENT nonempty_list(stmt) DEDENT [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE MAIN_METH_SEP LPAREN LEFT INT IF ID HERE FALSE EOF ELSE ELIF EAST DEF DEDENT AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## NEWLINE
+##
+
+expected either a statement or a new indentation level
+
+translation_unit: HEADER MAIN_METH_SEP IF WEST COLON WEST NEWLINE ELIF WEST COLON WEST NEWLINE RPAREN
+##
+## Ends in an error in state: 68.
+##
+## elseif_stmts -> ELIF expr COLON suite . elseif_stmts [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+## elseif_stmts -> ELIF expr COLON suite . [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+## elseif_stmts -> ELIF expr COLON suite . else_stmt [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## ELIF expr COLON suite
+##
+
+expected either a statement, `elif`, or `else`
+
+translation_unit: HEADER MAIN_METH_SEP IF WEST COLON WEST NEWLINE ELIF WEST COLON WHILE
+##
+## Ends in an error in state: 67.
+##
+## elseif_stmts -> ELIF expr COLON . suite elseif_stmts [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+## elseif_stmts -> ELIF expr COLON . suite [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+## elseif_stmts -> ELIF expr COLON . suite else_stmt [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## ELIF expr COLON
+##
+
+expected either a statement or a new indentation level
+
+translation_unit: HEADER MAIN_METH_SEP IF WEST COLON WEST NEWLINE ELIF WEST WHILE
+##
+## Ends in an error in state: 66.
+##
+## arith_expr -> expr . AND expr [ OR DOT COLON AND ]
+## arith_expr -> expr . OR expr [ OR DOT COLON AND ]
+## arith_expr -> expr . DOT expr [ OR DOT COLON AND ]
+## elseif_stmts -> ELIF expr . COLON suite elseif_stmts [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+## elseif_stmts -> ELIF expr . COLON suite [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+## elseif_stmts -> ELIF expr . COLON suite else_stmt [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## ELIF expr
+##
+
+expected either `:` or an operator
+
+translation_unit: HEADER MAIN_METH_SEP IF WEST COLON WEST NEWLINE ELIF WHILE
+##
+## Ends in an error in state: 65.
+##
+## elseif_stmts -> ELIF . expr COLON suite elseif_stmts [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+## elseif_stmts -> ELIF . expr COLON suite [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+## elseif_stmts -> ELIF . expr COLON suite else_stmt [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## ELIF
+##
+
+expected expression
+
+translation_unit: HEADER MAIN_METH_SEP IF WEST COLON WEST NEWLINE ELSE COLON WHILE
+##
+## Ends in an error in state: 63.
+##
+## else_stmt -> ELSE COLON . suite [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## ELSE COLON
+##
+
+expected either a statement or a new indentation level
+
+translation_unit: HEADER MAIN_METH_SEP IF WEST COLON WEST NEWLINE ELSE WHILE
+##
+## Ends in an error in state: 62.
+##
+## else_stmt -> ELSE . COLON suite [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## ELSE
+##
+
+expected `:`
+
+translation_unit: HEADER MAIN_METH_SEP IF WEST COLON WEST NEWLINE RPAREN
+##
+## Ends in an error in state: 61.
+##
+## if_stmt -> IF expr COLON suite . [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+## if_stmt -> IF expr COLON suite . else_stmt [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+## if_stmt -> IF expr COLON suite . elseif_stmts [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## IF expr COLON suite
+##
+
+expected either a statement, `elif`, or `else`
+
+translation_unit: HEADER MAIN_METH_SEP IF WEST COLON WHILE
+##
+## Ends in an error in state: 60.
+##
+## if_stmt -> IF expr COLON . suite [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+## if_stmt -> IF expr COLON . suite else_stmt [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+## if_stmt -> IF expr COLON . suite elseif_stmts [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## IF expr COLON
+##
+
+expected either a statement or a newline followed by a new indentation level
+
+translation_unit: HEADER MAIN_METH_SEP IF WEST WHILE
+##
+## Ends in an error in state: 59.
+##
+## arith_expr -> expr . AND expr [ OR DOT COLON AND ]
+## arith_expr -> expr . OR expr [ OR DOT COLON AND ]
+## arith_expr -> expr . DOT expr [ OR DOT COLON AND ]
+## if_stmt -> IF expr . COLON suite [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+## if_stmt -> IF expr . COLON suite else_stmt [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+## if_stmt -> IF expr . COLON suite elseif_stmts [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## IF expr
+##
+
+expected either `:` or an operator
+
+translation_unit: HEADER MAIN_METH_SEP IF WHILE
+##
+## Ends in an error in state: 58.
+##
+## if_stmt -> IF . expr COLON suite [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+## if_stmt -> IF . expr COLON suite else_stmt [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+## if_stmt -> IF . expr COLON suite elseif_stmts [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## IF
+##
+
+expected expression
+
+translation_unit: HEADER MAIN_METH_SEP LPAREN ID WHILE
+##
+## Ends in an error in state: 19.
+##
+## expr -> ID . LPAREN arguments RPAREN [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+## primary_expr -> ID . [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+##
+## The known suffix of the stack is as follows:
+## ID
+##
+
+expected one of either `(` comma seperated arguments list `)`, newline, operator, or an `)`
+
+translation_unit: HEADER MAIN_METH_SEP LPAREN WEST WHILE
+##
+## Ends in an error in state: 40.
+##
+## arith_expr -> expr . AND expr [ RPAREN OR DOT AND ]
+## arith_expr -> expr . OR expr [ RPAREN OR DOT AND ]
+## arith_expr -> expr . DOT expr [ RPAREN OR DOT AND ]
+## primary_expr -> LPAREN expr . RPAREN [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+##
+## The known suffix of the stack is as follows:
+## LPAREN expr
+##
+
+expected either a newline or an operator
+
+translation_unit: HEADER MAIN_METH_SEP LPAREN WHILE
+##
+## Ends in an error in state: 16.
+##
+## primary_expr -> LPAREN . expr RPAREN [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+##
+## The known suffix of the stack is as follows:
+## LPAREN
+##
+
+expected expression
+
+translation_unit: HEADER MAIN_METH_SEP NEWLINE RPAREN
+##
+## Ends in an error in state: 87.
+##
+## stmt_list -> NEWLINE . stmt_list [ EOF ]
+##
+## The known suffix of the stack is as follows:
+## NEWLINE
+##
+
+expected a statement
+
+translation_unit: HEADER MAIN_METH_SEP NOT WEST WHILE
+##
+## Ends in an error in state: 42.
+##
+## arith_expr -> expr . AND expr [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+## arith_expr -> expr . OR expr [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+## arith_expr -> expr . DOT expr [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+## arith_expr -> NOT expr . [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+##
+## The known suffix of the stack is as follows:
+## NOT expr
+##
+
+expected either a newline or an operator
+
+translation_unit: HEADER MAIN_METH_SEP NOT WHILE
+##
+## Ends in an error in state: 14.
+##
+## arith_expr -> NOT . expr [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+##
+## The known suffix of the stack is as follows:
+## NOT
+##
+
+expected expression
+
+translation_unit: HEADER MAIN_METH_SEP RPAREN
+##
+## Ends in an error in state: 86.
+##
+## translation_unit -> HEADER newline_or_fxn_list MAIN_METH_SEP . stmt_list EOF [ # ]
+##
+## The known suffix of the stack is as follows:
+## HEADER newline_or_fxn_list MAIN_METH_SEP
+##
+
+expected a statement
+
+translation_unit: HEADER MAIN_METH_SEP WEST AND WEST WHILE
+##
+## Ends in an error in state: 35.
+##
+## arith_expr -> expr . AND expr [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+## arith_expr -> expr AND expr . [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+## arith_expr -> expr . OR expr [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+## arith_expr -> expr . DOT expr [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+##
+## The known suffix of the stack is as follows:
+## expr AND expr
+##
+
+expected either a newline or an operator
+
+translation_unit: HEADER MAIN_METH_SEP WEST AND WHILE
+##
+## Ends in an error in state: 34.
+##
+## arith_expr -> expr AND . expr [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+##
+## The known suffix of the stack is as follows:
+## expr AND
+##
+
+expected expression
+
+translation_unit: HEADER MAIN_METH_SEP WEST DOT WHILE
+##
+## Ends in an error in state: 31.
+##
+## arith_expr -> expr DOT . expr [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+##
+## The known suffix of the stack is as follows:
+## expr DOT
+##
+
+expected expression
+
+translation_unit: HEADER MAIN_METH_SEP WEST NEWLINE RPAREN
+##
+## Ends in an error in state: 89.
+##
+## stmt_list -> stmt . stmt_list [ EOF ]
+##
+## The known suffix of the stack is as follows:
+## stmt
+##
+
+expected statement
+
+translation_unit: HEADER MAIN_METH_SEP WEST OR WEST WHILE
+##
+## Ends in an error in state: 30.
+##
+## arith_expr -> expr . AND expr [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+## arith_expr -> expr . OR expr [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+## arith_expr -> expr OR expr . [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+## arith_expr -> expr . DOT expr [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+##
+## The known suffix of the stack is as follows:
+## expr OR expr
+##
+
+expected either a newline or an operator
+
+translation_unit: HEADER MAIN_METH_SEP WEST OR WHILE
+##
+## Ends in an error in state: 29.
+##
+## arith_expr -> expr OR . expr [ RPAREN OR NEWLINE DOT COMMA COLON AND ]
+##
+## The known suffix of the stack is as follows:
+## expr OR
+##
+
+expected expression
+
+translation_unit: HEADER MAIN_METH_SEP WEST WHILE
+##
+## Ends in an error in state: 55.
+##
+## arith_expr -> expr . AND expr [ OR NEWLINE DOT AND ]
+## arith_expr -> expr . OR expr [ OR NEWLINE DOT AND ]
+## arith_expr -> expr . DOT expr [ OR NEWLINE DOT AND ]
+## expression_stmt -> expr . NEWLINE [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE MAIN_METH_SEP LPAREN LEFT INT IF ID HERE FALSE EOF ELSE ELIF EAST DEF DEDENT AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## expr
+##
+
+expected either a newline or an operator
+
+translation_unit: HEADER MAIN_METH_SEP WHILE WEST COLON WHILE
+##
+## Ends in an error in state: 47.
+##
+## while_stmt -> WHILE expr COLON . suite [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## WHILE expr COLON
+##
+
+expected a statement or a newline followed by a new indentation level
+
+translation_unit: HEADER MAIN_METH_SEP WHILE WEST WHILE
+##
+## Ends in an error in state: 46.
+##
+## arith_expr -> expr . AND expr [ OR DOT COLON AND ]
+## arith_expr -> expr . OR expr [ OR DOT COLON AND ]
+## arith_expr -> expr . DOT expr [ OR DOT COLON AND ]
+## while_stmt -> WHILE expr . COLON suite [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## WHILE expr
+##
+
+expected one of `:`, `.`, or an operator
+
+translation_unit: HEADER MAIN_METH_SEP WHILE WHILE
+##
+## Ends in an error in state: 45.
+##
+## while_stmt -> WHILE . expr COLON suite [ WHILE WEST TRUE SOUTH SELF RIGHT NOT NORTH NEWLINE LPAREN LEFT INT IF ID HERE FALSE EOF EAST DEDENT AHEAD ]
+##
+## The known suffix of the stack is as follows:
+## WHILE
+##
+
+expected expression
+
+translation_unit: HEADER NEWLINE WHILE
+##
+## Ends in an error in state: 2.
+##
+## newline_or_fxn_list -> NEWLINE . newline_or_fxn_list [ MAIN_METH_SEP ]
+##
+## The known suffix of the stack is as follows:
+## NEWLINE
+##
+
+expected `def`
+
+translation_unit: HEADER WHILE
+##
+## Ends in an error in state: 1.
+##
+## translation_unit -> HEADER . newline_or_fxn_list MAIN_METH_SEP stmt_list EOF [ # ]
+##
+## The known suffix of the stack is as follows:
+## HEADER
+##
+
+expected `def`
+
+translation_unit: WHILE
+##
+## Ends in an error in state: 0.
+##
+## translation_unit' -> . translation_unit [ # ]
+##
+## The known suffix of the stack is as follows:
+##
+##
+
+expected `@PYTHON` (likely due to an error in your input file)

@@ -19,6 +19,14 @@
           )
   )
 )
+(rule
+  (targets PythonMessages.ml)
+  (deps Python.messages)
+  (action (with-stdout-to %{targets}
+          (run menhir --compile-errors %{workspace_root}/lib/Python.messages %{workspace_root}/lib/PythonParser.mly)
+          )
+  )
+)
 (menhir (modules JavaParser VBParser PythonParser)
 (flags ("--table" "--dump" "--explain"))
 )

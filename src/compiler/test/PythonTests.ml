@@ -645,6 +645,13 @@ let parse_object_member_access _test_ctxt =
   } in
   assert_equal ast expected
 
+let parse_syntax_error _test_ctxt =
+  let code = "@PYTHON\nwhile\n" in
+  assert_raises (Compiler.ParserException {
+      message = "expected `def`\n";
+      lnum = 1
+    }) (fun () -> Compiler.compile code)
+
 let suite =
   "Python Parsing">::: [
     "Parse empty">:: parse_empty;
@@ -666,4 +673,5 @@ let suite =
     "Parse and or precedence">:: parse_and_or_precedence;
     "Parse not precedence">:: parse_not_precedence;
     "Parse object member access">:: parse_object_member_access;
+    "Parse syntax error">:: parse_syntax_error;
   ]
