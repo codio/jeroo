@@ -17,6 +17,6 @@
     Warning: Changing the Matrix Size will Clear the Board!
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button mat-button (click)="close()">Close</button>
-    <button type="submit" mat-button [disabled]="!form.valid" (click)="save()">Save</button>
+    <button mat-raised-button color="primary" (click)="close()">Close</button>
+    <button type="submit" mat-raised-button [disabled]="!form.valid" (click)="save()">Save</button>
 </mat-dialog-actions>

@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, Inject, Input, ViewChild } from '
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { LOCAL_STORAGE, WebStorageService } from 'angular-webstorage-service';
 import { BytecodeInterpreterService } from '../bytecode-interpreter.service';
+import { WarningDialogComponent } from '../warning-dialog/warning-dialog.component';
 import { DialogData, MatrixDialogComponent } from '../matrix-dialog/matrix-dialog.component';
 import { MatrixService } from '../matrix.service';
 import { TileType } from '../matrixConstants';
@@ -83,11 +84,17 @@ export class JerooMatrixComponent implements AfterViewInit {
     }
 
     clearMap() {
-        this.matrixService.resetMap();
-        this.matrixService.resetJeroos();
-        // if the board is cleared, also save into service incase the size has been changed
-        this.saveInLocal(boardCache, this.matrixService.getMapString());
-        this.matrixService.render(this.context);
+        const dialogRef = this.dialog.open(WarningDialogComponent);
+        dialogRef.afterClosed().subscribe((cont) => {
+            if (cont) {
+                this.matrixService.resetMap();
+                this.matrixService.resetJeroos();
+                // if the board is cleared, also save into service incase the size has been changed
+                this.saveInLocal(boardCache, this.matrixService.toString());
+                this.saveInLocal(boardCache, this.matrixService.getMapString());
+                this.matrixService.render(this.context);
+            }
+        });
     }
 
     getCanvas() {

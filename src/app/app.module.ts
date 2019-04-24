@@ -42,6 +42,7 @@ import { EditorTabAreaComponent } from './editor-tab-area/editor-tab-area.compon
 import { CacheDialogComponent } from './cache-dialog/cache-dialog.component';
 import { JerooStatusComponent } from './jeroo-status/jeroo-status.component';
 import { DashboardDialogAboutComponent } from './dashboard-dialog-about/dashboard-dialog-about.component';
+import { WarningDialogComponent } from './warning-dialog/warning-dialog.component';
 
 library.add(
     faFile,
@@ -77,7 +78,8 @@ library.add(
         DashboardDialogAboutComponent,
         DashboardDialogAwardsComponent,
         DashboardDialogHistoryComponent,
-        DashboardDialogCopyrightComponent
+        DashboardDialogCopyrightComponent,
+        WarningDialogComponent
     ],
     imports: [
         BrowserModule,
@@ -99,7 +101,8 @@ library.add(
         DashboardDialogAboutComponent,
         DashboardDialogAwardsComponent,
         DashboardDialogHistoryComponent,
-        DashboardDialogCopyrightComponent
+        DashboardDialogCopyrightComponent,
+        WarningDialogComponent
     ]
 })
 export class AppModule { }
