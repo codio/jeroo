@@ -23,7 +23,7 @@ let comment = '#' [^ '\n' '\r']*
 
 let digit = ['0'-'9']
 let nonzerodigit = ['1'-'9']
-let decimalinteger = nonzerodigit digit*
+let decimalinteger = ['+' '-']? (digit | (nonzerodigit digit+))
 let identifier = ['a'-'z' 'A'-'Z' '_']['a'-'z' 'A'-'Z' '0'-'9' '_']*
 
 rule token state = parse

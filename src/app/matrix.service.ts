@@ -16,13 +16,14 @@ export class MatrixService {
     private tiles: TileType[] = [];
     imageAtlas: HTMLImageElement;
     private jeroos: Jeroo[] = [];
+    private mapString = '';
 
     constructor() {
         this.resetMap();
         this.resetJeroos();
     }
 
-    public resetJeroos() {
+    resetJeroos() {
         this.jeroos = [];
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
@@ -34,7 +35,7 @@ export class MatrixService {
     /**
      * Resets the tile map to all grass
      */
-    public resetMap() {
+    resetMap() {
         this.tiles = [];
         for (let col = 0; col < this.cols; col++) {
             this.tiles.push(TileType.Water);
@@ -49,6 +50,7 @@ export class MatrixService {
         for (let col = 0; col < this.cols; col++) {
             this.tiles.push(TileType.Water);
         }
+        this.mapString = this.toString();
     }
 
     /**
@@ -148,9 +150,21 @@ export class MatrixService {
     }
 
     renderJeroo(context: CanvasRenderingContext2D, imageAtlas: HTMLImageElement, jeroo: Jeroo, col: number, row: number) {
-        const jerooOffset = jeroo.getId() + 1;
+        const jerooOffset = jeroo.getId() * 2 + 1;
         const directionOffset = jeroo.getDirection();
-        if (!jeroo.isInWater() && !jeroo.isInNet()) {
+        if (jeroo.isInFlower()) {
+            context.drawImage(
+                imageAtlas,
+                directionOffset * this.tsize,
+                (jerooOffset + 1) * this.tsize,
+                this.tsize,
+                this.tsize,
+                col * this.tsize,
+                row * this.tsize,
+                this.tsize,
+                this.tsize
+            );
+        } else if (!jeroo.isInWater() && !jeroo.isInNet()) {
             context.drawImage(
                 imageAtlas,
                 directionOffset * this.tsize,
@@ -292,6 +306,7 @@ export class MatrixService {
                 for (let col = 0; col < cols + 2; col++) {
                     this.setTile(col, rows + 1, TileType.Water);
                 }
+                this.mapString = s;
             } catch (e) {
                 // reset the rows and cols to their previous values
                 // re-throw the exception
@@ -322,5 +337,13 @@ export class MatrixService {
         } else {
             throw new Error('Invalid TileType in map');
         }
+    }
+
+    getMapString() {
+        return this.mapString;
+    }
+
+    setMapString(val: string) {
+        this.mapString = val;
     }
 }

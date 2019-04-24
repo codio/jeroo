@@ -1,6 +1,8 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
+import { CacheDialogComponent } from '../cache-dialog/cache-dialog.component';
+import { DashboardDialogAboutComponent } from '../dashboard-dialog-about/dashboard-dialog-about.component';
 import { DashboardDialogAwardsComponent } from '../dashboard-dialog-awards/dashboard-dialog-awards.component';
 import { DashboardDialogCopyrightComponent } from '../dashboard-dialog-copyright/dashboard-dialog-copyright.component';
 import { DashboardDialogHistoryComponent } from '../dashboard-dialog-history/dashboard-dialog-history.component';
@@ -8,19 +10,20 @@ import { EditorState, EditorTabAreaComponent } from '../editor-tab-area/editor-t
 import { JerooMatrixComponent } from '../jeroo-matrix/jeroo-matrix.component';
 import { MatrixService } from '../matrix.service';
 import { MessageService } from '../message.service';
-import { DashboardDialogAboutComponent } from '../dashboard-dialog-about/dashboard-dialog-about.component';
 
 interface Speed {
     name: string;
     value: number;
 }
 
+const cacheInterval = 1000;
+
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent {
+export class DashboardComponent implements AfterViewInit {
     @ViewChild('mapFileInput') mapFileInput: ElementRef;
     @ViewChild('jerooMatrix') jerooMatrix: JerooMatrixComponent;
     @ViewChild('jerooEditor') jerooEditor: EditorTabAreaComponent;
@@ -94,6 +97,33 @@ export class DashboardComponent {
         }));
     }
 
+    ngAfterViewInit() {
+
+        if (this.jerooEditor.hasCachedCode() || this.jerooMatrix.hasCachedMatrix()) {
+            // if (this.storage.get(fileCache) || this.storage.get('board')) {
+            // setTimeout prevents a console error
+            // see: https://github.com/angular/material2/issues/5268
+            setTimeout(() => {
+                const dialogRef = this.dialog.open(CacheDialogComponent);
+                dialogRef.afterClosed().subscribe(loadCache => {
+                    if (loadCache) {
+                        if (this.jerooEditor.hasCachedCode()) {
+                            this.jerooEditor.loadFromCache();
+                        }
+
+                        if (this.jerooMatrix.hasCachedMatrix()) {
+                            this.jerooMatrix.loadMatrixFromCache();
+                        }
+                    } else {
+                        this.jerooEditor.resetCache();
+                        this.jerooMatrix.resetCache();
+                    }
+                    setInterval(() => this.jerooEditor.saveToCache(), cacheInterval);
+                });
+            });
+        }
+    }
+
     onUndoClick() {
         this.jerooEditor.undo();
     }
@@ -133,8 +163,7 @@ export class DashboardComponent {
     onResetClick() {
         if (!this.resetBtnDisabled()) {
             this.jerooEditor.resetState();
-            this.matrixService.resetJeroos();
-            this.jerooMatrix.redraw();
+            this.jerooMatrix.resetState();
         }
     }
 
@@ -221,6 +250,10 @@ export class DashboardComponent {
         printWindow.document.close();
         printWindow.print();
         printWindow.close();
+    }
+
+    changeMapSize() {
+        this.jerooMatrix.openDialog();
     }
 
     getHelpUrl() {

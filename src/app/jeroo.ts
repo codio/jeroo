@@ -35,6 +35,7 @@ const STEP: Point[] = [
 export class Jeroo {
     private inWater = false;
     private inNet = false;
+    private inFlower = false;
     /**
        * Create a new Jeroo
        * @param id A unique numerical identifier for this jeroo.
@@ -124,18 +125,28 @@ export class Jeroo {
         }
         matrixService.setJeroo(this.getX(), this.getY(), this);
         if (nextTile === TileType.Flower) {
-            this.numFlowers++;
+            this.inFlower = true;
+            this.inWater = false;
+            this.inNet = false;
+        } else {
+            this.inFlower = false;
         }
         if (!matrixService.isInBounds(nextLocation.x, nextLocation.y)) {
             this.inWater = true;
+            this.inNet = false;
+            this.inFlower = false;
             throw new Error('LOGIC ERROR: Jeroo is out of bounds');
         }
         if (nextTile === TileType.Water) {
             this.inWater = true;
+            this.inNet = false;
+            this.inFlower = false;
             throw new Error('LOGIC ERROR: Jeroo is on water');
         }
         if (nextTile === TileType.Net) {
             this.inNet = true;
+            this.inWater = false;
+            this.inFlower = false;
             throw new Error('LOGIC ERROR: Jeroo is on a net');
         }
     }
@@ -189,6 +200,17 @@ export class Jeroo {
 
     private acceptFlower() {
         this.numFlowers++;
+    }
+
+    pick(matrixService: MatrixService) {
+        const tile = matrixService.getTile(this.x, this.y);
+        if (tile === TileType.Flower) {
+            this.numFlowers++;
+            this.inFlower = false;
+            this.inWater = false;
+            this.inNet = false;
+            matrixService.setTile(this.x, this.y, TileType.Grass);
+        }
     }
 
     /**
@@ -260,5 +282,13 @@ export class Jeroo {
 
     isInNet() {
         return this.inNet;
+    }
+
+    isInFlower() {
+        return this.inFlower;
+    }
+
+    setInFlower(val: boolean) {
+        this.inFlower = val;
     }
 }

@@ -50,6 +50,10 @@ export class TextEditorComponent implements AfterViewInit {
         return this.editor.getValue();
     }
 
+    setText(incomingString: string) {
+        this.editor.setValue(incomingString);
+    }
+
     undo() {
         this.editor.execCommand('undo');
     }
@@ -90,5 +94,13 @@ export class TextEditorComponent implements AfterViewInit {
 
     setReadOnly(readOnly: boolean) {
         this.editor.setOption('readOnly', readOnly);
+    }
+
+    isClean() {
+        return this.editor.getDoc().isClean();
+    }
+
+    markClean() {
+        this.editor.getDoc().markClean();
     }
 }

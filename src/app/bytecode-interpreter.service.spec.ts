@@ -153,21 +153,6 @@ describe('BytecodeInterpreterService', () => {
         expect(matService.getJeroo(5, 1)).toBe(currentJeroo);
     });
 
-    it('assert hopping on a flower increases flower count', () => {
-        const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
-        const matService: MatrixService = TestBed.get(MatrixService);
-        matService.setTile(2, 3, TileType.Flower);
-        const newInstr = newInstruction('NEW', 0, 1, 1, 0, 2, 0);
-        const csrInstr = newInstruction('CSR', 0, 0, 0, 0, 0, 0);
-        const turnInstr = newInstruction('HOP', 1, 0, 0, 0, 0, 0);
-
-        service.executeBytecode(newInstr, matService);
-        service.executeBytecode(csrInstr, matService);
-        service.executeBytecode(turnInstr, matService);
-        const currentJeroo = service.getCurrentJeroo();
-        expect(currentJeroo.getNumFlowers()).toBe(1);
-    });
-
     it('assert hopping on a net throws error', () => {
         const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
         const matService: MatrixService = TestBed.get(MatrixService);

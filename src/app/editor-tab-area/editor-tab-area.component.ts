@@ -1,9 +1,11 @@
-import { Component, ViewChild, AfterViewInit, Output, Input, EventEmitter } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material';
+import { LOCAL_STORAGE, WebStorageService } from 'angular-webstorage-service';
+import { BytecodeInterpreterService, RuntimeError } from '../bytecode-interpreter.service';
 import { SelectedLanguage } from '../dashboard/SelectedLanguage';
-import { TextEditorComponent } from '../text-editor/text-editor.component';
-import { RuntimeError, BytecodeInterpreterService } from '../bytecode-interpreter.service';
-import { MessageService } from '../message.service';
 import { MatrixService } from '../matrix.service';
+import { MessageService } from '../message.service';
+import { TextEditorComponent } from '../text-editor/text-editor.component';
 
 interface Language {
     value: SelectedLanguage;
@@ -16,6 +18,8 @@ export interface EditorState {
     paused: boolean;
     stopped: boolean;
 }
+
+const codeCache = 'source';
 
 @Component({
     selector: 'app-editor-tab-area',
@@ -38,6 +42,7 @@ export class EditorTabAreaComponent implements AfterViewInit {
     private instructions: Array<Instruction> = null;
     private previousInstruction: Instruction = null;
 
+
     editorStateValue: EditorState;
     @Output()
     editorStateChange = new EventEmitter<EditorState>();
@@ -51,8 +56,11 @@ export class EditorTabAreaComponent implements AfterViewInit {
     }
 
     constructor(private messageService: MessageService,
-        private bytecodeService: BytecodeInterpreterService,
-        private matrixService: MatrixService) { }
+                private bytecodeService: BytecodeInterpreterService,
+                private matrixService: MatrixService,
+                public dialog: MatDialog,
+                @Inject(LOCAL_STORAGE) private storage: WebStorageService) {
+    }
 
     ngAfterViewInit() {
         this.selectedEditor = this.mainMethodTextEditor;
@@ -174,7 +182,7 @@ export class EditorTabAreaComponent implements AfterViewInit {
         this.stopState();
     }
 
-    private createJerooCode() {
+    createJerooCode() {
         let jerooCode = '';
         if (this.selectedLanguage === SelectedLanguage.Java) {
             jerooCode += '@Java\n';
@@ -259,6 +267,9 @@ export class EditorTabAreaComponent implements AfterViewInit {
     onSelectedLanguageChange() {
         this.mainMethodTextEditor.setMode(this.selectedLanguage);
         this.extensionMethodsTextEditor.setMode(this.selectedLanguage);
+        const code = this.createJerooCode();
+        this.storage.set(codeCache, code);
+        this.markClean();
     }
 
     getHelpUrl() {
@@ -279,5 +290,70 @@ export class EditorTabAreaComponent implements AfterViewInit {
         } else {
             throw new Error('Invalid Language');
         }
+    }
+
+    private loadCodeFromString(code: string) {
+        let mainMethodCodeBuffer = '';
+        let extensionMethodCodeBuffer = '';
+        let usingExtensionCodeBuffer = false;
+        let lookingForHeader = true;
+
+        code.split('\n').forEach(line => {
+            if (lookingForHeader && line.startsWith('@')) {
+                if (line === '@Java') {
+                    this.selectedLanguage = SelectedLanguage.Java;
+                } else if (line === '@VB') {
+                    this.selectedLanguage = SelectedLanguage.Vb;
+                } else if (line === '@PYTHON') {
+                    this.selectedLanguage = SelectedLanguage.Python;
+                }
+                this.mainMethodTextEditor.setMode(this.selectedLanguage);
+                this.extensionMethodsTextEditor.setMode(this.selectedLanguage);
+                lookingForHeader = false;
+                usingExtensionCodeBuffer = true;
+            } else if (usingExtensionCodeBuffer && line.startsWith('@@')) {
+                usingExtensionCodeBuffer = false;
+            } else {
+                if (usingExtensionCodeBuffer) {
+                    extensionMethodCodeBuffer += line + '\n';
+                } else {
+                    mainMethodCodeBuffer += line + '\n';
+                }
+            }
+        });
+
+        this.extensionMethodsTextEditor.setText(extensionMethodCodeBuffer.trim());
+        this.mainMethodTextEditor.setText(mainMethodCodeBuffer.trim());
+    }
+
+    private isClean() {
+        return this.mainMethodTextEditor.isClean() && this.extensionMethodsTextEditor.isClean();
+    }
+
+    private markClean() {
+        this.mainMethodTextEditor.markClean();
+        this.extensionMethodsTextEditor.markClean();
+    }
+
+    hasCachedCode() {
+        return this.storage.get(codeCache) as boolean;
+    }
+
+    loadFromCache() {
+        const code = this.storage.get(codeCache);
+        this.loadCodeFromString(code);
+        this.markClean();
+    }
+
+    saveToCache() {
+        if (!this.isClean()) {
+            const code = this.createJerooCode();
+            this.storage.set(codeCache, code);
+            this.markClean();
+        }
+    }
+
+    resetCache() {
+        this.storage.remove(codeCache);
     }
 }

@@ -1,10 +1,12 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, Inject, Input, ViewChildren} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, Input, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material';
+import { LOCAL_STORAGE, WebStorageService } from 'angular-webstorage-service';
+import { BytecodeInterpreterService } from '../bytecode-interpreter.service';
+import { DialogData, MatrixDialogComponent } from '../matrix-dialog/matrix-dialog.component';
 import { MatrixService } from '../matrix.service';
 import { TileType } from '../matrixConstants';
-import { MatDialog, MatDialogConfig } from '@angular/material';
-import { MatrixDialogComponent, DialogData } from '../matrix-dialog/matrix-dialog.component';
-import { LOCAL_STORAGE, WebStorageService } from 'angular-webstorage-service';
-import {BytecodeInterpreterService} from '../bytecode-interpreter.service';
+
+const boardCache = 'board';
 
 @Component({
     selector: 'app-jeroo-matrix',
@@ -16,27 +18,35 @@ export class JerooMatrixComponent implements AfterViewInit {
     @Input() editingEnabled: boolean;
     mouseRow: number = null;
     mouseColumn: number = null;
-    count: number = null;
     private canvas: HTMLCanvasElement;
     private context: CanvasRenderingContext2D;
     private mouseDown = false;
     private selectedTileType: TileType = null;
-    private boardCache = 'board';
 
     constructor(private matrixService: MatrixService, private dialog: MatDialog,
-        public bytecodeService: BytecodeInterpreterService,
-        @Inject(LOCAL_STORAGE) private storage: WebStorageService) {
-      }
+                public bytecodeService: BytecodeInterpreterService,
+                @Inject(LOCAL_STORAGE) private storage: WebStorageService) {
+    }
 
     ngAfterViewInit() {
         // check if something has been stored in the cache to load if it has
-        if (this.storage.get(this.boardCache) !== null) {
-            this.matrixService.genMapFromString(this.storage.get(this.boardCache));
-        }
         this.canvas = this.jerooGameCanvas.nativeElement as HTMLCanvasElement;
         this.context = this.canvas.getContext('2d');
         this.canvas.width = this.canvas.offsetWidth;
         this.canvas.height = this.canvas.offsetHeight;
+        this.redraw();
+    }
+
+    loadMatrixFromCache() {
+        const cachedMatrix = this.storage.get(boardCache);
+        if (cachedMatrix) {
+            this.matrixService.genMapFromString(cachedMatrix);
+            this.redraw();
+        }
+    }
+
+    resetCache() {
+        this.storage.remove(boardCache);
         this.redraw();
     }
 
@@ -50,25 +60,25 @@ export class JerooMatrixComponent implements AfterViewInit {
 
         const dialogRef = this.dialog.open(MatrixDialogComponent, dialogConfig);
         dialogRef.afterClosed().subscribe((data: DialogData) => {
-          if (data !== undefined && this.editingEnabled) {
+            if (data && this.editingEnabled) {
                 this.matrixService.setCols(+data.xValue + 2);
                 this.matrixService.setRows(+data.yValue + 2);
                 this.matrixService.resetMap();
                 this.matrixService.resetJeroos();
                 this.redraw();
+                this.saveInLocal(boardCache, this.matrixService.getMapString());
             }
         });
     }
 
     redraw() {
         this.context.clearRect(0, 0,
-            this.canvas.width,
-            this.canvas.height
-        );
+                               this.canvas.width,
+                               this.canvas.height
+                              );
         this.canvas.width = this.matrixService.getTsize() * (this.matrixService.getCols());
         this.canvas.height = this.matrixService.getTsize() * (this.matrixService.getRows());
         // if the board has been resized save into cache
-        this.saveInLocal(this.boardCache, this.matrixService.toString());
         this.matrixService.render(this.context);
     }
 
@@ -76,7 +86,7 @@ export class JerooMatrixComponent implements AfterViewInit {
         this.matrixService.resetMap();
         this.matrixService.resetJeroos();
         // if the board is cleared, also save into service incase the size has been changed
-        this.saveInLocal(this.boardCache, this.matrixService.toString());
+        this.saveInLocal(boardCache, this.matrixService.getMapString());
         this.matrixService.render(this.context);
     }
 
@@ -109,7 +119,7 @@ export class JerooMatrixComponent implements AfterViewInit {
     canvasGestureUp() {
         this.mouseDown = false;
         // save board when user is done editing
-        this.saveInLocal(this.boardCache, this.matrixService.toString());
+        this.saveInLocal(boardCache, this.matrixService.getMapString());
     }
 
     canvasMouseDown(event: MouseEvent) {
@@ -164,6 +174,7 @@ export class JerooMatrixComponent implements AfterViewInit {
                 if (this.matrixService.getTile(tileCol, tileRow) !== this.selectedTileType) {
                     this.matrixService.setTile(tileCol, tileRow, this.selectedTileType);
                     this.matrixService.render(this.context);
+                    this.matrixService.setMapString(this.matrixService.toString());
                 }
             }
         } else {
@@ -176,5 +187,22 @@ export class JerooMatrixComponent implements AfterViewInit {
 
     saveInLocal(key: string, val: any) {
         this.storage.set(key, val);
+    }
+
+    hasCachedMatrix() {
+        return this.storage.get(boardCache) as boolean;
+    }
+
+    loadCachedMap() {
+        const map = this.storage.get(boardCache);
+        this.matrixService.genMapFromString(map);
+        this.redraw();
+    }
+
+    resetState() {
+        this.matrixService.resetJeroos();
+        const map = this.matrixService.getMapString();
+        this.matrixService.genMapFromString(map);
+        this.redraw();
     }
 }
