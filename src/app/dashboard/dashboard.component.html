@@ -27,6 +27,7 @@
                         <button mat-button [matMenuTriggerFor]="run">Run</button>
                         <button mat-button [matMenuTriggerFor]="speed">Run Speed</button>
                         <button mat-button [matMenuTriggerFor]="islandfile">Island File</button>
+                        <button mat-button [matMenuTriggerFor]="islandEdit">Island Edit</button>
                         <button mat-button [matMenuTriggerFor]="help">Help</button>
                     </div>
                 </mat-toolbar-row>
@@ -160,6 +161,13 @@
                     <mat-divider></mat-divider>
                     <button mat-menu-item (click)="printMap()">
                         <fa-icon icon="print"></fa-icon><span class="menu-text">Print<span class="shortcut-tip">Ctrl+Shift+P</span></span>
+                    </button>
+                </ng-template>
+            </mat-menu>
+            <mat-menu #islandEdit="matMenu">
+                <ng-template matMenuContent>
+                    <button mat-menu-item [disabled]="!matrixEditingEnabled()" (click)="changeMapSize()">
+                        <span class="menu-text">Change Map Size</span>
                     </button>
                 </ng-template>
             </mat-menu>

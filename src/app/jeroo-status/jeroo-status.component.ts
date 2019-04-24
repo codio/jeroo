@@ -26,7 +26,7 @@ export class JerooStatusComponent implements AfterViewInit, OnDestroy {
                 }).nativeElement;
                 this.renderJeroo(canvas, jeroo);
             });
-        this.jerooIcons.changes.subscribe((_change) => {
+        this.jerooIcons.changes.subscribe((_) => {
             this.jerooIcons.forEach((jerooIcon: ElementRef) => {
                 const canvas = jerooIcon.nativeElement as HTMLCanvasElement;
                 const id = parseInt(canvas.id, 10);

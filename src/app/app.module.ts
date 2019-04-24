@@ -39,6 +39,7 @@ import { DashboardDialogAwardsComponent } from './dashboard-dialog-awards/dashbo
 import { DashboardDialogHistoryComponent } from './dashboard-dialog-history/dashboard-dialog-history.component';
 import { DashboardDialogCopyrightComponent } from './dashboard-dialog-copyright/dashboard-dialog-copyright.component';
 import { EditorTabAreaComponent } from './editor-tab-area/editor-tab-area.component';
+import { CacheDialogComponent } from './cache-dialog/cache-dialog.component';
 import { JerooStatusComponent } from './jeroo-status/jeroo-status.component';
 import { DashboardDialogAboutComponent } from './dashboard-dialog-about/dashboard-dialog-about.component';
 
@@ -71,6 +72,7 @@ library.add(
         DisplayErrorMessageComponent,
         TextEditorComponent,
         EditorTabAreaComponent,
+        CacheDialogComponent,
         JerooStatusComponent,
         DashboardDialogAboutComponent,
         DashboardDialogAwardsComponent,
@@ -87,12 +89,13 @@ library.add(
         ReactiveFormsModule,
         FontAwesomeModule,
         StorageServiceModule,
-        HotkeyModule.forRoot()
+        HotkeyModule.forRoot(),
     ],
     providers: [],
     bootstrap: [AppComponent],
     entryComponents: [
         MatrixDialogComponent,
+        CacheDialogComponent,
         DashboardDialogAboutComponent,
         DashboardDialogAwardsComponent,
         DashboardDialogHistoryComponent,

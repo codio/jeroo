@@ -47,8 +47,8 @@ export class BytecodeInterpreterService {
     }
 
     /**
-      * Reset the state of the bytecode interpreter, clear the board of jeroos, and re-render the board state to the canvas.
-      */
+     * Reset the state of the bytecode interpreter, clear the board of jeroos, and re-render the board state to the canvas.
+     */
     reset() {
         this.pc = 0;
         this.jerooReg = 0;
@@ -59,10 +59,10 @@ export class BytecodeInterpreterService {
     }
 
     /**
-       * Fetch the next instruction from a sequence of instructions.
-       * @param instructions The sequence of instructions.
-       * @return The next instruction.
-       */
+     * Fetch the next instruction from a sequence of instructions.
+     * @param instructions The sequence of instructions.
+     * @return The next instruction.
+     */
     fetchInstruction(instructions: Array<Instruction>) {
         const instruction = instructions[this.pc];
         this.pc++;
@@ -70,10 +70,10 @@ export class BytecodeInterpreterService {
     }
 
     /**
-       * Execute a given command.
-       * @param command The given command.
-       * @param matService Matrix service.
-       */
+     * Execute a given command.
+     * @param command The given command.
+     * @param matService Matrix service.
+     */
     executeBytecode(command: Instruction, matService: MatrixService) {
         switch (command.op) {
             case 'CSR': {
@@ -107,6 +107,10 @@ export class BytecodeInterpreterService {
                 try {
                     const direction = numberToCardinalDirection(command.e);
                     const jeroo = new Jeroo(command.a, command.b + 1, command.c + 1, command.d, direction);
+                    if (tile === TileType.Flower) {
+                        jeroo.setInFlower(true);
+                    }
+
                     this.jerooArray[command.a] = jeroo;
                     matService.setJeroo(jeroo.getX(), jeroo.getY(), jeroo);
                 } catch (e) {
@@ -129,6 +133,9 @@ export class BytecodeInterpreterService {
                     }
                 } catch (e) {
                     throw new RuntimeError(e.message, command.f);
+                } finally {
+                    const currentJeroo = this.getCurrentJeroo();
+                    this.jerooChangeSource.next(currentJeroo);
                 }
                 break;
             }
@@ -140,9 +147,13 @@ export class BytecodeInterpreterService {
                 this.getCurrentJeroo().plant(matService);
                 break;
             }
-            case 'GIVE': { // refacter with new jeroo and relational direction
+            case 'GIVE': {
                 const direction = numberToRelativeDirection(command.a);
                 this.getCurrentJeroo().give(direction, matService);
+                break;
+            }
+            case 'PICK': {
+                this.getCurrentJeroo().pick(matService);
                 break;
             }
             case 'TRUE': {
@@ -236,6 +247,6 @@ export class BytecodeInterpreterService {
     }
 
     getJerooAtIndex(x: number) {
-      return this.jerooArray[x];
+        return this.jerooArray[x];
     }
 }
