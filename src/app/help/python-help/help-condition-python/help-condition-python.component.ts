@@ -1,14 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-help-condition-python',
-    templateUrl: './help-condition-python.component.html'
+    templateUrl: './help-condition-python.component.html',
+    styleUrls: ['../../help.scss']
 })
-export class HelpConditionPythonComponent implements OnInit {
-
+export class HelpConditionPythonComponent {
     constructor() { }
-
-    ngOnInit() {
-    }
-
 }

@@ -1,14 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-help-boolean',
-    templateUrl: './help-boolean.component.html'
+    templateUrl: './help-boolean.component.html',
+    styleUrls: ['../../help.scss']
 })
-export class HelpBooleanComponent implements OnInit {
-
+export class HelpBooleanComponent {
     constructor() { }
-
-    ngOnInit() {
-    }
-
 }

@@ -1,14 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-help-instantiation-java',
-    templateUrl: './help-instantiation-java.component.html'
+    templateUrl: './help-instantiation-java.component.html',
+    styleUrls: ['../../help.scss']
 })
-export class HelpInstantiationJavaComponent implements OnInit {
-
+export class HelpInstantiationJavaComponent {
     constructor() { }
-
-    ngOnInit() {
-    }
-
 }

@@ -1,14 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-help-method-python',
-    templateUrl: './help-method-python.component.html'
+    templateUrl: './help-method-python.component.html',
+    styleUrls: ['../../help.scss']
 })
-export class HelpMethodPythonComponent implements OnInit {
-
+export class HelpMethodPythonComponent {
     constructor() { }
-
-    ngOnInit() {
-    }
-
 }

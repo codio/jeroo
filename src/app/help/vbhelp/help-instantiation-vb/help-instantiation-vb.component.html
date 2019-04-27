@@ -1,124 +1,126 @@
-<h1>Declaration and Instantiation (VB.NET Style)</h1>
+<div class="help-content">
+    <h1>Declaration and Instantiation (VB.NET Style)</h1>
 
-A declaration-instantiation statement is used to create a Jeroo object. The declaration-instantiation statements must appear in the main method before any other statements.
-<br>
-<br>
-A declaration-instantiation statement has the form
-<pre>
-   <b>Dim</b> <i>identifier</i> <b>As Jeroo = new Jeroo( <i>arguments</i> )</b></pre>
-<ul>
-    <li>The portion to the left of the = sign is called the "declaration"
-    <li>The portion to the right is called the "instantiation"
-    <li>The part following the word "new" is the invocation of a constructor method.
-</ul>
-There are six constructors as shown in the following table.
-<br>
-<br>
-<table border="1" cellpadding="5">
-    <tr>
-        <td>
-            <h3>Example</h3>
-        </td>
-        <td>
-            <h3>Attributes</h3>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <font size="3" color="#000000" face="courier">
-                <pre><b>Dim kim As Jeroo= new Jeroo()</b></pre>
-            </font>
-            <br>
-            <br>
-            Accept default attributes
-        </td>
-        <td>
-            Name: kim<br>
-            Location: (0,0)<br>
-            Direction: EAST<br>
-            Flowers: 0
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <font size="3" color="#000000" face="courier">
-                <pre><b>Dim kim As Jeroo = new Jeroo(8)</b></pre>
-            </font>
-            <br>
-            <br>
-            Specify the flowers
-        </td>
-        <td>
-            Name: kim<br>
-            Location: (0,0)<br>
-            Direction: EAST<br>
-            Flowers: 8
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <font size="3" color="#000000" face="courier">
-                <pre><b>Dim kim As Jeroo = new Jeroo(3,4)</b></pre>
-            </font>
-            <br>
-            <br>
-            Specify the location
-        </td>
-        <td>
-            Name: kim<br>
-            Location: (3,4)<br>
-            Direction: EAST<br>
-            Flowers: 0
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <font size="3" color="#000000" face="courier">
-                <pre><b>Dim kim As Jeroo = new Jeroo(3,4,WEST)</b></pre>
-            </font>
-            <br>
-            <br>
-            Specify location and direction
-        </td>
-        <td>
-            Name: kim<br>
-            Location: (3,4)<br>
-            Direction: WEST<br>
-            Flowers: 0
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <font size="3" color="#000000" face="courier">
-                <pre><b>Dim kim As Jeroo = new Jeroo(3,4,8)</b></pre>
-            </font>
-            <br>
-            <br>
-            Specify location and flowers
-        </td>
-        <td>
-            Name: kim<br>
-            Location: (3,4)<br>
-            Direction: EAST<br>
-            Flowers: 8
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <font size="3" color="#000000" face="courier">
-                <pre><b>Dim kim As Jeroo = new Jeroo(3,4,SOUTH,8)</b></pre>
-            </font>
-            <br>
-            <br>
-            Specify all attributes
-        </td>
-        <td>
-            Name: kim<br>
-            Location: (3,4)<br>
-            Direction: SOUTH<br>
-            Flowers: 8
-        </td>
-    </tr>
+    A declaration-instantiation statement is used to create a Jeroo object. The declaration-instantiation statements must appear in the main method before any other statements.
+    <br>
+    <br>
+    A declaration-instantiation statement has the form
+    <pre>
+        <b>Dim</b> <i>identifier</i> <b>As Jeroo = new Jeroo( <i>arguments</i> )</b></pre>
+    <ul>
+        <li>The portion to the left of the = sign is called the "declaration"
+            <li>The portion to the right is called the "instantiation"
+                <li>The part following the word "new" is the invocation of a constructor method.
+    </ul>
+    There are six constructors as shown in the following table.
+    <br>
+    <br>
+    <table border="1" cellpadding="5">
+        <tr>
+            <td>
+                <h3>Example</h3>
+            </td>
+            <td>
+                <h3>Attributes</h3>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <font size="3" color="#000000" face="courier">
+                    <pre><b>Dim kim As Jeroo= new Jeroo()</b></pre>
+                </font>
+                <br>
+                <br>
+                Accept default attributes
+            </td>
+            <td>
+                Name: kim<br>
+                Location: (0,0)<br>
+                Direction: EAST<br>
+                Flowers: 0
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <font size="3" color="#000000" face="courier">
+                    <pre><b>Dim kim As Jeroo = new Jeroo(8)</b></pre>
+                </font>
+                <br>
+                <br>
+                Specify the flowers
+            </td>
+            <td>
+                Name: kim<br>
+                Location: (0,0)<br>
+                Direction: EAST<br>
+                Flowers: 8
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <font size="3" color="#000000" face="courier">
+                    <pre><b>Dim kim As Jeroo = new Jeroo(3,4)</b></pre>
+                </font>
+                <br>
+                <br>
+                Specify the location
+            </td>
+            <td>
+                Name: kim<br>
+                Location: (3,4)<br>
+                Direction: EAST<br>
+                Flowers: 0
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <font size="3" color="#000000" face="courier">
+                    <pre><b>Dim kim As Jeroo = new Jeroo(3,4,WEST)</b></pre>
+                </font>
+                <br>
+                <br>
+                Specify location and direction
+            </td>
+            <td>
+                Name: kim<br>
+                Location: (3,4)<br>
+                Direction: WEST<br>
+                Flowers: 0
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <font size="3" color="#000000" face="courier">
+                    <pre><b>Dim kim As Jeroo = new Jeroo(3,4,8)</b></pre>
+                </font>
+                <br>
+                <br>
+                Specify location and flowers
+            </td>
+            <td>
+                Name: kim<br>
+                Location: (3,4)<br>
+                Direction: EAST<br>
+                Flowers: 8
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <font size="3" color="#000000" face="courier">
+                    <pre><b>Dim kim As Jeroo = new Jeroo(3,4,SOUTH,8)</b></pre>
+                </font>
+                <br>
+                <br>
+                Specify all attributes
+            </td>
+            <td>
+                Name: kim<br>
+                Location: (3,4)<br>
+                Direction: SOUTH<br>
+                Flowers: 8
+            </td>
+        </tr>
 
 
-</table>
+    </table>
+</div>
