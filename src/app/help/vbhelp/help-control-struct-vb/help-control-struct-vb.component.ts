@@ -1,14 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-help-control-struct-vb',
-    templateUrl: './help-control-struct-vb.component.html'
+    templateUrl: './help-control-struct-vb.component.html',
+    styleUrls: ['../../help.scss']
 })
-export class HelpControlStructVBComponent implements OnInit {
-
+export class HelpControlStructVBComponent {
     constructor() { }
-
-    ngOnInit() {
-    }
-
 }

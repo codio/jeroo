@@ -1,14 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-help-tutorial-vb',
-    templateUrl: './help-tutorial-vb.component.html'
+    templateUrl: './help-tutorial-vb.component.html',
+    styleUrls: ['../../help.scss']
 })
-export class HelpTutorialVbComponent implements OnInit {
-
+export class HelpTutorialVbComponent {
     constructor() { }
-
-    ngOnInit() {
-    }
-
 }

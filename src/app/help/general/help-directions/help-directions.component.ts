@@ -1,14 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-help-directions',
-    templateUrl: './help-directions.component.html'
+    templateUrl: './help-directions.component.html',
+    styleUrls: ['../../help.scss']
 })
-export class HelpDirectionsComponent implements OnInit {
-
+export class HelpDirectionsComponent {
     constructor() { }
-
-    ngOnInit() {
-    }
-
 }

@@ -1,14 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-help-general-python',
-    templateUrl: './help-general-python.component.html'
+    templateUrl: './help-general-python.component.html',
+    styleUrls: ['../../help.scss']
 })
-export class HelpGeneralPythonComponent implements OnInit {
-
+export class HelpGeneralPythonComponent {
     constructor() { }
-
-    ngOnInit() {
-    }
-
 }
