@@ -5,3 +5,34 @@ html, body {
   height: 100%;
   font-family: 'Roboto', sans-serif;
 }
+
+// used by codemirror for line highlighting
+.activeline-highlight {
+  background: rgb(230, 238, 255);
+}
+
+.errorline-highlight {
+  background: rgb(255, 230, 230);
+}
+
+// hide the main display while printing
+@media print {
+  app-root > * {
+    display: none;
+  }
+
+  .mat-menu-content {
+    display: none;
+  }
+
+  app-root app-print-layout {
+    display: block;
+  }
+}
+
+
+.CodeMirror {
+  border: 1px solid #eee;
+  height: auto;
+  padding-bottom: 10px;
+}

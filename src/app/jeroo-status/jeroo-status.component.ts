@@ -18,13 +18,13 @@ export class JerooStatusComponent implements AfterViewInit, OnDestroy {
 
     ngAfterViewInit() {
         this.subscription = this.bytecodeService.jerooChange$
-            .subscribe(jeroo => {
-                const canvas: HTMLCanvasElement = this.jerooIcons.find((item: ElementRef, _index, _array) => {
-                    const c = item.nativeElement as HTMLCanvasElement;
-                    const id = parseInt(c.id, 10);
-                    return id === jeroo.getId();
-                }).nativeElement;
-                this.renderJeroo(canvas, jeroo);
+            .subscribe(() => {
+                this.jerooIcons.forEach((item: ElementRef) => {
+                    const canvas = item.nativeElement as HTMLCanvasElement;
+                    const id = parseInt(canvas.id, 10);
+                    const jeroo = this.bytecodeService.getJerooAtIndex(id);
+                    this.renderJeroo(canvas, jeroo);
+                });
             });
         this.jerooIcons.changes.subscribe((_) => {
             this.jerooIcons.forEach((jerooIcon: ElementRef) => {

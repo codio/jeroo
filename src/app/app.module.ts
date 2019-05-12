@@ -35,14 +35,18 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { DisplayErrorMessageComponent } from './display-error-message/display-error-message.component';
 import { TextEditorComponent } from './text-editor/text-editor.component';
 import { StorageServiceModule } from 'angular-webstorage-service';
-import { DashboardDialogAwardsComponent } from './dashboard-dialog-awards/dashboard-dialog-awards.component';
-import { DashboardDialogHistoryComponent } from './dashboard-dialog-history/dashboard-dialog-history.component';
-import { DashboardDialogCopyrightComponent } from './dashboard-dialog-copyright/dashboard-dialog-copyright.component';
+import { DashboardDialogAwardsComponent } from './dashboard/dashboard-dialog-awards/dashboard-dialog-awards.component';
+import { DashboardDialogHistoryComponent } from './dashboard/dashboard-dialog-history/dashboard-dialog-history.component';
+import { DashboardDialogCopyrightComponent } from './dashboard/dashboard-dialog-copyright/dashboard-dialog-copyright.component';
 import { EditorTabAreaComponent } from './editor-tab-area/editor-tab-area.component';
 import { CacheDialogComponent } from './cache-dialog/cache-dialog.component';
 import { JerooStatusComponent } from './jeroo-status/jeroo-status.component';
-import { DashboardDialogAboutComponent } from './dashboard-dialog-about/dashboard-dialog-about.component';
+import { DashboardDialogAboutComponent } from './dashboard/dashboard-dialog-about/dashboard-dialog-about.component';
 import { WarningDialogComponent } from './warning-dialog/warning-dialog.component';
+import { PrintLayoutComponent } from './print-layout/print-layout.component';
+import { PrintMapComponent } from './print-layout/print-map/print-map.component';
+import { PrintCodeComponent } from './print-layout/print-code/print-code.component';
+import { PrintCodeDialogComponent } from './print-layout/print-code/print-code-dialog/print-code-dialog.component';
 
 library.add(
     faFile,
@@ -79,7 +83,11 @@ library.add(
         DashboardDialogAwardsComponent,
         DashboardDialogHistoryComponent,
         DashboardDialogCopyrightComponent,
-        WarningDialogComponent
+        WarningDialogComponent,
+        PrintLayoutComponent,
+        PrintMapComponent,
+        PrintCodeComponent,
+        PrintCodeDialogComponent
     ],
     imports: [
         BrowserModule,
@@ -102,7 +110,8 @@ library.add(
         DashboardDialogAwardsComponent,
         DashboardDialogHistoryComponent,
         DashboardDialogCopyrightComponent,
-        WarningDialogComponent
+        WarningDialogComponent,
+        PrintCodeDialogComponent
     ]
 })
 export class AppModule { }

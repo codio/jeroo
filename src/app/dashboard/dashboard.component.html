@@ -32,13 +32,13 @@
                     </div>
                 </mat-toolbar-row>
                 <mat-toolbar-row fxHide.lt-md>
-                    <button mat-icon-button matTooltip="New File">
+                    <button mat-icon-button matTooltip="New File" [disabled]="!editorEditingEnabled()" (click)="onNewFileClick()">
                         <fa-icon icon="file"></fa-icon>
                     </button>
-                    <button mat-icon-button matTooltip="Open File">
+                    <button mat-icon-button matTooltip="Open File" [disabled]="!editorEditingEnabled()" (click)="onOpenFileClick()">
                         <fa-icon icon="folder"></fa-icon>
                     </button>
-                    <button mat-icon-button matTooltip="Save">
+                    <button mat-icon-button matTooltip="Save" (click)="onSaveClick()">
                         <fa-icon icon="save"></fa-icon>
                     </button>
                     <mat-divider [vertical]="true"></mat-divider>
@@ -84,19 +84,19 @@
             <!-- Menu Properties -->
             <mat-menu #file="matMenu">
                 <ng-template matMenuContent>
-                    <button mat-menu-item>
-                        <fa-icon icon="file"></fa-icon><span class="menu-text">New</span>
+                    <button mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onNewFileClick()">
+                        <fa-icon icon="file"></fa-icon><span class="menu-text">New</span><span class="shortcut-tip">Ctrl+N</span>
                     </button>
-                    <button mat-menu-item>
-                        <fa-icon icon="folder"></fa-icon><span class="menu-text">Open</span>
-                    </button>
-                    <mat-divider></mat-divider>
-                    <button mat-menu-item>
-                        <fa-icon icon="save"></fa-icon><span class="menu-text">Save</span>
+                    <button mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onOpenFileClick()">
+                        <fa-icon icon="folder"></fa-icon><span class="menu-text">Open</span><span class="shortcut-tip">Ctrl+O</span>
                     </button>
                     <mat-divider></mat-divider>
-                    <button mat-menu-item>
-                        <fa-icon icon="folder-open"></fa-icon><span class="menu-text">Print</span>
+                    <button mat-menu-item (click)="onSaveClick()">
+                        <fa-icon icon="save"></fa-icon><span class="menu-text">Save</span><span class="shortcut-tip">Ctrl+S</span>
+                    </button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item (click)="onPrintClick()">
+                        <fa-icon icon="folder-open"></fa-icon><span class="menu-text">Print</span><span class="shortcut-tip">Ctrl+P</span>
                     </button>
                 </ng-template>
             </mat-menu>
@@ -200,5 +200,7 @@
 </mat-sidenav-container>
 <!-- map file input -->
 <input #mapFileInput class="invisible" type="file" file-accept="jev" (change)="mapFileSelected($event.target.files[0])" />
+<!-- code file input -->
+<input #codeFileInput class="invisible" type="file" file-accept="jsc" (change)="codeFileSelected($event.target.files[0])" />
 <!-- file saver input -->
-<a #mapSaver class="invisible"></a>
+<a #fileSaver class="invisible"></a>
