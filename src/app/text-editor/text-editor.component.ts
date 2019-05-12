@@ -1,6 +1,6 @@
-import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { SelectedLanguage } from '../dashboard/SelectedLanguage';
-import { CodemirrorService } from '../codemirror.service';
+import { Component, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter, Input } from '@angular/core';
+import { CodemirrorService } from '../codemirror/codemirror.service';
+import { SelectedLanguage } from '../code.service';
 
 @Component({
     selector: 'app-text-editor',
@@ -9,6 +9,35 @@ import { CodemirrorService } from '../codemirror.service';
 export class TextEditorComponent implements AfterViewInit {
     @ViewChild('editorTextarea') editorTextArea: ElementRef;
     private editor: CodeMirror.Editor = null;
+
+    @Output()
+    codeChange = new EventEmitter<string>();
+    @Input()
+    get code() {
+        if (this.editor) {
+            return this.editor.getValue();
+        }
+    }
+    set code(val) {
+        if (this.editor) {
+            const cursor = (this.editor as any).getCursor();
+            this.editor.setValue(val);
+            (this.editor as any).setCursor(cursor);
+            this.codeChange.emit(this.editor.getValue());
+        }
+    }
+
+    private langVal: SelectedLanguage;
+    @Input()
+    get lang() {
+        return this.langVal;
+    }
+    set lang(val) {
+        this.langVal = val;
+        if (this.editor) {
+            this.setMode(this.langVal);
+        }
+    }
 
     constructor(private codemirrorService: CodemirrorService) { }
 
@@ -31,9 +60,13 @@ export class TextEditorComponent implements AfterViewInit {
         this.editor.setOption('autoCloseBrackets', '{}()');
         this.editor.setSize(null, 500);
         this.editor.refresh();
+
+        this.editor.on('change', (editor) => {
+            this.codeChange.emit(editor.getValue());
+        });
     }
 
-    setMode(language: SelectedLanguage) {
+    private setMode(language: SelectedLanguage) {
         if (language === SelectedLanguage.Java) {
             this.editor.setOption('mode', 'jeroo-java');
             this.editor.setOption('autoCloseBrackets', '{}()');
@@ -47,7 +80,7 @@ export class TextEditorComponent implements AfterViewInit {
     }
 
     getText() {
-        return this.editor.getValue();
+        return this.code;
     }
 
     setText(incomingString: string) {
@@ -75,32 +108,45 @@ export class TextEditorComponent implements AfterViewInit {
     }
 
     formatSelection() {
-        this.editor.execCommand('indentAuto');
+        const totalLines = (this.editor as any).lineCount();
+        (this.editor as any).autoFormatRange({line: 0, ch: 0}, {line: totalLines});
     }
 
     highlightLine(lineNum: number) {
         const line = this.editor.getDoc().getLineHandle(lineNum - 1);
         if (line) {
-            this.editor.addLineClass(line, 'background', 'CodeMirror-activeline-background');
+            this.editor.addLineClass(line, 'background', 'activeline-highlight');
+        }
+    }
+
+    highlightErrorLine(lineNum: number) {
+        const line = this.editor.getDoc().getLineHandle(lineNum - 1);
+        if (line) {
+            this.editor.addLineClass(line, 'background', 'errorline-highlight');
         }
     }
 
     unhighlightLine(lineNum: number) {
         const line = this.editor.getDoc().getLineHandle(lineNum - 1);
         if (line) {
-            this.editor.removeLineClass(line, 'background', 'CodeMirror-activeline-background');
+            this.editor.removeLineClass(line, 'background', 'activeline-highlight');
+            this.editor.removeLineClass(line, 'background', 'errorline-highlight');
         }
+    }
+
+    isReadOnly() {
+        return this.editor.getOption('readOnly') as boolean;
     }
 
     setReadOnly(readOnly: boolean) {
         this.editor.setOption('readOnly', readOnly);
     }
 
-    isClean() {
-        return this.editor.getDoc().isClean();
+    refresh() {
+        this.editor.refresh();
     }
 
-    markClean() {
-        this.editor.getDoc().markClean();
+    focus() {
+        this.editor.focus();
     }
 }

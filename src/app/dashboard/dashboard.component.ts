@@ -2,21 +2,21 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { CacheDialogComponent } from '../cache-dialog/cache-dialog.component';
-import { DashboardDialogAboutComponent } from '../dashboard-dialog-about/dashboard-dialog-about.component';
-import { DashboardDialogAwardsComponent } from '../dashboard-dialog-awards/dashboard-dialog-awards.component';
-import { DashboardDialogCopyrightComponent } from '../dashboard-dialog-copyright/dashboard-dialog-copyright.component';
-import { DashboardDialogHistoryComponent } from '../dashboard-dialog-history/dashboard-dialog-history.component';
+import { DashboardDialogAboutComponent } from './dashboard-dialog-about/dashboard-dialog-about.component';
+import { DashboardDialogAwardsComponent } from './dashboard-dialog-awards/dashboard-dialog-awards.component';
+import { DashboardDialogCopyrightComponent } from './dashboard-dialog-copyright/dashboard-dialog-copyright.component';
+import { DashboardDialogHistoryComponent } from './dashboard-dialog-history/dashboard-dialog-history.component';
 import { EditorState, EditorTabAreaComponent } from '../editor-tab-area/editor-tab-area.component';
 import { JerooMatrixComponent } from '../jeroo-matrix/jeroo-matrix.component';
 import { MatrixService } from '../matrix.service';
 import { MessageService } from '../message.service';
+import { PrintService } from '../print.service';
+import { CodeService } from '../code.service';
 
 interface Speed {
     name: string;
     value: number;
 }
-
-const cacheInterval = 1000;
 
 @Component({
     selector: 'app-dashboard',
@@ -25,9 +25,10 @@ const cacheInterval = 1000;
 })
 export class DashboardComponent implements AfterViewInit {
     @ViewChild('mapFileInput') mapFileInput: ElementRef;
+    @ViewChild('codeFileInput') codeFileInput: ElementRef;
     @ViewChild('jerooMatrix') jerooMatrix: JerooMatrixComponent;
     @ViewChild('jerooEditor') jerooEditor: EditorTabAreaComponent;
-    @ViewChild('mapSaver') mapSaver: ElementRef;
+    @ViewChild('fileSaver') fileSaver: ElementRef;
 
     private speeds = [475, 350, 225, 125, 25, 2];
     runtimeSpeed = this.speeds[2];
@@ -53,6 +54,8 @@ export class DashboardComponent implements AfterViewInit {
         private matrixService: MatrixService,
         private hotkeysService: HotkeysService,
         private messageService: MessageService,
+        private printService: PrintService,
+        private codeService: CodeService,
         public dialog: MatDialog
     ) {
         this.hotkeysService.add(new Hotkey('f2', (_event: KeyboardEvent): boolean => {
@@ -95,12 +98,26 @@ export class DashboardComponent implements AfterViewInit {
             window.open(this.getHelpUrl());
             return false;
         }));
+        this.hotkeysService.add(new Hotkey('ctrl+n', (_event: KeyboardEvent): boolean => {
+            this.onNewFileClick();
+            return false;
+        }));
+        this.hotkeysService.add(new Hotkey('ctrl+o', (_event: KeyboardEvent): boolean => {
+            this.onOpenFileClick();
+            return false;
+        }));
+        this.hotkeysService.add(new Hotkey('ctrl+s', (_event: KeyboardEvent): boolean => {
+            this.onSaveClick();
+            return false;
+        }));
+        this.hotkeysService.add(new Hotkey('ctrl+p', (_event: KeyboardEvent): boolean => {
+            this.onPrintClick();
+            return false;
+        }));
     }
 
     ngAfterViewInit() {
-
         if (this.jerooEditor.hasCachedCode() || this.jerooMatrix.hasCachedMatrix()) {
-            // if (this.storage.get(fileCache) || this.storage.get('board')) {
             // setTimeout prevents a console error
             // see: https://github.com/angular/material2/issues/5268
             setTimeout(() => {
@@ -118,10 +135,40 @@ export class DashboardComponent implements AfterViewInit {
                         this.jerooEditor.resetCache();
                         this.jerooMatrix.resetCache();
                     }
-                    setInterval(() => this.jerooEditor.saveToCache(), cacheInterval);
                 });
             });
         }
+    }
+
+    onNewFileClick() {
+        this.jerooEditor.clearCode();
+    }
+
+    onOpenFileClick() {
+        (this.codeFileInput.nativeElement as HTMLInputElement).click();
+    }
+
+    codeFileSelected(file: File) {
+        if (this.editorEditingEnabled()) {
+            const reader = new FileReader();
+            reader.readAsText(file, 'UTF-8');
+            reader.onload = (readerEvent: any) => {
+                const content: string = readerEvent.target.result;
+                this.codeService.loadCodeFromStr(content);
+            };
+        }
+    }
+
+    onSaveClick() {
+        const jerooCodeString = this.codeService.genCodeStr();
+        const blob = new Blob([jerooCodeString], {
+            type: 'text/plain'
+        });
+        this.saveBlob(blob, 'code.jsc');
+    }
+
+    onPrintClick() {
+        this.printService.printDocument('code');
     }
 
     onUndoClick() {
@@ -202,7 +249,7 @@ export class DashboardComponent implements AfterViewInit {
     }
 
     mapFileSelected(file: File) {
-        if (this.jerooEditorState.reset) {
+        if (this.matrixEditingEnabled()) {
             const reader = new FileReader();
             reader.readAsText(file, 'UTF-8');
             reader.onload = (readerEvent: any) => {
@@ -214,42 +261,30 @@ export class DashboardComponent implements AfterViewInit {
     }
 
     saveMapFile() {
-        const mapSaver = (this.mapSaver.nativeElement as HTMLAnchorElement);
-        // kind of a hack to get the browser to save the map data to a file
-        const saveBlob = (function () {
-            return function (b: Blob, fileName: string) {
-                const url = window.URL.createObjectURL(b);
-                mapSaver.href = url;
-                mapSaver.download = fileName;
-                mapSaver.click();
-                window.URL.revokeObjectURL(url);
-            };
-        }());
-
         const jerooMapString = this.matrixService.toString();
         const blob = new Blob([jerooMapString], {
             type: 'text/plain'
         });
-        saveBlob(blob, 'map.jev');
+        this.saveBlob(blob, 'map.jev');
+    }
+
+    private saveBlob(blob: Blob, fileName: string) {
+        const fileSaver = (this.fileSaver.nativeElement as HTMLAnchorElement);
+        const saveBlob = (function () {
+            return function () {
+                const url = window.URL.createObjectURL(blob);
+                fileSaver.href = url;
+                fileSaver.download = fileName;
+                fileSaver.click();
+                window.URL.revokeObjectURL(url);
+            };
+        }());
+
+        saveBlob();
     }
 
     printMap() {
-        const dataUrl = this.jerooMatrix.getCanvas().toDataURL();
-        const windowContent = `
-<!DOCTYPE html>
-<html>
-<head><title>Jeroo Map</title></head>
-<body>
-<img src="${dataUrl}">
-</body>
-</html>
-`;
-        const printWindow = window.open('', '', 'width=340,height=260');
-        printWindow.document.open();
-        printWindow.document.write(windowContent);
-        printWindow.document.close();
-        printWindow.print();
-        printWindow.close();
+        this.printService.printDocument('map');
     }
 
     changeMapSize() {

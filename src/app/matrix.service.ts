@@ -1,25 +1,25 @@
 import { Injectable } from '@angular/core';
-import { TileType } from './matrixConstants';
 import { fromEvent } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Jeroo } from './jeroo';
-
+import { stringToTileType, TileType, tileTypeToString } from './jerooTileType';
 
 @Injectable({
     providedIn: 'root'
 })
 export class MatrixService {
-
     private rows = 26;
     private cols = 26;
     tsize = 28;
-    private tiles: TileType[] = [];
+    private dynamicMap: TileType[] = [];
     imageAtlas: HTMLImageElement;
     private jeroos: Jeroo[] = [];
-    private mapString = '';
+    // used to store the map before any runtime edits
+    private staticMap: TileType[] = [];
 
     constructor() {
         this.resetMap();
+        this.resetDynamicMap();
         this.resetJeroos();
     }
 
@@ -32,25 +32,30 @@ export class MatrixService {
         }
     }
 
-    /**
-     * Resets the tile map to all grass
-     */
     resetMap() {
-        this.tiles = [];
+        this.staticMap = [];
         for (let col = 0; col < this.cols; col++) {
-            this.tiles.push(TileType.Water);
+            this.staticMap.push(TileType.Water);
         }
         for (let row = 0; row < this.rows - 2; row++) {
-            this.tiles.push(TileType.Water);
+            this.staticMap.push(TileType.Water);
             for (let col = 0; col < this.cols - 2; col++) {
-                this.tiles.push(TileType.Grass);
+                this.staticMap.push(TileType.Grass);
             }
-            this.tiles.push(TileType.Water);
+            this.staticMap.push(TileType.Water);
         }
         for (let col = 0; col < this.cols; col++) {
-            this.tiles.push(TileType.Water);
+            this.staticMap.push(TileType.Water);
         }
-        this.mapString = this.toString();
+    }
+
+    resetDynamicMap() {
+        this.dynamicMap = [];
+        for (let col = 0; col < this.cols; col++) {
+            for (let row = 0; row < this.rows; row++) {
+                this.dynamicMap.push(null);
+            }
+        }
     }
 
     /**
@@ -81,22 +86,37 @@ export class MatrixService {
         this.cols = cols;
     }
 
-    /**
-     * @param col The column of the tile.
-     * @param row The row of the tile.
-     * @returns the tile at the specified column and row.
-     */
-    getTile(col: number, row: number) {
-        return this.tiles[row * this.cols + col];
+    getDynamicTile(col: number, row: number) {
+        return this.dynamicMap[row * this.cols + col];
+    }
+
+    setDynamicTile(col: number, row: number, tile: TileType) {
+        this.dynamicMap[row * this.cols + col] = tile;
+    }
+
+    getStaticTile(col: number, row: number) {
+        return this.staticMap[row * this.cols + col];
+    }
+
+    setStaticTile(col: number, row: number, tile: TileType) {
+        this.staticMap[row * this.cols + col] = tile;
     }
 
     /**
-     * @param col The column of the tile.
-     * @param row The row of the tile.
-     * @param tile The tile type of the tile.
+     * get a tile from both maps
+     * prioritizes the dynamic map, but falls
+     * back on the static map
      */
-    setTile(col: number, row: number, tile: TileType) {
-        this.tiles[row * this.cols + col] = tile;
+    getTile(col: number, row: number) {
+        const dynamicTile = this.getDynamicTile(col, row);
+        const staticTile = this.getStaticTile(col, row);
+        if (dynamicTile !== null) {
+            return dynamicTile;
+        } else if (staticTile !== null) {
+            return staticTile;
+        } else {
+            return null;
+        }
     }
 
     getJeroo(col: number, row: number) {
@@ -123,7 +143,7 @@ export class MatrixService {
      * @param context 2D rendering context.
      */
     render(context: CanvasRenderingContext2D) {
-        if (this.imageAtlas == null) {
+        if (!this.imageAtlas) {
             this.getTileAtlasObs().subscribe(imageAtlas => {
                 this.renderTiles(context, imageAtlas);
                 this.imageAtlas = imageAtlas;
@@ -137,13 +157,15 @@ export class MatrixService {
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
                 const jeroo = this.getJeroo(col, row);
-                if (jeroo !== null && jeroo !== undefined) {
+                if (jeroo) {
                     const jerooCol = jeroo.getX();
                     const jerooRow = jeroo.getY();
                     this.renderJeroo(context, imageAtlas, jeroo, jerooCol, jerooRow);
                 } else {
                     const tile = this.getTile(col, row);
-                    this.renderTile(context, imageAtlas, tile, col, row);
+                    if (tile !== null) {
+                        this.renderTile(context, imageAtlas, tile, col, row);
+                    }
                 }
             }
         }
@@ -164,23 +186,11 @@ export class MatrixService {
                 this.tsize,
                 this.tsize
             );
-        } else if (!jeroo.isInWater() && !jeroo.isInNet()) {
-            context.drawImage(
-                imageAtlas,
-                directionOffset * this.tsize,
-                jerooOffset * this.tsize,
-                this.tsize,
-                this.tsize,
-                col * this.tsize,
-                row * this.tsize,
-                this.tsize,
-                this.tsize
-            );
         } else if (jeroo.isInWater()) {
             context.drawImage(
                 imageAtlas,
                 0,
-                5 * this.tsize,
+                9 * this.tsize,
                 this.tsize,
                 this.tsize,
                 col * this.tsize,
@@ -192,7 +202,31 @@ export class MatrixService {
             context.drawImage(
                 imageAtlas,
                 1 * this.tsize,
-                5 * this.tsize,
+                9 * this.tsize,
+                this.tsize,
+                this.tsize,
+                col * this.tsize,
+                row * this.tsize,
+                this.tsize,
+                this.tsize
+            );
+        } else if (jeroo.isInJeroo()) {
+            context.drawImage(
+                imageAtlas,
+                2 * this.tsize,
+                9 * this.tsize,
+                this.tsize,
+                this.tsize,
+                col * this.tsize,
+                row * this.tsize,
+                this.tsize,
+                this.tsize
+            );
+        } else {
+            context.drawImage(
+                imageAtlas,
+                directionOffset * this.tsize,
+                jerooOffset * this.tsize,
                 this.tsize,
                 this.tsize,
                 col * this.tsize,
@@ -203,7 +237,7 @@ export class MatrixService {
         }
     }
 
-    private renderTile(context: CanvasRenderingContext2D, imageAtlas: HTMLImageElement, tileType: TileType, col: number, row: number) {
+    renderTile(context: CanvasRenderingContext2D, imageAtlas: HTMLImageElement, tileType: TileType, col: number, row: number) {
         const offset = this.tileTypeToNumber(tileType);
         context.drawImage(
             imageAtlas,
@@ -247,7 +281,7 @@ export class MatrixService {
         let mapContents = '';
         for (let row = 1; row < this.rows - 1; row++) {
             for (let col = 1; col < this.cols - 1; col++) {
-                const tile = this.tileTypeToString(this.getTile(col, row));
+                const tile = tileTypeToString(this.getStaticTile(col, row));
                 mapContents += tile;
             }
             mapContents += '\n';
@@ -255,24 +289,6 @@ export class MatrixService {
         return mapContents;
     }
 
-    /**
-     * Converts a TileType to a string
-     * @param tileType tileType to convert
-     * @returns string representation of a TileType
-     */
-    tileTypeToString(tileType: TileType) {
-        if (tileType === TileType.Grass) {
-            return '.';
-        } else if (tileType === TileType.Water) {
-            return 'W';
-        } else if (tileType === TileType.Flower) {
-            return 'F';
-        } else if (tileType === TileType.Net) {
-            return 'N';
-        } else {
-            throw new Error('Invalid TileType');
-        }
-    }
 
     /**
      * Set the current map to a map string.
@@ -290,23 +306,22 @@ export class MatrixService {
 
             try {
                 for (let col = 0; col < cols + 2; col++) {
-                    this.setTile(col, 0, TileType.Water);
+                    this.setStaticTile(col, 0, TileType.Water);
                 }
                 for (let row = 1; row < rows + 1; row++) {
                     if (lines[row - 1].length !== cols) {
                         throw new Error('Jagged maps are not allowed');
                     }
-                    this.setTile(0, row, TileType.Water);
+                    this.setStaticTile(0, row, TileType.Water);
                     for (let col = 1; col < cols + 1; col++) {
                         const char = lines[row - 1].charAt(col - 1);
-                        this.setTile(col, row, this.stringToTileType(char));
+                        this.setStaticTile(col, row, stringToTileType(char));
                     }
-                    this.setTile(cols + 1, row, TileType.Water);
+                    this.setStaticTile(cols + 1, row, TileType.Water);
                 }
                 for (let col = 0; col < cols + 2; col++) {
-                    this.setTile(col, rows + 1, TileType.Water);
+                    this.setStaticTile(col, rows + 1, TileType.Water);
                 }
-                this.mapString = s;
             } catch (e) {
                 // reset the rows and cols to their previous values
                 // re-throw the exception
@@ -318,32 +333,5 @@ export class MatrixService {
             this.setRows(0);
             this.setCols(0);
         }
-    }
-
-    /**
-     * Convert a character to a TileType.
-     * @param char character to convert.
-     * @returns Converted tile.
-     */
-    stringToTileType(char: string) {
-        if (char === '.') {
-            return TileType.Grass;
-        } else if (char === 'W') {
-            return TileType.Water;
-        } else if (char === 'F') {
-            return TileType.Flower;
-        } else if (char === 'N') {
-            return TileType.Net;
-        } else {
-            throw new Error('Invalid TileType in map');
-        }
-    }
-
-    getMapString() {
-        return this.mapString;
-    }
-
-    setMapString(val: string) {
-        this.mapString = val;
     }
 }

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { MatrixService } from './matrix.service';
 import { Jeroo } from './jeroo';
-import { TileType } from './matrixConstants';
-import { numberToRelativeDirection, numberToCardinalDirection } from './jerooConstants';
+import { TileType } from './jerooTileType';
+import { numberToRelativeDirection, numberToCardinalDirection } from './jerooDirection';
 import { Subject } from 'rxjs';
 
 export class RuntimeError extends Error {
-    constructor(message: string, public line_num: number) {
+    constructor(message: string, public pane_num: number, public line_num: number) {
         super(message);
     }
 }
@@ -21,7 +21,7 @@ export class BytecodeInterpreterService {
     jerooMap: any = [];
     private cmpStack: Array<boolean> = [];
     private pcStack: Array<number> = [];
-    private jerooChangeSource = new Subject<Jeroo>();
+    private jerooChangeSource = new Subject<void>();
     jerooChange$ = this.jerooChangeSource.asObservable();
 
     executeInstructionsUntilLNumChanges(instructions: Array<Instruction>, matrixService: MatrixService) {
@@ -91,22 +91,24 @@ export class BytecodeInterpreterService {
                 break;
             }
             case 'NEW': {
-                const tile = matService.getTile(command.b + 1, command.c + 1);
+                const col = command.c + 1;
+                const row = command.b + 1;
+                const tile = matService.getTile(col, row);
                 if (!matService.isInBounds(command.b + 1, command.c + 1) || tile === TileType.Water) {
-                    throw new RuntimeError('INSTANTIATION ERROR: Jeroo started in the water', command.f);
+                    throw new RuntimeError('INSTANTIATION ERROR: Jeroo started in the water', command.e, command.f);
                 }
                 if (tile === TileType.Net) {
-                    throw new RuntimeError('INSTANTIATION ERROR: Jeroo started in a net', command.f);
+                    throw new RuntimeError('INSTANTIATION ERROR: Jeroo started in a net', command.e, command.f);
                 }
-                if (matService.getJeroo(command.b + 1, command.c + 1) !== null) {
-                    throw new RuntimeError('INSTANTIATION ERROR: Jeroo started on another Jeroo', command.f);
+                if (matService.getJeroo(col, row) !== null) {
+                    throw new RuntimeError('INSTANTIATION ERROR: Jeroo started on another Jeroo', command.e, command.f);
                 }
                 if (this.jerooArray.length >= 4) {
-                    throw new RuntimeError('INSTANTIATION ERROR: Too many jeroos', command.f);
+                    throw new RuntimeError('INSTANTIATION ERROR: Too many jeroos', command.e, command.f);
                 }
                 try {
                     const direction = numberToCardinalDirection(command.e);
-                    const jeroo = new Jeroo(command.a, command.b + 1, command.c + 1, command.d, direction);
+                    const jeroo = new Jeroo(command.a, col, row, command.d, direction);
                     if (tile === TileType.Flower) {
                         jeroo.setInFlower(true);
                     }
@@ -114,7 +116,7 @@ export class BytecodeInterpreterService {
                     this.jerooArray[command.a] = jeroo;
                     matService.setJeroo(jeroo.getX(), jeroo.getY(), jeroo);
                 } catch (e) {
-                    throw new RuntimeError(e.message, command.f);
+                    throw new RuntimeError(e.message, 0, command.f);
                 }
                 break;
             }
@@ -122,7 +124,7 @@ export class BytecodeInterpreterService {
                 const direction = numberToRelativeDirection(command.a);
                 const jeroo = this.getCurrentJeroo();
                 jeroo.turn(direction);
-                this.jerooChangeSource.next(jeroo);
+                this.jerooChangeSource.next();
                 break;
             }
             case 'HOP': {
@@ -132,10 +134,9 @@ export class BytecodeInterpreterService {
                         currentJeroo.hop(matService);
                     }
                 } catch (e) {
-                    throw new RuntimeError(e.message, command.f);
+                    throw new RuntimeError(e.message, command.e, command.f);
                 } finally {
-                    const currentJeroo = this.getCurrentJeroo();
-                    this.jerooChangeSource.next(currentJeroo);
+                    this.jerooChangeSource.next();
                 }
                 break;
             }
@@ -154,6 +155,7 @@ export class BytecodeInterpreterService {
             }
             case 'PICK': {
                 this.getCurrentJeroo().pick(matService);
+                this.jerooChangeSource.next();
                 break;
             }
             case 'TRUE': {

@@ -2,10 +2,10 @@ import { AfterViewInit, Component, EventEmitter, Inject, Input, Output, ViewChil
 import { MatDialog } from '@angular/material';
 import { LOCAL_STORAGE, WebStorageService } from 'angular-webstorage-service';
 import { BytecodeInterpreterService, RuntimeError } from '../bytecode-interpreter.service';
-import { SelectedLanguage } from '../dashboard/SelectedLanguage';
 import { MatrixService } from '../matrix.service';
 import { MessageService } from '../message.service';
 import { TextEditorComponent } from '../text-editor/text-editor.component';
+import { CodeService, SelectedLanguage } from '../code.service';
 
 interface Language {
     value: SelectedLanguage;
@@ -37,11 +37,9 @@ export class EditorTabAreaComponent implements AfterViewInit {
         { viewValue: 'PYTHON', value: SelectedLanguage.Python }
     ];
 
-    selectedLanguage = SelectedLanguage.Java;
-    selectedEditor: TextEditorComponent = null;
+    selectedTabIndex = 0;
     private instructions: Array<Instruction> = null;
     private previousInstruction: Instruction = null;
-
 
     editorStateValue: EditorState;
     @Output()
@@ -58,19 +56,23 @@ export class EditorTabAreaComponent implements AfterViewInit {
     constructor(private messageService: MessageService,
                 private bytecodeService: BytecodeInterpreterService,
                 private matrixService: MatrixService,
+                public codeService: CodeService,
                 public dialog: MatDialog,
                 @Inject(LOCAL_STORAGE) private storage: WebStorageService) {
     }
 
     ngAfterViewInit() {
-        this.selectedEditor = this.mainMethodTextEditor;
+        setTimeout(() => {
+            this.getSelectedEditor().refresh();
+            this.getSelectedEditor().focus();
+        });
     }
 
     runStepwise(context: CanvasRenderingContext2D) {
         if (this.editorState.reset || this.instructions === null) {
             this.messageService.clear();
             this.messageService.add('Compiling...');
-            const jerooCode = this.createJerooCode();
+            const jerooCode = this.codeService.genCodeStr();
             const result = JerooCompiler.compile(jerooCode);
             if (result.successful) {
                 this.instructions = result.bytecode;
@@ -104,7 +106,7 @@ export class EditorTabAreaComponent implements AfterViewInit {
         if (this.editorState.reset || this.instructions === null) {
             this.messageService.clear();
             this.messageService.add('Compiling...');
-            const jerooCode = this.createJerooCode();
+            const jerooCode = this.codeService.genCodeStr();
             const result = JerooCompiler.compile(jerooCode);
             if (result.successful) {
                 this.instructions = result.bytecode;
@@ -155,8 +157,10 @@ export class EditorTabAreaComponent implements AfterViewInit {
             const instruction = this.bytecodeService.getCurrentInstruction(this.instructions);
             if (instruction.e === 0 || instruction.op === 'NEW') {
                 this.mainMethodTextEditor.highlightLine(instruction.f);
+                this.selectedTabIndex = 0;
             } else if (instruction.e === 1) {
                 this.extensionMethodsTextEditor.highlightLine(instruction.f);
+                this.selectedTabIndex = 1;
             }
             this.previousInstruction = instruction;
         } else {
@@ -178,49 +182,35 @@ export class EditorTabAreaComponent implements AfterViewInit {
         const runtimeError: RuntimeError = e;
         this.messageService.clear();
         const message = `Runtime error line ${runtimeError.line_num}: ${runtimeError.message}`;
+        this.unhighlightPreviousLine();
+        this.selectedTabIndex = runtimeError.pane_num;
+        this.getSelectedEditor().highlightErrorLine(runtimeError.line_num);
         this.messageService.add(message);
         this.stopState();
     }
 
-    createJerooCode() {
-        let jerooCode = '';
-        if (this.selectedLanguage === SelectedLanguage.Java) {
-            jerooCode += '@Java\n';
-        } else if (this.selectedLanguage === SelectedLanguage.Vb) {
-            jerooCode += '@VB\n';
-        } else if (this.selectedLanguage === SelectedLanguage.Python) {
-            jerooCode += '@PYTHON\n';
-        } else {
-            throw new Error('Unsupported Language');
-        }
-        jerooCode += this.extensionMethodsTextEditor.getText();
-        jerooCode += '\n@@\n';
-        jerooCode += this.mainMethodTextEditor.getText();
-        return jerooCode;
-    }
-
     undo() {
-        this.selectedEditor.undo();
+        this.getSelectedEditor().undo();
     }
 
     redo() {
-        this.selectedEditor.redo();
+        this.getSelectedEditor().redo();
     }
 
     toggleComment() {
-        this.selectedEditor.toggleComment();
+        this.getSelectedEditor().toggleComment();
     }
 
     indentSelection() {
-        this.selectedEditor.indentSelection();
+        this.getSelectedEditor().indentSelection();
     }
 
     unindentSelection() {
-        this.selectedEditor.unindentSelection();
+        this.getSelectedEditor().unindentSelection();
     }
 
     formatSelection() {
-        this.selectedEditor.formatSelection();
+        this.getSelectedEditor().formatSelection();
     }
 
     executingState() {
@@ -257,27 +247,20 @@ export class EditorTabAreaComponent implements AfterViewInit {
     }
 
     onEditorTabIndexChange(index: number) {
-        if (index === 0) {
-            this.selectedEditor = this.mainMethodTextEditor;
-        } else if (index === 1) {
-            this.selectedEditor = this.extensionMethodsTextEditor;
-        }
-    }
-
-    onSelectedLanguageChange() {
-        this.mainMethodTextEditor.setMode(this.selectedLanguage);
-        this.extensionMethodsTextEditor.setMode(this.selectedLanguage);
-        const code = this.createJerooCode();
-        this.storage.set(codeCache, code);
-        this.markClean();
+        this.selectedTabIndex = index;
+        const selectedEditor = this.getSelectedEditor();
+        setTimeout(() => {
+            selectedEditor.refresh();
+            selectedEditor.focus();
+        });
     }
 
     getHelpUrl() {
-        return `/help/${this.selectedLanguageToString(this.selectedLanguage)}`;
+        return `/help/${this.selectedLanguageToString(this.codeService.selectedLanguage)}`;
     }
 
     getTutorialUrl() {
-        return `/help/${this.selectedLanguageToString(this.selectedLanguage)}/tutorial`;
+        return `/help/${this.selectedLanguageToString(this.codeService.selectedLanguage)}/tutorial`;
     }
 
     private selectedLanguageToString(lang: SelectedLanguage) {
@@ -292,68 +275,50 @@ export class EditorTabAreaComponent implements AfterViewInit {
         }
     }
 
-    private loadCodeFromString(code: string) {
-        let mainMethodCodeBuffer = '';
-        let extensionMethodCodeBuffer = '';
-        let usingExtensionCodeBuffer = false;
-        let lookingForHeader = true;
-
-        code.split('\n').forEach(line => {
-            if (lookingForHeader && line.startsWith('@')) {
-                if (line === '@Java') {
-                    this.selectedLanguage = SelectedLanguage.Java;
-                } else if (line === '@VB') {
-                    this.selectedLanguage = SelectedLanguage.Vb;
-                } else if (line === '@PYTHON') {
-                    this.selectedLanguage = SelectedLanguage.Python;
-                }
-                this.mainMethodTextEditor.setMode(this.selectedLanguage);
-                this.extensionMethodsTextEditor.setMode(this.selectedLanguage);
-                lookingForHeader = false;
-                usingExtensionCodeBuffer = true;
-            } else if (usingExtensionCodeBuffer && line.startsWith('@@')) {
-                usingExtensionCodeBuffer = false;
-            } else {
-                if (usingExtensionCodeBuffer) {
-                    extensionMethodCodeBuffer += line + '\n';
-                } else {
-                    mainMethodCodeBuffer += line + '\n';
-                }
-            }
-        });
-
-        this.extensionMethodsTextEditor.setText(extensionMethodCodeBuffer.trim());
-        this.mainMethodTextEditor.setText(mainMethodCodeBuffer.trim());
-    }
-
-    private isClean() {
-        return this.mainMethodTextEditor.isClean() && this.extensionMethodsTextEditor.isClean();
-    }
-
-    private markClean() {
-        this.mainMethodTextEditor.markClean();
-        this.extensionMethodsTextEditor.markClean();
-    }
-
     hasCachedCode() {
-        return this.storage.get(codeCache) as boolean;
+        const cachedCode = this.storage.get(codeCache) as string;
+        const starterJavaCode = '@Java@@';
+        const starterVBCode = '@VB@@';
+        const starterPythonCode = '@PYTHON@@';
+        if (cachedCode) {
+            const cachedCodeNoWhitespace = cachedCode.replace(/\s+/, '').trim();
+            return !(cachedCodeNoWhitespace === starterJavaCode
+                     || cachedCodeNoWhitespace === starterVBCode
+                     || cachedCodeNoWhitespace === starterPythonCode);
+        } else {
+            return false;
+        }
     }
 
     loadFromCache() {
         const code = this.storage.get(codeCache);
-        this.loadCodeFromString(code);
-        this.markClean();
+        this.codeService.loadCodeFromStr(code);
     }
 
-    saveToCache() {
-        if (!this.isClean()) {
-            const code = this.createJerooCode();
-            this.storage.set(codeCache, code);
-            this.markClean();
-        }
+    saveToLocal() {
+        const code = this.codeService.genCodeStr();
+        this.storage.set(codeCache, code);
     }
 
     resetCache() {
         this.storage.remove(codeCache);
+    }
+
+    private getSelectedEditor() {
+        if (this.selectedTabIndex === 0) {
+            return this.mainMethodTextEditor;
+        } else if (this.selectedTabIndex === 1) {
+            return this.extensionMethodsTextEditor;
+        } else {
+            return null;
+        }
+    }
+
+    clearCode() {
+        if (!this.mainMethodTextEditor.isReadOnly() && !this.extensionMethodsTextEditor.isReadOnly())  {
+            this.mainMethodTextEditor.setText('');
+            this.extensionMethodsTextEditor.setText('');
+            this.resetCache();
+        }
     }
 }

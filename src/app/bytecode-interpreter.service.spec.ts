@@ -3,8 +3,8 @@ import { TestBed } from '@angular/core/testing';
 import { BytecodeInterpreterService, RuntimeError } from './bytecode-interpreter.service';
 import { MatrixService } from './matrix.service';
 import { Jeroo } from './jeroo';
-import { TileType } from './matrixConstants';
-import { CardinalDirection } from './jerooConstants';
+import { TileType } from './jerooTileType';
+import { CardinalDirection } from './jerooDirection';
 
 describe('BytecodeInterpreterService', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
@@ -59,7 +59,7 @@ describe('BytecodeInterpreterService', () => {
         const matService: MatrixService = TestBed.get(MatrixService);
         const newInstr = newInstruction('NEW', 0, 0, 0, -1, 0, 0);
         expect(() => service.executeBytecode(newInstr, matService))
-            .toThrow(new RuntimeError('INSTANTIATION ERROR: flowers < 0', 0));
+            .toThrow(new RuntimeError('INSTANTIATION ERROR: flowers < 0', 0, 0));
     });
 
     it('assert new with invalid direction throws error', () => {
@@ -67,16 +67,16 @@ describe('BytecodeInterpreterService', () => {
         const matService: MatrixService = TestBed.get(MatrixService);
         const newInstr = newInstruction('NEW', 0, 0, 0, 0, 8, 0);
         expect(() => service.executeBytecode(newInstr, matService))
-            .toThrow(new RuntimeError('Unknown cardinal direction', 0));
+            .toThrow(new RuntimeError('Unknown cardinal direction', 0, 0));
     });
 
     it('assert new on water throws error', () => {
         const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
         const matService: MatrixService = TestBed.get(MatrixService);
-        matService.setTile(3, 4, TileType.Water);
-        const newInstr = newInstruction('NEW', 0, 2, 3, 0, 0, 0);
+        matService.setStaticTile(3, 4, TileType.Water);
+        const newInstr = newInstruction('NEW', 0, 3, 2, 0, 0, 0);
         expect(() => service.executeBytecode(newInstr, matService))
-            .toThrow(new RuntimeError('INSTANTIATION ERROR: Jeroo started in the water', 0));
+            .toThrow(new RuntimeError('INSTANTIATION ERROR: Jeroo started in the water', 0, 0));
     });
 
     it('assert new outside of bounds throws error', () => {
@@ -84,16 +84,16 @@ describe('BytecodeInterpreterService', () => {
         const matService: MatrixService = TestBed.get(MatrixService);
         const newInstr = newInstruction('NEW', 0, 50, -8, 0, 0, 0);
         expect(() => service.executeBytecode(newInstr, matService))
-            .toThrow(new RuntimeError('INSTANTIATION ERROR: Jeroo started in the water', 0));
+            .toThrow(new RuntimeError('INSTANTIATION ERROR: Jeroo started in the water', 0, 0));
     });
 
     it('assert new on net throws error', () => {
         const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
         const matService: MatrixService = TestBed.get(MatrixService);
-        matService.setTile(6, 3, TileType.Net);
-        const newInstr = newInstruction('NEW', 0, 5, 2, 0, 0, 0);
+        matService.setStaticTile(6, 3, TileType.Net);
+        const newInstr = newInstruction('NEW', 0, 2, 5, 0, 0, 0);
         expect(() => service.executeBytecode(newInstr, matService))
-            .toThrow(new RuntimeError('INSTANTIATION ERROR: Jeroo started in a net', 0));
+            .toThrow(new RuntimeError('INSTANTIATION ERROR: Jeroo started in a net', 0, 0));
     });
 
     it('assert new jeroo on another jeroo throws error', () => {
@@ -104,7 +104,7 @@ describe('BytecodeInterpreterService', () => {
 
         service.executeBytecode(newInstr1, matService);
         expect(() => service.executeBytecode(newInstr2, matService))
-            .toThrow(new RuntimeError('INSTANTIATION ERROR: Jeroo started on another Jeroo', 0));
+            .toThrow(new RuntimeError('INSTANTIATION ERROR: Jeroo started on another Jeroo', 0, 0));
     });
 
     it('assert new jeroo fails on too many jeroos', () => {
@@ -121,7 +121,7 @@ describe('BytecodeInterpreterService', () => {
         service.executeBytecode(newInstr3, matService);
         service.executeBytecode(newInstr4, matService);
         expect(() => service.executeBytecode(newInstr5, matService))
-            .toThrow(new RuntimeError('INSTANTIATION ERROR: Too many jeroos', 0));
+            .toThrow(new RuntimeError('INSTANTIATION ERROR: Too many jeroos', 0, 0));
     });
 
     it('assert turn turns the jeroo', () => {
@@ -140,7 +140,7 @@ describe('BytecodeInterpreterService', () => {
     it('assert hop hops the jeroo', () => {
         const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
         const matService: MatrixService = TestBed.get(MatrixService);
-        const newInstr = newInstruction('NEW', 0, 1, 0, 0, 1, 0);
+        const newInstr = newInstruction('NEW', 0, 0, 1, 0, 1, 0);
         const csrInstr = newInstruction('CSR', 0, 0, 0, 0, 0, 0);
         const turnInstr = newInstruction('HOP', 3, 0, 0, 0, 0, 0);
 
@@ -156,7 +156,7 @@ describe('BytecodeInterpreterService', () => {
     it('assert hopping on a net throws error', () => {
         const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
         const matService: MatrixService = TestBed.get(MatrixService);
-        matService.setTile(2, 3, TileType.Net);
+        matService.setStaticTile(2, 3, TileType.Net);
         const newInstr = newInstruction('NEW', 0, 1, 1, 0, 2, 0);
         const csrInstr = newInstruction('CSR', 0, 0, 0, 0, 0, 0);
         const turnInstr = newInstruction('HOP', 1, 0, 0, 0, 0, 0);
@@ -164,13 +164,13 @@ describe('BytecodeInterpreterService', () => {
         service.executeBytecode(newInstr, matService);
         service.executeBytecode(csrInstr, matService);
         expect(() => service.executeBytecode(turnInstr, matService))
-            .toThrow(new RuntimeError('LOGIC ERROR: Jeroo is on a net', 0));
+            .toThrow(new RuntimeError('LOGIC ERROR: Jeroo is on a net', 0, 0));
     });
 
     it('assert hopping on water throws error', () => {
         const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
         const matService: MatrixService = TestBed.get(MatrixService);
-        matService.setTile(2, 3, TileType.Water);
+        matService.setStaticTile(2, 3, TileType.Water);
         const newInstr = newInstruction('NEW', 0, 1, 1, 0, 2, 0);
         const csrInstr = newInstruction('CSR', 0, 0, 0, 0, 0, 0);
         const turnInstr = newInstruction('HOP', 1, 0, 0, 0, 0, 0);
@@ -178,7 +178,7 @@ describe('BytecodeInterpreterService', () => {
         service.executeBytecode(newInstr, matService);
         service.executeBytecode(csrInstr, matService);
         expect(() => service.executeBytecode(turnInstr, matService))
-            .toThrow(new RuntimeError('LOGIC ERROR: Jeroo is on water', 0));
+            .toThrow(new RuntimeError('LOGIC ERROR: Jeroo is on water', 0, 0));
     });
 
     it('assert hopping on another jeroo throws error', () => {
@@ -193,7 +193,7 @@ describe('BytecodeInterpreterService', () => {
         service.executeBytecode(newInstr, matService);
         service.executeBytecode(csrInstr, matService);
         expect(() => service.executeBytecode(turnInstr, matService))
-            .toThrow(new RuntimeError('LOGIC ERROR: Jeroo has collided with another jeroo', 0));
+            .toThrow(new RuntimeError('LOGIC ERROR: Jeroo has collided with another jeroo', 0, 0));
     });
 
     it('assert toss decreases flower count', () => {
@@ -214,7 +214,7 @@ describe('BytecodeInterpreterService', () => {
     it('assert toss destroys a net', () => {
         const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
         const matService: MatrixService = TestBed.get(MatrixService);
-        matService.setTile(2, 3, TileType.Net);
+        matService.setStaticTile(2, 3, TileType.Net);
         const newInstr = newInstruction('NEW', 0, 1, 1, 1, 2, 0);
         const csrInstr = newInstruction('CSR', 0, 0, 0, 0, 0, 0);
         const tossInstr = newInstruction('TOSS', 0, 0, 0, 0, 0, 0);
@@ -229,7 +229,7 @@ describe('BytecodeInterpreterService', () => {
     it('assert tossing flower with no flowers does nothing', () => {
         const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
         const matService: MatrixService = TestBed.get(MatrixService);
-        matService.setTile(1, 2, TileType.Net);
+        matService.setStaticTile(1, 2, TileType.Net);
         const newInstr = newInstruction('NEW', 0, 1, 1, 0, 2, 0);
         const csrInstr = newInstruction('CSR', 0, 0, 0, 0, 0, 0);
         const tossInstr = newInstruction('TOSS', 0, 0, 0, 0, 0, 0);
@@ -279,7 +279,7 @@ describe('BytecodeInterpreterService', () => {
         const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
         const matService: MatrixService = TestBed.get(MatrixService);
         const newInstr = newInstruction('NEW', 0, 1, 1, 1, 2, 0);
-        const neighborJerooInstr = newInstruction('NEW', 1, 0, 1, 0, 0, 0);
+        const neighborJerooInstr = newInstruction('NEW', 1, 1, 0, 0, 0, 0);
         const csrInstr = newInstruction('CSR', 0, 0, 0, 0, 0, 0);
         const giveInstr = newInstruction('GIVE', 1, 0, 0, 0, 0, 0);
 
@@ -298,7 +298,7 @@ describe('BytecodeInterpreterService', () => {
         const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
         const matService: MatrixService = TestBed.get(MatrixService);
         const newInstr = newInstruction('NEW', 0, 1, 1, 1, 2, 0);
-        const neighborJerooInstr = newInstruction('NEW', 1, 2, 1, 0, 0, 0);
+        const neighborJerooInstr = newInstruction('NEW', 1, 1, 2, 0, 0, 0);
         const csrInstr = newInstruction('CSR', 0, 0, 0, 0, 0, 0);
         const giveInstr = newInstruction('GIVE', 1, 0, 0, 0, 0, 0);
 
@@ -317,7 +317,7 @@ describe('BytecodeInterpreterService', () => {
         const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
         const matService: MatrixService = TestBed.get(MatrixService);
         const newInstr = newInstruction('NEW', 0, 1, 1, 0, 2, 0);
-        const neighborJerooInstr = newInstruction('NEW', 1, 0, 1, 0, 0, 0);
+        const neighborJerooInstr = newInstruction('NEW', 1, 1, 0, 0, 0, 0);
         const csrInstr = newInstruction('CSR', 0, 0, 0, 0, 0, 0);
         const giveInstr = newInstruction('GIVE', 1, 0, 0, 0, 0, 0);
 
@@ -391,7 +391,7 @@ describe('BytecodeInterpreterService', () => {
     it('assert isNet pushes 1 to the stack if there is a net', () => {
         const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
         const matService: MatrixService = TestBed.get(MatrixService);
-        matService.setTile(1, 2, TileType.Net);
+        matService.setStaticTile(1, 2, TileType.Net);
         const newInstr = newInstruction('NEW', 0, 1, 1, 0, 2, 0);
         const csrInstr = newInstruction('CSR', 0, 0, 0, 0, 0, 0);
         const isNetInstr = newInstruction('ISNET', 1, 0, 0, 0, 0, 0);
@@ -424,7 +424,7 @@ describe('BytecodeInterpreterService', () => {
     it('assert isWater pushes true to the stack if there is water', () => {
         const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
         const matService: MatrixService = TestBed.get(MatrixService);
-        matService.setTile(1, 2, TileType.Water);
+        matService.setStaticTile(1, 2, TileType.Water);
         const newInstr = newInstruction('NEW', 0, 1, 1, 0, 2, 0);
         const csrInstr = newInstruction('CSR', 0, 0, 0, 0, 0, 0);
         const isWaterInstr = newInstruction('ISWATER', 1, 0, 0, 0, 0, 0);
@@ -458,7 +458,7 @@ describe('BytecodeInterpreterService', () => {
         const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
         const matService: MatrixService = TestBed.get(MatrixService);
         const newInstr = newInstruction('NEW', 0, 1, 1, 0, 2, 0);
-        const neighborJerooInstr = newInstruction('NEW', 1, 0, 1, 0, 0, 0);
+        const neighborJerooInstr = newInstruction('NEW', 1, 1, 0, 0, 0, 0);
         const csrInstr = newInstruction('CSR', 0, 0, 0, 0, 0, 0);
         const isJerooInstr = newInstruction('ISJEROO', 1, 0, 0, 0, 0, 0);
 
@@ -551,6 +551,53 @@ describe('BytecodeInterpreterService', () => {
 
         const currJeroo = service.getCurrentJeroo();
         expect(matService.getJeroo(2, 1)).toEqual(currJeroo);
+    });
+
+    it('assert pick picks a flower', () => {
+        const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
+        const matService: MatrixService = TestBed.get(MatrixService);
+        matService.setStaticTile(1, 1, TileType.Flower);
+        const instructions = [
+            newInstruction('NEW', 0, 0, 0, 0, 0, 0),
+            newInstruction('CSR', 0, 0, 0, 0, 0, 0),
+            newInstruction('PICK', 0, 0, 0, 0, 0, 0)
+        ];
+
+        service.executeInstructionsUntilLNumChanges(instructions, matService);
+
+        const currJeroo = service.getCurrentJeroo();
+        expect(currJeroo.getNumFlowers()).toBe(1);
+        expect(matService.getDynamicTile(1, 1)).toBe(TileType.Grass);
+    });
+
+    it('assert executeUntilLNumChanges executes until line number changes', () => {
+        const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
+        const matService: MatrixService = TestBed.get(MatrixService);
+        const instructions = [
+            newInstruction('NEW', 0, 0, 0, 0, 0, 0),
+            newInstruction('CSR', 0, 0, 0, 0, 0, 0),
+            newInstruction('HOP', 1, 0, 0, 0, 1, 0),
+            newInstruction('HOP', 1, 0, 0, 0, 0, 1)
+        ];
+
+        service.executeInstructionsUntilLNumChanges(instructions, matService);
+
+        expect(service.getPc()).toBe(2);
+    });
+
+    it('assert executeUntilLNumChanges executes until panel number changes', () => {
+        const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
+        const matService: MatrixService = TestBed.get(MatrixService);
+        const instructions = [
+            newInstruction('NEW', 0, 0, 0, 0, 0, 0),
+            newInstruction('CSR', 0, 0, 0, 0, 0, 0),
+            newInstruction('HOP', 1, 0, 0, 0, 0, 1),
+            newInstruction('HOP', 1, 0, 0, 0, 0, 1)
+        ];
+
+        service.executeInstructionsUntilLNumChanges(instructions, matService);
+
+        expect(service.getPc()).toBe(2);
     });
 });
 
