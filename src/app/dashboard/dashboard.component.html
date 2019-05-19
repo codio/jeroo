@@ -22,13 +22,13 @@
                     </div>
                     <div fxLayout="row" fxLayoutAlign="none center" fxLayoutGap="3px" fxHide.lt-md>
                         <img src="assets/JerooLogo.png" alt="Jeroo Logo" />
-                        <button mat-button [matMenuTriggerFor]="file">Source File</button>
-                        <button mat-button [matMenuTriggerFor]="edit">Source Edit</button>
-                        <button mat-button [matMenuTriggerFor]="run">Run</button>
-                        <button mat-button [matMenuTriggerFor]="speed">Run Speed</button>
-                        <button mat-button [matMenuTriggerFor]="islandfile">Island File</button>
-                        <button mat-button [matMenuTriggerFor]="islandEdit">Island Edit</button>
-                        <button mat-button [matMenuTriggerFor]="help">Help</button>
+                        <button name="sourceFileMenu" mat-button [matMenuTriggerFor]="file">Source File</button>
+                        <button name="sourceEditMenu" mat-button [matMenuTriggerFor]="edit">Source Edit</button>
+                        <button name="runMenu" mat-button [matMenuTriggerFor]="run">Run</button>
+                        <button name="runSpeedMenu" mat-button [matMenuTriggerFor]="speed">Run Speed</button>
+                        <button name="islandFileMenu" mat-button [matMenuTriggerFor]="islandfile">Island File</button>
+                        <button name="islandEditMenu" mat-button [matMenuTriggerFor]="islandEdit">Island Edit</button>
+                        <button name="helpMenu" mat-button [matMenuTriggerFor]="help">Help</button>
                     </div>
                 </mat-toolbar-row>
                 <mat-toolbar-row fxHide.lt-md>
@@ -42,32 +42,32 @@
                         <fa-icon icon="save"></fa-icon>
                     </button>
                     <mat-divider [vertical]="true"></mat-divider>
-                    <button mat-icon-button matTooltip="Undo" [disabled]="!editorEditingEnabled()" (click)="onUndoClick()">
+                    <button name="undoButton" mat-icon-button matTooltip="Undo" [disabled]="!editorEditingEnabled()" (click)="onUndoClick()">
                         <fa-icon icon="undo"></fa-icon>
                     </button>
-                    <button mat-icon-button matTooltip="Redo" [disabled]="!editorEditingEnabled()" (click)="onRedoClick()">
+                    <button name="redoButton" mat-icon-button matTooltip="Redo" [disabled]="!editorEditingEnabled()" (click)="onRedoClick()">
                         <fa-icon icon="redo"></fa-icon>
                     </button>
                     <mat-divider [vertical]="true"></mat-divider>
-                    <button mat-icon-button matTooltip="Reset the program and the island" [disabled]="resetBtnDisabled()" (click)="onResetClick()">
+                    <button name="resetButton" mat-icon-button matTooltip="Reset the program and the island" [disabled]="resetBtnDisabled()" (click)="onResetClick()">
                         <fa-icon icon="step-backward"></fa-icon>
                     </button>
-                    <button mat-icon-button matTooltip="Run the program step-by-step" [disabled]="runBtnDisabled()" (click)="onRunStepwiseClick()">
+                    <button name="runButton" mat-icon-button matTooltip="Run the program step-by-step" [disabled]="runBtnDisabled()" (click)="onRunStepwiseClick()">
                         <fa-icon icon="play"></fa-icon>
                     </button>
-                    <button mat-icon-button matTooltip="Run the program continuously" [disabled]="runBtnDisabled()" (click)="onRunContiniousClick()">
+                    <button name="runContiniousButton" mat-icon-button matTooltip="Run the program continuously" [disabled]="runBtnDisabled()" (click)="onRunContiniousClick()">
                         <fa-icon icon="step-forward"></fa-icon>
                     </button>
-                    <button mat-icon-button matTooltip="Pause a currently running program" [disabled]="pauseBtnDisabled()" (click)="onPauseClick()">
+                    <button name="pauseButton" mat-icon-button matTooltip="Pause a currently running program" [disabled]="pauseBtnDisabled()" (click)="onPauseClick()">
                         <fa-icon icon="pause"></fa-icon>
                     </button>
-                    <button mat-icon-button matTooltip="Stop a running program" [disabled]="stopBtnDisabled()" (click)="onStopClick()">
+                    <button name="stopButton" mat-icon-button matTooltip="Stop a running program" [disabled]="stopBtnDisabled()" (click)="onStopClick()">
                         <fa-icon icon="stop"></fa-icon>
                     </button>
                     <mat-divider [vertical]="true"></mat-divider>
-                    <mat-slider class="menu-button" [(ngModel)]="speedIndex" (change)="onSpeedIndexChange()" min="1" max="6" tickInterval="1" thumbLabel></mat-slider>
+                    <mat-slider name="speedSlider" class="menu-button" [(ngModel)]="speedIndex" (change)="onSpeedIndexChange()" min="1" max="6" tickInterval="1" thumbLabel></mat-slider>
                     <mat-divider [vertical]="true"></mat-divider>
-                    <button mat-icon-button matTooltip="Create new island layout" [disabled]="!matrixEditingEnabled()" (click)="clearMap()">
+                    <button name="newIslandButton" mat-icon-button matTooltip="Create new island layout" [disabled]="!matrixEditingEnabled()" (click)="clearMap()">
                         <fa-icon icon="eraser"></fa-icon>
                     </button>
                     <button mat-icon-button matTooltip="Open an island file" [disabled]="!matrixEditingEnabled()" (click)="openMapFile()">
@@ -100,46 +100,46 @@
                     </button>
                 </ng-template>
             </mat-menu>
-            <mat-menu #edit="matMenu">
+            <mat-menu name="editMenu" #edit="matMenu">
                 <ng-template matMenuContent>
-                    <button mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onUndoClick()">
+                    <button name="undoMenuItem" mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onUndoClick()">
                         <fa-icon icon="undo"></fa-icon><span class="menu-text">Undo Last Edit</span><span class="shortcut-tip">Ctrl+Z</span>
                     </button>
-                    <button mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onRedoClick()">
+                    <button name="redoMenuItem" mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onRedoClick()">
                         <fa-icon icon="redo"></fa-icon><span class="menu-text">Redo Last Undo</span><span class="shortcut-tip">Ctrl+Shift+Z</span>
                     </button>
                     <mat-divider></mat-divider>
-                    <button mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onToggleCommentLines()">Comment Lines<span class="shortcut-tip">Ctrl+/</span></button>
+                    <button name="commentMenuItem" mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onToggleCommentLines()">Comment Lines<span class="shortcut-tip">Ctrl+/</span></button>
                     <mat-divider></mat-divider>
-                    <button mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onFormatSelectionClick()">Format Selection<span class="shortcut-tip">Ctrl+Shift+F</span></button>
-                    <button mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onIndentSelectionClick()">Indent Selection<span class="shortcut-tip">Tab</span></button>
-                    <button mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onUnindentSelectionClick()">Un-Indent Selection<span class="shortcut-tip">Shift+Tab</span></button>
+                    <button name="formatMenuItem" mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onFormatSelectionClick()">Format Selection<span class="shortcut-tip">Ctrl+Shift+F</span></button>
+                    <button name="indentMenuItem" mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onIndentSelectionClick()">Indent Selection<span class="shortcut-tip">Tab</span></button>
+                    <button name="unindentMenuItem" mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onUnindentSelectionClick()">Un-Indent Selection<span class="shortcut-tip">Shift+Tab</span></button>
                     <mat-divider></mat-divider>
                     <button mat-menu-item>Set Prefrences</button>
                 </ng-template>
             </mat-menu>
             <mat-menu #run="matMenu">
                 <ng-template matMenuContent>
-                    <button mat-menu-item [disabled]="resetBtnDisabled()" (click)="onResetClick()">
+                    <button name="resetMenuItem" mat-menu-item [disabled]="resetBtnDisabled()" (click)="onResetClick()">
                         <fa-icon icon="step-backward"></fa-icon><span class="menu-text">Reset<span class="shortcut-tip">F2</span></span>
                     </button>
-                    <button mat-menu-item [disabled]="runBtnDisabled()" (click)="onRunStepwiseClick()">
+                    <button name="runMenuItem" mat-menu-item [disabled]="runBtnDisabled()" (click)="onRunStepwiseClick()">
                         <fa-icon icon="play"></fa-icon><span class="menu-text">Run Stepwise<span class="shortcut-tip">F3</span></span>
                     </button>
-                    <button mat-menu-item [disabled]="runBtnDisabled()" (click)="onRunContiniousClick()">
+                    <button name="runContiniousMenuItem" mat-menu-item [disabled]="runBtnDisabled()" (click)="onRunContiniousClick()">
                         <fa-icon icon="step-forward"></fa-icon><span class="menu-text">Run Continuously<span class="shortcut-tip">F4</span></span>
                     </button>
-                    <button mat-menu-item [disabled]="pauseBtnDisabled()" (click)="onPauseClick()">
+                    <button name="pauseMenuItem" mat-menu-item [disabled]="pauseBtnDisabled()" (click)="onPauseClick()">
                         <fa-icon icon="pause"></fa-icon><span class="menu-text">Pause<span class="shortcut-tip">F5</span></span>
                     </button>
-                    <button mat-menu-item [disabled]="stopBtnDisabled()" (click)="onStopClick()">
+                    <button name="stopMenuItem" mat-menu-item [disabled]="stopBtnDisabled()" (click)="onStopClick()">
                         <fa-icon icon="stop"></fa-icon><span class="menu-text">Stop Run<span class="shortcut-tip">F6</span></span>
                     </button>
                 </ng-template>
             </mat-menu>
             <mat-menu #speed="matMenu">
                 <ng-template matMenuContent>
-                    <mat-radio-group [(ngModel)]="speedIndex">
+                    <mat-radio-group name="speedIndex" [(ngModel)]="speedIndex">
                         <div mat-menu-item *ngFor="let speed of speedsRadio" (click)="onSpeedRadioClick(speed.value)">
                             <mat-radio-button class="speed-radio-btn" [value]="speed.value">{{ speed.name }}</mat-radio-button>
                         </div>
@@ -148,7 +148,7 @@
             </mat-menu>
             <mat-menu #islandfile="matMenu">
                 <ng-template matMenuContent>
-                    <button mat-menu-item [disabled]="!matrixEditingEnabled()" (click)="clearMap()">
+                    <button name="newMapMenuItem" mat-menu-item [disabled]="!matrixEditingEnabled()" (click)="clearMap()">
                         <fa-icon icon="eraser"></fa-icon><span class="menu-text">New<span class="shortcut-tip">Ctrl+Shift+N</span></span>
                     </button>
                     <button mat-menu-item [disabled]="!matrixEditingEnabled()" (click)="openMapFile()">
@@ -166,7 +166,7 @@
             </mat-menu>
             <mat-menu #islandEdit="matMenu">
                 <ng-template matMenuContent>
-                    <button mat-menu-item [disabled]="!matrixEditingEnabled()" (click)="changeMapSize()">
+                    <button name="changeMapSize" mat-menu-item [disabled]="!matrixEditingEnabled()" (click)="changeMapSize()">
                         <span class="menu-text">Change Map Size</span>
                     </button>
                 </ng-template>
@@ -179,10 +179,10 @@
                     <mat-divider></mat-divider>
                     <a mat-menu-item href="http://jeroo.org" target="_blank">Jeroo Home Page</a>
                     <mat-divider></mat-divider>
-                    <a mat-menu-item (click)="openAboutJeroo()">About Jeroo</a>
-                    <a mat-menu-item (click)="openAwards()">Awards Received</a>
-                    <a mat-menu-item (click)="openHistory()">Jeroo's History</a>
-                    <a mat-menu-item (click)="openCopyright()">Copyright Notice</a>
+                    <a name="aboutMenuItem" mat-menu-item (click)="openAboutJeroo()">About Jeroo</a>
+                    <a name="awardsMenuItem" mat-menu-item (click)="openAwards()">Awards Received</a>
+                    <a name="historyMenuItem" mat-menu-item (click)="openHistory()">Jeroo's History</a>
+                    <a name="copyrightMenuItem" mat-menu-item (click)="openCopyright()">Copyright Notice</a>
                 </ng-template>
             </mat-menu>
             <!--Text tabs Area-->
@@ -192,7 +192,7 @@
                 </div>
                 <!--Matrix Area-->
                 <div class="jeroo-matrix-container" fxFlex="40">
-                    <app-jeroo-matrix #jerooMatrix [editingEnabled]="matrixEditingEnabled()"></app-jeroo-matrix>
+                    <app-jeroo-matrix name="jerooMatrix" #jerooMatrix [editingEnabled]="matrixEditingEnabled()"></app-jeroo-matrix>
                 </div>
             </div>
         </main>

@@ -1,22 +1,22 @@
 <div fxLayout="column" fxLayoutAlign=" center">
     <div>
         <mat-button-toggle-group #group="matButtonToggleGroup">
-            <mat-button-toggle value="grass" matTooltip="Grass" (change)="selectedTileTypeChange($event.value)">
+            <mat-button-toggle name="matrixGrassButton" value="grass" matTooltip="Grass" (change)="selectedTileTypeChange($event.value)">
                 <img src="assets/images/grass.jpg" alt='G'>
             </mat-button-toggle>
-            <mat-button-toggle value="water" matTooltip="Water" (change)="selectedTileTypeChange($event.value)">
+            <mat-button-toggle name="matrixWaterButton" value="water" matTooltip="Water" (change)="selectedTileTypeChange($event.value)">
                 <img src="assets/images/water.jpg" alt='W'>
             </mat-button-toggle>
-            <mat-button-toggle value="flower" matTooltip="Flower" (change)="selectedTileTypeChange($event.value)">
+            <mat-button-toggle name="matrixFlowerButton" value="flower" matTooltip="Flower" (change)="selectedTileTypeChange($event.value)">
                 <img src="assets/images/flower.jpg" alt='F'>
             </mat-button-toggle>
-            <mat-button-toggle value="net" matTooltip="Net" (change)="selectedTileTypeChange($event.value)">
+            <mat-button-toggle name="matrixNetButton" value="net" matTooltip="Net" (change)="selectedTileTypeChange($event.value)">
                 <img src="assets/images/net.jpg" alt='N'>
             </mat-button-toggle>
         </mat-button-toggle-group>
     </div>
 </div>
-<canvas #jerooGameCanvas [className]="editingEnabled ? 'jeroo-matrix default-cursor' : 'jeroo-matrix not-allowed-cursor'" (mousedown)="canvasMouseDown($event)" (mouseup)="canvasGestureUp()" (mousemove)="canvasMouseMove($event)" (touchstart)="canvasTapDown($event)" (touchend)="canvasGestureUp()" (touchmove)="canvasTapMove($event)" (panstart)="null">
+<canvas name="jerooCanvas" #jerooGameCanvas [className]="editingEnabled ? 'jeroo-matrix default-cursor' : 'jeroo-matrix not-allowed-cursor'" (mousedown)="canvasMouseDown($event)" (mouseup)="canvasGestureUp()" (mousemove)="canvasMouseMove($event)" (touchstart)="canvasTapDown($event)" (touchend)="canvasGestureUp()" (touchmove)="canvasTapMove($event)" (panstart)="null">
 </canvas>
 <div fxLayout="column" fxLayoutAlign=" center" fxLayoutGap="10px">
     <div>
