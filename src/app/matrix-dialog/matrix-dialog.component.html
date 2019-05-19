@@ -2,13 +2,13 @@
 <mat-dialog-content [formGroup]="form">
     <div class="dialog-container">
         <mat-form-field class="dialog-form">
-            <input matInput placeholder="X Value: " formControlName="xValue">
+            <input name="xValueInput" matInput placeholder="X Value: " formControlName="xValue">
             <mat-error>
                 Value must be between 1 and 50
             </mat-error>
         </mat-form-field>
         <mat-form-field class="dialog-form">
-            <input matInput placeholder="Y Value: " formControlName="yValue">
+            <input name="yValueInput" matInput placeholder="Y Value: " formControlName="yValue">
             <mat-error>
                 Value must be between 1 and 50
             </mat-error>
@@ -17,6 +17,6 @@
     Warning: Changing the Matrix Size will Clear the Board!
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button mat-raised-button color="primary" (click)="close()">Close</button>
-    <button type="submit" mat-raised-button [disabled]="!form.valid" (click)="save()">Save</button>
+    <button name="closeMatrixDialogButton" mat-raised-button color="primary" (click)="close()">Close</button>
+    <button name="submitMatrixDialogButton" type="submit" mat-raised-button [disabled]="!form.valid" (click)="save()">Save</button>
 </mat-dialog-actions>

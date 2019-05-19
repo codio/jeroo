@@ -62,10 +62,10 @@ export class EditorTabAreaComponent implements AfterViewInit {
     }
 
     ngAfterViewInit() {
-        setTimeout(() => {
-            this.getSelectedEditor().refresh();
-            this.getSelectedEditor().focus();
-        });
+        // setTimeout(() => {
+        //     this.getSelectedEditor().refresh();
+        //     this.getSelectedEditor().focus();
+        // });
     }
 
     runStepwise(context: CanvasRenderingContext2D) {
