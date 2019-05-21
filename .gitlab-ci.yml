@@ -25,7 +25,7 @@ build-ocaml:
     - dune runtest
 
 build-angular:
-  image: node:8.15-alpine
+  image: node:8.16-alpine
   stage: build-angular
   artifacts:
     paths:
@@ -38,14 +38,23 @@ build-angular:
     - yarn build --base-href=/beta/ --prod
 
 test-angular:
-  image: timbru31/node-chrome:slim
+  image: ubuntu:18.04
   stage: test-angular
   script:
-    - apt-get update && apt-get install -y procps
-    - google-chrome-stable --version
+    - apt update -q
+    - apt upgrade -yq
+    - apt install firefox -yq
+    - firefox --version
+    - apt install gnupg2 curl -yq
+    - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+    - echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+    - apt update -q
+    - apt install yarn -yq
     - yarn --version
     - yarn install
-    - yarn test --no-watch --no-progress --browsers=ChromeHeadlessCI
+    - ./node_modules/protractor/bin/webdriver-manager update
+    - yarn test --no-watch --no-progress --browsers=FirefoxHeadlessCI
+    - yarn e2e --protractor-config=e2e/protractor-ci.conf.js
 
 generate-typescript-documentation:
   image: node:8.15-alpine
