@@ -52,10 +52,12 @@ describe('Jeroo Tests', () => {
             '}\\n';
         page.writeToCodeMirror(mainCode);
 
-        browser.actions().dragAndDrop(page.getSpeedSlider(), {x: 50, y: 0}).perform();
-        page.getRunContinousButton().click();
+        page.getSpeedMenu().click();
+        page.getSpeed6().click();
 
+        page.getRunContinousButton().click();
         browser.sleep(1000);
+
         expect(page.getFinalMessage().getText()).toBe('Runtime error line 8: LOGIC ERROR: Jeroo is on water');
         expect(page.getJerooName('0').getText()).toBe('j');
         expect(page.getJerooFlowers('0').getText()).toBe('6');
@@ -101,10 +103,12 @@ describe('Jeroo Tests', () => {
             '}';
         page.writeToCodeMirror(code);
 
-        browser.actions().dragAndDrop(page.getSpeedSlider(), {x: 50, y: 0}).perform();
-        page.getRunContinousButton().click();
+        page.getSpeedMenu().click();
+        page.getSpeed6().click();
 
-        browser.sleep(500);
+        page.getRunContinousButton().click();
+        browser.sleep(1000);
+
         expect(page.getFinalMessage().getText()).toBe('Program completed');
         expect(page.getJerooName('0').getText()).toBe('l');
         expect(page.getJerooFlowers('0').getText()).toBe('0');
@@ -132,10 +136,12 @@ describe('Jeroo Tests', () => {
             '}';
         page.writeToCodeMirror(code);
 
-        browser.actions().dragAndDrop(page.getSpeedSlider(), {x: 50, y: 0}).perform();
-        page.getRunContinousButton().click();
+        page.getSpeedMenu().click();
+        page.getSpeed6().click();
 
-        browser.sleep(500);
+        page.getRunContinousButton().click();
+        browser.sleep(1000);
+
         expect(page.getFinalMessage().getText()).toBe('Program completed');
         expect(page.getJerooName('0').getText()).toBe('j');
         expect(page.getJerooFlowers('0').getText()).toBe('3');
@@ -179,10 +185,13 @@ describe('Jeroo Tests', () => {
             'End sub';
 
         page.writeToCodeMirror(mainCode);
-        browser.actions().dragAndDrop(page.getSpeedSlider(), {x: 50, y: 0}).perform();
-        page.getRunContinousButton().click();
 
+        page.getSpeedMenu().click();
+        page.getSpeed6().click();
+
+        page.getRunContinousButton().click();
         browser.sleep(1000);
+
         expect(page.getFinalMessage().getText()).toBe('Runtime error line 7: LOGIC ERROR: Jeroo is on water');
         expect(page.getJerooName('0').getText()).toBe('j');
         expect(page.getJerooFlowers('0').getText()).toBe('6');
@@ -230,10 +239,12 @@ describe('Jeroo Tests', () => {
             'End sub';
         page.writeToCodeMirror(code);
 
-        browser.actions().dragAndDrop(page.getSpeedSlider(), {x: 50, y: 0}).perform();
-        page.getRunContinousButton().click();
+        page.getSpeedMenu().click();
+        page.getSpeed6().click();
 
-        browser.sleep(500);
+        page.getRunContinousButton().click();
+        browser.sleep(1000);
+
         expect(page.getFinalMessage().getText()).toBe('Program completed');
         expect(page.getJerooName('0').getText()).toBe('l');
         expect(page.getJerooFlowers('0').getText()).toBe('0');
@@ -264,10 +275,12 @@ describe('Jeroo Tests', () => {
             'End Sub';
         page.writeToCodeMirror(code);
 
-        browser.actions().dragAndDrop(page.getSpeedSlider(), {x: 50, y: 0}).perform();
-        page.getRunContinousButton().click();
+        page.getSpeedMenu().click();
+        page.getSpeed6().click();
 
-        browser.sleep(500);
+        page.getRunContinousButton().click();
+        browser.sleep(1000);
+
         expect(page.getFinalMessage().getText()).toBe('Program completed');
         expect(page.getJerooName('0').getText()).toBe('j');
         expect(page.getJerooFlowers('0').getText()).toBe('3');
@@ -311,10 +324,12 @@ describe('Jeroo Tests', () => {
             ' j.hop()';
         page.writeToCodeMirror(mainCode);
 
-        browser.actions().dragAndDrop(page.getSpeedSlider(), {x: 50, y: 0}).perform();
-        page.getRunContinousButton().click();
+        page.getSpeedMenu().click();
+        page.getSpeed6().click();
 
+        page.getRunContinousButton().click();
         browser.sleep(1000);
+
         expect(page.getFinalMessage().getText()).toBe('Runtime error line 8: LOGIC ERROR: Jeroo is on water');
         expect(page.getJerooName('0').getText()).toBe('j');
         expect(page.getJerooFlowers('0').getText()).toBe('6');
@@ -358,10 +373,12 @@ describe('Jeroo Tests', () => {
             'j.toss()';
         page.writeToCodeMirror(code);
 
-        browser.actions().dragAndDrop(page.getSpeedSlider(), {x: 50, y: 0}).perform();
-        page.getRunContinousButton().click();
+        page.getSpeedMenu().click();
+        page.getSpeed6().click();
 
-        browser.sleep(500);
+        page.getRunContinousButton().click();
+        browser.sleep(1000);
+
         expect(page.getFinalMessage().getText()).toBe('Program completed');
         expect(page.getJerooName('0').getText()).toBe('l');
         expect(page.getJerooFlowers('0').getText()).toBe('0');
@@ -388,10 +405,12 @@ describe('Jeroo Tests', () => {
             ' j.give()';
         page.writeToCodeMirror(code);
 
-        browser.actions().dragAndDrop(page.getSpeedSlider(), {x: 50, y: 0}).perform();
-        page.getRunContinousButton().click();
+        page.getSpeedMenu().click();
+        page.getSpeed6().click();
 
-        browser.sleep(500);
+        page.getRunContinousButton().click();
+        browser.sleep(1000);
+
         expect(page.getFinalMessage().getText()).toBe('Program completed');
         expect(page.getJerooName('0').getText()).toBe('j');
         expect(page.getJerooFlowers('0').getText()).toBe('3');
