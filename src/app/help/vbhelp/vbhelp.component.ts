@@ -1,14 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-vbhelp',
     templateUrl: './vbhelp.component.html'
 })
-export class VBHelpComponent implements OnInit {
+export class VBHelpComponent {
 
     constructor() { }
-
-    ngOnInit() {
-    }
-
 }

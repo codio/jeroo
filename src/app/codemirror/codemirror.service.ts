@@ -10,18 +10,18 @@ import { pythonMode } from './pythonMode';
 import * as CodeMirror from 'codemirror';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class CodemirrorService {
 
-    constructor() {
-        (CodeMirror as any).defineSimpleMode('jeroo-java', javaMode);
-        (CodeMirror as any).defineSimpleMode('jeroo-vb', VBMode);
-        (CodeMirror as any).defineSimpleMode('jeroo-python', pythonMode);
-        (CodeMirror as any).commands['toggleComment'] = (editor: CodeMirror.Editor) => (editor as any).toggleComment();
-        (CodeMirror as any).commands['undo'] = (editor: CodeMirror.Editor) => editor.getDoc().undo();
-        (CodeMirror as any).commands['redo'] = (editor: CodeMirror.Editor) => editor.getDoc().redo();
-        CodeMirror.defineExtension('autoFormatRange', function (from: CodeMirror.Position, to: CodeMirror.Position) {
+  constructor() {
+    (CodeMirror as any).defineSimpleMode('jeroo-java', javaMode);
+    (CodeMirror as any).defineSimpleMode('jeroo-vb', VBMode);
+    (CodeMirror as any).defineSimpleMode('jeroo-python', pythonMode);
+    (CodeMirror as any).commands['toggleComment'] = (editor: CodeMirror.Editor) => (editor as any).toggleComment();
+    (CodeMirror as any).commands['undo'] = (editor: CodeMirror.Editor) => editor.getDoc().undo();
+    (CodeMirror as any).commands['redo'] = (editor: CodeMirror.Editor) => editor.getDoc().redo();
+    CodeMirror.defineExtension('autoFormatRange', function (from: CodeMirror.Position, to: CodeMirror.Position) {
             const cm = this;
             const outer = cm.getMode(), text = cm.getRange(from, to).split('\n');
             const state = (CodeMirror as any).copyState(outer, cm.getTokenAt(from).state);

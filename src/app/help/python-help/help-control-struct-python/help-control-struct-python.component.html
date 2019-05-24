@@ -1,177 +1,177 @@
 <div class="help-content">
-    <h1>Control Structures (Python Style)</h1>
+  <h1>Control Structures (Python Style)</h1>
 
-    A control structure determines the order in which statements will be executed. In addition to sequential execution, the Jeroo language supports four control structures
-    <ul>
-        <li> if
-            <li> if-else
-                <li> cascaded if (a variation on if-else)
-                    <li> pretest while
-    </ul>
-    <br>
-    <br>
-    <h3>The<i> if </i>Structure</h3>
-    The <i>if</i> structure is used to define an optional block of code.
-    <br>
-    <br>
+  A control structure determines the order in which statements will be executed. In addition to sequential execution, the Jeroo language supports four control structures
+  <ul>
+    <li> if
+      <li> if-else
+        <li> cascaded if (a variation on if-else)
+          <li> pretest while
+  </ul>
+  <br>
+  <br>
+  <h3>The<i> if </i>Structure</h3>
+  The <i>if</i> structure is used to define an optional block of code.
+  <br>
+  <br>
 
-    <table border="1" cellpadding="5">
-        <tr>
-            <td>
-                <font size="3" color="#000000" face="courier">
-                    <b>if</b> <i>condition</i> <b>:</b><br>
-                    <br>
-                    <pre>    #-- true block (indented)  </pre>
-                    <br>
-                    <pre>#-- next statement (not indented)</pre>
-                </font>
-    </table>
+  <table border="1" cellpadding="5">
+    <tr>
+      <td>
+        <font size="3" color="#000000" face="courier">
+          <b>if</b> <i>condition</i> <b>:</b><br>
+          <br>
+          <pre>    #-- true block (indented)  </pre>
+          <br>
+          <pre>#-- next statement (not indented)</pre>
+        </font>
+  </table>
 
-    <ul>
-        <li> If the condition is true, execute the "true block " exactly once,<br>
-            and continue with the "next statement".
-            <li> If the condition is false, skip the "true block", <br>
-                and resume execution with the "next statement".
-                <li> Do not go back and recheck the condition.
-                    <li> <b>SYNTAX NOTES:</b> <br>
-                        <ul>
-                            <li> The first line of the "true block" must be indented further than the <b>if</b>.
-                                <li> The "true block" includes all lines that are indented
-                                    at least as far as the first line of the block.
-                                    <li> The "next statement" should be indented exactly as far as the <b>if</b>.
-                        </ul>
-    </ul>
-    <br>
-    <br>
+  <ul>
+    <li> If the condition is true, execute the "true block " exactly once,<br>
+      and continue with the "next statement".
+      <li> If the condition is false, skip the "true block", <br>
+        and resume execution with the "next statement".
+        <li> Do not go back and recheck the condition.
+          <li> <b>SYNTAX NOTES:</b> <br>
+            <ul>
+              <li> The first line of the "true block" must be indented further than the <b>if</b>.
+                <li> The "true block" includes all lines that are indented
+                  at least as far as the first line of the block.
+                  <li> The "next statement" should be indented exactly as far as the <b>if</b>.
+            </ul>
+  </ul>
+  <br>
+  <br>
 
-    <h3>The<i> if-else</i> Structure</h3>
-    The <i>if-else</i> structure is used to define alternate blocks of code. <br>
-    Only one of the blocks will be executed.
-    <br>
-    <br>
+  <h3>The<i> if-else</i> Structure</h3>
+  The <i>if-else</i> structure is used to define alternate blocks of code. <br>
+  Only one of the blocks will be executed.
+  <br>
+  <br>
 
-    <table border="1" cellpadding="5">
-        <tr>
-            <td>
-                <font size="3" color="#000000" face="courier">
-                    <b>if</b> <i>condition</i> <b>:</b><br>
-                    <br>
-                    <pre>    #-- true block (indented)  </pre>
-                    <br>
-                    <b>else:</b><br>
-                    <br>
-                    <pre>    #-- false block (indented)  </pre>
-                    <br>
-                    <pre>#-- next statement (not indented)</pre>
-                </font>
-    </table>
+  <table border="1" cellpadding="5">
+    <tr>
+      <td>
+        <font size="3" color="#000000" face="courier">
+          <b>if</b> <i>condition</i> <b>:</b><br>
+          <br>
+          <pre>    #-- true block (indented)  </pre>
+          <br>
+          <b>else:</b><br>
+          <br>
+          <pre>    #-- false block (indented)  </pre>
+          <br>
+          <pre>#-- next statement (not indented)</pre>
+        </font>
+  </table>
 
-    <ul>
-        <li> If the condition is true, execute the "true block " exactly once, <br>
-            and resume execution with the "next statement".
-            <li> If the condition is false, execute the "false block" exactly once,<br>
-                and resume execution with the "next statement".
-                <li> Do not go back and recheck the condition.
-                    <li> <b>SYNTAX NOTES:</b> <br>
-                        <ul>
-                            <li> The first line of the "true block" must be indented further than the <b>if</b>.
-                                <li> The "true block" includes all lines that are indented
-                                    at least as far as the first line of the block.
-                                    <li> The <b>else:</b> should be indented exactly as far as the <b>if</b>.
-                                        <li> The first line of the "false block" must be indented further
-                                            than the <b>else</b>.
-                                            <li> The "false block" includes all lines that are indented
-                                                at least as far as the first line of the block.
-                                                <li> The "next statement" should be indented exactly as far as the <b>if</b>.
-                        </ul>
-    </ul>
-    <br>
-    <br>
+  <ul>
+    <li> If the condition is true, execute the "true block " exactly once, <br>
+      and resume execution with the "next statement".
+      <li> If the condition is false, execute the "false block" exactly once,<br>
+        and resume execution with the "next statement".
+        <li> Do not go back and recheck the condition.
+          <li> <b>SYNTAX NOTES:</b> <br>
+            <ul>
+              <li> The first line of the "true block" must be indented further than the <b>if</b>.
+                <li> The "true block" includes all lines that are indented
+                  at least as far as the first line of the block.
+                  <li> The <b>else:</b> should be indented exactly as far as the <b>if</b>.
+                    <li> The first line of the "false block" must be indented further
+                      than the <b>else</b>.
+                      <li> The "false block" includes all lines that are indented
+                        at least as far as the first line of the block.
+                        <li> The "next statement" should be indented exactly as far as the <b>if</b>.
+            </ul>
+  </ul>
+  <br>
+  <br>
 
-    <h3>The <i>cascaded if</i> Structure</h3>
-    The <i>cascaded if</i> is a variation on the if-else structure. <br>
-    The <i>cascaded if</i> is used to define three or more blocks of code. <br>
-    Only one of the blocks will be executed.
-    <br>
-    <br>
+  <h3>The <i>cascaded if</i> Structure</h3>
+  The <i>cascaded if</i> is a variation on the if-else structure. <br>
+  The <i>cascaded if</i> is used to define three or more blocks of code. <br>
+  Only one of the blocks will be executed.
+  <br>
+  <br>
 
-    <table border="1" cellpadding="5">
-        <tr>
-            <td>
-                <font size="3" color="#000000" face="courier">
-                    <b>if</b> <i>condition-0</i> <b>:</b> <br>
-                    <br>
-                    <pre>    #-- block-0  (indented) </pre>
-                    <br>
-                    <b>elif</b> <i>condition-1</i> <b>:</b> <br>
-                    <br>
-                    <pre>    #-- block-1 (indented)  </pre>
-                    <br><br>
-                    #-- other elif blocks go here<br>
-                    <br>
-                    <br><br>
-                    <b>elif</b> <i>condition-n</i> <b>:</b> <br>
-                    &123;<br>
-                    <pre>    #-- block-n (indented)  </pre>
-                    <br>
-                    <b>else:</b><br>
-                    <br>
-                    <pre>    #-- default block (indented)  </pre>
-                    <br>
+  <table border="1" cellpadding="5">
+    <tr>
+      <td>
+        <font size="3" color="#000000" face="courier">
+          <b>if</b> <i>condition-0</i> <b>:</b> <br>
+          <br>
+          <pre>    #-- block-0  (indented) </pre>
+          <br>
+          <b>elif</b> <i>condition-1</i> <b>:</b> <br>
+          <br>
+          <pre>    #-- block-1 (indented)  </pre>
+          <br><br>
+          #-- other elif blocks go here<br>
+          <br>
+          <br><br>
+          <b>elif</b> <i>condition-n</i> <b>:</b> <br>
+          &123;<br>
+          <pre>    #-- block-n (indented)  </pre>
+          <br>
+          <b>else:</b><br>
+          <br>
+          <pre>    #-- default block (indented)  </pre>
+          <br>
 
 
-                    <pre>#-- next statement</pre>
-                </font>
-    </table>
+          <pre>#-- next statement</pre>
+        </font>
+  </table>
 
-    <ul>
-        <li> Jeroo checks the conditions in the order that they appear.
-            <li> When the first true condition is located, the corresponding block will be executed,
-                and all other blocks and conditions will be skipped.
-                <li> If all conditions are false, the default block will be executed.
-                    <li> After any block has been executed, execution resumes with the "next statement".
-                        <li> <b>SYNTAX NOTES:</b> <br>
-                            <ul>
-                                <li> The first line of each block must be indented further than the <b>if</b>,
-                                    <b>else</b>, or <b>elif</b> at the start of that block.
-                                    <li> Each block includes all lines that are indented
-                                        at least as far as the first line of the block.
-                                        <li> The <b>elif</b> and <b>else</b> lines should be indented exactly as far
-                                            as the <b>if</b>.
-                                            <li> The "next statement" should be indented exactly as far as the <b>if</b>.
-                            </ul>
-    </ul>
-    <br>
-    <br>
-    <h3>The<i> pretest while </i>Structure</h3>
-    The <i>pretest while</i> structure (also called a while loop) is used to define a block of code that will be executed repeatedly as long as a specified condition is true.
-    <br>
-    <br>
+  <ul>
+    <li> Jeroo checks the conditions in the order that they appear.
+      <li> When the first true condition is located, the corresponding block will be executed,
+        and all other blocks and conditions will be skipped.
+        <li> If all conditions are false, the default block will be executed.
+          <li> After any block has been executed, execution resumes with the "next statement".
+            <li> <b>SYNTAX NOTES:</b> <br>
+              <ul>
+                <li> The first line of each block must be indented further than the <b>if</b>,
+                  <b>else</b>, or <b>elif</b> at the start of that block.
+                  <li> Each block includes all lines that are indented
+                    at least as far as the first line of the block.
+                    <li> The <b>elif</b> and <b>else</b> lines should be indented exactly as far
+                      as the <b>if</b>.
+                      <li> The "next statement" should be indented exactly as far as the <b>if</b>.
+              </ul>
+  </ul>
+  <br>
+  <br>
+  <h3>The<i> pretest while </i>Structure</h3>
+  The <i>pretest while</i> structure (also called a while loop) is used to define a block of code that will be executed repeatedly as long as a specified condition is true.
+  <br>
+  <br>
 
-    <table border="1" cellpadding="5">
-        <tr>
-            <td>
-                <font size="3" color="#000000" face="courier">
-                    <b>while</b> <i>condition</i> <b>:</b><br>
-                    <br>
-                    <pre>    #-- loop body (indented)  </pre>
-                    <br>
-                    <pre>#-- next statement</pre>
-                </font>
-    </table>
+  <table border="1" cellpadding="5">
+    <tr>
+      <td>
+        <font size="3" color="#000000" face="courier">
+          <b>while</b> <i>condition</i> <b>:</b><br>
+          <br>
+          <pre>    #-- loop body (indented)  </pre>
+          <br>
+          <pre>#-- next statement</pre>
+        </font>
+  </table>
 
-    <ul>
-        <li> When the condition is true, execute the "loop body " once,<br>
-            then go back and reevaluate the condition.
-            <li> When the condition is false, skip the "loop body", <br>
-                and resume execution with the "next statement".
-                <li> <b>SYNTAX NOTES:</b> <br>
-                    <ul>
-                        <li> The first line of the loop body must be indented further than the <b>while</b>.
-                            <li> The loop body includes all lines that are indented
-                                at least as far as the first line of the body.
-                                <li> The "next statement" should be indented exactly as far as the <b>while</b>.
-                    </ul>
+  <ul>
+    <li> When the condition is true, execute the "loop body " once,<br>
+      then go back and reevaluate the condition.
+      <li> When the condition is false, skip the "loop body", <br>
+        and resume execution with the "next statement".
+        <li> <b>SYNTAX NOTES:</b> <br>
+          <ul>
+            <li> The first line of the loop body must be indented further than the <b>while</b>.
+              <li> The loop body includes all lines that are indented
+                at least as far as the first line of the body.
+                <li> The "next statement" should be indented exactly as far as the <b>while</b>.
+          </ul>
 
-    </ul>
+  </ul>
 </div>

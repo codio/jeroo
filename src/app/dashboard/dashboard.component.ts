@@ -12,332 +12,342 @@ import { MatrixService } from '../matrix.service';
 import { MessageService } from '../message.service';
 import { PrintService } from '../print.service';
 import { CodeService } from '../code.service';
+import { EditorPreferencesComponent } from './editor-preferences/editor-preferences.component';
 
 interface Speed {
-    name: string;
-    value: number;
+  name: string;
+  value: number;
 }
 
 @Component({
-    selector: 'app-dashboard',
-    templateUrl: './dashboard.component.html',
-    styleUrls: ['./dashboard.component.scss']
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements AfterViewInit {
-    @ViewChild('mapFileInput') mapFileInput: ElementRef;
-    @ViewChild('codeFileInput') codeFileInput: ElementRef;
-    @ViewChild('jerooMatrix') jerooMatrix: JerooMatrixComponent;
-    @ViewChild('jerooEditor') jerooEditor: EditorTabAreaComponent;
-    @ViewChild('fileSaver') fileSaver: ElementRef;
+  @ViewChild('mapFileInput') mapFileInput: ElementRef;
+  @ViewChild('codeFileInput') codeFileInput: ElementRef;
+  @ViewChild('jerooMatrix') jerooMatrix: JerooMatrixComponent;
+  @ViewChild('jerooEditor') jerooEditor: EditorTabAreaComponent;
+  @ViewChild('fileSaver') fileSaver: ElementRef;
 
-    private speeds = [475, 350, 225, 125, 25, 2];
-    runtimeSpeed = this.speeds[2];
-    speedIndex = 3;
-    speedsRadio: Speed[] = [
-        { name: '1 - Slow', value: 1 },
-        { name: '2', value: 2 },
-        { name: '3 - Medium', value: 3 },
-        { name: '4', value: 4 },
-        { name: '5 - Fast', value: 5 },
-        { name: '6 - Max', value: 6 }
-    ];
-    selectedSpeedRadio = this.speedsRadio[2].value;
+  private speeds = [475, 350, 225, 125, 25, 2];
+  runtimeSpeed = this.speeds[2];
+  speedIndex = 3;
+  speedsRadio: Speed[] = [
+    { name: '1 - Slow', value: 1 },
+    { name: '2', value: 2 },
+    { name: '3 - Medium', value: 3 },
+    { name: '4', value: 4 },
+    { name: '5 - Fast', value: 5 },
+    { name: '6 - Max', value: 6 }
+  ];
+  selectedSpeedRadio = this.speedsRadio[2].value;
 
-    jerooEditorState: EditorState = {
-        reset: true,
-        executing: false,
-        paused: false,
-        stopped: false
-    };
+  jerooEditorState: EditorState = {
+    reset: true,
+    executing: false,
+    paused: false,
+    stopped: false
+  };
 
-    constructor(
-        private matrixService: MatrixService,
-        private hotkeysService: HotkeysService,
-        private messageService: MessageService,
-        private printService: PrintService,
-        private codeService: CodeService,
-        public dialog: MatDialog
-    ) {
-        this.hotkeysService.add(new Hotkey('f2', (_event: KeyboardEvent): boolean => {
-            this.onResetClick();
-            return false;
-        }));
-        this.hotkeysService.add(new Hotkey('f3', (_event: KeyboardEvent): boolean => {
-            this.onRunStepwiseClick();
-            return false;
-        }));
-        this.hotkeysService.add(new Hotkey('f4', (_event: KeyboardEvent): boolean => {
-            this.onRunContiniousClick();
-            return false;
-        }));
-        this.hotkeysService.add(new Hotkey('f5', (_event: KeyboardEvent): boolean => {
-            this.onPauseClick();
-            return false;
-        }));
-        this.hotkeysService.add(new Hotkey('f6', (_event: KeyboardEvent): boolean => {
-            this.onStopClick();
-            return false;
-        }));
-        this.hotkeysService.add(new Hotkey('ctrl+shift+n', (_event: KeyboardEvent): boolean => {
-            this.clearMap();
-            return false;
-        }));
-        this.hotkeysService.add(new Hotkey('ctrl+shift+o', (_event: KeyboardEvent): boolean => {
-            this.openMapFile();
-            return false;
-        }));
-        this.hotkeysService.add(new Hotkey('ctrl+shift+s', (_event: KeyboardEvent): boolean => {
-            this.saveMapFile();
-            return false;
-        }));
-        this.hotkeysService.add(new Hotkey('ctrl+shift+p', (_event: KeyboardEvent): boolean => {
-            this.printMap();
-            return false;
-        }));
-        this.hotkeysService.add(new Hotkey('f8', (_event: KeyboardEvent): boolean => {
-            window.open(this.getHelpUrl());
-            return false;
-        }));
-        this.hotkeysService.add(new Hotkey('ctrl+n', (_event: KeyboardEvent): boolean => {
-            this.onNewFileClick();
-            return false;
-        }));
-        this.hotkeysService.add(new Hotkey('ctrl+o', (_event: KeyboardEvent): boolean => {
-            this.onOpenFileClick();
-            return false;
-        }));
-        this.hotkeysService.add(new Hotkey('ctrl+s', (_event: KeyboardEvent): boolean => {
-            this.onSaveClick();
-            return false;
-        }));
-        this.hotkeysService.add(new Hotkey('ctrl+p', (_event: KeyboardEvent): boolean => {
-            this.onPrintClick();
-            return false;
-        }));
-    }
+  constructor(
+    private matrixService: MatrixService,
+    private hotkeysService: HotkeysService,
+    private messageService: MessageService,
+    private printService: PrintService,
+    private codeService: CodeService,
+    public dialog: MatDialog
+  ) {
+    this.hotkeysService.add(new Hotkey('f2', (_event: KeyboardEvent): boolean => {
+      this.onResetClick();
+      return false;
+    }));
+    this.hotkeysService.add(new Hotkey('f3', (_event: KeyboardEvent): boolean => {
+      this.onRunStepwiseClick();
+      return false;
+    }));
+    this.hotkeysService.add(new Hotkey('f4', (_event: KeyboardEvent): boolean => {
+      this.onRunContiniousClick();
+      return false;
+    }));
+    this.hotkeysService.add(new Hotkey('f5', (_event: KeyboardEvent): boolean => {
+      this.onPauseClick();
+      return false;
+    }));
+    this.hotkeysService.add(new Hotkey('f6', (_event: KeyboardEvent): boolean => {
+      this.onStopClick();
+      return false;
+    }));
+    this.hotkeysService.add(new Hotkey('ctrl+shift+n', (_event: KeyboardEvent): boolean => {
+      this.clearMap();
+      return false;
+    }));
+    this.hotkeysService.add(new Hotkey('ctrl+shift+o', (_event: KeyboardEvent): boolean => {
+      this.openMapFile();
+      return false;
+    }));
+    this.hotkeysService.add(new Hotkey('ctrl+shift+s', (_event: KeyboardEvent): boolean => {
+      this.saveMapFile();
+      return false;
+    }));
+    this.hotkeysService.add(new Hotkey('ctrl+shift+p', (_event: KeyboardEvent): boolean => {
+      this.printMap();
+      return false;
+    }));
+    this.hotkeysService.add(new Hotkey('f8', (_event: KeyboardEvent): boolean => {
+      window.open(this.getHelpUrl());
+      return false;
+    }));
+    this.hotkeysService.add(new Hotkey('ctrl+n', (_event: KeyboardEvent): boolean => {
+      this.onNewFileClick();
+      return false;
+    }));
+    this.hotkeysService.add(new Hotkey('ctrl+o', (_event: KeyboardEvent): boolean => {
+      this.onOpenFileClick();
+      return false;
+    }));
+    this.hotkeysService.add(new Hotkey('ctrl+s', (_event: KeyboardEvent): boolean => {
+      this.onSaveClick();
+      return false;
+    }));
+    this.hotkeysService.add(new Hotkey('ctrl+p', (_event: KeyboardEvent): boolean => {
+      this.onPrintClick();
+      return false;
+    }));
+  }
 
-    ngAfterViewInit() {
-        if (this.jerooEditor.hasCachedCode() || this.jerooMatrix.hasCachedMatrix()) {
-            // setTimeout prevents a console error
-            // see: https://github.com/angular/material2/issues/5268
-            setTimeout(() => {
-                const dialogRef = this.dialog.open(CacheDialogComponent);
-                dialogRef.afterClosed().subscribe(loadCache => {
-                    if (loadCache) {
-                        if (this.jerooEditor.hasCachedCode()) {
-                            this.jerooEditor.loadFromCache();
-                        }
+  ngAfterViewInit() {
+    if (this.jerooEditor.hasCachedCode() || this.jerooEditor.hasCachedConfig() || this.jerooMatrix.hasCachedMatrix()) {
+      // setTimeout prevents a console error
+      // see: https://github.com/angular/material2/issues/5268
+      setTimeout(() => {
+        const dialogRef = this.dialog.open(CacheDialogComponent);
+        dialogRef.afterClosed().subscribe(loadCache => {
+          if (loadCache) {
+            if (this.jerooEditor.hasCachedCode()) {
+              this.jerooEditor.loadCodeFromCache();
+            }
 
-                        if (this.jerooMatrix.hasCachedMatrix()) {
-                            this.jerooMatrix.loadMatrixFromCache();
-                        }
-                    } else {
-                        this.jerooEditor.resetCache();
-                        this.jerooMatrix.resetCache();
-                    }
-                });
-            });
-        }
-    }
+            if (this.jerooEditor.hasCachedConfig()) {
+              this.jerooEditor.loadPreferencesFromCache();
+            }
 
-    onNewFileClick() {
-        this.jerooEditor.clearCode();
-    }
-
-    onOpenFileClick() {
-        (this.codeFileInput.nativeElement as HTMLInputElement).click();
-    }
-
-    codeFileSelected(file: File) {
-        if (this.editorEditingEnabled()) {
-            const reader = new FileReader();
-            reader.readAsText(file, 'UTF-8');
-            reader.onload = (readerEvent: any) => {
-                const content: string = readerEvent.target.result;
-                this.codeService.loadCodeFromStr(content);
-            };
-        }
-    }
-
-    onSaveClick() {
-        const jerooCodeString = this.codeService.genCodeStr();
-        const blob = new Blob([jerooCodeString], {
-            type: 'text/plain'
+            if (this.jerooMatrix.hasCachedMatrix()) {
+              this.jerooMatrix.loadMatrixFromCache();
+            }
+          } else {
+            this.jerooEditor.resetCache();
+            this.jerooEditor.resetPreferences();
+            this.jerooMatrix.resetCache();
+          }
         });
-        this.saveBlob(blob, 'code.jsc');
+      });
     }
+  }
 
-    onPrintClick() {
-        this.printService.printDocument('code');
+  onNewFileClick() {
+    this.jerooEditor.clearCode();
+  }
+
+  onOpenFileClick() {
+    (this.codeFileInput.nativeElement as HTMLInputElement).click();
+  }
+
+  codeFileSelected(file: File) {
+    if (this.editorEditingEnabled()) {
+      const reader = new FileReader();
+      reader.readAsText(file, 'UTF-8');
+      reader.onload = (readerEvent: any) => {
+        const content: string = readerEvent.target.result;
+        this.codeService.loadCodeFromStr(content);
+      };
     }
+  }
 
-    onUndoClick() {
-        this.jerooEditor.undo();
+  onSaveClick() {
+    const jerooCodeString = this.codeService.genCodeStr();
+    const blob = new Blob([jerooCodeString], {
+      type: 'text/plain'
+    });
+    this.saveBlob(blob, 'code.jsc');
+  }
+
+  onPrintClick() {
+    this.printService.printDocument('code');
+  }
+
+  onUndoClick() {
+    this.jerooEditor.undo();
+  }
+
+  onRedoClick() {
+    this.jerooEditor.redo();
+  }
+
+  onToggleCommentLines() {
+    this.jerooEditor.toggleComment();
+  }
+
+  onIndentSelectionClick() {
+    this.jerooEditor.indentSelection();
+  }
+
+  onUnindentSelectionClick() {
+    this.jerooEditor.unindentSelection();
+  }
+
+  onFormatSelectionClick() {
+    this.jerooEditor.formatSelection();
+  }
+
+  onEditorPreferenceClick() {
+    this.dialog.open(EditorPreferencesComponent);
+  }
+
+  onRunStepwiseClick() {
+    if (!this.runBtnDisabled()) {
+      this.jerooEditor.runStepwise(this.jerooMatrix.getContext());
     }
+  }
 
-    onRedoClick() {
-        this.jerooEditor.redo();
+  onRunContiniousClick() {
+    if (!this.runBtnDisabled()) {
+      this.jerooEditor.runContinious(this.jerooMatrix.getContext());
     }
+  }
 
-    onToggleCommentLines() {
-        this.jerooEditor.toggleComment();
+  onResetClick() {
+    if (!this.resetBtnDisabled()) {
+      this.jerooEditor.resetState();
+      this.jerooMatrix.resetState();
     }
+  }
 
-    onIndentSelectionClick() {
-        this.jerooEditor.indentSelection();
+  onPauseClick() {
+    if (!this.pauseBtnDisabled()) {
+      this.jerooEditor.pauseState();
+      this.messageService.add('Program paused by user');
     }
+  }
 
-    onUnindentSelectionClick() {
-        this.jerooEditor.unindentSelection();
+  onStopClick() {
+    if (!this.stopBtnDisabled()) {
+      this.jerooEditor.stopState();
+      this.messageService.clear();
+      this.messageService.add('Program stopped by user');
     }
+  }
 
-    onFormatSelectionClick() {
-        this.jerooEditor.formatSelection();
+  onSpeedRadioClick(speedValue: number) {
+    this.speedIndex = speedValue;
+    this.onSpeedIndexChange();
+  }
+
+  onSpeedIndexChange() {
+    this.runtimeSpeed = this.speeds[this.speedIndex - 1];
+  }
+
+  clearMap() {
+    if (this.jerooEditorState.reset) {
+      this.jerooMatrix.clearMap();
     }
+  }
 
-    onRunStepwiseClick() {
-        if (!this.runBtnDisabled()) {
-            this.jerooEditor.runStepwise(this.jerooMatrix.getContext());
-        }
+  openMapFile() {
+    (this.mapFileInput.nativeElement as HTMLInputElement).click();
+  }
+
+  mapFileSelected(file: File) {
+    if (this.matrixEditingEnabled()) {
+      const reader = new FileReader();
+      reader.readAsText(file, 'UTF-8');
+      reader.onload = (readerEvent: any) => {
+        const content: string = readerEvent.target.result;
+        this.matrixService.genMapFromString(content);
+        this.jerooMatrix.redraw();
+      };
     }
+  }
 
-    onRunContiniousClick() {
-        if (!this.runBtnDisabled()) {
-            this.jerooEditor.runContinious(this.jerooMatrix.getContext());
-        }
-    }
+  saveMapFile() {
+    const jerooMapString = this.matrixService.toString();
+    const blob = new Blob([jerooMapString], {
+      type: 'text/plain'
+    });
+    this.saveBlob(blob, 'map.jev');
+  }
 
-    onResetClick() {
-        if (!this.resetBtnDisabled()) {
-            this.jerooEditor.resetState();
-            this.jerooMatrix.resetState();
-        }
-    }
+  private saveBlob(blob: Blob, fileName: string) {
+    const fileSaver = (this.fileSaver.nativeElement as HTMLAnchorElement);
+    const saveBlob = (function () {
+      return function () {
+        const url = window.URL.createObjectURL(blob);
+        fileSaver.href = url;
+        fileSaver.download = fileName;
+        fileSaver.click();
+        window.URL.revokeObjectURL(url);
+      };
+    }());
 
-    onPauseClick() {
-        if (!this.pauseBtnDisabled()) {
-            this.jerooEditor.pauseState();
-            this.messageService.add('Program paused by user');
-        }
-    }
+    saveBlob();
+  }
 
-    onStopClick() {
-        if (!this.stopBtnDisabled()) {
-            this.jerooEditor.stopState();
-            this.messageService.clear();
-            this.messageService.add('Program stopped by user');
-        }
-    }
+  printMap() {
+    this.printService.printDocument('map');
+  }
 
-    onSpeedRadioClick(speedValue: number) {
-        this.speedIndex = speedValue;
-        this.onSpeedIndexChange();
-    }
+  changeMapSize() {
+    this.jerooMatrix.openDialog();
+  }
 
-    onSpeedIndexChange() {
-        this.runtimeSpeed = this.speeds[this.speedIndex - 1];
-    }
+  getHelpUrl() {
+    return this.jerooEditor.getHelpUrl();
+  }
 
-    clearMap() {
-        if (this.jerooEditorState.reset) {
-            this.jerooMatrix.clearMap();
-        }
-    }
+  getTutorialUrl() {
+    return this.jerooEditor.getTutorialUrl();
+  }
 
-    openMapFile() {
-        (this.mapFileInput.nativeElement as HTMLInputElement).click();
-    }
+  resetBtnDisabled() {
+    return !this.jerooEditorState.reset
+      && !this.jerooEditorState.paused
+      && !this.jerooEditorState.stopped;
+  }
 
-    mapFileSelected(file: File) {
-        if (this.matrixEditingEnabled()) {
-            const reader = new FileReader();
-            reader.readAsText(file, 'UTF-8');
-            reader.onload = (readerEvent: any) => {
-                const content: string = readerEvent.target.result;
-                this.matrixService.genMapFromString(content);
-                this.jerooMatrix.redraw();
-            };
-        }
-    }
+  runBtnDisabled() {
+    return !this.jerooEditorState.paused && !this.jerooEditorState.reset;
+  }
 
-    saveMapFile() {
-        const jerooMapString = this.matrixService.toString();
-        const blob = new Blob([jerooMapString], {
-            type: 'text/plain'
-        });
-        this.saveBlob(blob, 'map.jev');
-    }
+  pauseBtnDisabled() {
+    return !this.jerooEditorState.executing;
+  }
 
-    private saveBlob(blob: Blob, fileName: string) {
-        const fileSaver = (this.fileSaver.nativeElement as HTMLAnchorElement);
-        const saveBlob = (function () {
-            return function () {
-                const url = window.URL.createObjectURL(blob);
-                fileSaver.href = url;
-                fileSaver.download = fileName;
-                fileSaver.click();
-                window.URL.revokeObjectURL(url);
-            };
-        }());
+  stopBtnDisabled() {
+    return !this.jerooEditorState.executing && !this.jerooEditorState.paused;
+  }
 
-        saveBlob();
-    }
+  matrixEditingEnabled() {
+    return this.jerooEditorState.reset;
+  }
 
-    printMap() {
-        this.printService.printDocument('map');
-    }
+  editorEditingEnabled() {
+    return !this.jerooEditorState.executing && !this.jerooEditorState.stopped && !this.jerooEditorState.paused;
+  }
 
-    changeMapSize() {
-        this.jerooMatrix.openDialog();
-    }
+  openAboutJeroo() {
+    this.dialog.open(DashboardDialogAboutComponent);
+  }
 
-    getHelpUrl() {
-        return this.jerooEditor.getHelpUrl();
-    }
+  openAwards() {
+    this.dialog.open(DashboardDialogAwardsComponent);
+  }
 
-    getTutorialUrl() {
-        return this.jerooEditor.getTutorialUrl();
-    }
+  openHistory() {
+    this.dialog.open(DashboardDialogHistoryComponent);
+  }
 
-    resetBtnDisabled() {
-        return !this.jerooEditorState.reset
-            && !this.jerooEditorState.paused
-            && !this.jerooEditorState.stopped;
-    }
-
-    runBtnDisabled() {
-        return !this.jerooEditorState.paused && !this.jerooEditorState.reset;
-    }
-
-    pauseBtnDisabled() {
-        return !this.jerooEditorState.executing;
-    }
-
-    stopBtnDisabled() {
-        return !this.jerooEditorState.executing && !this.jerooEditorState.paused;
-    }
-
-    matrixEditingEnabled() {
-        return this.jerooEditorState.reset;
-    }
-
-    editorEditingEnabled() {
-        return !this.jerooEditorState.executing && !this.jerooEditorState.stopped && !this.jerooEditorState.paused;
-    }
-
-    openAboutJeroo() {
-        this.dialog.open(DashboardDialogAboutComponent);
-    }
-
-    openAwards() {
-        this.dialog.open(DashboardDialogAwardsComponent);
-    }
-
-    openHistory() {
-        this.dialog.open(DashboardDialogHistoryComponent);
-    }
-
-    openCopyright() {
-        this.dialog.open(DashboardDialogCopyrightComponent);
-    }
+  openCopyright() {
+    this.dialog.open(DashboardDialogCopyrightComponent);
+  }
 }

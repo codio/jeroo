@@ -1,48 +1,48 @@
 <div *ngIf="bytecodeService.jerooArray.length > 0">
-    <div fxLayout="column" fxLayoutGap="5px">
-        <div fxLayout="row" fxLayoutGap="60px">
-            <div *ngFor="let jeroo of bytecodeService.jerooArray.slice(0,2)">
-                <div fxLayout="row" fxLayoutGap="10px">
-                    <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="center center">
-                        <div>
-                            <canvas #canvas id="{{jeroo.getId()}}"></canvas>
-                        </div>
-                        <div class="jeroo-name-container">
-                            <pre id="name{{jeroo.getId()}}">{{bytecodeService.jerooMap[jeroo.getId()]}}</pre>
-                        </div>
-                    </div>
-                    <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="center center">
-                        <div>
-                            <img src="assets/images/flower.jpg" alt="flower" />
-                        </div>
-                        <div id="flowers{{jeroo.getId()}}">
-                            {{jeroo.getNumFlowers()}}
-                        </div>
-                    </div>
-                </div>
+  <div fxLayout="column" fxLayoutGap="5px">
+    <div fxLayout="row" fxLayoutGap="60px">
+      <div *ngFor="let jeroo of bytecodeService.jerooArray.slice(0,2)">
+        <div fxLayout="row" fxLayoutGap="10px">
+          <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="center center">
+            <div>
+              <canvas #canvas id="{{jeroo.getId()}}"></canvas>
             </div>
-        </div>
-        <div fxLayout="row" fxLayoutGap="60px">
-            <div *ngFor="let jeroo of bytecodeService.jerooArray.slice(2,4)">
-                <div fxLayout="row" fxLayoutGap="10px">
-                    <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="center center">
-                        <div>
-                            <canvas #canvas id="{{jeroo.getId()}}"></canvas>
-                        </div>
-                        <div class="jeroo-name-container">
-                            <pre id="name{{jeroo.getId()}}">{{bytecodeService.jerooMap[jeroo.getId()]}}</pre>
-                        </div>
-                    </div>
-                    <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="center center">
-                        <div>
-                            <img src="assets/images/flower.jpg" alt="flower" />
-                        </div>
-                        <div id="flowers{{jeroo.getId()}}">
-                            {{jeroo.getNumFlowers()}}
-                        </div>
-                    </div>
-                </div>
+            <div class="jeroo-name-container">
+              <pre id="name{{jeroo.getId()}}">{{bytecodeService.jerooMap[jeroo.getId()]}}</pre>
             </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="center center">
+            <div>
+              <img src="assets/images/flower.jpg" alt="flower" />
+            </div>
+            <div id="flowers{{jeroo.getId()}}">
+              {{jeroo.getNumFlowers()}}
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+    <div fxLayout="row" fxLayoutGap="60px">
+      <div *ngFor="let jeroo of bytecodeService.jerooArray.slice(2,4)">
+        <div fxLayout="row" fxLayoutGap="10px">
+          <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="center center">
+            <div>
+              <canvas #canvas id="{{jeroo.getId()}}"></canvas>
+            </div>
+            <div class="jeroo-name-container">
+              <pre id="name{{jeroo.getId()}}">{{bytecodeService.jerooMap[jeroo.getId()]}}</pre>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="center center">
+            <div>
+              <img src="assets/images/flower.jpg" alt="flower" />
+            </div>
+            <div id="flowers{{jeroo.getId()}}">
+              {{jeroo.getNumFlowers()}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
