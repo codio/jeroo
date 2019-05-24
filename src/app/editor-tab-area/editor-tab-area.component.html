@@ -1,21 +1,21 @@
 <mat-tab-group color="accent" (selectedIndexChange)="onEditorTabIndexChange($event)" [selectedIndex]="selectedTabIndex">
-    <mat-tab label="Main Method">
-        <app-text-editor #mainMethodTextEditor name="mainMethodEditor" [(code)]="codeService.mainMethodCode" (codeChange)="saveToLocal()" [lang]="codeService.selectedLanguage"></app-text-editor>
-    </mat-tab>
-    <mat-tab label="Jeroo Methods">
-        <app-text-editor #extensionMethodsTextEditor name="extensionMethodEditor" [(code)]="codeService.extensionMethodCode" (codeChange)="saveToLocal()" [lang]="codeService.selectedLanguage"></app-text-editor>
-    </mat-tab>
+  <mat-tab label="Main Method">
+    <app-text-editor #mainMethodTextEditor [(code)]="codeService.mainMethodCode" (codeChange)="saveToLocal()" [lang]="codeService.selectedLanguage" [preferences]="codeService.prefrences"></app-text-editor>
+  </mat-tab>
+  <mat-tab label="Jeroo Methods">
+    <app-text-editor #extensionMethodsTextEditor [(code)]="codeService.extensionMethodCode" (codeChange)="saveToLocal()" [lang]="codeService.selectedLanguage" [preferences]="codeService.prefrences"></app-text-editor>
+  </mat-tab>
 </mat-tab-group>
 <div class="language-form-container" fxLayout="column" fxLayoutAlign="none center">
-    <div>
-        <mat-form-field>
-            <mat-select placeholder="Current Language Style" [(ngModel)]="codeService.selectedLanguage" (ngModelChange)="saveToLocal()">
-                <mat-option *ngFor="let language of languages" [value]="language.value">
-                    {{language.viewValue}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-    </div>
+  <div>
+    <mat-form-field>
+      <mat-select placeholder="Current Language Style" [(ngModel)]="codeService.selectedLanguage" (ngModelChange)="saveToLocal()">
+        <mat-option *ngFor="let language of languages" [value]="language.value">
+          {{language.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 </div>
 <div class="error-message-div">
   <app-display-error-message></app-display-error-message>

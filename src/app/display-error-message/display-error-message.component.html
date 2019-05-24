@@ -1,11 +1,11 @@
 <mat-card *ngIf="messageService.messages.length">
-    <mat-card-content>
-        <div #div class="error-window">
-            <p #p *ngFor="let message of messageService.messages">{{message}}</p>
-        </div>
-    </mat-card-content>
-    <mat-divider></mat-divider>
-    <mat-card-actions>
-        <button name="clearMessagesButton" mat-raised-button (click)="messageService.clear()">clear</button>
-    </mat-card-actions>
+  <mat-card-content>
+    <div #div class="error-window">
+      <p #p *ngFor="let message of messageService.messages">{{message}}</p>
+    </div>
+  </mat-card-content>
+  <mat-divider></mat-divider>
+  <mat-card-actions>
+    <button name="clearMessagesButton" mat-raised-button (click)="messageService.clear()">clear</button>
+  </mat-card-actions>
 </mat-card>

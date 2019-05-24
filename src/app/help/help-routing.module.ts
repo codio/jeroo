@@ -8,34 +8,34 @@ import { HelpTutorialVbComponent } from './tutorial/help-tutorial-vb/help-tutori
 import { HelpTutorialPythonComponent } from './tutorial/help-tutorial-python/help-tutorial-python.component';
 
 const routes: Routes = [
-    {
-        path: 'java',
-        component: JavaHelpComponent
-    },
-    {
-        path: 'vb',
-        component: VBHelpComponent
-    },
-    {
-        path: 'python',
-        component: PythonHelpComponent
-    },
-    {
-        path: 'java/tutorial',
-        component: HelpTutorialJavaComponent
-    },
-    {
-        path: 'vb/tutorial',
-        component: HelpTutorialVbComponent
-    },
-    {
-        path: 'python/tutorial',
-        component: HelpTutorialPythonComponent
-    }
+  {
+    path: 'java',
+    component: JavaHelpComponent
+  },
+  {
+    path: 'vb',
+    component: VBHelpComponent
+  },
+  {
+    path: 'python',
+    component: PythonHelpComponent
+  },
+  {
+    path: 'java/tutorial',
+    component: HelpTutorialJavaComponent
+  },
+  {
+    path: 'vb/tutorial',
+    component: HelpTutorialVbComponent
+  },
+  {
+    path: 'python/tutorial',
+    component: HelpTutorialPythonComponent
+  }
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
 export class HelpRoutingModule { }
