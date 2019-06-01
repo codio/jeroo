@@ -7,7 +7,7 @@ import { PrintService } from 'src/app/print.service';
   templateUrl: './print-map.component.html'
 })
 export class PrintMapComponent implements AfterViewInit {
-  @ViewChild('canvas') canvasRef: ElementRef;
+  @ViewChild('canvas', { static: true }) canvasRef: ElementRef;
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
 

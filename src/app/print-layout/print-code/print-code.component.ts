@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { CodeService } from 'src/app/code.service';
 import { CodemirrorService } from 'src/app/codemirror/codemirror.service';
 import { PrintService } from 'src/app/print.service';
@@ -11,8 +11,8 @@ import { PrintCodeDialogComponent, PrintCodeDialogResult } from './print-code-di
   styleUrls: ['./print-code.component.scss']
 })
 export class PrintCodeComponent implements AfterViewInit {
-  @ViewChild('mainMethodTextArea') mainMethodTextAreaRef: ElementRef;
-  @ViewChild('extensionMethodTextArea') extensionMethodTextAreaRef: ElementRef;
+  @ViewChild('mainMethodTextArea', { static: false }) mainMethodTextAreaRef: ElementRef;
+  @ViewChild('extensionMethodTextArea', { static: false }) extensionMethodTextAreaRef: ElementRef;
   displayMainMethod = false;
   displayExtensionMethods = false;
 

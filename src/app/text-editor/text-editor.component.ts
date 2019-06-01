@@ -7,7 +7,7 @@ import { SelectedLanguage, EditorPreferences } from '../code.service';
   templateUrl: './text-editor.component.html'
 })
 export class TextEditorComponent implements AfterViewInit {
-  @ViewChild('editorTextarea') editorTextArea: ElementRef;
+  @ViewChild('editorTextarea', { static: true }) editorTextArea: ElementRef;
   private editor: CodeMirror.Editor = null;
 
   @Output()

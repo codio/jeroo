@@ -7,7 +7,7 @@ import { PrintCodeComponent } from './print-layout/print-code/print-code.compone
 
 
 const routes: Routes = [
-    { path: 'help', loadChildren: './help/help.module#HelpModule' },
+    { path: 'help', loadChildren: () => import('./help/help.module').then(m => m.HelpModule) },
     { path: 'dashboard', component: DashboardComponent },
     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     {

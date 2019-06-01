@@ -25,12 +25,13 @@ build-ocaml:
     - dune runtest
 
 build-angular:
-  image: node:8.16-alpine
+  image: node:12-alpine
   stage: build-angular
   artifacts:
     paths:
       - dist/
   script:
+    - node --version
     - yarn --version
     - yarn install
     - yarn lint
@@ -45,10 +46,13 @@ test-angular:
     - apt-get -qq upgrade
     - apt-get install -qq -o=Dpkg::Use-Pty=0 gnupg2 curl firefox -y
     - firefox --version
+    - apt install gnupg2 curl -yq
+    - curl -sL https://deb.nodesource.com/setup_12.x | bash -
     - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
     - echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
     - apt -qq update
-    - apt install -qq -o=Dpkg::Use-Pty=0 yarn -y
+    - apt install -qq -o=Dpkg::Use-Pty=0 nodejs yarn -y
+    - node --version
     - yarn --version
     - yarn install
     - ./node_modules/protractor/bin/webdriver-manager update
@@ -56,7 +60,7 @@ test-angular:
     - yarn e2e --protractor-config=e2e/protractor-ci.conf.js
 
 generate-typescript-documentation:
-  image: node:8.15-alpine
+  image: node:12-alpine
   stage: generate-documentation
   only:
     - master
@@ -64,6 +68,7 @@ generate-typescript-documentation:
     paths:
       - docs
   script:
+    - node --version
     - yarn --version
     - yarn install
     - yarn doc --out docs src/
