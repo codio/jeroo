@@ -4,7 +4,7 @@ open AST
 
 let parse_string s =
   let lexbuf = Lexing.from_string s in
-  VBParser.translation_unit VBLexer.token lexbuf
+  VBParser.translation_unit (VBLexer.token (VBLexerState.create ())) lexbuf
 
 let parse_method _test_ctxt =
   let code = "@VB\n @@\n sub main() \n end sub" in
@@ -477,18 +477,6 @@ let parse_arbitrary_newlines _test_ctxt =
     main_fxn = {
       id = "main";
       stmts = [
-        AST.ExprStmt({
-            a = None;
-            lnum = 4;
-          });
-        AST.ExprStmt({
-            a = None;
-            lnum = 5;
-          });
-        AST.ExprStmt({
-            a = None;
-            lnum = 6;
-          });
       ];
       start_lnum = 3;
       end_lnum = 7;
