@@ -8,3 +8,6 @@ val next_n_lines : int -> Lexing.lexbuf -> unit
 
 (** Set the current line number for a lexbuf to 1 *)
 val reset_lnum : Lexing.lexbuf -> unit
+
+(** Counts the number of newline characters ('\n') are in a string *)
+val count_lines : string -> int

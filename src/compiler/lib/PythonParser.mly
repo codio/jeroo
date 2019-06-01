@@ -8,7 +8,7 @@ open AST
 %token <int> DEF IF ELIF ELSE WHILE SELF NEWLINE
 %token <int> LPAREN RPAREN
 %token <int> INDENT DEDENT
-%token <int> COLON COMMA DOT 
+%token <int> COLON COMMA DOT
 %token <int> LEFT RIGHT AHEAD HERE
 %token <int> NORTH EAST SOUTH WEST
 %token HEADER MAIN_METH_SEP

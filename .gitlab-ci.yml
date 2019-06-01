@@ -41,15 +41,14 @@ test-angular:
   image: ubuntu:18.04
   stage: test-angular
   script:
-    - apt update -q
-    - apt upgrade -yq
-    - apt install firefox -yq
+    - apt-get -qq update
+    - apt-get -qq upgrade
+    - apt-get install -qq -o=Dpkg::Use-Pty=0 gnupg2 curl firefox -y
     - firefox --version
-    - apt install gnupg2 curl -yq
     - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
     - echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-    - apt update -q
-    - apt install yarn -yq
+    - apt -qq update
+    - apt install -qq -o=Dpkg::Use-Pty=0 yarn -y
     - yarn --version
     - yarn install
     - ./node_modules/protractor/bin/webdriver-manager update

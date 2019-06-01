@@ -21,61 +21,63 @@ open AST
 
 %start <AST.translation_unit> translation_unit
 
-%on_error_reduce list(NEWLINE)
-%on_error_reduce nonempty_list(NEWLINE)
-%on_error_reduce list(stmt)
-%on_error_reduce expr
 %%
 
 translation_unit:
-  | HEADER NEWLINE* fs = fxns MAIN_METH_SEP NEWLINE* f = fxn NEWLINE* EOF { { extension_fxns = fs; main_fxn = f} }
-
-fxns:
-  | fs = extension_fxn*  { fs }
-
-extension_fxn:
-  | f = fxn NEWLINE+ { f }
+  | HEADER NEWLINE? fs = fxn* MAIN_METH_SEP NEWLINE? f = fxn EOF
+    { { extension_fxns = fs; main_fxn = f } }
 
 fxn:
-  | start_lnum = SUB id = ID LPAREN RPAREN NEWLINE b = block end_lnum = END SUB {
-                                                                              let (id, _) = id in
-                                                                              let stmts = b in
-                                                                              {
-                                                                                id = id;
-                                                                                stmts = stmts;
-                                                                                start_lnum = start_lnum;
-                                                                                end_lnum = end_lnum
-                                                                              }
-                                                                            }
+  | start_lnum = SUB id = ID LPAREN RPAREN NEWLINE b = block end_lnum = END SUB NEWLINE
+    {
+      let (id, _) = id in
+      let stmts = b in
+      {
+        id = id;
+        stmts = stmts;
+        start_lnum = start_lnum;
+        end_lnum = end_lnum
+      }
+    }
 
 block:
   | stmts = stmt* { stmts }
 
 stmt:
-(* if statement, no parenthesis *)
-  | ln = IF e = expr THEN NEWLINE b = block END IF NEWLINE { AST.IfStmt(e, AST.BlockStmt(b), ln) }
-(* else-if statement, no parenthesis *)
-  | ln = IF e = expr THEN NEWLINE b1 = block s = elseif_stmt { AST.IfElseStmt(e, AST.BlockStmt(b1), s, ln) }
-(* if-else statement, no parenthesis *)
-  | ln = IF e = expr THEN NEWLINE b1 = block ELSE NEWLINE b2 = block END IF NEWLINE { AST.IfElseStmt(e, AST.BlockStmt(b1), AST.BlockStmt(b2), ln) }
-(* while statement, no parenthesis *)
-  | ln = WHILE e = expr NEWLINE b = block END WHILE NEWLINE { AST.WhileStmt(e, AST.BlockStmt(b), ln) }
+(* if statement *)
+  | ln = IF e = expr THEN NEWLINE b = block END IF NEWLINE
+    { AST.IfStmt(e, AST.BlockStmt(b), ln) }
+(* else-if statement *)
+  | ln = IF e = expr THEN NEWLINE b1 = block s = elseif_stmt
+    { AST.IfElseStmt(e, AST.BlockStmt(b1), s, ln) }
+(* if-else statement *)
+  | ln = IF e = expr THEN NEWLINE b1 = block ELSE NEWLINE b2 = block END IF NEWLINE
+    { AST.IfElseStmt(e, AST.BlockStmt(b1), AST.BlockStmt(b2), ln) }
+(* while statement *)
+  | ln = WHILE e = expr NEWLINE b = block END WHILE NEWLINE
+    { AST.WhileStmt(e, AST.BlockStmt(b), ln) }
 (* variable declaration statement *)
-  | DIM id = ID AS ty = ID EQ e = expr NEWLINE { let (id, _) = id in let (ty, _) = ty in AST.DeclStmt(ty, id, e) }
+  | DIM id = ID AS ty = ID EQ e = expr NEWLINE
+    { let (id, _) = id in let (ty, _) = ty in AST.DeclStmt(ty, id, e) }
 (* expression statement *)
-  | e = expr? ln = NEWLINE { AST.ExprStmt({ a = e; lnum = ln }) }
+  | e = expr ln = NEWLINE
+    { AST.ExprStmt({ a = Some e; lnum = ln }) }
 
 elseif_stmt:
-  | ln = ELSEIF e = expr THEN NEWLINE b = block elseif = elseif_stmt { AST.IfElseStmt(e, AST.BlockStmt(b), elseif, ln) }
-  | ln = ELSEIF e = expr THEN NEWLINE b1 = block ELSE NEWLINE b2 = block END IF NEWLINE { AST.IfElseStmt(e, AST.BlockStmt(b1), AST.BlockStmt(b2), ln) }
-  | ln = ELSEIF e = expr THEN NEWLINE b = block END IF NEWLINE { AST.IfStmt(e, AST.BlockStmt(b), ln) }
+  | ln = ELSEIF e = expr THEN NEWLINE b = block elseif = elseif_stmt
+    { AST.IfElseStmt(e, AST.BlockStmt(b), elseif, ln) }
+  | ln = ELSEIF e = expr THEN NEWLINE b1 = block ELSE NEWLINE b2 = block END IF NEWLINE
+    { AST.IfElseStmt(e, AST.BlockStmt(b1), AST.BlockStmt(b2), ln) }
+  | ln = ELSEIF e = expr THEN NEWLINE b = block END IF NEWLINE
+    { AST.IfStmt(e, AST.BlockStmt(b), ln) }
 
 arguments:
   | args = separated_list(COMMA, expr) { args }
 
 expr:
   | e = arith_expr { e }
-  | id_ln = ID ln = LPAREN args = arguments RPAREN { let (id, idln) = id_ln in { a = AST.FxnAppExpr({ a = (AST.IdExpr id); lnum = idln }, args); lnum = ln } }
+  | id_ln = ID ln = LPAREN args = arguments RPAREN
+    { let (id, idln) = id_ln in { a = AST.FxnAppExpr({ a = (AST.IdExpr id); lnum = idln }, args); lnum = ln } }
 
 arith_expr:
   | e = primary_expr { e }

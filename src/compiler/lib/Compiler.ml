@@ -42,17 +42,17 @@ let parse_java lexbuf =
     })
 
 let parse_vb lexbuf =
-  let rec loop lexbuf checkpoint =
+  let rec loop lexbuf state checkpoint =
     match checkpoint with
     | VBParser.MenhirInterpreter.InputNeeded _ ->
-      let token = VBLexer.token lexbuf in
+      let token = VBLexer.token state lexbuf in
       let startp = lexbuf.lex_start_p in
       let endp = lexbuf.lex_curr_p in
       let checkpoint = VBParser.MenhirInterpreter.offer checkpoint (token, startp, endp) in
-      loop lexbuf checkpoint
+      loop lexbuf state checkpoint
     | VBParser.MenhirInterpreter.Shifting _ | VBParser.MenhirInterpreter.AboutToReduce _ ->
       let checkpoint = VBParser.MenhirInterpreter.resume checkpoint in
-      loop lexbuf checkpoint
+      loop lexbuf state checkpoint
     | VBParser.MenhirInterpreter.HandlingError env ->
       let state = VBParser.MenhirInterpreter.current_state_number env in
       let lnum = lexbuf.lex_curr_p.pos_lnum in
@@ -70,7 +70,7 @@ let parse_vb lexbuf =
         })
   in
   try
-    loop lexbuf (VBParser.Incremental.translation_unit lexbuf.lex_curr_p)
+    loop lexbuf (VBLexerState.create ()) (VBParser.Incremental.translation_unit lexbuf.lex_curr_p)
   with
   | VBLexer.Error e -> raise (ParserException {
       message = e.message;
