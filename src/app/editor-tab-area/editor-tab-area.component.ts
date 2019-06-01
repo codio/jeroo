@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { LOCAL_STORAGE, WebStorageService } from 'angular-webstorage-service';
 import { BytecodeInterpreterService, RuntimeError } from '../bytecode-interpreter.service';
 import { MatrixService } from '../matrix.service';
@@ -26,8 +26,8 @@ export interface EditorState {
   styleUrls: ['./editor-tab-area.component.scss']
 })
 export class EditorTabAreaComponent implements AfterViewInit {
-  @ViewChild('mainMethodTextEditor') mainMethodTextEditor: TextEditorComponent;
-  @ViewChild('extensionMethodsTextEditor') extensionMethodsTextEditor: TextEditorComponent;
+  @ViewChild('mainMethodTextEditor', { static: true }) mainMethodTextEditor: TextEditorComponent;
+  @ViewChild('extensionMethodsTextEditor', { static: true }) extensionMethodsTextEditor: TextEditorComponent;
   @Input() speed: number;
 
   languages: Language[] = [

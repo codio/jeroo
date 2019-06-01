@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
 import { CodeService, Themes, EditorPreferences } from 'src/app/code.service';
 import { CodemirrorService } from 'src/app/codemirror/codemirror.service';
 import { LOCAL_STORAGE, WebStorageService } from 'angular-webstorage-service';
@@ -11,7 +11,7 @@ import { Storage } from 'src/app/storage';
   templateUrl: './editor-preferences.component.html'
 })
 export class EditorPreferencesComponent implements OnInit, AfterViewInit {
-  @ViewChild('editor') editorRef: ElementRef;
+  @ViewChild('editor', { static: true }) editorRef: ElementRef;
   editor: CodeMirror.Editor;
   colorThemes = [
     Themes.Default,

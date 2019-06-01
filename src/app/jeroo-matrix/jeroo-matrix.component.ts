@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, Inject, Input, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { LOCAL_STORAGE, WebStorageService } from 'angular-webstorage-service';
 import { BytecodeInterpreterService } from '../bytecode-interpreter.service';
 import { WarningDialogComponent } from '../warning-dialog/warning-dialog.component';
@@ -14,7 +14,7 @@ import { Storage } from '../storage';
   styleUrls: ['./jeroo-matrix.component.scss']
 })
 export class JerooMatrixComponent implements AfterViewInit {
-  @ViewChild('jerooGameCanvas') jerooGameCanvas: ElementRef;
+  @ViewChild('jerooGameCanvas', { static: true }) jerooGameCanvas: ElementRef;
   @Input() editingEnabled: boolean;
   mouseRow: number = null;
   mouseColumn: number = null;
