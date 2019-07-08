@@ -1,15 +1,27 @@
 open AST
+open Position
 
-exception SemanticException of {
-    lnum : int;
-    message : string;
-  }
+type value =
+  | FunV
+  | JerooV of int
+  | ObjV of (string, value) SymbolTable.t
 
 type codegen_state = {
   code_queue : Bytecode.bytecode Queue.t;
-  jeroo_tbl : (string, int) Hashtbl.t;
-  fxn_tbl : (string, unit) Hashtbl.t;
+  mutable num_jeroos : int;
+  mutable pane : Pane.t
 }
+
+let raise_type_exception () =
+  raise (Exceptions.CompileException {
+      pos = {
+        lnum = 0;
+        cnum = 0;
+      };
+      pane = Pane.Main;
+      exception_type = "internal error";
+      message = "Type error, re-run the type checker";
+    })
 
 let relative_dir_of_expr meta_expr =
   match meta_expr.a with
@@ -17,10 +29,7 @@ let relative_dir_of_expr meta_expr =
   | AST.RightExpr -> Bytecode.Right
   | AST.HereExpr -> Bytecode.Here
   | AST.AheadExpr -> Bytecode.Ahead
-  | _ -> raise (SemanticException {
-      lnum = meta_expr.lnum;
-      message = "type error: expression must be LEFT, RIGHT, AHEAD, or HERE";
-    })
+  | _ -> raise_type_exception ()
 
 let compass_dir_of_expr meta_expr =
   match meta_expr.a with
@@ -28,10 +37,7 @@ let compass_dir_of_expr meta_expr =
   | AST.SouthExpr -> Bytecode.South
   | AST.EastExpr -> Bytecode.East
   | AST.WestExpr -> Bytecode.West
-  | _ -> raise (SemanticException {
-      lnum = meta_expr.lnum;
-      message = "type error: expression must be NORTH, SOUTH, EAST, or WEST";
-    })
+  | _ -> raise_type_exception ()
 
 (* convert labels to memory locations *)
 let remove_labels bytecode =
@@ -58,338 +64,250 @@ let remove_labels bytecode =
       | _ as instruction -> Some (instruction)
     )
 
-let rec gen_code_expr codegen_state meta_expr pane_num =
+let rec gen_code_expr codegen_state symbol_table meta_expr =
   let expr = meta_expr.a in
-  let line_num = meta_expr.lnum in
+  let line_num = meta_expr.pos.lnum in
   match expr with
   | AST.TrueExpr ->
-    Queue.add (Bytecode.TRUE (pane_num, line_num)) codegen_state.code_queue
+    Queue.add (Bytecode.TRUE (codegen_state.pane, line_num)) codegen_state.code_queue
   | AST.FalseExpr ->
-    Queue.add (Bytecode.FALSE (pane_num, line_num)) codegen_state.code_queue
+    Queue.add (Bytecode.FALSE (codegen_state.pane, line_num)) codegen_state.code_queue
+  | AST.IntExpr _ | AST.IdExpr _
+  | AST.NorthExpr | AST.SouthExpr | AST.EastExpr | AST.WestExpr
+  | AST.AheadExpr | AST.LeftExpr | AST.RightExpr | AST.HereExpr -> ()
   | AST.BinOpExpr (e1, AST.And, e2) ->
-    gen_code_expr codegen_state e1 pane_num;
-    gen_code_expr codegen_state e2 pane_num;
-    Queue.add (Bytecode.AND (pane_num, line_num)) codegen_state.code_queue
+    gen_code_expr codegen_state symbol_table e1;
+    gen_code_expr codegen_state symbol_table e2;
+    Queue.add (Bytecode.AND (codegen_state.pane, line_num)) codegen_state.code_queue
   | AST.BinOpExpr (e1, AST.Or, e2) ->
-    gen_code_expr codegen_state e1 pane_num;
-    gen_code_expr codegen_state e2 pane_num;
-    Queue.add (Bytecode.OR (pane_num, line_num)) codegen_state.code_queue
+    gen_code_expr codegen_state symbol_table e1;
+    gen_code_expr codegen_state symbol_table e2;
+    Queue.add (Bytecode.OR (codegen_state.pane, line_num)) codegen_state.code_queue
   | AST.UnOpExpr (AST.Not, e) ->
-    gen_code_expr codegen_state e pane_num;
-    Queue.add (Bytecode.NOT (pane_num, line_num)) codegen_state.code_queue
+    gen_code_expr codegen_state symbol_table e;
+    Queue.add (Bytecode.NOT (codegen_state.pane, line_num)) codegen_state.code_queue
   | AST.BinOpExpr ({ a = AST.IdExpr(id); _ }, AST.Dot, e) ->
-    if not (Hashtbl.mem codegen_state.jeroo_tbl id) then
-      raise (SemanticException {
-          lnum = line_num;
-          message = "Unknown Jeroo: " ^ id
-        })
-    else begin
-      let id_loc = Hashtbl.find codegen_state.jeroo_tbl id in
-      Queue.add (Bytecode.CSR (id_loc, pane_num, line_num)) codegen_state.code_queue;
-      gen_code_expr codegen_state e pane_num
+    let jeroo_tbl_opt = SymbolTable.find symbol_table "Jeroo" in
+    let jerooV_opt = SymbolTable.find symbol_table id in
+    begin match (jerooV_opt, jeroo_tbl_opt) with
+      | (Some(JerooV(id_loc)), Some(ObjV(jeroo_tbl))) ->
+        Queue.add (Bytecode.CSR (id_loc, codegen_state.pane, line_num)) codegen_state.code_queue;
+        gen_code_expr codegen_state jeroo_tbl e
+      | _ -> raise_type_exception ()
     end
-  | AST.FxnAppExpr ({ a = AST.IdExpr(id); _ }, args) -> gen_code_fxn codegen_state id args line_num pane_num
-  | _ -> raise (SemanticException {
-      lnum = line_num;
-      message = "Unknown expression"
-    })
+  | AST.FxnAppExpr ({ a = AST.IdExpr(id); _ }, args) -> gen_code_fxn_app codegen_state symbol_table id args meta_expr.pos
+  | _ -> raise_type_exception ()
 
-and gen_code_fxn codegen_state id args line_num pane_num =
-  match id with
-  | "hop" -> begin match args with
-      | [] ->
-        let instr = Bytecode.HOP (1, pane_num, line_num) in
-        Queue.add instr codegen_state.code_queue
-      | { a = AST.IntExpr(n); _ } :: [] ->
-        let instr = Bytecode.HOP (n, pane_num, line_num) in
-        Queue.add instr codegen_state.code_queue
-      | _ -> raise (SemanticException {
-          lnum = line_num;
-          message = "Invalid arguments, hop requires an integer as it's only parameter"
-        })
-    end
-  | "pick" -> begin match args with
-      | [] ->
-        let instr = Bytecode.PICK (pane_num, line_num) in
-        Queue.add instr codegen_state.code_queue
-      | _ -> raise (SemanticException {
-          lnum = line_num;
-          message = "Invalid arguments, pick requires no arguments"
-        })
-    end
-  | "plant" -> begin match args with
-      | [] ->
-        let instr = Bytecode.PLANT (pane_num, line_num) in
-        Queue.add instr codegen_state.code_queue
-      | _ -> raise (SemanticException {
-          lnum = line_num;
-          message = "Invalid arguments, plant requires no arguments"
-        })
-    end
-  | "toss" -> begin match args with
-      | [] ->
-        let instr = Bytecode.TOSS (pane_num, line_num) in
-        Queue.add instr codegen_state.code_queue
-      | _ -> raise (SemanticException {
-          lnum = line_num;
-          message = "Invalid arguments, toss requires no arguments"
-        })
-    end
-  | "give" -> begin match args with
-      | [] ->
-        let instr = Bytecode.GIVE (Bytecode.Ahead, pane_num, line_num) in
-        Queue.add instr codegen_state.code_queue
-      | meta_e :: [] ->
-        let instr = Bytecode.GIVE ((relative_dir_of_expr meta_e), pane_num, line_num) in
-        Queue.add  instr codegen_state.code_queue
-      | _ -> raise (SemanticException {
-          lnum = line_num;
-          message = "Invalid arguments, toss requires either a relative direction or no arguments"
-        })
-    end
-  | "turn" -> begin match args with
-      | meta_e :: [] ->
-        let instr = Bytecode.TURN ((relative_dir_of_expr meta_e), pane_num, line_num) in
-        Queue.add instr codegen_state.code_queue
-      | _ -> raise (SemanticException {
-          lnum = line_num;
-          message = "Invalid arguments, turn requires one relative direction argument"
-        })
-    end
-  | "hasFlower" -> begin match args with
-      | [] ->
-        let instr = Bytecode.HASFLWR (pane_num, line_num) in
-        Queue.add instr codegen_state.code_queue
-      | _ -> raise (SemanticException {
-          lnum = line_num;
-          message = "Invalid arguments, hasFlower requires no arguments"
-        })
-    end
-  | "isJeroo" -> begin match args with
-      | meta_e :: [] ->
-        let instr = Bytecode.ISJEROO ((relative_dir_of_expr meta_e), pane_num, line_num) in
-        Queue.add instr codegen_state.code_queue
-      | _ -> raise (SemanticException {
-          lnum = line_num;
-          message = "Invalid arguments, isJeroo requires a relative direction"
-        })
-    end
-  | "isFacing" -> begin match args with
-      | meta_e :: [] ->
-        let instr = Bytecode.FACING ((compass_dir_of_expr meta_e), pane_num, line_num) in
-        Queue.add instr codegen_state.code_queue
-      | _ -> raise (SemanticException {
-          lnum = line_num;
-          message = "Invalid arguments, isFacing requires a compass direction"
-        })
-    end
-  | "isFlower" -> begin match args with
-      | meta_e :: [] ->
-        let instr = Bytecode.ISFLWR ((relative_dir_of_expr meta_e), pane_num, line_num) in
-        Queue.add instr codegen_state.code_queue
-      | _ -> raise (SemanticException {
-          lnum = line_num;
-          message = "Invalid arguments, isFlower requires a relative direction"
-        })
-    end
-  | "isNet" -> begin match args with
-      | meta_e :: [] ->
-        let instr = Bytecode.ISNET ((relative_dir_of_expr meta_e), pane_num, line_num) in
-        Queue.add instr codegen_state.code_queue
-      | _ -> raise (SemanticException {
-          lnum = line_num;
-          message = "Invalid arguments, isNet requires a relative direction"
-        })
-    end
-  | "isWater" -> begin match args with
-      | meta_e :: [] ->
-        let instr = Bytecode.ISWATER ((relative_dir_of_expr meta_e), pane_num, line_num) in
-        Queue.add instr codegen_state.code_queue
-      | _ -> raise (SemanticException {
-          lnum = line_num;
-          message = "Invalid arguments, isWater requires a relative direction"
-        })
-    end
-  | "isClear" -> begin match args with
-      | meta_e :: [] ->
-        let relative_dir = relative_dir_of_expr meta_e in
-        let instrs = [
-          Bytecode.ISJEROO (relative_dir, pane_num, line_num);
-          Bytecode.ISWATER (relative_dir, pane_num, line_num);
-          Bytecode.ISNET (relative_dir, pane_num, line_num);
-          Bytecode.ISFLWR (relative_dir, pane_num, line_num);
-          Bytecode.OR (pane_num, line_num);
-          Bytecode.OR (pane_num, line_num);
-          Bytecode.OR (pane_num, line_num);
-          Bytecode.NOT (pane_num, line_num)
-        ] |> List.to_seq in
-        Queue.add_seq codegen_state.code_queue instrs
-      | _ -> raise (SemanticException {
-          lnum = line_num;
-          message = "Invalid arguments, isClear requires a relative direction"
-        })
-    end
-  | _ ->
+and gen_code_fxn_app codegen_state symbol_table id args pos =
+  match (id, args) with
+  | ("hop", []) ->
+    let instr = Bytecode.HOP (1, codegen_state.pane, pos.lnum) in
+    Queue.add instr codegen_state.code_queue
+  | ("hop", { a = AST.IntExpr(n); _ } :: []) ->
+    let instr = Bytecode.HOP (n, codegen_state.pane, pos.lnum) in
+    Queue.add instr codegen_state.code_queue
+  | ("pick", []) ->
+    let instr = Bytecode.PICK (codegen_state.pane, pos.lnum) in
+    Queue.add instr codegen_state.code_queue
+  | ("plant", []) ->
+    let instr = Bytecode.PLANT (codegen_state.pane, pos.lnum) in
+    Queue.add instr codegen_state.code_queue
+  | ("toss", []) ->
+    let instr = Bytecode.TOSS (codegen_state.pane, pos.lnum) in
+    Queue.add instr codegen_state.code_queue
+  | ("give", []) ->
+    let instr = Bytecode.GIVE (Bytecode.Ahead, codegen_state.pane, pos.lnum) in
+    Queue.add instr codegen_state.code_queue
+  | ("give", meta_e :: []) ->
+    let instr = Bytecode.GIVE ((relative_dir_of_expr meta_e), codegen_state.pane, pos.lnum) in
+    Queue.add  instr codegen_state.code_queue
+  | ("turn", meta_e :: []) ->
+    let instr = Bytecode.TURN ((relative_dir_of_expr meta_e), codegen_state.pane, pos.lnum) in
+    Queue.add instr codegen_state.code_queue
+  | ("hasFlower", []) ->
+    let instr = Bytecode.HASFLWR (codegen_state.pane, pos.lnum) in
+    Queue.add instr codegen_state.code_queue
+  | ("isJeroo", meta_e :: []) ->
+    let instr = Bytecode.ISJEROO ((relative_dir_of_expr meta_e), codegen_state.pane, pos.lnum) in
+    Queue.add instr codegen_state.code_queue
+  | ("isFacing", meta_e :: []) ->
+    let instr = Bytecode.FACING ((compass_dir_of_expr meta_e), codegen_state.pane, pos.lnum) in
+    Queue.add instr codegen_state.code_queue
+  | ("isFlower", meta_e :: []) ->
+    let instr = Bytecode.ISFLWR ((relative_dir_of_expr meta_e), codegen_state.pane, pos.lnum) in
+    Queue.add instr codegen_state.code_queue
+  | ("isNet", meta_e :: []) ->
+    let instr = Bytecode.ISNET ((relative_dir_of_expr meta_e), codegen_state.pane, pos.lnum) in
+    Queue.add instr codegen_state.code_queue
+  | ("isWater", meta_e :: []) ->
+    let instr = Bytecode.ISWATER ((relative_dir_of_expr meta_e), codegen_state.pane, pos.lnum) in
+    Queue.add instr codegen_state.code_queue
+  | ("isClear", meta_e :: []) ->
+    let relative_dir = relative_dir_of_expr meta_e in
+    let instrs = [
+      Bytecode.ISJEROO (relative_dir, codegen_state.pane, pos.lnum);
+      Bytecode.ISWATER (relative_dir, codegen_state.pane, pos.lnum);
+      Bytecode.ISNET (relative_dir, codegen_state.pane, pos.lnum);
+      Bytecode.ISFLWR (relative_dir, codegen_state.pane, pos.lnum);
+      Bytecode.OR (codegen_state.pane, pos.lnum);
+      Bytecode.OR (codegen_state.pane, pos.lnum);
+      Bytecode.OR (codegen_state.pane, pos.lnum);
+      Bytecode.NOT (codegen_state.pane, pos.lnum)
+    ] |> List.to_seq in
+    Queue.add_seq codegen_state.code_queue instrs
+  | _ when (SymbolTable.mem symbol_table id) ->
     (* calling a user-defined function *)
-    if Hashtbl.mem codegen_state.fxn_tbl id then begin
-      (* function found in table, call the function *)
-      Queue.add (Bytecode.CALLBK (pane_num, line_num)) codegen_state.code_queue;
-      Queue.add (Bytecode.JUMP_LBL (id, pane_num, line_num)) codegen_state.code_queue
-    end else raise (SemanticException {
-        lnum = line_num;
-        message = ("Unknown function: " ^ id)
-      })
+    Queue.add (Bytecode.CALLBK (codegen_state.pane, pos.lnum)) codegen_state.code_queue;
+    Queue.add (Bytecode.JUMP_LBL (id, codegen_state.pane, pos.lnum)) codegen_state.code_queue
+  | _ -> raise_type_exception ()
 
-let gen_code_decl codegen_state id args line_num =
-  let id_loc = Hashtbl.find codegen_state.jeroo_tbl id in
+let gen_code_decl id_loc args pos =
   match args with
   | [] ->
-    Bytecode.NEW (id_loc, 0, 0, 0, Bytecode.East, line_num)
+    Bytecode.NEW (id_loc, 0, 0, 0, Bytecode.East, pos.lnum)
   | { a = AST.IntExpr(num_flowers); _ } :: [] ->
-    Bytecode.NEW (id_loc, 0, 0, num_flowers, Bytecode.East, line_num)
+    Bytecode.NEW (id_loc, 0, 0, num_flowers, Bytecode.East, pos.lnum)
   | { a = AST.IntExpr(x); _ } :: { a = AST.IntExpr(y); _ } :: [] ->
-    Bytecode.NEW (id_loc, x, y, 0, Bytecode.East, line_num)
+    Bytecode.NEW (id_loc, x, y, 0, Bytecode.East, pos.lnum)
   | { a = AST.IntExpr(x); _ } :: { a = AST.IntExpr(y); _ } :: { a = AST.IntExpr(num_flowers); _ } :: [] ->
-    Bytecode.NEW (id_loc, x, y, num_flowers, Bytecode.East, line_num)
+    Bytecode.NEW (id_loc, x, y, num_flowers, Bytecode.East, pos.lnum)
   | { a = AST.IntExpr(x); _ } :: { a = AST.IntExpr(y); _ } :: { a = AST.IntExpr(num_flowers); _ } :: direction :: [] ->
-    Bytecode.NEW (id_loc, x, y, num_flowers, (compass_dir_of_expr direction), line_num)
-  | _ -> raise (SemanticException {
-      lnum = line_num;
-      message = "Invalid Jeroo arguments"
-    })
+    Bytecode.NEW (id_loc, x, y, num_flowers, (compass_dir_of_expr direction), pos.lnum)
+  | _ -> raise_type_exception ()
 
-(* generates code for a statement *)
-(* takes a statement and a pane number, returns the line number of the last instruction added *)
-let rec gen_code_stmt codegen_state stmt pane_num =
+let rec gen_code_stmt codegen_state symbol_table stmt =
   match stmt with
-  | AST.BlockStmt stmts -> gen_code_block_stmt codegen_state stmts pane_num
-  | AST.ExprStmt expr -> gen_code_expr_stmt codegen_state expr pane_num
-  | AST.DeclStmt (ty, id, meta_expr) -> gen_code_decl_stmt codegen_state ty id meta_expr
-  | AST.IfStmt(e, stmt, line_num) -> gen_code_if codegen_state e stmt line_num pane_num
-  | AST.IfElseStmt(e, s1, s2, line_num) -> gen_code_if_else codegen_state e s1 s2 line_num pane_num
-  | AST.WhileStmt(e, s, line_num) -> gen_code_while codegen_state e s line_num pane_num
+  | AST.BlockStmt stmts -> gen_code_block_stmt codegen_state symbol_table stmts
+  | AST.ExprStmt expr -> gen_code_expr_stmt codegen_state symbol_table expr
+  | AST.DeclStmt (ty, id, meta_expr) -> gen_code_decl_stmt codegen_state symbol_table ty id meta_expr
+  | AST.IfStmt { a = (e, stmt); pos } -> gen_code_if codegen_state symbol_table e stmt pos
+  | AST.IfElseStmt { a = (e, s1, s2); pos } -> gen_code_if_else codegen_state symbol_table e s1 s2 pos
+  | AST.WhileStmt { a = (e, s); pos } -> gen_code_while codegen_state symbol_table e s pos
 
-and gen_code_decl_stmt codegen_state ty id meta_expr =
-  let line_num = meta_expr.lnum in
-  if not (String.equal ty "Jeroo") then
-    raise (SemanticException {
-        lnum = line_num;
-        message = "Invalid type, Jeroo is the only valid type"
-      })
-  else if Hashtbl.mem codegen_state.jeroo_tbl id then
-    raise (SemanticException {
-        lnum = line_num;
-        message = "Duplicate Jeroo declaration, " ^ id ^ " already defined"
-      })
+and gen_code_decl_stmt codegen_state symbol_table ty id meta_expr =
+  if (not (String.equal ty "Jeroo")) || (SymbolTable.mem symbol_table id)
+  then raise_type_exception ()
   else begin
-    Hashtbl.add codegen_state.jeroo_tbl id (Hashtbl.length codegen_state.jeroo_tbl);
+    let id_loc = codegen_state.num_jeroos in
+    codegen_state.num_jeroos <- succ codegen_state.num_jeroos;
+    SymbolTable.add symbol_table id (JerooV id_loc);
     let expr = meta_expr.a in
     match expr with
     | AST.UnOpExpr (AST.New, { a = AST.FxnAppExpr ({ a = AST.IdExpr(ctor); _ }, args); _ }) ->
-      if not (String.equal ctor "Jeroo") then
-        raise (SemanticException {
-            lnum = line_num;
-            message = ("Invalid constructor: " ^ ctor ^ ", Jeroo is the only valid constructor")
-          })
+      if not (String.equal ctor "Jeroo")
+      then raise_type_exception ()
       else begin
-        Queue.add (gen_code_decl codegen_state id args line_num) codegen_state.code_queue;
-        line_num
+        Queue.add (gen_code_decl id_loc args meta_expr.pos) codegen_state.code_queue;
+        meta_expr.pos.lnum
       end
-    | _ -> raise (SemanticException {
-        lnum = line_num;
-        message = "Invalid right hand side of assignment, must be a Jeroo constructor"
-      })
-  end
+    | _ -> raise_type_exception ()
+  end;
 
-and gen_code_block_stmt codegen_state stmts pane_num =
+and gen_code_block_stmt codegen_state symbol_table stmts =
   (* fold_left will always return the line number of the last statement executed *)
   stmts
-  |> List.fold_left (fun _ stmt -> gen_code_stmt codegen_state stmt pane_num) 0
+  |> List.fold_left (fun _ stmt -> gen_code_stmt codegen_state symbol_table stmt) 0
 
-and gen_code_expr_stmt codegen_state expr pane_num =
-  match expr with
-  | { a = (Some e); lnum = lnum } ->
-    gen_code_expr codegen_state e pane_num;
-    lnum
-  | { a = None; lnum = lnum } -> lnum
+and gen_code_expr_stmt codegen_state symbol_table expr =
+  begin match expr.a with
+    | Some e -> gen_code_expr codegen_state symbol_table e
+    | _ -> ()
+  end;
+  expr.pos.lnum
 
-and gen_code_if codegen_state e stmt line_num pane_num =
-  gen_code_expr codegen_state e pane_num;
+and gen_code_if codegen_state symbol_table e stmt pos =
+  gen_code_expr codegen_state symbol_table e;
   let jmp_lbl = "if_lbl_" ^ (string_of_int (Queue.length codegen_state.code_queue)) in
-  let jmp = (Bytecode.BZ_LBL (jmp_lbl, pane_num, line_num)) in
+  let jmp = (Bytecode.BZ_LBL (jmp_lbl, codegen_state.pane, pos.lnum)) in
   Queue.add jmp codegen_state.code_queue;
-  let end_lnum = gen_code_stmt codegen_state stmt pane_num in
-  Queue.add (Bytecode.LABEL (jmp_lbl, pane_num, end_lnum)) codegen_state.code_queue;
+
+  let stmt_tbl = SymbolTable.add_level symbol_table in
+  let end_lnum = gen_code_stmt codegen_state stmt_tbl stmt in
+
+  Queue.add (Bytecode.LABEL (jmp_lbl, codegen_state.pane, end_lnum)) codegen_state.code_queue;
   end_lnum
 
-and gen_code_if_else codegen_state e s1 s2 line_num pane_num =
+and gen_code_if_else codegen_state symbol_table e s1 s2 pos =
   (* generate code for the condition *)
-  gen_code_expr codegen_state e pane_num;
+  gen_code_expr codegen_state symbol_table e;
+
   (* if the condition is false, jump to the else block, else execute the true block *)
   let else_lbl = "else_lbl_" ^ (string_of_int (Queue.length codegen_state.code_queue)) in
-  let else_jmp = (Bytecode.BZ_LBL (else_lbl, pane_num, line_num)) in
+  let else_jmp = (Bytecode.BZ_LBL (else_lbl, codegen_state.pane, pos.lnum)) in
   Queue.add else_jmp codegen_state.code_queue;
+
+  let parent_tbl = symbol_table in
   (* generate the code for the if-block *)
-  let true_end_lnum = gen_code_stmt codegen_state s1 pane_num in
+  let s1_tbl = SymbolTable.add_level parent_tbl in
+  let true_end_lnum = gen_code_stmt codegen_state s1_tbl s1 in
+
   (* at the end of the true block, jump to the end of the if-else block *)
   let done_lbl = "done_lbl_" ^ (string_of_int (Queue.length codegen_state.code_queue)) in
-  let done_jmp = (Bytecode.JUMP_LBL (done_lbl, pane_num, true_end_lnum)) in
+  let done_jmp = (Bytecode.JUMP_LBL (done_lbl, codegen_state.pane, true_end_lnum)) in
   Queue.add done_jmp codegen_state.code_queue;
-  Queue.add (Bytecode.LABEL (else_lbl, pane_num, true_end_lnum)) codegen_state.code_queue;
+  Queue.add (Bytecode.LABEL (else_lbl, codegen_state.pane, true_end_lnum)) codegen_state.code_queue;
+
   (* generate the code for the else-block *)
-  let false_end_lnum = gen_code_stmt codegen_state s2 pane_num in
-  Queue.add (Bytecode.LABEL (done_lbl, pane_num, false_end_lnum)) codegen_state.code_queue;
+  let s2_tbl = SymbolTable.add_level parent_tbl in
+  let false_end_lnum = gen_code_stmt codegen_state s2_tbl s2 in
+
+  Queue.add (Bytecode.LABEL (done_lbl, codegen_state.pane, false_end_lnum)) codegen_state.code_queue;
   false_end_lnum
 
-and gen_code_while codegen_state e s line_num pane_num =
+and gen_code_while codegen_state symbol_table e s pos =
   let loop_lbl = "loop_lbl_" ^ (string_of_int (Queue.length codegen_state.code_queue)) in
-  Queue.add (Bytecode.LABEL (loop_lbl, pane_num, line_num)) codegen_state.code_queue;
-  gen_code_expr codegen_state e pane_num;
+  Queue.add (Bytecode.LABEL (loop_lbl, codegen_state.pane, pos.lnum)) codegen_state.code_queue;
+  gen_code_expr codegen_state symbol_table e;
   let done_lbl = "done_lbl_" ^ (string_of_int (Queue.length codegen_state.code_queue)) in
-  Queue.add (Bytecode.BZ_LBL (done_lbl, pane_num, e.lnum)) codegen_state.code_queue;
-  let end_while_lnum = gen_code_stmt codegen_state s pane_num in
-  Queue.add (Bytecode.JUMP_LBL (loop_lbl, pane_num, end_while_lnum)) codegen_state.code_queue;
-  Queue.add (Bytecode.LABEL (done_lbl, pane_num, end_while_lnum)) codegen_state.code_queue;
+  Queue.add (Bytecode.BZ_LBL (done_lbl, codegen_state.pane, e.pos.lnum)) codegen_state.code_queue;
+
+  let stmt_tbl = SymbolTable.add_level symbol_table in
+  let end_while_lnum = gen_code_stmt codegen_state stmt_tbl s in
+
+  Queue.add (Bytecode.JUMP_LBL (loop_lbl, codegen_state.pane, end_while_lnum)) codegen_state.code_queue;
+  Queue.add (Bytecode.LABEL (done_lbl, codegen_state.pane, end_while_lnum)) codegen_state.code_queue;
   end_while_lnum
 
-let gen_code_fxn codegen_state fxn pane_num =
-  if Hashtbl.mem codegen_state.fxn_tbl fxn.id then
-    raise (SemanticException {
-        lnum = fxn.start_lnum;
-        message = "duplicate function declaration, " ^ fxn.id ^ " already defined"
-      })
+let gen_code_fxn codegen_state symbol_table fxn =
+  if SymbolTable.mem symbol_table fxn.id
+  then raise_type_exception ()
   else begin
-    Hashtbl.add codegen_state.fxn_tbl fxn.id ();
-    Queue.add (Bytecode.LABEL (fxn.id, pane_num, fxn.start_lnum)) codegen_state.code_queue;
+    SymbolTable.add symbol_table fxn.id FunV;
+    Queue.add (Bytecode.LABEL (fxn.id, codegen_state.pane, fxn.start_lnum)) codegen_state.code_queue;
+    let child_tbl = SymbolTable.add_level symbol_table in
     fxn.stmts
-    |> List.iter (fun stmt -> let _ = gen_code_stmt codegen_state stmt pane_num in ());
-    Queue.add (Bytecode.RETR (pane_num, fxn.end_lnum)) codegen_state.code_queue
+    |> List.iter (fun stmt -> ignore (gen_code_stmt codegen_state child_tbl stmt));
+    Queue.add (Bytecode.RETR (codegen_state.pane, fxn.end_lnum)) codegen_state.code_queue;
   end
-
-let gen_code_main_fxn codegen_state fxn =
-  if not (String.equal fxn.id "main") then
-    raise (SemanticException {
-        lnum = fxn.end_lnum;
-        message = "main function must be called main"
-      })
-  else gen_code_fxn codegen_state fxn 0
 
 let codegen translation_unit =
   let codegen_state = {
     code_queue = Queue.create();
-    fxn_tbl = Hashtbl.create 30;
-    jeroo_tbl = Hashtbl.create 30
-  } in
-
+    num_jeroos = 0;
+    pane = Pane.Extensions
+  }
+  in
+  let main_tbl = SymbolTable.create () in
+  let extension_tbl = SymbolTable.create () in
   (* at the start of execution, jump to main *)
-  Queue.add (Bytecode.JUMP_LBL ("main", 0, translation_unit.main_fxn.start_lnum)) codegen_state.code_queue;
-  (* generate the code for all of the extension methods *)
-  translation_unit.extension_fxns
-  |> List.iter (fun fxn -> gen_code_fxn codegen_state fxn 1);
-  (* generate the code for the main function *)
-  gen_code_main_fxn codegen_state translation_unit.main_fxn;
+  Queue.add (Bytecode.JUMP_LBL ("main", Pane.Main, translation_unit.main_fxn.start_lnum)) codegen_state.code_queue;
 
+  (* generate the code for all of the extension methods *)
+  SymbolTable.add main_tbl "Jeroo" (ObjV extension_tbl);
+  translation_unit.extension_fxns
+  |> List.iter (gen_code_fxn codegen_state extension_tbl);
+
+  (* generate the code for the main function *)
+  codegen_state.pane <- Pane.Main;
+  gen_code_fxn codegen_state main_tbl translation_unit.main_fxn;
   let code_with_labels = Queue.to_seq codegen_state.code_queue in
+
+  (* remove the labels *)
   let bytecode = remove_labels code_with_labels in
-  let jeroo_tbl = codegen_state.jeroo_tbl in
+  (* create the jeroo mapping *)
+  let jeroo_tbl = Hashtbl.create 10 in
+  (SymbolTable.inverse_fold main_tbl () (fun a b _ -> match b with
+       | JerooV id -> Hashtbl.add jeroo_tbl a id
+       | _ -> ()
+     ));
   (bytecode, jeroo_tbl)

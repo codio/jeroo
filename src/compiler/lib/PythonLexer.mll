@@ -2,12 +2,6 @@
 open PythonLexerState
 open PythonParser
 open Lexing
-
-exception Error of {
-    message : string;
-    lnum : int;
-  }
-
 }
 
 (* epsilon *)
@@ -25,16 +19,19 @@ let identifier = ['a'-'z' 'A'-'Z' '_']['a'-'z' 'A'-'Z' '0'-'9' '_']*
 rule token state = parse
   | e {
       let lnum = LexingUtils.get_lnum lexbuf in
+      let cnum = LexingUtils.get_cnum lexbuf in
       let curr_offset = state.curr_offset in
       let last_offset = Stack.top state.offset_stack in
       if curr_offset < last_offset
-      then (ignore (Stack.pop state.offset_stack); DEDENT lnum)
+      then (ignore (Stack.pop state.offset_stack); DEDENT { lnum; cnum })
       else if curr_offset > last_offset
-      then (Stack.push curr_offset state.offset_stack; INDENT lnum)
+      then (Stack.push curr_offset state.offset_stack; INDENT { lnum; cnum })
       else _token state lexbuf
     }
 and _token state = parse
   | (whitespace* comment? newline)* whitespace* comment? eof {
+      let lnum = LexingUtils.get_lnum lexbuf in
+      let cnum = LexingUtils.get_cnum lexbuf in
       (* If there are stray indentation levels, send corresponding DEDENT tokens to pair them up *)
       if (not (state.emitted_eof_nl)) then begin
         state.emitted_eof_nl <- true;
@@ -43,7 +40,7 @@ and _token state = parse
         (* backtrack the lexer one token *)
         lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with
                               pos_cnum = lexbuf.lex_curr_p.pos_cnum - 1 };
-        NEWLINE (LexingUtils.get_lnum lexbuf)
+        NEWLINE { lnum; cnum }
       end else if ((not (Stack.is_empty state.offset_stack)) && (Stack.top state.offset_stack) > 0) then begin
         ignore (Stack.pop state.offset_stack);
         let indent = Stack.top state.offset_stack in
@@ -52,40 +49,44 @@ and _token state = parse
         lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with
                               pos_cnum = lexbuf.lex_curr_p.pos_cnum - 1 };
 
-        DEDENT (LexingUtils.get_lnum lexbuf)
+        DEDENT { lnum; cnum }
       end else
-        EOF (LexingUtils.get_lnum lexbuf)
+        EOF { lnum; cnum }
     }
   | (whitespace* comment? newline)* whitespace* comment? "@@\n" {
+      let lnum = LexingUtils.get_lnum lexbuf in
+      let cnum = LexingUtils.get_cnum lexbuf in
       if (state.emitted_eof_nl == false) then begin
         state.emitted_eof_nl <- true;
         let indent = Stack.top state.offset_stack in
         state.curr_offset <- indent;
         (* backtrack the lexer 3 characters *)
         lexbuf.lex_curr_pos <- lexbuf.lex_curr_pos - 3;
-        NEWLINE (LexingUtils.get_lnum lexbuf)
+        NEWLINE { lnum; cnum }
       end else if ((not (Stack.is_empty state.offset_stack)) && (Stack.top state.offset_stack) > 0) then begin
         ignore (Stack.pop state.offset_stack);
         let indent = Stack.top state.offset_stack in
         state.curr_offset <- indent;
         (* backtrack the lexer 3 characters *)
         lexbuf.lex_curr_pos <- lexbuf.lex_curr_pos - 3;
-          DEDENT (LexingUtils.get_lnum lexbuf)
+          DEDENT { lnum; cnum }
       end else begin
         LexingUtils.reset_lnum lexbuf;
         state.emitted_eof_nl <- false;
+        state.in_main <- true;
         MAIN_METH_SEP
       end
     }
   | ((whitespace* comment? newline)* whitespace* comment?) newline
     {
-      let lnum = (LexingUtils.get_lnum lexbuf) in
+      let lnum = LexingUtils.get_lnum lexbuf in
+      let cnum = LexingUtils.get_cnum lexbuf in
       let lines = LexingUtils.count_lines (lexeme lexbuf) in
       LexingUtils.next_n_lines lines lexbuf;
       if state.nl_ignore <= 0 then begin
         state.curr_offset <- 0;
         offset state lexbuf;
-        NEWLINE lnum
+        NEWLINE { lnum; cnum }
       end else
         _token state lexbuf
     }
@@ -101,65 +102,73 @@ and _token state = parse
   | whitespace+
     { _token state lexbuf }
   | "@PYTHON\n"
-      { HEADER }
+      { (LexingUtils.reset_lnum lexbuf); HEADER }
   | "def"
-      { DEF (LexingUtils.get_lnum lexbuf) }
+      { DEF { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | "and"
-      { AND (LexingUtils.get_lnum lexbuf) }
+      { AND { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | "or"
-      { OR (LexingUtils.get_lnum lexbuf) }
+      { OR { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | "not"
-      { NOT (LexingUtils.get_lnum lexbuf) }
+      { NOT { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | "if"
-      { IF (LexingUtils.get_lnum lexbuf) }
+      { IF { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | "elif"
-      { ELIF (LexingUtils.get_lnum lexbuf) }
+      { ELIF { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | "else"
-      { ELSE (LexingUtils.get_lnum lexbuf) }
+      { ELSE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | "while"
-      { WHILE (LexingUtils.get_lnum lexbuf) }
+      { WHILE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | "True"
-    { TRUE (LexingUtils.get_lnum lexbuf) }
+    { TRUE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | "False"
-    { FALSE (LexingUtils.get_lnum lexbuf) }
+    { FALSE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | "NORTH"
-      { NORTH (LexingUtils.get_lnum lexbuf) }
+      { NORTH { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | "SOUTH"
-      { SOUTH (LexingUtils.get_lnum lexbuf) }
+      { SOUTH { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | "EAST"
-      { EAST (LexingUtils.get_lnum lexbuf) }
+      { EAST { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | "WEST"
-      { WEST (LexingUtils.get_lnum lexbuf) }
+      { WEST { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | "AHEAD"
-      { AHEAD (LexingUtils.get_lnum lexbuf) }
+      { AHEAD { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | "HERE"
-      { HERE (LexingUtils.get_lnum lexbuf) }
+      { HERE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | "LEFT"
-      { LEFT (LexingUtils.get_lnum lexbuf) }
+      { LEFT { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | "RIGHT"
-      { RIGHT (LexingUtils.get_lnum lexbuf) }
+      { RIGHT { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | "self"
-    { SELF (LexingUtils.get_lnum lexbuf) }
+    { SELF { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | '('
-      { LPAREN (LexingUtils.get_lnum lexbuf) }
+      { LPAREN { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | ')'
-      { RPAREN (LexingUtils.get_lnum lexbuf) }
+      { RPAREN { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | ':'
-      { COLON (LexingUtils.get_lnum lexbuf) }
+      { COLON { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | ','
-      { COMMA (LexingUtils.get_lnum lexbuf) }
+      { COMMA { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | '='
-      { EQ (LexingUtils.get_lnum lexbuf) }
+      { EQ { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | '.'
-    { DOT (LexingUtils.get_lnum lexbuf) }
+    { DOT { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | identifier as id
-    {  ID (id, (LexingUtils.get_lnum lexbuf)) }
+    {  ID (id, { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }) }
   | decimalinteger as i
-    { INT ((int_of_string i), (LexingUtils.get_lnum lexbuf)) }
-  | _ { raise (Error {
-        message = "Illegal character: " ^ Lexing.lexeme lexbuf;
-        lnum = LexingUtils.get_lnum lexbuf
-      })}
+    { INT ((int_of_string i), { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }) }
+  | _ {
+      let pane = if state.in_main then Pane.Main else Pane.Extensions in
+      raise (Exceptions.CompileException {
+          pos = {
+            lnum = LexingUtils.get_lnum lexbuf;
+            cnum = LexingUtils.get_cnum lexbuf;
+          };
+          pane;
+          exception_type = "error";
+          message = "Illegal character: " ^ Lexing.lexeme lexbuf
+        })
+    }
 and offset state = parse
   | e { }
   | ' ' { state.curr_offset <- state.curr_offset + 1; offset state lexbuf }

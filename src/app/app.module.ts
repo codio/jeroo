@@ -48,6 +48,7 @@ import { PrintMapComponent } from './print-layout/print-map/print-map.component'
 import { PrintCodeComponent } from './print-layout/print-code/print-code.component';
 import { PrintCodeDialogComponent } from './print-layout/print-code/print-code-dialog/print-code-dialog.component';
 import { EditorPreferencesComponent } from './dashboard/editor-preferences/editor-preferences.component';
+import { ReplaceLineBreaks } from './Pipes';
 
 library.add(
   faFile,
@@ -89,7 +90,8 @@ library.add(
     PrintMapComponent,
     PrintCodeComponent,
     PrintCodeDialogComponent,
-    EditorPreferencesComponent
+    EditorPreferencesComponent,
+    ReplaceLineBreaks
   ],
   imports: [
     BrowserModule,

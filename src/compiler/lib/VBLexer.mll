@@ -2,19 +2,13 @@
 open VBLexerState
 open VBParser
 open Lexing
-
-exception Error of {
-    message : string;
-    lnum : int;
-  }
-
 }
 
 let whitespace = [' ' '\t']
 let newline = ('\n' | "\r\n")
 let comment = "'" [^ '\n' '\r']*
 
-              let nonzerodigit = ['1'-'9']
+let nonzerodigit = ['1'-'9']
 let digit = ['0'-'9']
 let letter = ['a'-'z' 'A'-'Z' '_']
 
@@ -56,17 +50,18 @@ rule token state = parse
           state.emitted_eof_nl <- true;
           lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with
                                  pos_cnum = lexbuf.lex_curr_p.pos_cnum - 1 };
-          NEWLINE (LexingUtils.get_lnum lexbuf)
+          NEWLINE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }
         end else EOF
       }
   | (whitespace* comment? newline)* whitespace* comment? "@@\n" {
       if (not (state.emitted_eof_nl)) then begin
         state.emitted_eof_nl <- true;
         lexbuf.lex_curr_pos <- lexbuf.lex_curr_pos - 3;
-        NEWLINE (LexingUtils.get_lnum lexbuf)
+        NEWLINE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }
       end else begin
         LexingUtils.reset_lnum lexbuf;
         state.emitted_eof_nl <- false;
+        state.in_main <- true;
         MAIN_METH_SEP
       end
     }
@@ -75,89 +70,97 @@ rule token state = parse
         let lnum = LexingUtils.get_lnum lexbuf in
         let lines = LexingUtils.count_lines (lexeme lexbuf) in
         LexingUtils.next_n_lines lines lexbuf;
-        NEWLINE lnum
+        NEWLINE { lnum; cnum = LexingUtils.get_cnum lexbuf }
       }
   | whitespace+
     { token state lexbuf }
   | "@VB\n"
-      { HEADER }
+      { (LexingUtils.reset_lnum lexbuf); HEADER }
   | d i m
-      { DIM (LexingUtils.get_lnum lexbuf) }
+      { DIM { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | a s
-      { AS (LexingUtils.get_lnum lexbuf) }
+      { AS { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | n e w
-      { NEW (LexingUtils.get_lnum lexbuf) }
+      { NEW { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | s u b
-      { SUB (LexingUtils.get_lnum lexbuf) }
+      { SUB { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | w h i l e
-      { WHILE (LexingUtils.get_lnum lexbuf) }
+      { WHILE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | i f
-      { IF (LexingUtils.get_lnum lexbuf) }
+      { IF { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | t h e n
-      { THEN (LexingUtils.get_lnum lexbuf) }
+      { THEN { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | e l s e i f
-      { ELSEIF (LexingUtils.get_lnum lexbuf) }
+      { ELSEIF { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | e l s e
-      { ELSE (LexingUtils.get_lnum lexbuf) }
+      { ELSE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | e n d
-      { END (LexingUtils.get_lnum lexbuf) }
+      { END { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | l e f t
-      { LEFT (LexingUtils.get_lnum lexbuf) }
+      { LEFT { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | r i g h t
-      { RIGHT (LexingUtils.get_lnum lexbuf) }
+      { RIGHT { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | a h e a d
-      { AHEAD (LexingUtils.get_lnum lexbuf) }
+      { AHEAD { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | h e r e
-      { HERE (LexingUtils.get_lnum lexbuf) }
+      { HERE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | n o r t h
-      { NORTH (LexingUtils.get_lnum lexbuf) }
+      { NORTH { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | e a s t
-      { EAST (LexingUtils.get_lnum lexbuf) }
+      { EAST { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | s o u t h
-      { SOUTH (LexingUtils.get_lnum lexbuf) }
+      { SOUTH { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | w e s t
-      { WEST (LexingUtils.get_lnum lexbuf) }
+      { WEST { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | t r u e
-      { TRUE (LexingUtils.get_lnum lexbuf) }
+      { TRUE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | f a l s e
-      { FALSE (LexingUtils.get_lnum lexbuf) }
+      { FALSE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | a n d
-      { AND (LexingUtils.get_lnum lexbuf) }
+      { AND { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | o r
-      { OR (LexingUtils.get_lnum lexbuf) }
+      { OR { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | n o t
-      { NOT (LexingUtils.get_lnum lexbuf) }
+      { NOT { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | j e r o o
-      { ID ("Jeroo", (LexingUtils.get_lnum lexbuf)) }
+      { ID ("Jeroo", { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }) }
   | h a s f l o w e r
-      { ID ("hasFlower", (LexingUtils.get_lnum lexbuf)) }
+      { ID ("hasFlower", { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }) }
   | i s f a c i n g
-      { ID ("isFacing", (LexingUtils.get_lnum lexbuf)) }
+      { ID ("isFacing", { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }) }
   | i s f l o w e r
-      { ID ("isFlower", (LexingUtils.get_lnum lexbuf)) }
+      { ID ("isFlower", { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }) }
   | i s j e r o o
-      { ID ("isJeroo", (LexingUtils.get_lnum lexbuf)) }
+      { ID ("isJeroo", { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }) }
   | i s n e t
-      { ID ("isNet", (LexingUtils.get_lnum lexbuf)) }
+      { ID ("isNet", { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }) }
   | i s w a t e r
-      {ID ("isWater", (LexingUtils.get_lnum lexbuf)) }
+      {ID ("isWater", { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }) }
   | i s c l e a r
-      {ID ("isClear", (LexingUtils.get_lnum lexbuf)) }
+      {ID ("isClear", { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }) }
   | '='
-      { EQ (LexingUtils.get_lnum lexbuf)}
+      { EQ { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }}
   | '('
-      { LPAREN (LexingUtils.get_lnum lexbuf)}
+      { LPAREN { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }}
   | ')'
-      { RPAREN (LexingUtils.get_lnum lexbuf)}
+      { RPAREN { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }}
   | ','
-      { COMMA (LexingUtils.get_lnum lexbuf)}
+      { COMMA { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }}
   | '.'
-      { DOT (LexingUtils.get_lnum lexbuf) }
+      { DOT { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | int_constant as i
-    { INT ((int_of_string i), (LexingUtils.get_lnum lexbuf)) }
+    { INT (int_of_string i, { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } ) }
   | identifier as id
-    { ID ((String.lowercase_ascii id), (LexingUtils.get_lnum lexbuf)) }
-  | _ { raise (Error {
-        message = "Illegal character: " ^ Lexing.lexeme lexbuf;
-        lnum = LexingUtils.get_lnum lexbuf
-      })}
+    { ID (String.lowercase_ascii id, { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } ) }
+  | _ {
+      let pane = if state.in_main then Pane.Main else Pane.Extensions in
+      raise (Exceptions.CompileException {
+          pos = {
+            lnum = LexingUtils.get_lnum lexbuf;
+            cnum = LexingUtils.get_cnum lexbuf;
+          };
+          pane;
+          exception_type = "error";
+          message = "Illegal character: " ^ Lexing.lexeme lexbuf;
+        })
+    }

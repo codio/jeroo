@@ -2,17 +2,18 @@ type bin_op =
   | And
   | Or
   | Dot
-  | Eq
-
+[@@deriving show]
 
 type un_op =
   | Not
   | New
+[@@deriving show]
 
 type 'a meta = {
-  a: 'a;
-  lnum: int;
+  a : 'a;
+  pos : Position.t
 }
+[@@deriving show]
 
 type expr =
   | IdExpr of string
@@ -33,31 +34,76 @@ type expr =
   | UnOpExpr of un_op * expr meta
   (* expression, arguments *)
   | FxnAppExpr of expr meta * expr meta list
-  (* object, method, arguments list *)
-  | ObjFxnAppExpr of string * string * expr meta list
+[@@deriving show]
 
 
 type stmt =
   | BlockStmt of stmt list
-  (* condition, positive body, line num *)
-  | IfStmt of expr meta * stmt * int
-  (* condition, positive branch body, negative branch body, line num *)
-  | IfElseStmt of expr meta * stmt * stmt * int
-  (* loop condition, loop body, line num *)
-  | WhileStmt of expr meta * stmt * int
+  (* condition, positive body *)
+  | IfStmt of (expr meta * stmt) meta
+  (* condition, positive branch body, negative branch body *)
+  | IfElseStmt of (expr meta * stmt * stmt) meta
+  (* loop condition, loop body *)
+  | WhileStmt of (expr meta * stmt) meta
   (* type, identifier, initialization expression *)
   | DeclStmt of string * string * expr meta
   | ExprStmt of expr meta option meta
-
+[@@deriving show]
 
 type fxn = {
   id : string;
   stmts : stmt list;
-  start_lnum: int;
-  end_lnum: int;
+  start_lnum : int;
+  end_lnum : int;
 }
+[@@deriving show]
+
+type language =
+  | Java
+  | VB
+  | Python
+[@@deriving show]
+
+let str_of_bin_op operator = function
+  | Java ->
+    begin match operator with
+      | And -> "&&"
+      | Or -> "||"
+      | Dot -> "."
+    end
+  | VB ->
+    begin match operator with
+      | And -> "And"
+      | Or -> "Or"
+      | Dot -> "."
+    end
+  | Python ->
+    begin match operator with
+      | And -> "and"
+      | Or -> "or"
+      | Dot -> "."
+    end
+
+let str_of_un_op operator = function
+  | Java ->
+    begin match operator with
+      | Not -> "!"
+      | New -> "new"
+    end
+  | VB ->
+    begin match operator with
+      | Not -> "Not"
+      | New -> "New"
+    end
+  | Python ->
+    begin match operator with
+      | Not -> "not"
+      | New -> "="
+    end
 
 type translation_unit = {
-  extension_fxns: fxn list;
-  main_fxn: fxn;
+  extension_fxns : fxn list;
+  main_fxn : fxn;
+  language : language
 }
+[@@deriving show]

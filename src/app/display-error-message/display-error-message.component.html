@@ -1,7 +1,9 @@
 <mat-card *ngIf="messageService.messages.length">
   <mat-card-content>
     <div #div class="error-window">
-      <p #p *ngFor="let message of messageService.messages">{{message}}</p>
+      <p #p *ngFor="let message of messageService.messages">
+        <code [innerHTML]="message | replaceLineBreaks"></code>
+      </p>
     </div>
   </mat-card-content>
   <mat-divider></mat-divider>

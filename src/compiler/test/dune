@@ -1,4 +1,5 @@
 (test
-  (name main)
-  (libraries Lib oUnit)
+ (name main)
+ (libraries Lib oUnit)
+ (preprocess (staged_pps ppx_deriving.std))
 )

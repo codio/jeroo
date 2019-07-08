@@ -3,17 +3,25 @@ open Lib
 let str_of_instr op arg1 arg2 arg3 arg4 arg5 arg6 =
   Printf.sprintf "%s %d %d %d %d %d %d" op arg1 arg2 arg3 arg4 arg5 arg6
 
+let rec read_file ic =
+  try
+    let line = input_line ic in
+     line ^ "\n" ^ (read_file ic)
+  with
+  | End_of_file -> ""
+
 (* simple utility program to compile jeroo code and print the bytecode to stdout *)
 let _ =
   let args = Sys.argv in
   let args_length = args |> Array.length in
   if args_length != 2 then failwith "Must have one arg, filename";
   let filename = args.(1) in
-  let code = Core.In_channel.read_all filename in
+  let ic = open_in filename in
+  let code = read_file ic in
   let bytecode = fst (Compiler.compile code) in
 
   bytecode
-  |> Seq.map (fun code -> match code with
+  |> Seq.map (function
       | Bytecode.JUMP (n, pane_num, line_num) -> str_of_instr "JUMP" n 0 0 0 pane_num line_num
       | Bytecode.JUMP_LBL (_, pane_num, line_num) -> str_of_instr "JUMP" (-1) 0 0 0 pane_num line_num
       | Bytecode.BZ (n, pane_num, line_num) -> str_of_instr "BZ" n 0 0 0 pane_num line_num
@@ -49,4 +57,4 @@ let _ =
       | Bytecode.OR (pane_num, line_num) -> str_of_instr "OR" 0 0 0 0 pane_num line_num
       | Bytecode.NOT (pane_num, line_num) -> str_of_instr "NOT" 0 0 0 0 pane_num line_num
     )
-  |> Seq.iter (fun code_str -> print_endline code_str)
+  |> Seq.iter print_endline

@@ -19,18 +19,9 @@ let _ =
             val error = Js.undefined [@@jsoo.optdef]
           end)
         with
-        | e ->
-          let error_message = match e with
-            | Codegen.SemanticException e ->
-              (Printf.sprintf "Semantic error on line %d: %s\n" e.lnum e.message)
-              |> Js.string
-            | Compiler.ParserException e ->
-              (Printf.sprintf "Syntax error on line %d: %s\n" e.lnum e.message)
-              |> Js.string
-            | Compiler.HeaderException e ->
-              (Printf.sprintf "File header error: %s\n" e)
-              |> Js.string
-            | e -> raise e
+        | Exceptions.CompileException e ->
+          let error_message = (Printf.sprintf "%s:Line %d:Column %d:%s:%s\n" (Pane.string_of_pane e.pane) e.pos.lnum e.pos.cnum e.exception_type e.message)
+                              |> Js.string
           in
           (object%js
             val successful = Js.bool false
@@ -38,4 +29,5 @@ let _ =
             val jerooMap = Js.undefined [@@jsoo.optdef]
             val error = Js.def error_message [@@jsoo.optdef]
           end)
+        | e -> raise e
     end)
