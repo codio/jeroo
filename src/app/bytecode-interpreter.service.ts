@@ -90,8 +90,8 @@ export class BytecodeInterpreterService {
         break;
       }
       case 'NEW': {
-        const col = command.c + 1;
         const row = command.b + 1;
+        const col = command.c + 1;
         const tile = matService.getTile(col, row);
         if (!matService.isInBounds(command.b + 1, command.c + 1) || tile === TileType.Water) {
           throw new RuntimeError('INSTANTIATION ERROR: Jeroo started in the water', command.e, command.f);

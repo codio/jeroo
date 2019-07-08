@@ -43,11 +43,11 @@ export class Jeroo {
    * @param direction The direction this jeroo is facing.
    */
   constructor(private id: number,
-              private x: number,
-              private y: number,
-              private numFlowers: number,
-              private direction: CardinalDirection
-             ) {
+    private x: number,
+    private y: number,
+    private numFlowers: number,
+    private direction: CardinalDirection
+  ) {
     if (numFlowers < 0) {
       throw new Error('INSTANTIATION ERROR: flowers < 0');
     }

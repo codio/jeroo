@@ -1,10 +1,6 @@
 {
+open JavaLexerState
 open JavaParser
-
-exception Error of {
-    message : string;
-    lnum : int;
-  }
 }
 
 let digit = ['0'-'9']
@@ -20,82 +16,90 @@ let ml_comment_end = "*/"
 let whitespace = [' ' '\t']
 let newline = ('\n' | "\r\n")
 
-rule token = parse
+rule token state = parse
   | whitespace+
-    { token lexbuf }
+    { token state lexbuf }
   | comment newline
-      { LexingUtils.next_n_lines 1 lexbuf; token lexbuf }
+      { LexingUtils.next_n_lines 1 lexbuf; token state lexbuf }
   | newline
-      { LexingUtils.next_n_lines 1 lexbuf; token lexbuf }
+      { LexingUtils.next_n_lines 1 lexbuf; token state lexbuf }
   | ml_comment_start
-      { token_comment lexbuf }
-  | comment? "@@\n"
-      { LexingUtils.reset_lnum lexbuf; MAIN_METH_SEP }
+      { token_comment state lexbuf }
+  | comment? "@@" newline
+      { LexingUtils.reset_lnum lexbuf; state.in_main <- true; MAIN_METH_SEP }
   | comment? eof
       { EOF }
-  | "@Java\n"
-      { HEADER }
+  | "@Java" newline
+      { LexingUtils.reset_lnum lexbuf; HEADER }
   | "true"
-      { TRUE (LexingUtils.get_lnum lexbuf) }
+      { TRUE { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | "false"
-      { FALSE (LexingUtils.get_lnum lexbuf) }
+      { FALSE { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | "LEFT"
-      { LEFT (LexingUtils.get_lnum lexbuf) }
+      { LEFT { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | "RIGHT"
-      { RIGHT (LexingUtils.get_lnum lexbuf) }
+      { RIGHT { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | "AHEAD"
-      { AHEAD (LexingUtils.get_lnum lexbuf) }
+      { AHEAD { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | "HERE"
-      { HERE (LexingUtils.get_lnum lexbuf) }
+      { HERE { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | "NORTH"
-      { NORTH (LexingUtils.get_lnum lexbuf) }
+      { NORTH { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | "SOUTH"
-      { SOUTH (LexingUtils.get_lnum lexbuf) }
+      { SOUTH { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | "EAST"
-      { EAST (LexingUtils.get_lnum lexbuf) }
+      { EAST { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | "WEST"
-      { WEST (LexingUtils.get_lnum lexbuf) }
+      { WEST { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | "if"
-      { IF (LexingUtils.get_lnum lexbuf) }
+      { IF { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | "else"
-      { ELSE (LexingUtils.get_lnum lexbuf) }
+      { ELSE { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | "while"
-      { WHILE (LexingUtils.get_lnum lexbuf) }
+      { WHILE { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | "new"
-      { NEW (LexingUtils.get_lnum lexbuf) }
+      { NEW { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | "method"
-      { METHOD (LexingUtils.get_lnum lexbuf) }
+      { METHOD { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | "&&"
-      { AND (LexingUtils.get_lnum lexbuf) }
+      { AND { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | "||"
-      { OR (LexingUtils.get_lnum lexbuf) }
+      { OR { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | "!"
-      { NOT (LexingUtils.get_lnum lexbuf) }
+      { NOT { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | "="
-      { EQ (LexingUtils.get_lnum lexbuf) }
+      { EQ { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | ";"
-      { SEMICOLON (LexingUtils.get_lnum lexbuf) }
+      { SEMICOLON { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | ","
-      { COMMA (LexingUtils.get_lnum lexbuf) }
+      { COMMA { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | "."
-      { DOT (LexingUtils.get_lnum lexbuf) }
+      { DOT { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | '('
-      { LPAREN (LexingUtils.get_lnum lexbuf) }
+      { LPAREN { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | ')'
-      { RPAREN (LexingUtils.get_lnum lexbuf) }
+      { RPAREN { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | '{'
-      { LBRACKET (LexingUtils.get_lnum lexbuf) }
+      { LBRACKET { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | '}'
-      { RBRACKET (LexingUtils.get_lnum lexbuf) }
+      { RBRACKET { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | int_constant as i
-    { INT ((int_of_string i), (LexingUtils.get_lnum lexbuf)) }
+    { INT ((int_of_string i), { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) }) }
   | id as i
-    { ID (i, (LexingUtils.get_lnum lexbuf)) }
-  | _ { raise (Error {
-        message = "Illegal character: " ^ Lexing.lexeme lexbuf;
-        lnum = LexingUtils.get_lnum lexbuf
-      })}
-and token_comment = parse
-  | ml_comment_end { token lexbuf }
-  | newline { LexingUtils.next_n_lines 1 lexbuf; token_comment lexbuf }
-  | _ { token_comment lexbuf }
+    { ID (i, { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) }) }
+  | _ {
+      let pane = if state.in_main then Pane.Main else Pane.Extensions in
+      raise (Exceptions.CompileException {
+          pos = {
+            lnum = LexingUtils.get_lnum lexbuf;
+            cnum = LexingUtils.get_cnum lexbuf;
+          };
+          pane;
+          exception_type = "error";
+          message = "Illegal character: " ^ Lexing.lexeme lexbuf
+        })
+    }
+and token_comment state = parse
+  | ml_comment_end { token state lexbuf }
+  | newline { LexingUtils.next_n_lines 1 lexbuf; token_comment state lexbuf }
+  | _ { token_comment state lexbuf }

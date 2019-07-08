@@ -21,7 +21,7 @@
 <div fxLayout="column" fxLayoutAlign=" center" fxLayoutGap="10px">
   <div>
     <div *ngIf="mouseRow !== null && mouseColumn !== null; else elseBlock">
-      Cursor Location: ({{mouseColumn}}, {{mouseRow}})
+      Cursor Location: ({{mouseRow}}, {{mouseColumn}})
     </div>
     <ng-template #elseBlock>
       Cursor off of map

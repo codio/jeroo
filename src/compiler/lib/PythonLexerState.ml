@@ -3,6 +3,7 @@ type t = {
   offset_stack : int Stack.t;
   mutable nl_ignore : int;
   mutable emitted_eof_nl : bool;
+  mutable in_main : bool;
 }
 
 let create () =
@@ -13,4 +14,5 @@ let create () =
     offset_stack = stack;
     nl_ignore = 0;
     emitted_eof_nl = false;
+    in_main = false;
   }

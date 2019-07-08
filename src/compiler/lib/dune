@@ -1,32 +1,33 @@
 (library
-  (name Lib)
-  (libraries menhirLib)
+ (name Lib)
+ (libraries menhirLib)
+ (preprocess (staged_pps ppx_deriving.std))
 )
 (ocamllex JavaLexer VBLexer PythonLexer)
 (rule
-  (targets JavaMessages.ml)
-  (deps Java.messages)
-  (action (with-stdout-to %{targets}
+ (targets JavaMessages.ml)
+ (deps Java.messages)
+ (action (with-stdout-to %{targets}
           (run menhir --compile-errors %{workspace_root}/lib/Java.messages %{workspace_root}/lib/JavaParser.mly)
-          )
   )
+ )
 )
 (rule
-  (targets VBMessages.ml)
-  (deps VB.messages)
-  (action (with-stdout-to %{targets}
+ (targets VBMessages.ml)
+ (deps VB.messages)
+ (action (with-stdout-to %{targets}
           (run menhir --compile-errors %{workspace_root}/lib/VB.messages %{workspace_root}/lib/VBParser.mly)
-          )
   )
+ )
 )
 (rule
-  (targets PythonMessages.ml)
-  (deps Python.messages)
-  (action (with-stdout-to %{targets}
+ (targets PythonMessages.ml)
+ (deps Python.messages)
+ (action (with-stdout-to %{targets}
           (run menhir --compile-errors %{workspace_root}/lib/Python.messages %{workspace_root}/lib/PythonParser.mly)
-          )
   )
+ )
 )
 (menhir (modules JavaParser VBParser PythonParser)
-(flags ("--table" "--dump" "--explain"))
+ (flags ("--table" "--dump" "--explain"))
 )
