@@ -76,8 +76,8 @@ generate-typescript-documentation:
 generate-ocaml-documentation:
   image: ocaml/opam2:alpine-3.9-ocaml-4.07
   stage: generate-documentation
-  only:
-    - master
+  # only:
+  #   - master
   artifacts:
     paths:
       - src/compiler/_build/default/_doc/_html
@@ -87,7 +87,8 @@ generate-ocaml-documentation:
     - opam update
     - ocamlc --version
     - opam --version
-    - opam install dune odoc menhir
-    - odoc --version
     - cd src/compiler
+    - opam install --deps-only .
+    - opam install odoc
+    - odoc --version
     - dune build lib @doc-private
