@@ -304,6 +304,10 @@ export class MatrixService {
       this.setRows(rows + 2);
       this.setCols(cols + 2);
 
+      this.resetJeroos();
+      this.resetMap();
+      this.resetDynamicMap();
+
       try {
         for (let col = 0; col < cols + 2; col++) {
           this.setStaticTile(col, 0, TileType.Water);
