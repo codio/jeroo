@@ -158,4 +158,16 @@ describe('MatrixService', () => {
     expect(service.getCols()).toBe(0);
     expect(service.getRows()).toBe(0);
   });
+
+  it('genMapFromString sets map size correctly', () => {
+    const service: MatrixService = TestBed.get(MatrixService);
+    service.setRows(30);
+    service.setCols(20);
+    const map = service.toString();
+    service.setRows(24);
+    service.setCols(24);
+    service.genMapFromString(map);
+    expect(service.getRows()).toBe(30);
+    expect(service.getCols()).toBe(20);
+  });
 });

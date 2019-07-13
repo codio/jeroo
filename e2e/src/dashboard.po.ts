@@ -8,17 +8,23 @@ export class DashboardPage {
 
   writeToCodeMirror(incomingText: string) {
     browser.executeScript(
-      'var editor = document.getElementsByClassName(\'CodeMirror\')[0].CodeMirror;editor.setValue(\'' + incomingText + '\');'
+      `var editor = document.getElementsByClassName('CodeMirror')[0].CodeMirror;editor.setValue('${incomingText}');`
     );
   }
 
-  changeSizeForLanguageTests() {
+  getCodeMirrorTest() {
+    return browser.executeScript(
+      `var editor = document.getElementsByClassName('CodeMirror')[0].CodeMirror; return editor.getValue();`
+    ) as Promise<String>;
+  }
+
+  setMatrixSize(cols: number, rows: number) {
     this.getIslandEditMenu().click();
     this.getChangeMapSize().click();
     this.getXValueInput().clear();
-    this.getXValueInput().sendKeys('14');
+    this.getXValueInput().sendKeys(`${cols}`);
     this.getYValueInput().clear();
-    this.getYValueInput().sendKeys('14');
+    this.getYValueInput().sendKeys(`${rows}`);
     this.getSubmitMatrixDialogButton().click();
     this.getYesWarningButton().click();
   }
@@ -112,8 +118,6 @@ export class DashboardPage {
     return element(by.className('error-window')).all(by.className('ng-star-inserted')).last();
   }
 
-  // Status Information Area Elements
-
   // identifier is 0, 1, 2, 3 based on when it was initialized
   getJerooName(identifier: string) {
     return element(by.id('name' + identifier));
@@ -123,4 +127,20 @@ export class DashboardPage {
     return element(by.id('flowers' + identifier));
   }
 
+  getImportProjectDialogBtn() {
+    return element(by.id('importProjectBtn'));
+  }
+
+  getDontImportProjectDialogBtn() {
+    return element(by.id('dontImportProjectBtn'));
+  }
+
+  async getMatrixSize() {
+    this.getIslandEditMenu().click();
+    this.getChangeMapSize().click();
+    const numCols = parseInt(await this.getXValueInput().getAttribute('value'), 10);
+    const numRows = parseInt(await this.getYValueInput().getAttribute('value'), 10);
+    this.getCloseMatrixDialogButton().click();
+    return { cols: numCols, rows: numRows };
+  }
 }

@@ -2,11 +2,11 @@ import { AfterViewInit, Component, ElementRef, Inject, Input, ViewChild } from '
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { LOCAL_STORAGE, WebStorageService } from 'angular-webstorage-service';
 import { BytecodeInterpreterService } from '../bytecode-interpreter.service';
-import { WarningDialogComponent } from '../warning-dialog/warning-dialog.component';
+import { TileType } from '../jerooTileType';
 import { DialogData, MatrixDialogComponent } from '../matrix-dialog/matrix-dialog.component';
 import { MatrixService } from '../matrix.service';
-import { TileType } from '../jerooTileType';
 import { Storage } from '../storage';
+import { WarningDialogComponent } from '../warning-dialog/warning-dialog.component';
 
 @Component({
   selector: 'app-jeroo-matrix',
@@ -24,8 +24,8 @@ export class JerooMatrixComponent implements AfterViewInit {
   private selectedTileType: TileType = null;
 
   constructor(private matrixService: MatrixService, private dialog: MatDialog,
-              public bytecodeService: BytecodeInterpreterService,
-              @Inject(LOCAL_STORAGE) private storage: WebStorageService) {
+    public bytecodeService: BytecodeInterpreterService,
+    @Inject(LOCAL_STORAGE) private storage: WebStorageService) {
   }
 
   ngAfterViewInit() {
@@ -74,9 +74,9 @@ export class JerooMatrixComponent implements AfterViewInit {
 
   redraw() {
     this.context.clearRect(0, 0,
-                           this.canvas.width,
-                           this.canvas.height
-                          );
+      this.canvas.width,
+      this.canvas.height
+    );
     this.canvas.width = this.matrixService.getTsize() * (this.matrixService.getCols());
     this.canvas.height = this.matrixService.getTsize() * (this.matrixService.getRows());
     // if the board has been resized save into cache
@@ -175,7 +175,7 @@ export class JerooMatrixComponent implements AfterViewInit {
     this.mouseRow = tileRow - 1;
 
     if (tileCol > 0 && tileRow > 0
-        && tileCol < cols - 1 && tileRow < rows - 1) {
+      && tileCol < cols - 1 && tileRow < rows - 1) {
       // update the col and row
       if (this.editingEnabled && this.mouseDown && this.selectedTileType !== null) {
         // only re-render if we change the map

@@ -20,7 +20,7 @@ describe('Jeroo Tests', () => {
   });
 
   it('Should run program one in java', () => {
-    page.changeSizeForLanguageTests();
+    page.setMatrixSize(14, 14);
 
     page.getExtensionEditorTab().click();
     browser.sleep(500);
@@ -66,7 +66,7 @@ describe('Jeroo Tests', () => {
   });
 
   it('Should run program two in java', () => {
-    page.changeSizeForLanguageTests();
+    page.setMatrixSize(14, 14);
 
     const code =
       'method main() {\\n' +
@@ -113,7 +113,7 @@ describe('Jeroo Tests', () => {
   });
 
   it('Should run program three in java', () => {
-    page.changeSizeForLanguageTests();
+    page.setMatrixSize(14, 14);
 
     const code =
       'method main() {\\n' +
@@ -144,7 +144,7 @@ describe('Jeroo Tests', () => {
   });
 
   it('Should run program one in VB', () => {
-    page.changeSizeForLanguageTests();
+    page.setMatrixSize(14, 14);
 
     page.getLanguageSelection().click();
     browser.sleep(500);
@@ -194,7 +194,7 @@ describe('Jeroo Tests', () => {
   });
 
   it('Should run program two in VB', () => {
-    page.changeSizeForLanguageTests();
+    page.setMatrixSize(14, 14);
 
     page.getLanguageSelection().click();
     browser.sleep(500);
@@ -243,7 +243,7 @@ describe('Jeroo Tests', () => {
   });
 
   it('Should run program three in VB', () => {
-    page.changeSizeForLanguageTests();
+    page.setMatrixSize(14, 14);
 
     page.getLanguageSelection().click();
     browser.sleep(500);
@@ -277,7 +277,7 @@ describe('Jeroo Tests', () => {
   });
 
   it('Should run program one in python', () => {
-    page.changeSizeForLanguageTests();
+    page.setMatrixSize(14, 14);
 
     page.getLanguageSelection().click();
     browser.sleep(500);
@@ -326,7 +326,7 @@ describe('Jeroo Tests', () => {
   });
 
   it('Should run program two in python', () => {
-    page.changeSizeForLanguageTests();
+    page.setMatrixSize(14, 14);
 
     page.getLanguageSelection().click();
     browser.sleep(500);
@@ -371,7 +371,7 @@ describe('Jeroo Tests', () => {
   });
 
   it('Should run program three in python', () => {
-    page.changeSizeForLanguageTests();
+    page.setMatrixSize(14, 14);
 
     page.getLanguageSelection().click();
     browser.sleep(500);
@@ -410,5 +410,47 @@ describe('Jeroo Tests', () => {
 
     browser.sleep(500);
     expect(page.getFinalMessage().getText()).toBe('Main:Line 3:Column 1:error:expected one of `;`, `.`, or an operator');
+  });
+
+  it('Should reload previous work', async () => {
+    page.setMatrixSize(20, 30);
+    const expectedCode =
+      'this is a test';
+    page.writeToCodeMirror(expectedCode);
+    browser.refresh();
+
+    browser.sleep(500);
+    page.getImportProjectDialogBtn().click();
+    browser.sleep(500);
+    const expectedMatrixSize = { cols: 20, rows: 30 };
+    const actualMatrixSize = page.getMatrixSize();
+    const actualCode = await page.getCodeMirrorTest();
+    expect(expectedCode).toBe(actualCode);
+    expect(expectedMatrixSize).toEqual(actualMatrixSize);
+  });
+
+  it('Should not reload previous work', async () => {
+    page.setMatrixSize(20, 30);
+    const expectedCode =
+      'this is a test';
+    page.writeToCodeMirror(expectedCode);
+    browser.refresh();
+
+    browser.sleep(500);
+    page.getDontImportProjectDialogBtn().click();
+    browser.sleep(500);
+    const expectedMatrixSize = { cols: 24, rows: 24 };
+    const actualMatrixSize = page.getMatrixSize();
+    const actualCode = await page.getCodeMirrorTest();
+    expect(actualCode).toBe('');
+    expect(expectedMatrixSize).toEqual(actualMatrixSize);
+  });
+
+  it('Should change matrix size', async () => {
+    page.setMatrixSize(30, 20);
+    browser.sleep(500);
+    const expectedMatrixSize = { cols: 30, rows: 20 };
+    const actualMatrixSize = page.getMatrixSize();
+    expect(expectedMatrixSize).toEqual(actualMatrixSize);
   });
 });
