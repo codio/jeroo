@@ -93,17 +93,17 @@ export class BytecodeInterpreterService {
         const row = command.b + 1;
         const col = command.c + 1;
         const tile = matService.getTile(col, row);
-        if (!matService.isInBounds(command.b + 1, command.c + 1) || tile === TileType.Water) {
-          throw new RuntimeError('INSTANTIATION ERROR: Jeroo started in the water', command.e, command.f);
+        if (!matService.isInBounds(col, row) || tile === TileType.Water) {
+          throw new RuntimeError('INSTANTIATION ERROR: Jeroo started in the water', 0, command.f);
         }
         if (tile === TileType.Net) {
-          throw new RuntimeError('INSTANTIATION ERROR: Jeroo started in a net', command.e, command.f);
+          throw new RuntimeError('INSTANTIATION ERROR: Jeroo started in a net', 0, command.f);
         }
         if (matService.getJeroo(col, row) !== null) {
-          throw new RuntimeError('INSTANTIATION ERROR: Jeroo started on another Jeroo', command.e, command.f);
+          throw new RuntimeError('INSTANTIATION ERROR: Jeroo started on another Jeroo', 0, command.f);
         }
         if (this.jerooArray.length >= 4) {
-          throw new RuntimeError('INSTANTIATION ERROR: Too many jeroos', command.e, command.f);
+          throw new RuntimeError('INSTANTIATION ERROR: Too many jeroos', 0, command.f);
         }
         try {
           const direction = command.e;
