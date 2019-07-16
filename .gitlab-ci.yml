@@ -7,7 +7,7 @@ stages:
   - generate-documentation
 
 build-ocaml:
-  image: ocaml/opam2:alpine-3.9-ocaml-4.07
+  image: ocaml/opam2:alpine-3.10-ocaml-4.08
   stage: build-ocaml
   artifacts:
     paths:
@@ -74,7 +74,7 @@ generate-typescript-documentation:
     - yarn doc --out docs src/
 
 generate-ocaml-documentation:
-  image: ocaml/opam2:alpine-3.9-ocaml-4.07
+  image: ocaml/opam2:alpine-3.10-ocaml-4.08
   stage: generate-documentation
   only:
    - master

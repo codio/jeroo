@@ -1,13 +1,14 @@
 type ('a, 'b) t =
   | Root of {
       mutable children : ('a, 'b) t list;
-      table : ('a, 'b) Hashtbl.t;
+      table : ('a, 'b) Hashtbl.t [@opaque];
     }
   | Node of {
       parent : ('a, 'b) t;
       mutable children : ('a, 'b) t list;
-      table : ('a, 'b) Hashtbl.t;
+      table : ('a, 'b) Hashtbl.t [@opaque];
     }
+[@@deriving show]
 
 let get_env = function
   | Root { table; _ } -> table

@@ -17,16 +17,7 @@ type t =
       id : string;
       env : (string, t) SymbolTable.t
     }
-
-let rec show = function
-  | NumT -> "NumT\n"
-  | BoolT -> "BoolT\n"
-  | CompassDirT -> "CompassDirT\n"
-  | RelativeDirT -> "RelativeDirT\n"
-  | VoidT -> "VoidT\n"
-  | FunT f -> Printf.sprintf "FunT { id = %s; args = %s; retT = %s }\n" f.id (f.args |> List.fold_left (fun s t -> s ^ (show t) ^ "; ") "") (show f.retT)
-  | CtorT ctor -> Printf.sprintf "CtorT { id = %s; args = %s }\n" ctor.id (ctor.args |> List.fold_left (fun s t -> s ^ (show t) ^ "; ") "")
-  | ObjectT obj -> Printf.sprintf "ObjectT { id = %s; env = { %s } }\n" obj.id (SymbolTable.fold obj.env "" (fun k v s -> s ^ k ^ " = " ^ (show v)))
+[@@deriving show]
 
 let rec string_of_type = function
   | NumT -> "Number"
