@@ -227,7 +227,7 @@ export class DashboardComponent implements AfterViewInit {
   onPauseClick() {
     if (!this.pauseBtnDisabled()) {
       this.jerooEditor.pauseState();
-      this.messageService.add('Program paused by user');
+      this.messageService.addErrorMessage('Program paused by user');
     }
   }
 
@@ -235,7 +235,7 @@ export class DashboardComponent implements AfterViewInit {
     if (!this.stopBtnDisabled()) {
       this.jerooEditor.stopState();
       this.messageService.clear();
-      this.messageService.add('Program stopped by user');
+      this.messageService.addErrorMessage('Program stopped by user');
     }
   }
 

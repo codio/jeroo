@@ -165,4 +165,12 @@ export class TextEditorComponent implements AfterViewInit {
   focus() {
     this.editor.focus();
   }
+
+  getCursor(): CodeMirror.Position {
+    return this.editor.getDoc().getCursor();
+  }
+
+  setCursor(newPosition: CodeMirror.Position): void {
+    return this.editor.getDoc().setCursor(newPosition);
+  }
 }

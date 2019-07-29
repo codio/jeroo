@@ -1,30 +1,6 @@
-translation_unit: HEADER MAIN_METH_SEP METHOD ID LPAREN RPAREN LBRACKET RBRACKET WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET ID ID EQ WEST WHILE
 ##
-## Ends in an error in state: 76.
-##
-## translation_unit -> HEADER list(fxn) MAIN_METH_SEP fxn . EOF [ # ]
-##
-## The known suffix of the stack is as follows:
-## HEADER list(fxn) MAIN_METH_SEP fxn
-##
-
-expected EOF
-
-translation_unit: HEADER MAIN_METH_SEP WHILE
-##
-## Ends in an error in state: 75.
-##
-## translation_unit -> HEADER list(fxn) MAIN_METH_SEP . fxn EOF [ # ]
-##
-## The known suffix of the stack is as follows:
-## HEADER list(fxn) MAIN_METH_SEP
-##
-
-expected `method`
-
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID ID EQ WEST WHILE
-##
-## Ends in an error in state: 53.
+## Ends in an error in state: 52.
 ##
 ## arith_expr -> expr . AND expr [ SEMICOLON OR DOT AND ]
 ## arith_expr -> expr . OR expr [ SEMICOLON OR DOT AND ]
@@ -37,9 +13,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID ID EQ WEST WHILE
 
 expected one of `;`, `.`, or an operator
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID ID EQ WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET ID ID EQ WHILE
 ##
-## Ends in an error in state: 52.
+## Ends in an error in state: 51.
 ##
 ## simple_stmt -> ID ID EQ . expr SEMICOLON [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
 ##
@@ -49,9 +25,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID ID EQ WHILE
 
 expected expression
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID ID WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET ID ID WHILE
 ##
-## Ends in an error in state: 51.
+## Ends in an error in state: 50.
 ##
 ## simple_stmt -> ID ID . EQ expr SEMICOLON [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
 ##
@@ -61,9 +37,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID ID WHILE
 
 expected `=`
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID LPAREN WEST COMMA WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET ID LPAREN WEST COMMA WHILE
 ##
-## Ends in an error in state: 36.
+## Ends in an error in state: 35.
 ##
 ## separated_nonempty_list(COMMA,expr) -> expr COMMA . separated_nonempty_list(COMMA,expr) [ RPAREN ]
 ##
@@ -73,9 +49,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID LPAREN WEST COMMA W
 
 expected expression
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID LPAREN WEST WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET ID LPAREN WEST WHILE
 ##
-## Ends in an error in state: 28.
+## Ends in an error in state: 27.
 ##
 ## arith_expr -> expr . AND expr [ RPAREN OR DOT COMMA AND ]
 ## arith_expr -> expr . OR expr [ RPAREN OR DOT COMMA AND ]
@@ -89,9 +65,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID LPAREN WEST WHILE
 
 expected one of `)`, `.`, or an operator
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID LPAREN WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET ID LPAREN WHILE
 ##
-## Ends in an error in state: 20.
+## Ends in an error in state: 19.
 ##
 ## expr -> ID LPAREN . arguments RPAREN [ SEMICOLON RPAREN OR DOT COMMA AND ]
 ##
@@ -101,9 +77,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID LPAREN WHILE
 
 expected expression
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET ID WHILE
 ##
-## Ends in an error in state: 50.
+## Ends in an error in state: 49.
 ##
 ## expr -> ID . LPAREN arguments RPAREN [ SEMICOLON OR DOT AND ]
 ## primary_expr -> ID . [ SEMICOLON OR DOT AND ]
@@ -115,9 +91,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET ID WHILE
 
 expected one of `;`, `.`, operator, or a variable declaration
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST RPAREN RPAREN
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST RPAREN RPAREN
 ##
-## Ends in an error in state: 49.
+## Ends in an error in state: 48.
 ##
 ## closed_stmt -> IF LPAREN expr RPAREN . closed_stmt ELSE closed_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
 ## open_stmt -> IF LPAREN expr RPAREN . stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
@@ -129,9 +105,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST RPAREN 
 
 expected statement or block
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST RPAREN SEMICOLON ELSE RPAREN
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST RPAREN SEMICOLON ELSE RPAREN
 ##
-## Ends in an error in state: 62.
+## Ends in an error in state: 61.
 ##
 ## closed_stmt -> IF LPAREN expr RPAREN closed_stmt ELSE . closed_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
 ## open_stmt -> IF LPAREN expr RPAREN closed_stmt ELSE . open_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
@@ -142,9 +118,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST RPAREN 
 
 expected statement or block
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST RPAREN SEMICOLON RPAREN
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST RPAREN SEMICOLON RPAREN
 ##
-## Ends in an error in state: 61.
+## Ends in an error in state: 60.
 ##
 ## closed_stmt -> IF LPAREN expr RPAREN closed_stmt . ELSE closed_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
 ## open_stmt -> IF LPAREN expr RPAREN closed_stmt . ELSE open_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
@@ -156,9 +132,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST RPAREN 
 
 expected `else` or statement
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST WHILE
 ##
-## Ends in an error in state: 48.
+## Ends in an error in state: 47.
 ##
 ## arith_expr -> expr . AND expr [ RPAREN OR DOT AND ]
 ## arith_expr -> expr . OR expr [ RPAREN OR DOT AND ]
@@ -173,9 +149,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WEST WHILE
 
 expected `)` or operator
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WHILE
 ##
-## Ends in an error in state: 47.
+## Ends in an error in state: 46.
 ##
 ## closed_stmt -> IF LPAREN . expr RPAREN closed_stmt ELSE closed_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
 ## open_stmt -> IF LPAREN . expr RPAREN stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
@@ -187,9 +163,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF LPAREN WHILE
 
 expected expression
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET IF WHILE
 ##
-## Ends in an error in state: 46.
+## Ends in an error in state: 45.
 ##
 ## closed_stmt -> IF . LPAREN expr RPAREN closed_stmt ELSE closed_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
 ## open_stmt -> IF . LPAREN expr RPAREN stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
@@ -201,9 +177,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET IF WHILE
 
 expected `(`
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET LPAREN WEST WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET LPAREN WEST WHILE
 ##
-## Ends in an error in state: 40.
+## Ends in an error in state: 39.
 ##
 ## arith_expr -> expr . AND expr [ RPAREN OR DOT AND ]
 ## arith_expr -> expr . OR expr [ RPAREN OR DOT AND ]
@@ -216,9 +192,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET LPAREN WEST WHILE
 
 expected one of `)`, `.`, or an operator
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET LPAREN WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET LPAREN WHILE
 ##
-## Ends in an error in state: 16.
+## Ends in an error in state: 15.
 ##
 ## primary_expr -> LPAREN . expr RPAREN [ SEMICOLON RPAREN OR DOT COMMA AND ]
 ##
@@ -228,9 +204,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET LPAREN WHILE
 
 expected expression
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET NEW WEST WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET NEW WEST WHILE
 ##
-## Ends in an error in state: 42.
+## Ends in an error in state: 41.
 ##
 ## arith_expr -> expr . AND expr [ SEMICOLON RPAREN OR DOT COMMA AND ]
 ## arith_expr -> expr . OR expr [ SEMICOLON RPAREN OR DOT COMMA AND ]
@@ -243,9 +219,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET NEW WEST WHILE
 
 expected one of `;`, `.`, or an operator
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET NEW WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET NEW WHILE
 ##
-## Ends in an error in state: 15.
+## Ends in an error in state: 14.
 ##
 ## arith_expr -> NEW . expr [ SEMICOLON RPAREN OR DOT COMMA AND ]
 ##
@@ -255,9 +231,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET NEW WHILE
 
 expected expression
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET NOT ID WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET NOT ID WHILE
 ##
-## Ends in an error in state: 19.
+## Ends in an error in state: 18.
 ##
 ## expr -> ID . LPAREN arguments RPAREN [ SEMICOLON RPAREN OR DOT COMMA AND ]
 ## primary_expr -> ID . [ SEMICOLON RPAREN OR DOT COMMA AND ]
@@ -268,9 +244,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET NOT ID WHILE
 
 expected one of `;`, `.`, or an operator
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET NOT WEST WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET NOT WEST WHILE
 ##
-## Ends in an error in state: 43.
+## Ends in an error in state: 42.
 ##
 ## arith_expr -> expr . AND expr [ SEMICOLON RPAREN OR DOT COMMA AND ]
 ## arith_expr -> expr . OR expr [ SEMICOLON RPAREN OR DOT COMMA AND ]
@@ -283,9 +259,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET NOT WEST WHILE
 
 expected one of `;`, `.`, or an expression
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET NOT WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET NOT WHILE
 ##
-## Ends in an error in state: 13.
+## Ends in an error in state: 12.
 ##
 ## arith_expr -> NOT . expr [ SEMICOLON RPAREN OR DOT COMMA AND ]
 ##
@@ -295,23 +271,23 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET NOT WHILE
 
 expected expression
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET RBRACKET WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET RBRACKET WHILE
 ##
-## Ends in an error in state: 78.
+## Ends in an error in state: 76.
 ##
-## list(fxn) -> fxn . list(fxn) [ MAIN_METH_SEP ]
+## list(fxn) -> fxn . list(fxn) [ EOF ]
 ##
 ## The known suffix of the stack is as follows:
 ## fxn
 ##
 
-expected `@@` (likely due to an error in the input file)
+expected `method`
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET RPAREN
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET RPAREN
 ##
-## Ends in an error in state: 6.
+## Ends in an error in state: 5.
 ##
-## block -> LBRACKET . list(stmt) RBRACKET [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW METHOD MAIN_METH_SEP LPAREN LEFT LBRACKET INT IF ID HERE FALSE EOF ELSE EAST AHEAD ]
+## block -> LBRACKET . list(stmt) RBRACKET [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW METHOD LPAREN LEFT LBRACKET INT IF ID HERE FALSE EOF ELSE EAST AHEAD ]
 ##
 ## The known suffix of the stack is as follows:
 ## LBRACKET
@@ -319,9 +295,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET RPAREN
 
 expected statement
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET SEMICOLON RPAREN
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET SEMICOLON RPAREN
 ##
-## Ends in an error in state: 68.
+## Ends in an error in state: 67.
 ##
 ## list(stmt) -> stmt . list(stmt) [ RBRACKET ]
 ##
@@ -331,9 +307,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET SEMICOLON RPAREN
 
 expected statement
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST AND WEST WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET WEST AND WEST WHILE
 ##
-## Ends in an error in state: 35.
+## Ends in an error in state: 34.
 ##
 ## arith_expr -> expr . AND expr [ SEMICOLON RPAREN OR DOT COMMA AND ]
 ## arith_expr -> expr AND expr . [ SEMICOLON RPAREN OR DOT COMMA AND ]
@@ -346,9 +322,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST AND WEST WHILE
 
 expected one of `;`, `.`, or an expression
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST AND WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET WEST AND WHILE
 ##
-## Ends in an error in state: 34.
+## Ends in an error in state: 33.
 ##
 ## arith_expr -> expr AND . expr [ SEMICOLON RPAREN OR DOT COMMA AND ]
 ##
@@ -358,9 +334,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST AND WHILE
 
 expected expression
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST DOT WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET WEST DOT WHILE
 ##
-## Ends in an error in state: 31.
+## Ends in an error in state: 30.
 ##
 ## arith_expr -> expr DOT . expr [ SEMICOLON RPAREN OR DOT COMMA AND ]
 ##
@@ -370,9 +346,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST DOT WHILE
 
 expected expression
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST OR WEST WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET WEST OR WEST WHILE
 ##
-## Ends in an error in state: 30.
+## Ends in an error in state: 29.
 ##
 ## arith_expr -> expr . AND expr [ SEMICOLON RPAREN OR DOT COMMA AND ]
 ## arith_expr -> expr . OR expr [ SEMICOLON RPAREN OR DOT COMMA AND ]
@@ -385,9 +361,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST OR WEST WHILE
 
 expected one of `;`, `.`, or an expression
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST OR WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET WEST OR WHILE
 ##
-## Ends in an error in state: 29.
+## Ends in an error in state: 28.
 ##
 ## arith_expr -> expr OR . expr [ SEMICOLON RPAREN OR DOT COMMA AND ]
 ##
@@ -397,9 +373,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST OR WHILE
 
 expected expression
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET WEST WHILE
 ##
-## Ends in an error in state: 60.
+## Ends in an error in state: 59.
 ##
 ## arith_expr -> expr . AND expr [ SEMICOLON OR DOT AND ]
 ## arith_expr -> expr . OR expr [ SEMICOLON OR DOT AND ]
@@ -412,9 +388,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WEST WHILE
 
 expected one of `;`, `.`, or an operator
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WHILE LPAREN WEST RPAREN RPAREN
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET WHILE LPAREN WEST RPAREN RPAREN
 ##
-## Ends in an error in state: 45.
+## Ends in an error in state: 44.
 ##
 ## closed_stmt -> WHILE LPAREN expr RPAREN . closed_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
 ## open_stmt -> WHILE LPAREN expr RPAREN . open_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
@@ -425,9 +401,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WHILE LPAREN WEST RPAR
 
 expected statement or block
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WHILE LPAREN WEST WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET WHILE LPAREN WEST WHILE
 ##
-## Ends in an error in state: 44.
+## Ends in an error in state: 43.
 ##
 ## arith_expr -> expr . AND expr [ RPAREN OR DOT AND ]
 ## arith_expr -> expr . OR expr [ RPAREN OR DOT AND ]
@@ -441,9 +417,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WHILE LPAREN WEST WHIL
 
 expected `)`, `.`, or an operator
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WHILE LPAREN WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET WHILE LPAREN WHILE
 ##
-## Ends in an error in state: 8.
+## Ends in an error in state: 7.
 ##
 ## closed_stmt -> WHILE LPAREN . expr RPAREN closed_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
 ## open_stmt -> WHILE LPAREN . expr RPAREN open_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
@@ -454,9 +430,9 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WHILE LPAREN WHILE
 
 expected expression
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WHILE WHILE
+translation_unit: METHOD ID LPAREN RPAREN LBRACKET WHILE WHILE
 ##
-## Ends in an error in state: 7.
+## Ends in an error in state: 6.
 ##
 ## closed_stmt -> WHILE . LPAREN expr RPAREN closed_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE ELSE EAST AHEAD ]
 ## open_stmt -> WHILE . LPAREN expr RPAREN open_stmt [ WHILE WEST TRUE SOUTH SEMICOLON RIGHT RBRACKET NOT NORTH NEW LPAREN LEFT LBRACKET INT IF ID HERE FALSE EAST AHEAD ]
@@ -467,11 +443,11 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN LBRACKET WHILE WHILE
 
 expected `(`
 
-translation_unit: HEADER METHOD ID LPAREN RPAREN WHILE
+translation_unit: METHOD ID LPAREN RPAREN WHILE
 ##
-## Ends in an error in state: 5.
+## Ends in an error in state: 4.
 ##
-## fxn -> METHOD ID LPAREN RPAREN . block [ METHOD MAIN_METH_SEP EOF ]
+## fxn -> METHOD ID LPAREN RPAREN . block [ METHOD EOF ]
 ##
 ## The known suffix of the stack is as follows:
 ## METHOD ID LPAREN RPAREN
@@ -479,11 +455,11 @@ translation_unit: HEADER METHOD ID LPAREN RPAREN WHILE
 
 expected `{`
 
-translation_unit: HEADER METHOD ID LPAREN WHILE
+translation_unit: METHOD ID LPAREN WHILE
 ##
-## Ends in an error in state: 4.
+## Ends in an error in state: 3.
 ##
-## fxn -> METHOD ID LPAREN . RPAREN block [ METHOD MAIN_METH_SEP EOF ]
+## fxn -> METHOD ID LPAREN . RPAREN block [ METHOD EOF ]
 ##
 ## The known suffix of the stack is as follows:
 ## METHOD ID LPAREN
@@ -491,11 +467,11 @@ translation_unit: HEADER METHOD ID LPAREN WHILE
 
 expected `)`
 
-translation_unit: HEADER METHOD ID WHILE
+translation_unit: METHOD ID WHILE
 ##
-## Ends in an error in state: 3.
+## Ends in an error in state: 2.
 ##
-## fxn -> METHOD ID . LPAREN RPAREN block [ METHOD MAIN_METH_SEP EOF ]
+## fxn -> METHOD ID . LPAREN RPAREN block [ METHOD EOF ]
 ##
 ## The known suffix of the stack is as follows:
 ## METHOD ID
@@ -503,29 +479,17 @@ translation_unit: HEADER METHOD ID WHILE
 
 expected `(`
 
-translation_unit: HEADER METHOD WHILE
+translation_unit: METHOD WHILE
 ##
-## Ends in an error in state: 2.
+## Ends in an error in state: 1.
 ##
-## fxn -> METHOD . ID LPAREN RPAREN block [ METHOD MAIN_METH_SEP EOF ]
+## fxn -> METHOD . ID LPAREN RPAREN block [ METHOD EOF ]
 ##
 ## The known suffix of the stack is as follows:
 ## METHOD
 ##
 
 expected identifier
-
-translation_unit: HEADER WHILE
-##
-## Ends in an error in state: 1.
-##
-## translation_unit -> HEADER . list(fxn) MAIN_METH_SEP fxn EOF [ # ]
-##
-## The known suffix of the stack is as follows:
-## HEADER
-##
-
-expected `method`
 
 translation_unit: WHILE
 ##
@@ -537,4 +501,4 @@ translation_unit: WHILE
 ##
 ##
 
-expected `@Java` (likely due to an error in your input file)
+expected `method`

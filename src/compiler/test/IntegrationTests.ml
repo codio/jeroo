@@ -2,7 +2,13 @@ open OUnit2
 open Lib
 
 let compile_java _test_ctxt =
-  let code = "@Java\n\n method foo() { hop(3); }\n@@\n method main() { Jeroo j = new Jeroo(); j.foo(); }" in
+  let code =
+    "@Java\n" ^
+    "\n" ^
+    "method foo() { hop(3); }\n" ^
+    "@@\n" ^
+    "method main() { Jeroo j = new Jeroo(); j.foo(); }"
+  in
   let bytecode = List.of_seq (fst (Compiler.compile code)) in
   assert_equal ~printer:[%show: Bytecode.bytecode list] [
     Bytecode.JUMP (3, Pane.Main, 1);
@@ -16,7 +22,18 @@ let compile_java _test_ctxt =
   ] bytecode
 
 let compile_VB _test_ctxt =
-  let code = "@VB\n\n sub foo()\n hop(3)\n end sub\n @@\n sub main()\n dim j as Jeroo = new Jeroo()\n j.foo()\n end sub" in
+  let code =
+    "@VB\n" ^
+    "\n" ^
+    "sub foo()\n" ^
+    "hop(3)\n" ^
+    "end sub\n" ^
+    "@@\n" ^
+    "sub main()\n" ^
+    "dim j as Jeroo = new Jeroo()\n" ^
+    "j.foo()\n" ^
+    "end sub"
+  in
   let bytecode = List.of_seq (fst (Compiler.compile code)) in
   assert_equal ~printer:[%show: Bytecode.bytecode list] [
     Bytecode.JUMP (3, Pane.Main, 1);
@@ -30,7 +47,14 @@ let compile_VB _test_ctxt =
   ] bytecode
 
 let compile_Python _test_ctxt =
-  let code = "@PYTHON\ndef foo(self):\n\tself.hop(3)\n@@\nj = Jeroo()\nj.foo()" in
+  let code =
+    "@PYTHON\n" ^
+    "def foo(self):\n" ^
+    "\tself.hop(3)\n" ^
+    "@@\n" ^
+    "j = Jeroo()\n" ^
+    "j.foo()"
+  in
   let bytecode = List.of_seq (fst (Compiler.compile code)) in
   assert_equal ~printer:[%show: Bytecode.bytecode list] [
     Bytecode.JUMP (3, Pane.Main, 1);

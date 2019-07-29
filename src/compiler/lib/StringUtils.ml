@@ -1,8 +1,3 @@
-let rec join_string (s : string) = function
-  | x :: ((_ :: _) as xs) -> x ^ s ^ (join_string s xs)
-  | x :: [] -> x
-  | [] -> ""
-
 let str_distance s t =
   let mem = Hashtbl.create 20 in
   let rec dist i j =

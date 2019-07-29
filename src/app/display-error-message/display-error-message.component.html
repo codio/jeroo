@@ -2,7 +2,8 @@
   <mat-card-content>
     <div #div class="error-window">
       <p #p *ngFor="let message of messageService.messages">
-        <code [innerHTML]="message | replaceLineBreaks"></code>
+        <app-compilation-error-message *ngIf="messageService.isMessageCompilationError(message)" [error]="message.compilationError"></app-compilation-error-message>
+        <app-logging-message *ngIf="messageService.isMessageLoggingMessage(message)" [message]="message.loggingMessage"></app-logging-message>
       </p>
     </div>
   </mat-card-content>

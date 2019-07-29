@@ -30,13 +30,13 @@ let rec string_of_type = function
     let args_str =
       f.args
       |> List.map string_of_type
-      |> StringUtils.join_string ", "
+      |> String.concat ", "
     in
     f.id ^ "(" ^  args_str ^ ")"
   | CtorT ctor ->
     let args_str =
       ctor.args
       |> List.map string_of_type
-      |> StringUtils.join_string ", "
+      |> String.concat ", "
     in
     ctor.id ^ "(" ^ args_str ^ ")"

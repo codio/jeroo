@@ -9,7 +9,6 @@ open AST
 %token <Position.t> NORTH SOUTH EAST WEST
 %token <Position.t> LPAREN RPAREN COMMA THEN DIM AS
 %token <Position.t> NEWLINE
-%token HEADER MAIN_METH_SEP
 %token EOF
 
 %left OR
@@ -18,13 +17,13 @@ open AST
 %right NOT
 %left DOT
 
-%start <AST.translation_unit> translation_unit
+%start <AST.fxn list> translation_unit
 
 %%
 
 translation_unit:
-  | HEADER NEWLINE? fs = fxn* MAIN_METH_SEP NEWLINE? f = fxn EOF
-    { { extension_fxns = fs; main_fxn = f; language = AST.VB; } }
+  | NEWLINE? fs = fxn* EOF
+    { fs }
 
 fxn:
   | start_pos = SUB id_pos = ID LPAREN RPAREN NEWLINE stmts = block end_pos = END SUB NEWLINE

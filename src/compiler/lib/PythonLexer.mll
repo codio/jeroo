@@ -53,30 +53,6 @@ and _token state = parse
       end else
         EOF { lnum; cnum }
     }
-  | (whitespace* comment? newline)* whitespace* comment? "@@\n" {
-      let lnum = LexingUtils.get_lnum lexbuf in
-      let cnum = LexingUtils.get_cnum lexbuf in
-      if (state.emitted_eof_nl == false) then begin
-        state.emitted_eof_nl <- true;
-        let indent = Stack.top state.offset_stack in
-        state.curr_offset <- indent;
-        (* backtrack the lexer 3 characters *)
-        lexbuf.lex_curr_pos <- lexbuf.lex_curr_pos - 3;
-        NEWLINE { lnum; cnum }
-      end else if ((not (Stack.is_empty state.offset_stack)) && (Stack.top state.offset_stack) > 0) then begin
-        ignore (Stack.pop state.offset_stack);
-        let indent = Stack.top state.offset_stack in
-        state.curr_offset <- indent;
-        (* backtrack the lexer 3 characters *)
-        lexbuf.lex_curr_pos <- lexbuf.lex_curr_pos - 3;
-          DEDENT { lnum; cnum }
-      end else begin
-        LexingUtils.reset_lnum lexbuf;
-        state.emitted_eof_nl <- false;
-        state.in_main <- true;
-        MAIN_METH_SEP
-      end
-    }
   | ((whitespace* comment? newline)* whitespace* comment?) newline
     {
       let lnum = LexingUtils.get_lnum lexbuf in
@@ -101,8 +77,6 @@ and _token state = parse
     }
   | whitespace+
     { _token state lexbuf }
-  | "@PYTHON\n"
-      { (LexingUtils.reset_lnum lexbuf); HEADER }
   | "def"
       { DEF { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | "and"
@@ -158,13 +132,11 @@ and _token state = parse
   | decimalinteger as i
     { INT ((int_of_string i), { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }) }
   | _ {
-      let pane = if state.in_main then Pane.Main else Pane.Extensions in
-      raise (Exceptions.CompileException {
+      raise (Exceptions.LexingException {
           pos = {
             lnum = LexingUtils.get_lnum lexbuf;
             cnum = LexingUtils.get_cnum lexbuf;
           };
-          pane;
           exception_type = "error";
           message = "Illegal character: " ^ Lexing.lexeme lexbuf
         })

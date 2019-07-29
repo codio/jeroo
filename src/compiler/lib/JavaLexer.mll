@@ -1,5 +1,4 @@
 {
-open JavaLexerState
 open JavaParser
 }
 
@@ -16,21 +15,17 @@ let ml_comment_end = "*/"
 let whitespace = [' ' '\t']
 let newline = ('\n' | "\r\n")
 
-rule token state = parse
+rule token = parse
   | whitespace+
-    { token state lexbuf }
+    { token lexbuf }
   | comment newline
-      { LexingUtils.next_n_lines 1 lexbuf; token state lexbuf }
+      { LexingUtils.next_n_lines 1 lexbuf; token lexbuf }
   | newline
-      { LexingUtils.next_n_lines 1 lexbuf; token state lexbuf }
+      { LexingUtils.next_n_lines 1 lexbuf; token lexbuf }
   | ml_comment_start
-      { token_comment state lexbuf }
-  | comment? "@@" newline
-      { LexingUtils.reset_lnum lexbuf; state.in_main <- true; MAIN_METH_SEP }
+      { token_comment lexbuf }
   | comment? eof
       { EOF }
-  | "@Java" newline
-      { LexingUtils.reset_lnum lexbuf; HEADER }
   | "true"
       { TRUE { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) } }
   | "false"
@@ -88,18 +83,16 @@ rule token state = parse
   | id as i
     { ID (i, { lnum = (LexingUtils.get_lnum lexbuf); cnum = (LexingUtils.get_cnum lexbuf) }) }
   | _ {
-      let pane = if state.in_main then Pane.Main else Pane.Extensions in
-      raise (Exceptions.CompileException {
+      raise (Exceptions.LexingException {
           pos = {
             lnum = LexingUtils.get_lnum lexbuf;
             cnum = LexingUtils.get_cnum lexbuf;
           };
-          pane;
           exception_type = "error";
           message = "Illegal character: " ^ Lexing.lexeme lexbuf
         })
     }
-and token_comment state = parse
-  | ml_comment_end { token state lexbuf }
-  | newline { LexingUtils.next_n_lines 1 lexbuf; token_comment state lexbuf }
-  | _ { token_comment state lexbuf }
+and token_comment = parse
+  | ml_comment_end { token lexbuf }
+  | newline { LexingUtils.next_n_lines 1 lexbuf; token_comment lexbuf }
+  | _ { token_comment lexbuf }

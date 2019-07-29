@@ -12,30 +12,29 @@ open AST
 %token <Position.t> LEFT RIGHT AHEAD HERE
 %token <Position.t> NORTH EAST SOUTH WEST
 %token <Position.t> EOF
-%token HEADER MAIN_METH_SEP
 
 %left OR
 %left AND
 %right NOT
 %left DOT
 
-%start <AST.translation_unit> translation_unit
+%start <AST.fxn list> fxns
+%start <AST.fxn> main_fxn
 %%
 
-translation_unit:
-  | HEADER fs = newline_or_fxn_list MAIN_METH_SEP stmts = stmt_list end_pos = EOF
+main_fxn:
+  | stmts = stmt_list end_pos = EOF
     {
       {
-        extension_fxns = fs;
-        main_fxn = {
-            id = "main";
-            stmts;
-            start_lnum = 1;
-            end_lnum = (succ end_pos.lnum);
-          };
-        language = AST.Python;
+        id = "main";
+        stmts;
+        start_lnum = 1; (* TODO *)
+        end_lnum = succ end_pos.lnum
       }
     }
+
+fxns:
+  | fxns = newline_or_fxn_list EOF { fxns }
 
 fxn:
   | start_pos = DEF id_pos = ID LPAREN SELF RPAREN COLON stmts = suite

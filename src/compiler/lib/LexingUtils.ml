@@ -16,14 +16,6 @@ let next_n_lines n lexbuf =
                pos_lnum = pos.pos_lnum + n
     }
 
-let reset_lnum lexbuf =
-  let pos = lexbuf.lex_curr_p in
-  lexbuf.lex_curr_p <-
-    { pos with
-      pos_bol = pos.pos_cnum;
-               pos_lnum = 1
-    }
-
 let count_lines s =
   s
   |> String.to_seq

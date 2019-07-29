@@ -17,9 +17,6 @@ let rec score_args actual_args expected_args =
     in
     (score_args xs ys) + cost
 
-(* let get_expected_message expected_type actual_type =
- *   "Expected " ^ (JerooType.string_of_type expected_type) ^ ", found " ^ (JerooType.string_of_type actual_type) *)
-
 let get_not_found_message id env =
   let ids = SymbolTable.fold env [] (fun id _ l -> id :: l) in
   let ranked_ids = ids
@@ -35,28 +32,24 @@ let get_not_found_message id env =
   id ^ " not found in this scope" ^ hint
 
 let rank_fxns env actual_id actual_args_t =
-  env
-  |> Hashtbl.to_seq
-  |> Seq.filter_map (fun (id, jeroo_type) -> match jeroo_type with
+  (SymbolTable.fold env [] (fun k v l -> (k, v) :: l))
+  |> List.filter_map (fun (id, jeroo_type) -> match jeroo_type with
       | JerooType.FunT fxn when fxn.id = actual_id ->
         Some (id, jeroo_type, score_args actual_args_t fxn.args)
       | _ -> None
     )
-  |> List.of_seq
-  |> List.sort (fun (_, _, score1) (_, _, score2) -> compare score2 score1)
-  |> List.fold_left (fun s (_, jeroo_type, _)  -> (JerooType.string_of_type jeroo_type) ^ "\n" ^ s) ""
+  |> List.sort (fun (_, _, score1) (_, _, score2) -> compare score1 score2)
+  |> List.map (fun (_, jeroo_type, _) -> JerooType.string_of_type jeroo_type)
 
 let rank_ctors env actual_args_t =
-  env
-  |> Hashtbl.to_seq
-  |> Seq.filter_map (fun (id, jeroo_type) -> match jeroo_type with
+  (SymbolTable.fold env [] (fun k v l -> (k, v) :: l))
+  |> List.filter_map (fun (id, jeroo_type) -> match jeroo_type with
       | JerooType.CtorT ctor ->
         Some (id, jeroo_type, score_args actual_args_t ctor.args)
       | _ -> None
     )
-  |> List.of_seq
-  |> List.sort (fun (_, _, score1) (_, _, score2) -> compare score2 score1)
-  |> List.fold_left (fun s (_, jeroo_type, _)  -> (JerooType.string_of_type jeroo_type) ^ "\n" ^ s) ""
+  |> List.sort (fun (_, _, score1) (_, _, score2) -> compare score1 score2)
+  |> List.map (fun (_, jeroo_type, _) -> JerooType.string_of_type jeroo_type)
 
 let rec type_of_expr expr env state =
   match expr with
@@ -160,13 +153,15 @@ and typecheck_fxn fxn args env state = match fxn.a with
         let message = "No match found for function with type: " ^
                       (JerooType.string_of_type actual_fxn) ^ "\n"
         in
-        let env = SymbolTable.get_env env in
-        let ctors = rank_fxns env id args_t in
+        let fxns = rank_fxns env id args_t in
         raise (Exceptions.CompileException {
             pos = fxn.pos;
             pane = state.pane;
             exception_type = error;
-            message = message ^ "Candidate functions:\n" ^ ctors
+            message =
+              if ((List.length fxns) > 0)
+              then message ^ "Candidate functions:\n" ^ (String.concat "\n" fxns)
+              else message
           })
     else
       raise (Exceptions.CompileException {
@@ -213,14 +208,15 @@ and typecheck_new_expr ctor_meta env state =
             let message = "No match found for constructor with type: " ^
                           (JerooType.string_of_type actual_ctor) ^ "\n"
             in
-            (* turn this into a method *)
-            let env = SymbolTable.get_env obj.env in
-            let ctors = rank_ctors env args_t in
+            let ctors = rank_ctors obj.env args_t in
             raise (Exceptions.CompileException {
                 pos = ctor_meta.pos;
                 pane = state.pane;
                 exception_type = error;
-                message = message ^ "Candidate constructors:\n" ^ ctors
+                message =
+                  if ((List.length ctors) > 0)
+                  then message ^ "Candidate constructors:\n" ^ (String.concat "\n" ctors)
+                  else message
               })
         end
       | Some(t) -> raise (Exceptions.CompileException {
@@ -318,7 +314,7 @@ let rec type_check_stmt stmt env state =
         message = "Jeroo declarations are the only valid declarations"
       })
 
-let type_check_fxn fxn env (state : state) =
+let type_check_fxn fxn env state =
   let fxn_type = JerooType.FunT {
       id = fxn.id;
       args = [];
@@ -394,7 +390,7 @@ let create_jeroo_type env =
       env = jeroo_env
     })
 
-let type_check_extension_fxns extension_fxns env (state : state) =
+let type_check_extension_fxns extension_fxns env state =
   match SymbolTable.find env "Jeroo" with
   | Some (JerooType.ObjectT jeroo_obj) ->
     extension_fxns
