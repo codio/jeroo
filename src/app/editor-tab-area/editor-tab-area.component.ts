@@ -5,7 +5,7 @@ import { BytecodeInterpreterService, RuntimeError } from '../bytecode-interprete
 import { MatrixService } from '../matrix.service';
 import { MessageService } from '../message.service';
 import { TextEditorComponent } from '../text-editor/text-editor.component';
-import { CodeService, SelectedLanguage } from '../code.service';
+import { CodeService, SelectedLanguage, SelectedTab } from '../code.service';
 import { Storage } from '../storage';
 
 interface Language {
@@ -36,7 +36,7 @@ export class EditorTabAreaComponent implements AfterViewInit {
     { viewValue: 'PYTHON', value: SelectedLanguage.Python }
   ];
 
-  selectedTabIndex = 0;
+  selectedTabIndex = SelectedTab.Main;
   private instructions: Array<Instruction> = null;
   private previousInstruction: Instruction = null;
 
@@ -65,12 +65,20 @@ export class EditorTabAreaComponent implements AfterViewInit {
       this.getSelectedEditor().refresh();
       this.getSelectedEditor().focus();
     });
+
+    this.codeService.getCursorPosition().subscribe((position) => {
+      this.selectedTabIndex = position.pane;
+      const editor = this.getSelectedEditor();
+      editor.refresh();
+      editor.focus();
+      editor.setCursor({ line: position.lnum - 1, ch: position.cnum });
+    });
   }
 
   runStepwise(context: CanvasRenderingContext2D) {
     if (this.editorState.reset || this.instructions === null) {
       this.messageService.clear();
-      this.messageService.add('Compiling...');
+      this.messageService.addErrorMessage('Compiling...');
       const jerooCode = this.codeService.genCodeStr();
       const result = JerooCompiler.compile(jerooCode);
       if (result.successful) {
@@ -78,11 +86,11 @@ export class EditorTabAreaComponent implements AfterViewInit {
         this.bytecodeService.reset();
         this.bytecodeService.jerooMap = result.jerooMap;
       } else {
-        this.messageService.add(result.error);
+        this.messageService.addCompilationError(result.error);
         return;
       }
     }
-    this.messageService.add('Stepping...');
+    this.messageService.addErrorMessage('Stepping...');
     this.executingState();
     try {
       this.mainMethodTextEditor.setReadOnly(true);
@@ -104,7 +112,7 @@ export class EditorTabAreaComponent implements AfterViewInit {
   runContinious(context: CanvasRenderingContext2D) {
     if (this.editorState.reset || this.instructions === null) {
       this.messageService.clear();
-      this.messageService.add('Compiling...');
+      this.messageService.addErrorMessage('Compiling...');
       const jerooCode = this.codeService.genCodeStr();
       const result = JerooCompiler.compile(jerooCode);
       if (result.successful) {
@@ -112,11 +120,11 @@ export class EditorTabAreaComponent implements AfterViewInit {
         this.bytecodeService.reset();
         this.bytecodeService.jerooMap = result.jerooMap;
       } else {
-        this.messageService.add(result.error);
+        this.messageService.addCompilationError(result.error);
         return;
       }
     }
-    this.messageService.add('Running resumed...');
+    this.messageService.addErrorMessage('Running resumed...');
     const executeInstructions = () => {
       try {
         this.mainMethodTextEditor.setReadOnly(true);
@@ -146,7 +154,7 @@ export class EditorTabAreaComponent implements AfterViewInit {
     this.unhighlightPreviousLine();
     this.previousInstruction = null;
     this.messageService.clear();
-    this.messageService.add('Program completed');
+    this.messageService.addErrorMessage('Program completed');
     this.stopState();
   }
 
@@ -154,12 +162,12 @@ export class EditorTabAreaComponent implements AfterViewInit {
     this.unhighlightPreviousLine();
     if (this.bytecodeService.validInstruction(this.instructions)) {
       const instruction = this.bytecodeService.getCurrentInstruction(this.instructions);
-      if (instruction.e === 0 || instruction.op === 'NEW') {
+      if (instruction.e === SelectedTab.Main || instruction.op === 'NEW') {
         this.mainMethodTextEditor.highlightLine(instruction.f);
-        this.selectedTabIndex = 0;
-      } else if (instruction.e === 1) {
+        this.selectedTabIndex = SelectedTab.Main;
+      } else if (instruction.e === SelectedTab.Extensions) {
         this.extensionMethodsTextEditor.highlightLine(instruction.f);
-        this.selectedTabIndex = 1;
+        this.selectedTabIndex = SelectedTab.Extensions;
       }
       this.previousInstruction = instruction;
     } else {
@@ -169,9 +177,9 @@ export class EditorTabAreaComponent implements AfterViewInit {
 
   private unhighlightPreviousLine() {
     if (this.previousInstruction !== null) {
-      if (this.previousInstruction.e === 0 || this.previousInstruction.op === 'NEW') {
+      if (this.previousInstruction.e === SelectedTab.Main || this.previousInstruction.op === 'NEW') {
         this.mainMethodTextEditor.unhighlightLine(this.previousInstruction.f);
-      } else if (this.previousInstruction.e === 1) {
+      } else if (this.previousInstruction.e === SelectedTab.Extensions) {
         this.extensionMethodsTextEditor.unhighlightLine(this.previousInstruction.f);
       }
     }
@@ -184,7 +192,7 @@ export class EditorTabAreaComponent implements AfterViewInit {
     this.unhighlightPreviousLine();
     this.selectedTabIndex = runtimeError.pane_num;
     this.getSelectedEditor().highlightErrorLine(runtimeError.line_num);
-    this.messageService.add(message);
+    this.messageService.addErrorMessage(message);
     this.stopState();
   }
 
@@ -306,9 +314,9 @@ export class EditorTabAreaComponent implements AfterViewInit {
   }
 
   private getSelectedEditor() {
-    if (this.selectedTabIndex === 0) {
+    if (this.selectedTabIndex === SelectedTab.Main) {
       return this.mainMethodTextEditor;
-    } else if (this.selectedTabIndex === 1) {
+    } else if (this.selectedTabIndex === SelectedTab.Extensions) {
       return this.extensionMethodsTextEditor;
     } else {
       return null;

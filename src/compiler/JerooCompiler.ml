@@ -20,14 +20,19 @@ let _ =
           end)
         with
         | Exceptions.CompileException e ->
-          let error_message = (Printf.sprintf "%s:Line %d:Column %d:%s:%s\n" (Pane.string_of_pane e.pane) e.pos.lnum e.pos.cnum e.exception_type e.message)
-                              |> Js.string
+          let error = (object%js
+            val pane = Pane.int_of_pane e.pane
+            val lnum = e.pos.lnum
+            val cnum = e.pos.cnum
+            val exceptionType = Js.string e.exception_type
+            val message = Js.string e.message
+          end)
           in
           (object%js
             val successful = Js.bool false
             val bytecode = Js.undefined [@@jsoo.optdef]
             val jerooMap = Js.undefined [@@jsoo.optdef]
-            val error = Js.def error_message [@@jsoo.optdef]
+            val error = Js.def error [@@jsoo.optdef]
           end)
         | e -> raise e
     end)

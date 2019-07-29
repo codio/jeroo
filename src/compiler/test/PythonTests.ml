@@ -2,15 +2,11 @@ open OUnit2
 open Lib
 open AST
 
-let parse_string s =
-  let lexbuf = Lexing.from_string s in
-  PythonParser.translation_unit (PythonLexer.token (PythonLexerState.create())) lexbuf
-
 let parse_empty _test_ctxt =
   let code = "@PYTHON\n"  ^
              "@@\n"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
@@ -27,7 +23,7 @@ let parse_main _test_ctxt =
              "@@\n" ^
              "True\n"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
@@ -54,7 +50,7 @@ let parse_if _test_ctxt =
              "@@\n" ^
              "if True: True\n"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
@@ -90,7 +86,7 @@ let parse_if_else _test_ctxt =
              "else:\n" ^
              "\t False\n"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
@@ -134,7 +130,7 @@ let parse_if_elif _test_ctxt =
              "if True: True\n" ^
              "elif False: False\n"
   in
-  let ast  = parse_string code in
+  let ast  = Parser.parse code in
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
@@ -183,7 +179,7 @@ let parse_if_elif_else _test_ctxt =
              "elif False: False\n" ^
              "else: True\n"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
@@ -242,7 +238,7 @@ let parse_nested_if _test_ctxt =
              "else:\n" ^
              "\tTrue\n"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
@@ -295,7 +291,7 @@ let parse_while _test_ctxt =
              "@@\n" ^
              "while True: False\n"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
@@ -328,7 +324,7 @@ let parse_and _test_ctxt =
              "@@\n" ^
              "if True and False: False\n"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
@@ -367,7 +363,7 @@ let parse_or _test_ctxt =
              "@@\n" ^
              "if True or False: False\n"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
@@ -406,7 +402,7 @@ let parse_not _test_ctxt =
              "@@\n" ^
              "if not True: False\n"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
@@ -443,7 +439,7 @@ let parse_comment _test_ctxt =
              "#this is a comment###\n" ^
              "\n"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
@@ -460,7 +456,7 @@ let parse_inline_comment _test_ctxt =
              "@@\n" ^
              "True #This is a comment too \n"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
@@ -484,7 +480,7 @@ let parse_inline_comment _test_ctxt =
 
 let parse_newlines _test_ctxt =
   let code = "@PYTHON\n\n\n\n\n\n@@\n\n\n\n\nTrue\n\n\n\n\n" in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
@@ -509,10 +505,10 @@ let parse_newlines _test_ctxt =
 let parse_def _test_ctxt =
   let code = "@PYTHON\n" ^
              "def foo(self):\n" ^
-             "\tself.hop()" ^
+             "\tself.hop()\n" ^
              "@@\n"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.Python;
                    extension_fxns = [
                      {
@@ -527,7 +523,7 @@ let parse_def _test_ctxt =
                                        }, []);
                                      pos = { lnum = 2; cnum = 6 };
                                    };
-                                 pos = { lnum = 2; cnum = 14 };
+                                 pos = { lnum = 2; cnum = 11 };
                                });
                            ])
                        ];
@@ -549,7 +545,7 @@ let parse_fxn_application _test_ctxt =
              "@@\n" ^
              "foo(True, NORTH)\n"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
@@ -588,7 +584,7 @@ let parse_paren_precedence _test_ctxt =
              "@@\n" ^
              "if True and (True and True):True\n"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
@@ -633,7 +629,7 @@ let parse_and_or_precedence _test_ctxt =
              "@@\n" ^
              "if True and True or True:True\n"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
@@ -678,7 +674,7 @@ let parse_not_precedence _test_ctxt =
              "@@\n" ^
              "if not True and True: True\n"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
@@ -720,7 +716,7 @@ let parse_object_member_access _test_ctxt =
              "@@\n" ^
              "a.b(1)\n"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
@@ -756,6 +752,9 @@ let parse_object_member_access _test_ctxt =
                  } in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
+(* TODO: finish this test *)
+let parse_indentation_with_tabs_and_spaces _test_ctxt = ()
+
 let parse_syntax_error _test_ctxt =
   let code = "@PYTHON\n" ^
              "while\n" ^
@@ -768,6 +767,39 @@ let parse_syntax_error _test_ctxt =
       exception_type = "error";
       message = "expected `def`\n";
     }) (fun () -> Compiler.compile code)
+
+(* TODO: complete all of these tasks in a future story *)
+let parse_lexing_error _test_ctxt = ()
+
+let parse_unexpected_indent _test_ctxt = ()
+
+let parse_missing_dedent _test_ctxt = ()
+
+let parse_missing_rparen_in_expr _test_ctxt = ()
+
+let parse_malformed_def _test_ctxt = ()
+
+let parse_missing_rparen_in_fxn_app _test_ctxt = ()
+
+let parse_missing_comma_in_fxn_app _test_ctxt = ()
+
+let parse_missing_colon _test_ctxt = ()
+
+let parse_malformed_while_stmt _test_ctxt = ()
+
+let parse_malformed_if_stmt _test_ctxt = ()
+
+let parse_and_empty_rvalue _test_ctxt = ()
+
+let prase_or_empty_rvalue _test_ctxt = ()
+
+let parse_dot_empty_rvalue _test_ctxt = ()
+
+let parse_not_empty_rvalue _test_ctxt = ()
+
+let parse_wild_else_stmt _test_ctxt = ()
+
+let parse_missing_newline _test_ctxt = ()
 
 let suite =
   "Python Parsing">::: [
@@ -790,5 +822,22 @@ let suite =
     "Parse and or precedence">:: parse_and_or_precedence;
     "Parse not precedence">:: parse_not_precedence;
     "Parse object member access">:: parse_object_member_access;
+    "Parse indentation with spaces and tabs">:: parse_indentation_with_tabs_and_spaces;
     "Parse syntax error">:: parse_syntax_error;
+    "Parse lexing error">:: parse_lexing_error;
+    "Parse unexpected indent">:: parse_unexpected_indent;
+    "Parse missing dedent">:: parse_missing_dedent;
+    "Parse missing rparen in expr">:: parse_missing_rparen_in_expr;
+    "Parse missing comma in fxn app">:: parse_missing_comma_in_fxn_app;
+    "Parse missing rparen in fxn app">:: parse_missing_rparen_in_fxn_app;
+    "Parse missing colon">:: parse_missing_colon;
+    "Parse malformed while stmt">:: parse_malformed_while_stmt;
+    "Parse malformed if stmt">:: parse_malformed_if_stmt;
+    "Parse and empty rvalue">:: parse_and_empty_rvalue;
+    "Parse or empty rvalue">:: prase_or_empty_rvalue;
+    "Parse not empty rvalue">:: parse_not_empty_rvalue;
+    "Parse dot empty rvalue">:: parse_dot_empty_rvalue;
+    "Parse not empty rvalue">:: parse_not_empty_rvalue;
+    "Parse wild else stmt">:: parse_wild_else_stmt;
+    "Parse missing newline">:: parse_missing_newline;
   ]

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export enum SelectedLanguage {
   Java = 'java',
@@ -20,6 +21,17 @@ export interface EditorPreferences {
   colorTheme: Themes;
 }
 
+export enum SelectedTab {
+  Main = 0,
+  Extensions = 1
+}
+
+export interface Position {
+  lnum: number;
+  cnum: number;
+  pane: SelectedTab;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -31,8 +43,16 @@ export class CodeService {
     fontSize: 12,
     colorTheme: Themes.Default
   };
+  private cursorPosition: BehaviorSubject<Position>;
 
-  constructor() { }
+
+  constructor() {
+    this.cursorPosition = new BehaviorSubject<Position>({
+      lnum: 0,
+      cnum: 0,
+      pane: SelectedTab.Main
+    });
+  }
 
   genCodeStr() {
     let jerooCode = '';
@@ -81,5 +101,13 @@ export class CodeService {
 
     this.extensionMethodCode = extensionMethodCodeBuffer.trim();
     this.mainMethodCode = mainMethodCodeBuffer.trim();
+  }
+
+  getCursorPosition(): Observable<Position> {
+    return this.cursorPosition.asObservable();
+  }
+
+  setCursorPosition(newPosition: Position): void {
+    this.cursorPosition.next(newPosition);
   }
 }

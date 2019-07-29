@@ -52,13 +52,14 @@ let typecheck_decl_bad_args _test_ctxt =
       pos = { lnum = 2; cnum = 0; };
       pane = Pane.Main;
       exception_type = "error";
-      message = "No match found for constructor with type: Jeroo(Compass Direction, Compass Direction)\nCandidate constructors:\n" ^
+      message = "No match found for constructor with type: Jeroo(Compass Direction, Compass Direction)\n" ^
+                "Candidate constructors:\n" ^
                 "Jeroo(Number, Number)\n" ^
                 "Jeroo(Number)\n" ^
                 "Jeroo(Number, Number, Compass Direction)\n" ^
                 "Jeroo(Number, Number, Number)\n" ^
                 "Jeroo()\n" ^
-                "Jeroo(Number, Number, Compass Direction, Number)\n";
+                "Jeroo(Number, Number, Compass Direction, Number)";
     }) (fun () -> TypeChecker.type_check ast)
 
 let typecheck_if_stmt _test_ctxt =
@@ -605,7 +606,7 @@ let typecheck_fxn_call_wrong_types _test_ctxt =
       message = "No match found for function with type: hop(Relative Direction)\n" ^
                 "Candidate functions:\n" ^
                 "hop(Number)\n" ^
-                "hop()\n";
+                "hop()";
     }) (fun () -> TypeChecker.type_check ast)
 
 let typecheck_fxn_call_undefined_fxn _test_ctxt =
@@ -725,7 +726,6 @@ let typecheck_dot_wrong_types _test_ctxt =
       exception_type = "error";
       message = ". operator must be used with a Jeroo object, found Number";
     }) (fun () -> TypeChecker.type_check ast)
-
 
 let suite =
   "TypeChecker">::: [

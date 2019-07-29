@@ -53,18 +53,6 @@ rule token state = parse
           NEWLINE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }
         end else EOF
       }
-  | (whitespace* comment? newline)* whitespace* comment? "@@\n" {
-      if (not (state.emitted_eof_nl)) then begin
-        state.emitted_eof_nl <- true;
-        lexbuf.lex_curr_pos <- lexbuf.lex_curr_pos - 3;
-        NEWLINE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }
-      end else begin
-        LexingUtils.reset_lnum lexbuf;
-        state.emitted_eof_nl <- false;
-        state.in_main <- true;
-        MAIN_METH_SEP
-      end
-    }
   | ((whitespace* comment? newline)* whitespace* comment?) newline
       {
         let lnum = LexingUtils.get_lnum lexbuf in
@@ -74,8 +62,6 @@ rule token state = parse
       }
   | whitespace+
     { token state lexbuf }
-  | "@VB\n"
-      { (LexingUtils.reset_lnum lexbuf); HEADER }
   | d i m
       { DIM { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
   | a s
@@ -153,13 +139,11 @@ rule token state = parse
   | identifier as id
     { ID (String.lowercase_ascii id, { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } ) }
   | _ {
-      let pane = if state.in_main then Pane.Main else Pane.Extensions in
-      raise (Exceptions.CompileException {
+      raise (Exceptions.LexingException {
           pos = {
             lnum = LexingUtils.get_lnum lexbuf;
             cnum = LexingUtils.get_cnum lexbuf;
           };
-          pane;
           exception_type = "error";
           message = "Illegal character: " ^ Lexing.lexeme lexbuf;
         })

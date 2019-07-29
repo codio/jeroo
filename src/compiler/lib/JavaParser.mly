@@ -1,5 +1,6 @@
 %{
 open AST
+open Position
 %}
 %token <int * Position.t> INT
 %token <string * Position.t> ID
@@ -11,7 +12,6 @@ open AST
 %token <Position.t> COMMA DOT SEMICOLON
 %token <Position.t> LEFT RIGHT AHEAD HERE
 %token <Position.t> NORTH EAST SOUTH WEST
-%token HEADER MAIN_METH_SEP
 %token EOF
 
 %left OR
@@ -20,27 +20,27 @@ open AST
 %right NOT
 %left DOT
 
-%start <AST.translation_unit> translation_unit
+%start <AST.fxn list> translation_unit
 
 %on_error_reduce expr
 %%
 
 translation_unit:
-  | HEADER fs = fxn* MAIN_METH_SEP f = fxn EOF { { extension_fxns = fs; main_fxn = f; language = AST.Java; } }
+  | fs = fxn* EOF { fs }
 
 fxn:
   | METHOD id_pos = ID LPAREN RPAREN b = block {
-                                         let (stmts, start_lnum, end_lnum) = b in
+                                         let (stmts, start_pos, end_pos) = b in
                                          {
                                            id = fst id_pos;
                                            stmts;
-                                           start_lnum;
-                                           end_lnum;
+                                           start_lnum = start_pos.lnum;
+                                           end_lnum = end_pos.lnum;
                                          }
                                        }
 
 block:
-  | start_pos = LBRACKET stmts = stmt* end_pos = RBRACKET { (stmts, start_pos.lnum, end_pos.lnum) }
+  | start_pos = LBRACKET stmts = stmt* end_pos = RBRACKET { (stmts, start_pos, end_pos) }
 
 stmt:
   | s = open_stmt { s }

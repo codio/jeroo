@@ -2,17 +2,13 @@ open OUnit2
 open Lib
 open AST
 
-let parse_string s =
-  let lexbuf = Lexing.from_string s in
-  VBParser.translation_unit (VBLexer.token (VBLexerState.create ())) lexbuf
-
 let parse_method _test_ctxt =
   let code = "@VB\n" ^
              "@@\n" ^
              "sub main()\n" ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -31,7 +27,7 @@ let parse_decl _test_ctxt =
              "dim j as jeroo = new jeroo(1, 2)\n" ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -71,7 +67,7 @@ let parse_if_stmt _test_ctxt =
              "end if\n" ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -99,7 +95,7 @@ let parse_if_stmt_no_paren _test_ctxt =
              "end if\n" ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -128,7 +124,7 @@ let parse_elseif_stmt _test_ctxt =
              "end if\n" ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -163,7 +159,7 @@ let parse_elseif_no_paren_stmt _test_ctxt =
              "end if\n" ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -200,7 +196,7 @@ let parse_elseif_list_stmt _test_ctxt =
              "end if\n" ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -242,7 +238,7 @@ let parse_elseif_list_no_paren_stmt _test_ctxt =
              "else\n end if\n" ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -282,7 +278,7 @@ let parse_while_stmt _test_ctxt =
              "end while\n" ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -310,7 +306,7 @@ let parse_while_no_paren _test_ctxt =
              "end while\n" ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -338,7 +334,7 @@ let parse_and _test_ctxt =
              "end if\n" ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -372,7 +368,7 @@ let parse_or _test_ctxt =
              "end if\n" ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -406,7 +402,7 @@ let parse_not _test_ctxt =
              "end if\n" ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -436,7 +432,7 @@ let parse_comment _test_ctxt =
              "sub main()\n" ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -455,7 +451,7 @@ let parse_fxn_call _test_ctxt =
              "foobar(20, five, north)\n" ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -498,7 +494,7 @@ let parse_obj_fxn_call _test_ctxt =
              "foo.bar(AHEAD)\n" ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -538,7 +534,7 @@ let parse_not_precedence _test_ctxt =
              "end if\n"  ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -575,7 +571,7 @@ let parse_paren_precedence _test_ctxt =
              "end if\n" ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -612,7 +608,7 @@ let parse_and_or_precedence _test_ctxt =
              "end if\n" ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -659,7 +655,7 @@ let parse_arbitrary_newlines _test_ctxt =
              "\n" ^
              "\n"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -682,7 +678,7 @@ let parse_fxn_list _test_ctxt =
              "\n" ^
              "\n"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [
                      {
@@ -711,7 +707,7 @@ let parse_stmt_list _test_ctxt =
              "end while\n" ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -745,7 +741,7 @@ let parse_negative_int _test_ctxt =
              "foo(-1)\n" ^
              "end sub"
   in
-  let ast = parse_string code in
+  let ast = Parser.parse code in
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
@@ -770,6 +766,41 @@ let parse_negative_int _test_ctxt =
                    }
                  } in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
+
+(* TODO: complete all of these tasks in a future story *)
+let parse_missing_end_sub _test_ctxt = ()
+
+let parse_missing_end_while _test_ctxt = ()
+
+let parse_missing_end_if _test_ctxt = ()
+
+let parse_missing_main_fxn _test_ctxt = ()
+
+let parse_lexing_error _test_ctxt = ()
+
+let parse_malformed_while_stmt _test_ctxt = ()
+
+let parse_malformed_if_stmt _test_ctxt = ()
+
+let parse_missing_newline_after_stmt _test_ctxt = ()
+
+let parse_missing_rparen_in_expr _test_ctxt = ()
+
+let parse_and_empty_rvalue _test_ctxt = ()
+
+let parse_or_empty_rvalue _test_ctxt = ()
+
+let parse_dot_empty_rvalue _test_ctxt = ()
+
+let parse_not_empty_rvalue _test_ctxt = ()
+
+let parse_dim_empty_rvalue _test_ctxt = ()
+
+let parse_wild_else_stmt _test_ctxt = ()
+
+let parse_missing_rparen_in_fxn_app _test_ctxt = ()
+
+let parse_missing_comma_in_fxn_app _test_ctxt = ()
 
 let suite =
   "Visual Basic Parsing">::: [
@@ -796,4 +827,21 @@ let suite =
     "Parse fxn list">:: parse_fxn_list;
     "Parse Stmt List">:: parse_stmt_list;
     "Parse negative int">:: parse_negative_int;
+    "Parse missing end sub">:: parse_missing_end_sub;
+    "Parse missing end while">:: parse_missing_end_while;
+    "Parse missing end if">:: parse_missing_end_if;
+    "Parse missing main fxn">:: parse_missing_end_if;
+    "Parse lexing error">:: parse_lexing_error;
+    "Parse malformed while stmt">:: parse_malformed_while_stmt;
+    "Parse malformed if stmt">:: parse_malformed_if_stmt;
+    "Parse missing newline after stmt">:: parse_missing_newline_after_stmt;
+    "Parse missing rparen in expr">:: parse_missing_rparen_in_expr;
+    "Parse and empty rvalue">:: parse_and_empty_rvalue;
+    "Parse or empty rvalue">:: parse_or_empty_rvalue;
+    "Parse dot empty rvalue">:: parse_dot_empty_rvalue;
+    "Parse not empty rvalue">:: parse_not_empty_rvalue;
+    "Parse dim empty rvalue">:: parse_dim_empty_rvalue;
+    "Parse wild else stmt">:: parse_wild_else_stmt;
+    "Parse missing rparen in fxn app">:: parse_missing_rparen_in_fxn_app;
+    "Parse missing comma in fxn app">:: parse_missing_comma_in_fxn_app;
   ]

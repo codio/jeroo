@@ -1,52 +1,16 @@
-translation_unit: HEADER MAIN_METH_SEP NEWLINE WHILE
-##
-## Ends in an error in state: 99.
-##
-## translation_unit -> HEADER option(NEWLINE) list(fxn) MAIN_METH_SEP option(NEWLINE) . fxn EOF [ # ]
-##
-## The known suffix of the stack is as follows:
-## HEADER option(NEWLINE) list(fxn) MAIN_METH_SEP option(NEWLINE)
-##
-
-expected `Sub`
-
-translation_unit: HEADER MAIN_METH_SEP SUB ID LPAREN RPAREN NEWLINE END SUB NEWLINE WHILE
-##
-## Ends in an error in state: 100.
-##
-## translation_unit -> HEADER option(NEWLINE) list(fxn) MAIN_METH_SEP option(NEWLINE) fxn . EOF [ # ]
-##
-## The known suffix of the stack is as follows:
-## HEADER option(NEWLINE) list(fxn) MAIN_METH_SEP option(NEWLINE) fxn
-##
-
-expected EOF
-
-translation_unit: HEADER MAIN_METH_SEP WHILE
-##
-## Ends in an error in state: 98.
-##
-## translation_unit -> HEADER option(NEWLINE) list(fxn) MAIN_METH_SEP . option(NEWLINE) fxn EOF [ # ]
-##
-## The known suffix of the stack is as follows:
-## HEADER option(NEWLINE) list(fxn) MAIN_METH_SEP
-##
-
-expected `Sub`
-
-translation_unit: HEADER NEWLINE LPAREN
+translation_unit: NEWLINE END
 ##
 ## Ends in an error in state: 3.
 ##
-## translation_unit -> HEADER option(NEWLINE) . list(fxn) MAIN_METH_SEP option(NEWLINE) fxn EOF [ # ]
+## translation_unit -> option(NEWLINE) . list(fxn) EOF [ # ]
 ##
 ## The known suffix of the stack is as follows:
-## HEADER option(NEWLINE)
+## option(NEWLINE)
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+expected `Sub`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE DIM ID AS ID EQ WEST WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE DIM ID AS ID EQ WEST WHILE
 ##
 ## Ends in an error in state: 56.
 ##
@@ -61,7 +25,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE DIM ID AS ID EQ WEST WHILE
 
 expected either a new line, `,`, or an operator
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE DIM ID AS ID EQ WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE DIM ID AS ID EQ WHILE
 ##
 ## Ends in an error in state: 55.
 ##
@@ -73,7 +37,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE DIM ID AS ID EQ WHILE
 
 expected expression
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE DIM ID AS ID WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE DIM ID AS ID WHILE
 ##
 ## Ends in an error in state: 54.
 ##
@@ -85,7 +49,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE DIM ID AS ID WHILE
 
 expected `=`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE DIM ID AS WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE DIM ID AS WHILE
 ##
 ## Ends in an error in state: 53.
 ##
@@ -97,7 +61,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE DIM ID AS WHILE
 
 expected identifier
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE DIM ID WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE DIM ID WHILE
 ##
 ## Ends in an error in state: 52.
 ##
@@ -109,7 +73,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE DIM ID WHILE
 
 expected `as`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE DIM WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE DIM WHILE
 ##
 ## Ends in an error in state: 51.
 ##
@@ -121,23 +85,23 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE DIM WHILE
 
 expected identifier
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE END SUB NEWLINE WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE END SUB NEWLINE WHILE
 ##
-## Ends in an error in state: 102.
+## Ends in an error in state: 99.
 ##
-## list(fxn) -> fxn . list(fxn) [ MAIN_METH_SEP ]
+## list(fxn) -> fxn . list(fxn) [ EOF ]
 ##
 ## The known suffix of the stack is as follows:
 ## fxn
 ##
 
-expected either another function or an `@@\n` (likely an error in your input file)
+expected `Sub`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE END SUB WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE END SUB WHILE
 ##
 ## Ends in an error in state: 95.
 ##
-## fxn -> SUB ID LPAREN RPAREN NEWLINE block END SUB . NEWLINE [ SUB MAIN_METH_SEP EOF ]
+## fxn -> SUB ID LPAREN RPAREN NEWLINE block END SUB . NEWLINE [ SUB EOF ]
 ##
 ## The known suffix of the stack is as follows:
 ## SUB ID LPAREN RPAREN NEWLINE block END SUB
@@ -145,11 +109,11 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE END SUB WHILE
 
 expected new line
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE END WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE END WHILE
 ##
 ## Ends in an error in state: 94.
 ##
-## fxn -> SUB ID LPAREN RPAREN NEWLINE block END . SUB NEWLINE [ SUB MAIN_METH_SEP EOF ]
+## fxn -> SUB ID LPAREN RPAREN NEWLINE block END . SUB NEWLINE [ SUB EOF ]
 ##
 ## The known suffix of the stack is as follows:
 ## SUB ID LPAREN RPAREN NEWLINE block END
@@ -157,7 +121,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE END WHILE
 
 expected `End Sub`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE ID LPAREN WEST COMMA WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE ID LPAREN WEST COMMA WHILE
 ##
 ## Ends in an error in state: 37.
 ##
@@ -169,7 +133,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE ID LPAREN WEST COMMA WHILE
 
 expected expression
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE ID LPAREN WEST WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE ID LPAREN WEST WHILE
 ##
 ## Ends in an error in state: 29.
 ##
@@ -185,7 +149,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE ID LPAREN WEST WHILE
 
 expected either an additional argument or a `)`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE ID LPAREN WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE ID LPAREN WHILE
 ##
 ## Ends in an error in state: 21.
 ##
@@ -197,7 +161,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE ID LPAREN WHILE
 
 expected either an argument or a `)`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE ID WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE ID WHILE
 ##
 ## Ends in an error in state: 20.
 ##
@@ -210,7 +174,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE ID WHILE
 
 expected either function application, an operator, or a new line
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE NEWLINE END IF WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE NEWLINE END IF WHILE
 ##
 ## Ends in an error in state: 86.
 ##
@@ -222,7 +186,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE 
 
 expected a new line
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE NEWLINE END WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE NEWLINE END WHILE
 ##
 ## Ends in an error in state: 85.
 ##
@@ -234,7 +198,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE 
 
 expected `End If`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE NEWLINE THEN
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE NEWLINE THEN
 ##
 ## Ends in an error in state: 83.
 ##
@@ -246,7 +210,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE 
 
 expected `End If`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE NEWLINE WEST NEWLINE ELSEIF
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE NEWLINE WEST NEWLINE ELSEIF
 ##
 ## Ends in an error in state: 84.
 ##
@@ -266,7 +230,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE 
 
 expected either a statement or an `End If`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE WHILE
 ##
 ## Ends in an error in state: 82.
 ##
@@ -278,7 +242,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSE 
 
 expected new line
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE ELSE NEWLINE END IF WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE ELSE NEWLINE END IF WHILE
 ##
 ## Ends in an error in state: 79.
 ##
@@ -290,7 +254,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEI
 
 expected new line
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE ELSE NEWLINE END WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE ELSE NEWLINE END WHILE
 ##
 ## Ends in an error in state: 78.
 ##
@@ -302,7 +266,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEI
 
 expected `End If`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE ELSE NEWLINE THEN
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE ELSE NEWLINE THEN
 ##
 ## Ends in an error in state: 76.
 ##
@@ -314,7 +278,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEI
 
 expected either a statement or an `End If`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE ELSE NEWLINE WEST NEWLINE ELSEIF
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE ELSE NEWLINE WEST NEWLINE ELSEIF
 ##
 ## Ends in an error in state: 77.
 ##
@@ -334,7 +298,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEI
 
 expected either a statement or an `End If`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE ELSE WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE ELSE WHILE
 ##
 ## Ends in an error in state: 75.
 ##
@@ -346,7 +310,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEI
 
 expected new line
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE END IF WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE END IF WHILE
 ##
 ## Ends in an error in state: 73.
 ##
@@ -358,7 +322,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEI
 
 expected new line
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE END WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE END WHILE
 ##
 ## Ends in an error in state: 72.
 ##
@@ -370,7 +334,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEI
 
 expected `End If`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE THEN
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN NEWLINE THEN
 ##
 ## Ends in an error in state: 70.
 ##
@@ -384,7 +348,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEI
 
 expected a statement or an `End If`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST THEN WHILE
 ##
 ## Ends in an error in state: 69.
 ##
@@ -398,7 +362,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEI
 
 expected new line
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WEST WHILE
 ##
 ## Ends in an error in state: 68.
 ##
@@ -415,7 +379,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEI
 
 expected one of `then`, `.`, or an operator
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEIF WHILE
 ##
 ## Ends in an error in state: 67.
 ##
@@ -429,7 +393,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE ELSEI
 
 expected expression
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE END IF WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE END IF WHILE
 ##
 ## Ends in an error in state: 65.
 ##
@@ -441,7 +405,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE END I
 
 expected new line
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE END WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE END WHILE
 ##
 ## Ends in an error in state: 64.
 ##
@@ -453,7 +417,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE END W
 
 expected `End If`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE THEN
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE THEN
 ##
 ## Ends in an error in state: 50.
 ##
@@ -467,7 +431,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN NEWLINE THEN
 
 expected either a statement, an `ElseIf` block, or an `End If`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST THEN WHILE
 ##
 ## Ends in an error in state: 49.
 ##
@@ -481,7 +445,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST THEN WHILE
 
 expected new line
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WEST WHILE
 ##
 ## Ends in an error in state: 48.
 ##
@@ -498,7 +462,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WEST WHILE
 
 expected one of `then`, `.`, or an operator
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE IF WHILE
 ##
 ## Ends in an error in state: 47.
 ##
@@ -512,7 +476,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE IF WHILE
 
 expected expression
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE LPAREN WEST WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE LPAREN WEST WHILE
 ##
 ## Ends in an error in state: 41.
 ##
@@ -527,7 +491,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE LPAREN WEST WHILE
 
 expected one of `)`, `.`, or an operator
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE LPAREN WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE LPAREN WHILE
 ##
 ## Ends in an error in state: 17.
 ##
@@ -539,7 +503,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE LPAREN WHILE
 
 expected expression
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE NEW WEST WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE NEW WEST WHILE
 ##
 ## Ends in an error in state: 43.
 ##
@@ -554,7 +518,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE NEW WEST WHILE
 
 expected either a new line or one of `.`, or an operator
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE NEW WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE NEW WHILE
 ##
 ## Ends in an error in state: 16.
 ##
@@ -566,7 +530,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE NEW WHILE
 
 expected expression
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE NOT WEST WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE NOT WEST WHILE
 ##
 ## Ends in an error in state: 44.
 ##
@@ -581,7 +545,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE NOT WEST WHILE
 
 expected either a new line or one of `.`, or an operator
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE NOT WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE NOT WHILE
 ##
 ## Ends in an error in state: 14.
 ##
@@ -593,11 +557,11 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE NOT WHILE
 
 expected expression
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE THEN
+translation_unit: SUB ID LPAREN RPAREN NEWLINE THEN
 ##
 ## Ends in an error in state: 8.
 ##
-## fxn -> SUB ID LPAREN RPAREN NEWLINE . block END SUB NEWLINE [ SUB MAIN_METH_SEP EOF ]
+## fxn -> SUB ID LPAREN RPAREN NEWLINE . block END SUB NEWLINE [ SUB EOF ]
 ##
 ## The known suffix of the stack is as follows:
 ## SUB ID LPAREN RPAREN NEWLINE
@@ -605,7 +569,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE THEN
 
 expected either a statement or an `End Sub`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST AND WEST WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE WEST AND WEST WHILE
 ##
 ## Ends in an error in state: 36.
 ##
@@ -620,7 +584,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST AND WEST WHILE
 
 expected one of `.` or an operator
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST AND WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE WEST AND WHILE
 ##
 ## Ends in an error in state: 35.
 ##
@@ -632,7 +596,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST AND WHILE
 
 expected expression
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST DOT WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE WEST DOT WHILE
 ##
 ## Ends in an error in state: 32.
 ##
@@ -644,11 +608,11 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST DOT WHILE
 
 expected expression
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST NEWLINE ELSEIF
+translation_unit: SUB ID LPAREN RPAREN NEWLINE WEST NEWLINE ELSEIF
 ##
 ## Ends in an error in state: 93.
 ##
-## fxn -> SUB ID LPAREN RPAREN NEWLINE block . END SUB NEWLINE [ SUB MAIN_METH_SEP EOF ]
+## fxn -> SUB ID LPAREN RPAREN NEWLINE block . END SUB NEWLINE [ SUB EOF ]
 ##
 ## The known suffix of the stack is as follows:
 ## SUB ID LPAREN RPAREN NEWLINE block
@@ -664,7 +628,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST NEWLINE ELSEIF
 
 expected either a statement or an `End Sub`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST NEWLINE THEN
+translation_unit: SUB ID LPAREN RPAREN NEWLINE WEST NEWLINE THEN
 ##
 ## Ends in an error in state: 58.
 ##
@@ -676,7 +640,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST NEWLINE THEN
 
 expected statement or an end clause
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST OR WEST WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE WEST OR WEST WHILE
 ##
 ## Ends in an error in state: 31.
 ##
@@ -691,7 +655,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST OR WEST WHILE
 
 expected one of `.` or an operator
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST OR WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE WEST OR WHILE
 ##
 ## Ends in an error in state: 30.
 ##
@@ -703,7 +667,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST OR WHILE
 
 expected expression
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE WEST WHILE
 ##
 ## Ends in an error in state: 60.
 ##
@@ -718,7 +682,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WEST WHILE
 
 expected one of `.` or an operator
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE WEST NEWLINE END WEST
+translation_unit: SUB ID LPAREN RPAREN NEWLINE WHILE WEST NEWLINE END WEST
 ##
 ## Ends in an error in state: 90.
 ##
@@ -730,7 +694,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE WEST NEWLINE END WES
 
 expected `End While`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE WEST NEWLINE END WHILE WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE WHILE WEST NEWLINE END WHILE WHILE
 ##
 ## Ends in an error in state: 91.
 ##
@@ -742,7 +706,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE WEST NEWLINE END WHI
 
 expected new line
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE WEST NEWLINE THEN
+translation_unit: SUB ID LPAREN RPAREN NEWLINE WHILE WEST NEWLINE THEN
 ##
 ## Ends in an error in state: 46.
 ##
@@ -754,7 +718,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE WEST NEWLINE THEN
 
 expected either a statement or an `End While`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE WEST NEWLINE WEST NEWLINE ELSEIF
+translation_unit: SUB ID LPAREN RPAREN NEWLINE WHILE WEST NEWLINE WEST NEWLINE ELSEIF
 ##
 ## Ends in an error in state: 89.
 ##
@@ -774,7 +738,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE WEST NEWLINE WEST NE
 
 expected either a statement or an `End While`
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE WEST WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE WHILE WEST WHILE
 ##
 ## Ends in an error in state: 45.
 ##
@@ -789,7 +753,7 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE WEST WHILE
 
 expected either a new line, `.`, or an operator
 
-translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE WHILE
+translation_unit: SUB ID LPAREN RPAREN NEWLINE WHILE WHILE
 ##
 ## Ends in an error in state: 9.
 ##
@@ -801,11 +765,11 @@ translation_unit: HEADER SUB ID LPAREN RPAREN NEWLINE WHILE WHILE
 
 expected expression
 
-translation_unit: HEADER SUB ID LPAREN RPAREN WHILE
+translation_unit: SUB ID LPAREN RPAREN WHILE
 ##
 ## Ends in an error in state: 7.
 ##
-## fxn -> SUB ID LPAREN RPAREN . NEWLINE block END SUB NEWLINE [ SUB MAIN_METH_SEP EOF ]
+## fxn -> SUB ID LPAREN RPAREN . NEWLINE block END SUB NEWLINE [ SUB EOF ]
 ##
 ## The known suffix of the stack is as follows:
 ## SUB ID LPAREN RPAREN
@@ -813,11 +777,11 @@ translation_unit: HEADER SUB ID LPAREN RPAREN WHILE
 
 expected new line
 
-translation_unit: HEADER SUB ID LPAREN WHILE
+translation_unit: SUB ID LPAREN WHILE
 ##
 ## Ends in an error in state: 6.
 ##
-## fxn -> SUB ID LPAREN . RPAREN NEWLINE block END SUB NEWLINE [ SUB MAIN_METH_SEP EOF ]
+## fxn -> SUB ID LPAREN . RPAREN NEWLINE block END SUB NEWLINE [ SUB EOF ]
 ##
 ## The known suffix of the stack is as follows:
 ## SUB ID LPAREN
@@ -825,11 +789,11 @@ translation_unit: HEADER SUB ID LPAREN WHILE
 
 expected `)`
 
-translation_unit: HEADER SUB ID WHILE
+translation_unit: SUB ID WHILE
 ##
 ## Ends in an error in state: 5.
 ##
-## fxn -> SUB ID . LPAREN RPAREN NEWLINE block END SUB NEWLINE [ SUB MAIN_METH_SEP EOF ]
+## fxn -> SUB ID . LPAREN RPAREN NEWLINE block END SUB NEWLINE [ SUB EOF ]
 ##
 ## The known suffix of the stack is as follows:
 ## SUB ID
@@ -837,29 +801,17 @@ translation_unit: HEADER SUB ID WHILE
 
 expected `(`
 
-translation_unit: HEADER SUB WHILE
+translation_unit: SUB WHILE
 ##
 ## Ends in an error in state: 4.
 ##
-## fxn -> SUB . ID LPAREN RPAREN NEWLINE block END SUB NEWLINE [ SUB MAIN_METH_SEP EOF ]
+## fxn -> SUB . ID LPAREN RPAREN NEWLINE block END SUB NEWLINE [ SUB EOF ]
 ##
 ## The known suffix of the stack is as follows:
 ## SUB
 ##
 
 expected identifier
-
-translation_unit: HEADER WHILE
-##
-## Ends in an error in state: 1.
-##
-## translation_unit -> HEADER . option(NEWLINE) list(fxn) MAIN_METH_SEP option(NEWLINE) fxn EOF [ # ]
-##
-## The known suffix of the stack is as follows:
-## HEADER
-##
-
-expected either a function declaration or `@@\n`
 
 translation_unit: WHILE
 ##
@@ -871,4 +823,4 @@ translation_unit: WHILE
 ##
 ##
 
-expected `@VB\n` (likely due to an error in your input file)
+expected `Sub`
