@@ -8,10 +8,10 @@
   <h3><u>Conceptual Model</u></h3>
   <img src="assets/IslandModel.gif" alt="">
   <ul>
-    <li> Santong Island is represented as a grid consisting of 24 rows and 24 columns.
-      <li>The rows are numbered from 0 to 23 starting in the north (top) row.
-        <li>The columns are numbered from 0 to 23 starting in the west(left) columm.
-          <li>The location of a cell is specified as a pair of the form (<b>r ,c)</b>, where <b>r</b> represents the row number of the cell, and <b>c</b> represents its column number. For example, the pair (4,5) specifies the cell in row number 4 and column number 5.
+    <li> Santong Island is represented as a grid consisting of 24 rows and 24 columns.</li>
+    <li>The rows are numbered from 0 to 23 starting in the north (top) row.</li>
+    <li>The columns are numbered from 0 to 23 starting in the west(left) columm.</li>
+    <li>The location of a cell is specified as a pair of the form (<b>r ,c)</b>, where <b>r</b> represents the row number of the cell, and <b>c</b> represents its column number. For example, the pair (4,5) specifies the cell in row number 4 and column number 5.</li>
   </ul>
 
   <h3><u>Appearance on the Screen</u></h3>
@@ -25,10 +25,10 @@
 
   <h2>A Problem to Solve</h2>
   <ul>
-    <li> A Jeroo starts in the northwest corner of the island, facing East, with no flowers.
-      <li> There is a flower at location (0,4).
-        <li> There is a net at location (2.4).
-          <li> There are no other flowers, nets, Jeroos or water on the island.
+    <li> A Jeroo starts in the northwest corner of the island, facing East, with no flowers.</li>
+    <li> There is a flower at location (0,4).</li>
+    <li> There is a net at location (2.4).</li>
+    <li> There are no other flowers, nets, Jeroos or water on the island.</li>
   </ul>
 
   Write a program that will direct the Jeroo to pick the flower, use the flower to disable the net, and finish at the net's starting location facing EAST.
@@ -43,23 +43,23 @@
   <br><br>
   A Jeroo can
   <ol type="1">
-    <li> hop one space
-      <li> hop several spaces
-        <li> turn left or right
-          <li> pick a flower from its current location
-            <li> plant a flower at its current location
-              <li> give a flower to an adjacent Jeroo
-                <li> toss a flower to disable a net
+    <li> hop one space</li>
+    <li> hop several spaces</li>
+    <li> turn left or right</li>
+    <li> pick a flower from its current location</li>
+    <li> plant a flower at its current location</li>
+    <li> give a flower to an adjacent Jeroo</li>
+    <li> toss a flower to disable a net</li>
   </ol>
 
   <h2>Solution Plan</h2>
   <h3><u>Observations</u></h3>
   <ol type="1">
-    <li> The Jeroo starts facing East.
-      <li> The flower is exactly 4 spaces ahead of the Jeroo.
-        <li> The net is exactly 2 spaces South of the flower.
-          <li> The Jeroo's ending position will be the net's original position.
-            <li> The Jeroo must be facing East at the end.
+    <li> The Jeroo starts facing East.</li>
+    <li> The flower is exactly 4 spaces ahead of the Jeroo.</li>
+    <li> The net is exactly 2 spaces South of the flower.</li>
+    <li> The Jeroo's ending position will be the net's original position.</li>
+    <li> The Jeroo must be facing East at the end.</li>
   </ol>
 
   <h3><u>Algorithm</u></h3>
@@ -68,14 +68,14 @@
     <td>
       Let's name the Jeroo Kim.
       <ul>
-        <li> Instantiate (create) Kim
-          <li> Kim hop four spaces
-            <li> Kim pick the flower
-              <li> Kim turn right
-                <li> Kim hop once
-                  <li> Kim toss the flower to disable the net
-                    <li> Kim hop once
-                      <li> Kim turn left
+        <li> Instantiate (create) Kim</li>
+        <li> Kim hop four spaces</li>
+        <li> Kim pick the flower</li>
+        <li> Kim turn right</li>
+        <li> Kim hop once</li>
+        <li> Kim toss the flower to disable the net</li>
+        <li> Kim hop once</li>
+        <li> Kim turn left</li>
       </ul>
     </td>
 
@@ -132,9 +132,9 @@ Kim.turn(LEFT)
 
   Normally, you would type the entire program into the "main method" tab in the left half of the Jeroo window. There are three ways to get this tutorial program into the "main method" tab.
   <ol type="1">
-    <li> Click on the "main method" tab and type the code as it appears above. The capitalization and punctuation are important.
-      <li> Copy the program above and paste it into the "main method" tab.
-        <li> Click on the <b>Copy The Code</b> button below.
+    <li> Click on the "main method" tab and type the code as it appears above. The capitalization and punctuation are important.</li>
+    <li> Copy the program above and paste it into the "main method" tab.</li>
+    <li> Click on the <b>Copy The Code</b> button below.</li>
   </ol>
   The first method is good practice, but you may want to use one of the other two.
   <br>
@@ -149,21 +149,18 @@ Kim.turn(LEFT)
   You need to use the mouse (or other pointing device) to place flowers, nets, and water on the island.
 
   <ul>
-    <li> To add or remove flowers, either click the <img src="assets/images/flower.jpg" alt="yellow flower"> button on Jeroo's toolbar, or select <b><u>P</u>lant Flowers</b> from the <b>Islan<u>d</u> Edit </b>menu.
-
-      <li> To add or remove nets, either click the <img src="assets/images/net.jpg" alt="red net"> button on Jeroo's toolbar, or select <b>Set <u>N</u>ets</b> from the <b>Islan<u>d</u> Edit </b>menu.
-
-        <li> To add or remove water, either click the <img src="assets/images/water.jpg" alt="blue square"> button on Jeroo's toolbar, or select <b>Add <u>W</u>ater</b> from the <b>Islan<u>d</u> Edit </b>menu.
-
+    <li> To add or remove flowers, either click the <img src="assets/images/flower.jpg" alt="yellow flower"> button on Jeroo's toolbar, or select <b><u>P</u>lant Flowers</b> from the <b>Islan<u>d</u> Edit </b>menu.</li>
+    <li> To add or remove nets, either click the <img src="assets/images/net.jpg" alt="red net"> button on Jeroo's toolbar, or select <b>Set <u>N</u>ets</b> from the <b>Islan<u>d</u> Edit </b>menu.</li>
+    <li> To add or remove water, either click the <img src="assets/images/water.jpg" alt="blue square"> button on Jeroo's toolbar, or select <b>Add <u>W</u>ater</b> from the <b>Islan<u>d</u> Edit </b>menu.</li>
   </ul>
   The cursor always indicates the kind of object that you are adding to the island.
   <br>
   <br>
   <ul>
-    <li> Click the left mouse button to place an object in the current cell, replacing anything that might be there already.
-      <li> Hold the left mouse button down and move the mouse to place several adjacent objects on the island.
-        <li> Click the right mouse button to remove an object from the current cell.
-          <li> Hold the right mouse button down and move the mouse to remove several objects from the island.
+    <li> Click the left mouse button to place an object in the current cell, replacing anything that might be there already.</li>
+    <li> Hold the left mouse button down and move the mouse to place several adjacent objects on the island.</li>
+    <li> Click the right mouse button to remove an object from the current cell.</li>
+    <li> Hold the right mouse button down and move the mouse to remove several objects from the island.</li>
   </ul>
 
   <h3><u>Practice</u></h3>
@@ -179,9 +176,9 @@ Kim.turn(LEFT)
     <td>
       Configure the island for this problem.
       <ul>
-        <li> Clear the island.
-          <li> Place a single flower at location (0,4).
-            <li> Place a single net at location (2,4).
+        <li> Clear the island.</li>
+        <li> Place a single flower at location (0,4).</li>
+        <li> Place a single net at location (2,4).</li>
       </ul>
     </td>
     <td>
@@ -206,10 +203,10 @@ Kim.turn(LEFT)
   <br>
   There are several things to notice when you run the program.
   <ul>
-    <li> Each Jeroo is represented by an arrow that shows the Jeroo's location and direction. A program can have up to four Jeroo's. Each is represented by an arrow with a unique shape and color.
-      <li> A status panel under the island keeps track of each Jeroo, showing its name, its direction, and the number of flowers in its pouch. In our tutorial program, this panel has the following appearance just before Kim tosses a flower into the net. <img src="assets/StatusView.png" alt="">.
-        <li> Each statement in the program is highlighted just before it is executed.
-          <li> A message area under the source code shows the status of the program.
+    <li> Each Jeroo is represented by an arrow that shows the Jeroo's location and direction. A program can have up to four Jeroo's. Each is represented by an arrow with a unique shape and color.</li>
+    <li> A status panel under the island keeps track of each Jeroo, showing its name, its direction, and the number of flowers in its pouch. In our tutorial program, this panel has the following appearance just before Kim tosses a flower into the net. <img src="assets/StatusView.png" alt="">.</li>
+    <li> Each statement in the program is highlighted just before it is executed.</li>
+    <li> A message area under the source code shows the status of the program.</li>
   </ul>
 
   When you are finished, click the <img src="assets/Reset.png" alt="button with triangle pointing to vertical line"> button on Jeroo's toolbar, or select <b>Reset</b> from the <b><u>R</u>un</b> menu to reset the program and restore the island to its starting appearance.
@@ -228,26 +225,26 @@ Kim.turn(LEFT)
   <br>
   Click the <img src="assets/Step.png" alt="button with one large triangle"> button or select <b>Run <u>S</u>tepwise</b> from the <b><u>R</u>un</b> menu to start running the program step-by-step.
   <ul>
-    <li> The first time you press the "stepwise" button, the first statement to be executed will be highlighted.
-      <li> Each time after the first, the highlighted line will be executed, and the next statement to execute will be highlighted.
+    <li> The first time you press the "stepwise" button, the first statement to be executed will be highlighted.</li>
+    <li> Each time after the first, the highlighted line will be executed, and the next statement to execute will be highlighted.</li>
   </ul>
   <br>
 
   <h3><u>Changing Modes and Speeds</u></h3>
   Jeroo allows you to switch back and forth between running stepwise and continuously. Jeroo also allows you to stop a program or change speeds while a program is running.
   <ul>
-    <li> Click the <img src="assets/Run.png" alt="button with two triangles"> button on Jeroo's toolbar or select <b>Run <u>C</u>ontinuously</b> from the <b><u>R</u>un</b> menu to switch from running stepwise to continuously.
-      <li> Click the <img src="assets/PauseRun.png" alt="button with two vertical bars"> button on Jeroo's toolbar or select <b><u>P</u>ause</b> from the <b><u>R</u>un</b> menu to pause a program that is running continuously. After a program has been paused, you can switch to running stepwise or change speeds and resume running continuously at the new speed.
-        <li> Click the <img src="assets/StopRun.png" alt="button with red square"> button on Jeroo's toolbar or select <b>S<u>t</u>op Run</b> from the <b><u>R</u>un</b> menu to stop a program.
+    <li> Click the <img src="assets/Run.png" alt="button with two triangles"> button on Jeroo's toolbar or select <b>Run <u>C</u>ontinuously</b> from the <b><u>R</u>un</b> menu to switch from running stepwise to continuously.</li>
+    <li> Click the <img src="assets/PauseRun.png" alt="button with two vertical bars"> button on Jeroo's toolbar or select <b><u>P</u>ause</b> from the <b><u>R</u>un</b> menu to pause a program that is running continuously. After a program has been paused, you can switch to running stepwise or change speeds and resume running continuously at the new speed.</li>
+    <li> Click the <img src="assets/StopRun.png" alt="button with red square"> button on Jeroo's toolbar or select <b>S<u>t</u>op Run</b> from the <b><u>R</u>un</b> menu to stop a program.</li>
   </ul>
   <br>
 
   <h3><u>Water and Nets</u></h3>
   This activity shows what happens when a Jeroo hops into a net or into the water. As you learn more about Jeroo, you will learn how to detect and avoid nets, water, and other Jeroos.
   <ul>
-    <li> Place a net at location (0,2) on the island. Run the program and watch what happens. Notice that an error message appears in the area under the source code tabs.
-      <li> Replace the net with water. Run the program again and watch what happens. Be sure to read the error message.
-        <li> A similar thing happens when one Jeroo bumps into another.
+    <li> Place a net at location (0,2) on the island. Run the program and watch what happens. Notice that an error message appears in the area under the source code tabs.</li>
+    <li> Replace the net with water. Run the program again and watch what happens. Be sure to read the error message.</li>
+    <li> A similar thing happens when one Jeroo bumps into another.</li>
   </ul>
   <br>
   <br>
