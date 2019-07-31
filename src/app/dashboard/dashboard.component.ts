@@ -13,6 +13,8 @@ import { MessageService } from '../message.service';
 import { PrintService } from '../print.service';
 import { CodeService } from '../code.service';
 import { EditorPreferencesComponent } from './editor-preferences/editor-preferences.component';
+import { CodeSaveDialogComponent } from './code-save-dialog/code-save-dialog.component';
+import { IslandSaveDialogComponent } from './island-save-dialog/island-save-dialog.component';
 
 interface Speed {
   name: string;
@@ -88,11 +90,11 @@ export class DashboardComponent implements AfterViewInit {
       return false;
     }));
     this.hotkeysService.add(new Hotkey('ctrl+shift+s', (_event: KeyboardEvent): boolean => {
-      this.saveMapFile();
+      this.saveIsland();
       return false;
     }));
     this.hotkeysService.add(new Hotkey('ctrl+shift+p', (_event: KeyboardEvent): boolean => {
-      this.printMap();
+      this.printIsland();
       return false;
     }));
     this.hotkeysService.add(new Hotkey('f8', (_event: KeyboardEvent): boolean => {
@@ -100,19 +102,19 @@ export class DashboardComponent implements AfterViewInit {
       return false;
     }));
     this.hotkeysService.add(new Hotkey('ctrl+n', (_event: KeyboardEvent): boolean => {
-      this.onNewFileClick();
+      this.newCodeFile();
       return false;
     }));
     this.hotkeysService.add(new Hotkey('ctrl+o', (_event: KeyboardEvent): boolean => {
-      this.onOpenFileClick();
+      this.openCodeFile();
       return false;
     }));
     this.hotkeysService.add(new Hotkey('ctrl+s', (_event: KeyboardEvent): boolean => {
-      this.onSaveClick();
+      this.saveCode();
       return false;
     }));
     this.hotkeysService.add(new Hotkey('ctrl+p', (_event: KeyboardEvent): boolean => {
-      this.onPrintClick();
+      this.printCode();
       return false;
     }));
   }
@@ -146,11 +148,11 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
-  onNewFileClick() {
+  newCodeFile() {
     this.jerooEditor.clearCode();
   }
 
-  onOpenFileClick() {
+  openCodeFile() {
     (this.codeFileInput.nativeElement as HTMLInputElement).click();
   }
 
@@ -165,15 +167,11 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
-  onSaveClick() {
-    const jerooCodeString = this.codeService.genCodeStr();
-    const blob = new Blob([jerooCodeString], {
-      type: 'text/plain'
-    });
-    this.saveBlob(blob, 'code.jsc');
+  saveCode() {
+    this.dialog.open(CodeSaveDialogComponent);
   }
 
-  onPrintClick() {
+  printCode() {
     this.printService.printDocument('code');
   }
 
@@ -259,7 +257,7 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   mapFileSelected(file: File) {
-    if (this.matrixEditingEnabled()) {
+    if (this.islandEditingEnabled()) {
       const reader = new FileReader();
       reader.readAsText(file, 'UTF-8');
       reader.onload = (readerEvent: any) => {
@@ -270,30 +268,11 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
-  saveMapFile() {
-    const jerooMapString = this.matrixService.toString();
-    const blob = new Blob([jerooMapString], {
-      type: 'text/plain'
-    });
-    this.saveBlob(blob, 'map.jev');
+  saveIsland() {
+    this.dialog.open(IslandSaveDialogComponent);
   }
 
-  private saveBlob(blob: Blob, fileName: string) {
-    const fileSaver = (this.fileSaver.nativeElement as HTMLAnchorElement);
-    const saveBlob = (function () {
-      return function () {
-        const url = window.URL.createObjectURL(blob);
-        fileSaver.href = url;
-        fileSaver.download = fileName;
-        fileSaver.click();
-        window.URL.revokeObjectURL(url);
-      };
-    }());
-
-    saveBlob();
-  }
-
-  printMap() {
+  printIsland() {
     this.printService.printDocument('map');
   }
 
@@ -327,7 +306,7 @@ export class DashboardComponent implements AfterViewInit {
     return !this.jerooEditorState.executing && !this.jerooEditorState.paused;
   }
 
-  matrixEditingEnabled() {
+  islandEditingEnabled() {
     return this.jerooEditorState.reset;
   }
 

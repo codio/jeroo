@@ -2,13 +2,15 @@
 <mat-dialog-content [formGroup]="form">
   <div class="dialog-container">
     <mat-form-field class="dialog-form">
-      <input id="xValueInput" matInput placeholder="X Value: " formControlName="xValue">
+      <mat-label>X Value</mat-label>
+      <input id="xValueInput" matInput formControlName="xValue">
       <mat-error>
         Value must be between 1 and 50
       </mat-error>
     </mat-form-field>
     <mat-form-field class="dialog-form">
-      <input id="yValueInput" matInput placeholder="Y Value: " formControlName="yValue">
+      <mat-label>Y Value</mat-label>
+      <input id="yValueInput" matInput formControlName="yValue">
       <mat-error>
         Value must be between 1 and 50
       </mat-error>
