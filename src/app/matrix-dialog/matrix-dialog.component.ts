@@ -19,9 +19,9 @@ export class MatrixDialogComponent implements OnInit {
   heightValue: number;
 
   constructor(private fb: FormBuilder,
-              public dialogRef: MatDialogRef<MatrixDialogComponent>,
-              private dialog: MatDialog,
-              @Inject(MAT_DIALOG_DATA) data: DialogData) {
+    public dialogRef: MatDialogRef<MatrixDialogComponent>,
+    private dialog: MatDialog,
+    @Inject(MAT_DIALOG_DATA) data: DialogData) {
     this.widthValue = data.xValue;
     this.heightValue = data.yValue;
   }

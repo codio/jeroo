@@ -50,6 +50,8 @@ import { PrintCodeDialogComponent } from './print-layout/print-code/print-code-d
 import { EditorPreferencesComponent } from './dashboard/editor-preferences/editor-preferences.component';
 import { CompilationErrorMessageComponent } from './display-error-message/compilation-error-message/compilation-error-message.component';
 import { LoggingMessageComponent } from './display-error-message/logging-message/logging-message.component';
+import { CodeSaveDialogComponent } from './dashboard/code-save-dialog/code-save-dialog.component';
+import { IslandSaveDialogComponent } from './dashboard/island-save-dialog/island-save-dialog.component';
 
 library.add(
   faFile,
@@ -93,7 +95,9 @@ library.add(
     PrintCodeDialogComponent,
     EditorPreferencesComponent,
     CompilationErrorMessageComponent,
-    LoggingMessageComponent
+    LoggingMessageComponent,
+    CodeSaveDialogComponent,
+    IslandSaveDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -118,7 +122,9 @@ library.add(
     DashboardDialogCopyrightComponent,
     WarningDialogComponent,
     PrintCodeDialogComponent,
-    EditorPreferencesComponent
+    EditorPreferencesComponent,
+    CodeSaveDialogComponent,
+    IslandSaveDialogComponent
   ]
 })
 export class AppModule { }
