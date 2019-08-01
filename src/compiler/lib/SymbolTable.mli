@@ -10,9 +10,6 @@ type ('a, 'b) t =
     }
 [@@deriving show]
 
-(** get the environent of the symbol table *)
-val get_env : ('a, 'b) t -> ('a, 'b) Hashtbl.t
-
 (** add element to the current level of the symbol table *)
 val add :  ('a, 'b) t -> 'a -> 'b -> unit
 

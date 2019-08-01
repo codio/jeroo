@@ -1,1 +1,1 @@
-val type_check : AST.translation_unit -> unit
+val typecheck : AST.translation_unit -> unit

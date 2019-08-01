@@ -8,7 +8,6 @@ let codegen_jeroo_decl_no_args _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {
@@ -41,7 +40,6 @@ let codegen_jeroo_decl_set_x_y _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {
@@ -84,7 +82,6 @@ let codegen_jeroo_decl_set_x_y_flowers _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {
@@ -132,7 +129,6 @@ let codegen_jeroo_decl_set_x_y_flowers_direction _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {
@@ -183,7 +179,6 @@ let codegen_jeroo_hop _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {
@@ -240,7 +235,6 @@ let codegen_multiple_jeroos_csr _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j1", {
             a = AST.UnOpExpr(AST.New, {
@@ -331,7 +325,6 @@ let codegen_pick_flower _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {
@@ -383,7 +376,6 @@ let codegen_plant_flower _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {
@@ -435,7 +427,6 @@ let codegen_toss_flower _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {
@@ -487,7 +478,6 @@ let codegen_give_default_args _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {
@@ -539,7 +529,6 @@ let codegen_give_in_direction _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {
@@ -594,7 +583,6 @@ let codegen_turn _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {
@@ -649,7 +637,6 @@ let codegen_has_flower _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {
@@ -701,7 +688,6 @@ let codegen_is_jeroo _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {
@@ -756,7 +742,6 @@ let codegen_is_facing _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {
@@ -811,7 +796,6 @@ let codegen_is_flower _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {
@@ -866,7 +850,6 @@ let codegen_is_net _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {
@@ -921,7 +904,6 @@ let codegen_is_water _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {
@@ -987,7 +969,6 @@ let codegen_call_custom_fxn _test_ctxt =
       }
     ];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {
@@ -1042,7 +1023,6 @@ let codegen_if_stmt _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {
@@ -1123,7 +1103,6 @@ let codegen_if_else _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {
@@ -1225,7 +1204,6 @@ let codegen_while _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
-      id = "main";
       stmts = [
         AST.DeclStmt("Jeroo", "j", {
             a = AST.UnOpExpr(AST.New, {

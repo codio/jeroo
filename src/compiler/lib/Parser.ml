@@ -1,6 +1,27 @@
 open AST
 open Position
 
+let make_main_fxn = function
+  | { id = "main"; stmts; start_lnum; end_lnum; } :: [] -> { stmts; start_lnum; end_lnum }
+  | { id; start_lnum; _ } :: [] -> raise (Exceptions.CompileException {
+      pos = { lnum = start_lnum; cnum = 0 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = Printf.sprintf "main method should be named `main`, found `%s`\n" id
+    })
+  | { start_lnum; _ } :: _ -> raise (Exceptions.CompileException {
+      pos = { lnum = start_lnum; cnum = 0 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "main method should be the only method in the main panel"
+    })
+  | [] -> raise (Exceptions.CompileException {
+      pos = { lnum = 0; cnum = 0 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "cannot find main method"
+    })
+
 let parse_java extensions_code main_code =
   let rec loop lexbuf checkpoint pane =
     try
@@ -53,10 +74,11 @@ let parse_java extensions_code main_code =
   let extensions_code_lexbuf = Lexing.from_string extensions_code in
   let extension_fxns = loop extensions_code_lexbuf (JavaParser.Incremental.translation_unit extensions_code_lexbuf.lex_curr_p) Pane.Extensions in
   let main_code_lexbuf = Lexing.from_string main_code in
-  let main_method = loop main_code_lexbuf (JavaParser.Incremental.translation_unit main_code_lexbuf.lex_curr_p) Pane.Main in
+  let main_fxns = loop main_code_lexbuf (JavaParser.Incremental.translation_unit main_code_lexbuf.lex_curr_p) Pane.Main in
+  let main_fxn = make_main_fxn main_fxns in
   {
     extension_fxns;
-    main_fxn = (List.hd main_method);
+    main_fxn;
     language = AST.Java
   }
 
@@ -111,10 +133,11 @@ let parse_vb extensions_code main_code =
   let extensions_code_lexbuf = Lexing.from_string extensions_code in
   let extension_fxns = loop extensions_code_lexbuf (VBLexerState.create ()) (VBParser.Incremental.translation_unit extensions_code_lexbuf.lex_curr_p) Pane.Extensions in
   let main_code_lexbuf = Lexing.from_string main_code in
-  let main_method = loop main_code_lexbuf (VBLexerState.create ()) (VBParser.Incremental.translation_unit main_code_lexbuf.lex_curr_p) Pane.Main in
+  let main_fxns = loop main_code_lexbuf (VBLexerState.create ()) (VBParser.Incremental.translation_unit main_code_lexbuf.lex_curr_p) Pane.Main in
+  let main_fxn = make_main_fxn main_fxns in
   {
     extension_fxns;
-    main_fxn = (List.hd main_method);
+    main_fxn;
     language = AST.VB;
   }
 

@@ -58,10 +58,24 @@ type fxn = {
 }
 [@@deriving show]
 
+type main_fxn = {
+  stmts : stmt list;
+  start_lnum : int;
+  end_lnum : int;
+}
+[@@deriving show]
+
 type language =
   | Java
   | VB
   | Python
+[@@deriving show]
+
+type translation_unit = {
+  extension_fxns : fxn list;
+  main_fxn : main_fxn;
+  language : language
+}
 [@@deriving show]
 
 let str_of_bin_op operator = function
@@ -100,10 +114,3 @@ let str_of_un_op operator = function
       | Not -> "not"
       | New -> "="
     end
-
-type translation_unit = {
-  extension_fxns : fxn list;
-  main_fxn : fxn;
-  language : language
-}
-[@@deriving show]

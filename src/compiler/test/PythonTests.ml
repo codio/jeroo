@@ -10,7 +10,6 @@ let parse_empty _test_ctxt =
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [];
                      start_lnum = 1;
                      end_lnum = 2;
@@ -27,7 +26,6 @@ let parse_main _test_ctxt =
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.BlockStmt([
                            AST.ExprStmt({
@@ -54,7 +52,6 @@ let parse_if _test_ctxt =
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt {
                          a = ({
@@ -90,7 +87,6 @@ let parse_if_else _test_ctxt =
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfElseStmt {
                          a = ({
@@ -134,7 +130,6 @@ let parse_if_elif _test_ctxt =
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfElseStmt {
                          a = {
@@ -183,7 +178,6 @@ let parse_if_elif_else _test_ctxt =
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfElseStmt {
                          a = ({
@@ -242,7 +236,6 @@ let parse_nested_if _test_ctxt =
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfElseStmt {
                          a = ({
@@ -295,7 +288,6 @@ let parse_while _test_ctxt =
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.WhileStmt {
                          a = ({
@@ -328,7 +320,6 @@ let parse_and _test_ctxt =
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt {
                          a = ({
@@ -367,7 +358,6 @@ let parse_or _test_ctxt =
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt {
                          a = ({
@@ -406,7 +396,6 @@ let parse_not _test_ctxt =
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt {
                          a = ({
@@ -443,7 +432,6 @@ let parse_comment _test_ctxt =
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [];
                      start_lnum = 1;
                      end_lnum = 2;
@@ -460,7 +448,6 @@ let parse_inline_comment _test_ctxt =
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.BlockStmt([
                            AST.ExprStmt({
@@ -484,7 +471,6 @@ let parse_newlines _test_ctxt =
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.BlockStmt([
                            AST.ExprStmt({
@@ -532,7 +518,6 @@ let parse_def _test_ctxt =
                      }
                    ];
                    main_fxn = {
-                     id = "main";
                      stmts = [];
                      start_lnum = 1;
                      end_lnum = 2;
@@ -549,7 +534,6 @@ let parse_fxn_application _test_ctxt =
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.BlockStmt([
                            AST.ExprStmt({
@@ -588,7 +572,6 @@ let parse_paren_precedence _test_ctxt =
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt {
                          a = ({
@@ -633,7 +616,6 @@ let parse_and_or_precedence _test_ctxt =
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt {
                          a = ({
@@ -678,7 +660,6 @@ let parse_not_precedence _test_ctxt =
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt {
                          a = ({
@@ -720,7 +701,6 @@ let parse_object_member_access _test_ctxt =
   let expected = { language = AST.Python;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        BlockStmt [
                          ExprStmt {

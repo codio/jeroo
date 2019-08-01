@@ -29,15 +29,16 @@ translation_unit:
   | fs = fxn* EOF { fs }
 
 fxn:
-  | METHOD id_pos = ID LPAREN RPAREN b = block {
-                                         let (stmts, start_pos, end_pos) = b in
-                                         {
-                                           id = fst id_pos;
-                                           stmts;
-                                           start_lnum = start_pos.lnum;
-                                           end_lnum = end_pos.lnum;
-                                         }
-                                       }
+  | METHOD id_pos = ID LPAREN RPAREN b = block
+    {
+      let (stmts, start_pos, end_pos) = b in
+      {
+        stmts;
+        id = fst id_pos;
+        start_lnum = start_pos.lnum;
+        end_lnum = end_pos.lnum;
+      }
+    }
 
 block:
   | start_pos = LBRACKET stmts = stmt* end_pos = RBRACKET { (stmts, start_pos, end_pos) }

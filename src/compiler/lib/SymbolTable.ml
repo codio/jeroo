@@ -10,10 +10,6 @@ type ('a, 'b) t =
     }
 [@@deriving show]
 
-let get_env = function
-  | Root { table; _ } -> table
-  | Node { table; _ } -> table
-
 let add t k v =
   match t with
   | Root { table; _ } -> Hashtbl.add table k v
