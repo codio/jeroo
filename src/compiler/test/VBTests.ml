@@ -12,7 +12,6 @@ let parse_method _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [];
                      start_lnum = 1;
                      end_lnum = 2;
@@ -31,7 +30,6 @@ let parse_decl _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.DeclStmt("Jeroo", "j", {
                            a = AST.UnOpExpr(AST.New, {
@@ -71,7 +69,6 @@ let parse_if_stmt _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt
                          { a = ({
@@ -99,7 +96,6 @@ let parse_if_stmt_no_paren _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt
                          { a = ({
@@ -128,7 +124,6 @@ let parse_elseif_stmt _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfElseStmt {
                          a = ({
@@ -163,7 +158,6 @@ let parse_elseif_no_paren_stmt _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfElseStmt {
                          a = ({
@@ -200,7 +194,6 @@ let parse_elseif_list_stmt _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfElseStmt {
                          a = {
@@ -242,7 +235,6 @@ let parse_elseif_list_no_paren_stmt _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfElseStmt {
                          a = {
@@ -282,7 +274,6 @@ let parse_while_stmt _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.WhileStmt {
                          a = ({
@@ -310,7 +301,6 @@ let parse_while_no_paren _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.WhileStmt {
                          a = ({
@@ -338,7 +328,6 @@ let parse_and _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt {
                          a = ({
@@ -372,7 +361,6 @@ let parse_or _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt{
                          a = ({
@@ -406,7 +394,6 @@ let parse_not _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt {
                          a = ({
@@ -436,7 +423,6 @@ let parse_comment _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [];
                      start_lnum = 2;
                      end_lnum = 3;
@@ -455,7 +441,6 @@ let parse_fxn_call _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.ExprStmt({
                            a = Some({
@@ -498,7 +483,6 @@ let parse_obj_fxn_call _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.ExprStmt({
                            a = Some {
@@ -538,7 +522,6 @@ let parse_not_precedence _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt {
                          a = ({
@@ -575,7 +558,6 @@ let parse_paren_precedence _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt {
                          a = ({
@@ -612,7 +594,6 @@ let parse_and_or_precedence _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt {
                          a = ({
@@ -659,7 +640,6 @@ let parse_arbitrary_newlines _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                      ];
                      start_lnum = 3;
@@ -689,7 +669,6 @@ let parse_fxn_list _test_ctxt =
                      }
                    ];
                    main_fxn = {
-                     id = "main";
                      stmts = [];
                      start_lnum = 1;
                      end_lnum = 2;
@@ -711,7 +690,6 @@ let parse_stmt_list _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt {
                          a = ({
@@ -745,7 +723,6 @@ let parse_negative_int _test_ctxt =
   let expected = { language = AST.VB;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.ExprStmt({
                            a = Some {

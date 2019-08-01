@@ -11,7 +11,6 @@ let parse_method _test_ctxt =
   let expected = { language = AST.Java;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [];
                      start_lnum = 1;
                      end_lnum = 1;
@@ -29,7 +28,6 @@ let parse_decl _test_ctxt =
   let expected = { language = AST.Java;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.DeclStmt("Jeroo", "j", {
                            a = AST.UnOpExpr(AST.New, {
@@ -68,7 +66,6 @@ let parse_if_stmt _test_ctxt =
   let expected = { language = AST.Java;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt {
                          a = ({
@@ -94,7 +91,7 @@ let parse_if_else_stmt _test_ctxt =
   let ast = Parser.parse code in
   let expected = { AST.extension_fxns = [];
                    main_fxn =
-                     { AST.id = "main";
+                     {
                        stmts =
                          [(AST.IfElseStmt
                              { AST.a =
@@ -116,7 +113,6 @@ let parse_dangling_if _test_ctxt =
   let expected = { language = AST.Java;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt{
                          a = {
@@ -148,7 +144,6 @@ let parse_while_stmt _test_ctxt =
   let expected = { language = AST.Java;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.WhileStmt {
                          a = ({
@@ -174,7 +169,6 @@ let parse_and _test_ctxt =
   let expected = { language = AST.Java;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt
                          {
@@ -207,7 +201,6 @@ let parse_or _test_ctxt =
   let expected = { language = AST.Java;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt
                          { a = ({
@@ -239,7 +232,6 @@ let parse_not _test_ctxt =
   let expected = { language = AST.Java;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt
                          { a = ({
@@ -268,7 +260,6 @@ let parse_not_precedence _test_ctxt =
   let expected = { language = AST.Java;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.IfStmt
                          { a = ({
@@ -303,7 +294,7 @@ let parse_paren_precedence _test_ctxt =
   let ast = Parser.parse code in
   let expected = { AST.extension_fxns = [];
                    main_fxn =
-                     { AST.id = "main";
+                     {
                        stmts =
                          [(AST.IfStmt
                              { AST.a =
@@ -342,7 +333,6 @@ let parse_comment _test_ctxt =
   let expected = { language = AST.Java;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [];
                      start_lnum = 1;
                      end_lnum = 1;
@@ -364,7 +354,6 @@ let parse_ml_comment _test_ctxt =
   let expected = { language = AST.Java;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [];
                      start_lnum = 4;
                      end_lnum = 4;
@@ -381,7 +370,7 @@ let parse_fxn_app _test_ctxt =
   let ast = Parser.parse code in
   let expected =  { AST.extension_fxns = [];
                     main_fxn =
-                      { AST.id = "main";
+                      {
                         stmts =
                           [(AST.ExprStmt
                               { AST.a =
@@ -406,7 +395,7 @@ let parse_obj_call _test_ctxt =
   let ast = Parser.parse code in
   let expected =  { AST.extension_fxns = [];
                     main_fxn =
-                      { AST.id = "main";
+                      {
                         stmts =
                           [(AST.ExprStmt
                               { AST.a =
@@ -444,7 +433,6 @@ let parse_negative_int _test_ctxt =
   let expected = { language = AST.Java;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        (AST.ExprStmt
                           { AST.a =
@@ -475,7 +463,6 @@ let parse_stmt_list _test_ctxt =
   let expected = { language = AST.Java;
                    extension_fxns = [];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.ExprStmt({
                            a = Some {
@@ -542,7 +529,6 @@ let parse_extension_method _test_ctxt =
                        end_lnum = 3;
                      }];
                    main_fxn = {
-                     id = "main";
                      stmts = [
                        AST.ExprStmt({
                            a = Some {

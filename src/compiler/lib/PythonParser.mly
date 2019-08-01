@@ -19,14 +19,13 @@ open AST
 %left DOT
 
 %start <AST.fxn list> fxns
-%start <AST.fxn> main_fxn
+%start <AST.main_fxn> main_fxn
 %%
 
 main_fxn:
   | stmts = stmt_list end_pos = EOF
     {
       {
-        id = "main";
         stmts;
         start_lnum = 1; (* TODO *)
         end_lnum = succ end_pos.lnum
