@@ -5,8 +5,7 @@ import { MatrixService } from 'src/app/matrix.service';
 
 @Component({
   selector: 'app-island-save-dialog',
-  templateUrl: './island-save-dialog.component.html',
-  styleUrls: ['./island-save-dialog.component.scss']
+  templateUrl: './island-save-dialog.component.html'
 })
 export class IslandSaveDialogComponent implements OnInit {
   @ViewChild('fileSaver', { static: true }) fileSaver: ElementRef;

@@ -5,8 +5,7 @@ import { CodeService } from 'src/app/code.service';
 
 @Component({
   selector: 'app-code-save-dialog',
-  templateUrl: './code-save-dialog.component.html',
-  styleUrls: ['./code-save-dialog.component.scss']
+  templateUrl: './code-save-dialog.component.html'
 })
 export class CodeSaveDialogComponent implements OnInit {
   @ViewChild('fileSaver', { static: true }) fileSaver: ElementRef;
