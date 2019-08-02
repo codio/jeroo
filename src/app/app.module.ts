@@ -52,6 +52,7 @@ import { CompilationErrorMessageComponent } from './display-error-message/compil
 import { LoggingMessageComponent } from './display-error-message/logging-message/logging-message.component';
 import { CodeSaveDialogComponent } from './dashboard/code-save-dialog/code-save-dialog.component';
 import { IslandSaveDialogComponent } from './dashboard/island-save-dialog/island-save-dialog.component';
+import { RuntimeErrorMessageComponent } from './display-error-message/runtime-error-message/runtime-error-message.component';
 
 library.add(
   faFile,
@@ -97,7 +98,8 @@ library.add(
     CompilationErrorMessageComponent,
     LoggingMessageComponent,
     CodeSaveDialogComponent,
-    IslandSaveDialogComponent
+    IslandSaveDialogComponent,
+    RuntimeErrorMessageComponent
   ],
   imports: [
     BrowserModule,

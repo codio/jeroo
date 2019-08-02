@@ -1,5 +1,5 @@
 import { Component, ViewChildren, QueryList, AfterViewInit, ElementRef } from '@angular/core';
-import { MessageService } from '../message.service';
+import { MessageService, Message, LoggingMessage, CompilationErrorMessage, RuntimeErrorMessage } from '../message.service';
 
 @Component({
   selector: 'app-display-error-message',
@@ -19,5 +19,17 @@ export class DisplayErrorMessageComponent implements AfterViewInit {
         div.scrollTop = div.scrollHeight;
       });
     });
+  }
+
+  messageIsLoggingMessage(message: Message) {
+    return message instanceof LoggingMessage;
+  }
+
+  messageIsRuntimeErrorMessage(message: Message) {
+    return message instanceof RuntimeErrorMessage;
+  }
+
+  messageIsCompilationErrorMessage(message: Message) {
+    return message instanceof CompilationErrorMessage;
   }
 }

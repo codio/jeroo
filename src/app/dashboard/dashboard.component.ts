@@ -9,7 +9,7 @@ import { DashboardDialogHistoryComponent } from './dashboard-dialog-history/dash
 import { EditorState, EditorTabAreaComponent } from '../editor-tab-area/editor-tab-area.component';
 import { JerooMatrixComponent } from '../jeroo-matrix/jeroo-matrix.component';
 import { MatrixService } from '../matrix.service';
-import { MessageService } from '../message.service';
+import { MessageService, LoggingMessage } from '../message.service';
 import { PrintService } from '../print.service';
 import { CodeService } from '../code.service';
 import { EditorPreferencesComponent } from './editor-preferences/editor-preferences.component';
@@ -225,7 +225,8 @@ export class DashboardComponent implements AfterViewInit {
   onPauseClick() {
     if (!this.pauseBtnDisabled()) {
       this.jerooEditor.pauseState();
-      this.messageService.addErrorMessage('Program paused by user');
+      const message = new LoggingMessage('Program paused by user');
+      this.messageService.addMessage(message);
     }
   }
 
@@ -233,7 +234,8 @@ export class DashboardComponent implements AfterViewInit {
     if (!this.stopBtnDisabled()) {
       this.jerooEditor.stopState();
       this.messageService.clear();
-      this.messageService.addErrorMessage('Program stopped by user');
+      const message = new LoggingMessage('Program stopped by user');
+      this.messageService.addMessage(message);
     }
   }
 
