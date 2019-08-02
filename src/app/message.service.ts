@@ -1,8 +1,17 @@
 import { Injectable } from '@angular/core';
 
-export interface Message {
-  loggingMessage?: string;
-  compilationError?: CompilationError;
+export class Message {}
+
+export class LoggingMessage {
+  constructor(public message: string) {}
+}
+
+export class CompilationErrorMessage {
+  constructor(public compilationError: CompilationError) {}
+}
+
+export class RuntimeErrorMessage {
+  constructor(public message: string, public pane_num: number, public line_num: number) {}
 }
 
 @Injectable({
@@ -11,20 +20,8 @@ export interface Message {
 export class MessageService {
   messages: Message[] = [];
 
-  addErrorMessage(message: string) {
-    this.messages.push({ loggingMessage: message });
-  }
-
-  addCompilationError(compilationError: CompilationError) {
-    this.messages.push({ compilationError: compilationError });
-  }
-
-  isMessageCompilationError(message: Message) {
-    return message.compilationError !== undefined;
-  }
-
-  isMessageLoggingMessage(message: Message) {
-    return message.loggingMessage !== undefined;
+  addMessage(message: Message) {
+    this.messages.push(message);
   }
 
   clear() {

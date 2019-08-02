@@ -56,7 +56,7 @@ describe('Jeroo Tests', () => {
     page.getRunContinousButton().click();
     browser.sleep(1000);
 
-    expect(page.getFinalMessage().getText()).toBe('Runtime error line 8: LOGIC ERROR: Jeroo is on water');
+    expect(page.getFinalMessage().getText()).toBe('Main:Line 8:LOGIC ERROR: Jeroo is on water');
     expect(page.getJerooName('0').getText()).toBe('j');
     expect(page.getJerooFlowers('0').getText()).toBe('6');
     expect(page.getJerooName('1').getText()).toBe('m');
@@ -184,7 +184,7 @@ describe('Jeroo Tests', () => {
     page.getRunContinousButton().click();
     browser.sleep(1000);
 
-    expect(page.getFinalMessage().getText()).toBe('Runtime error line 7: LOGIC ERROR: Jeroo is on water');
+    expect(page.getFinalMessage().getText()).toBe('Main:Line 7:LOGIC ERROR: Jeroo is on water');
     expect(page.getJerooName('0').getText()).toBe('j');
     expect(page.getJerooFlowers('0').getText()).toBe('6');
     expect(page.getJerooName('1').getText()).toBe('m');
@@ -316,7 +316,7 @@ describe('Jeroo Tests', () => {
     page.getRunContinousButton().click();
     browser.sleep(1000);
 
-    expect(page.getFinalMessage().getText()).toBe('Runtime error line 8: LOGIC ERROR: Jeroo is on water');
+    expect(page.getFinalMessage().getText()).toBe('Main:Line 8:LOGIC ERROR: Jeroo is on water');
     expect(page.getJerooName('0').getText()).toBe('j');
     expect(page.getJerooFlowers('0').getText()).toBe('6');
     expect(page.getJerooName('1').getText()).toBe('m');

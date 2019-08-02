@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { LoggingMessage } from 'src/app/message.service';
 
 @Component({
   selector: 'app-logging-message',
@@ -8,7 +9,7 @@ import { Component, Input } from '@angular/core';
 export class LoggingMessageComponent {
 
   @Input()
-  message: string;
+  loggingMessage: LoggingMessage;
 
   constructor() { }
 }

@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { LOCAL_STORAGE, WebStorageService } from 'angular-webstorage-service';
 import { BytecodeInterpreterService, RuntimeError } from '../bytecode-interpreter.service';
 import { MatrixService } from '../matrix.service';
-import { MessageService } from '../message.service';
+import { MessageService, LoggingMessage, CompilationErrorMessage, RuntimeErrorMessage } from '../message.service';
 import { TextEditorComponent } from '../text-editor/text-editor.component';
 import { CodeService, SelectedLanguage, SelectedTab } from '../code.service';
 import { Storage } from '../storage';
@@ -78,7 +78,7 @@ export class EditorTabAreaComponent implements AfterViewInit {
   runStepwise(context: CanvasRenderingContext2D) {
     if (this.editorState.reset || this.instructions === null) {
       this.messageService.clear();
-      this.messageService.addErrorMessage('Compiling...');
+      this.messageService.addMessage(new LoggingMessage('Compiling...'));
       const jerooCode = this.codeService.genCodeStr();
       const result = JerooCompiler.compile(jerooCode);
       if (result.successful) {
@@ -86,11 +86,11 @@ export class EditorTabAreaComponent implements AfterViewInit {
         this.bytecodeService.reset();
         this.bytecodeService.jerooMap = result.jerooMap;
       } else {
-        this.messageService.addCompilationError(result.error);
+        this.messageService.addMessage(new CompilationErrorMessage(result.error));
         return;
       }
     }
-    this.messageService.addErrorMessage('Stepping...');
+    this.messageService.addMessage(new LoggingMessage('Stepping...'));
     this.executingState();
     try {
       this.mainMethodTextEditor.setReadOnly(true);
@@ -112,7 +112,7 @@ export class EditorTabAreaComponent implements AfterViewInit {
   runContinious(context: CanvasRenderingContext2D) {
     if (this.editorState.reset || this.instructions === null) {
       this.messageService.clear();
-      this.messageService.addErrorMessage('Compiling...');
+      this.messageService.addMessage(new LoggingMessage('Compiling...'));
       const jerooCode = this.codeService.genCodeStr();
       const result = JerooCompiler.compile(jerooCode);
       if (result.successful) {
@@ -120,11 +120,11 @@ export class EditorTabAreaComponent implements AfterViewInit {
         this.bytecodeService.reset();
         this.bytecodeService.jerooMap = result.jerooMap;
       } else {
-        this.messageService.addCompilationError(result.error);
+        this.messageService.addMessage(new CompilationErrorMessage(result.error));
         return;
       }
     }
-    this.messageService.addErrorMessage('Running resumed...');
+    this.messageService.addMessage(new LoggingMessage('Running resumed...'));
     const executeInstructions = () => {
       try {
         this.mainMethodTextEditor.setReadOnly(true);
@@ -154,7 +154,7 @@ export class EditorTabAreaComponent implements AfterViewInit {
     this.unhighlightPreviousLine();
     this.previousInstruction = null;
     this.messageService.clear();
-    this.messageService.addErrorMessage('Program completed');
+    this.messageService.addMessage(new LoggingMessage('Program completed'));
     this.stopState();
   }
 
@@ -188,11 +188,10 @@ export class EditorTabAreaComponent implements AfterViewInit {
   private handleException(e: any) {
     const runtimeError: RuntimeError = e;
     this.messageService.clear();
-    const message = `Runtime error line ${runtimeError.line_num}: ${runtimeError.message}`;
     this.unhighlightPreviousLine();
     this.selectedTabIndex = runtimeError.pane_num;
     this.getSelectedEditor().highlightErrorLine(runtimeError.line_num);
-    this.messageService.addErrorMessage(message);
+    this.messageService.addMessage(new RuntimeErrorMessage(runtimeError.message, runtimeError.pane_num, runtimeError.line_num));
     this.stopState();
   }
 
