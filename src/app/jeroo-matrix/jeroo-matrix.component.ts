@@ -7,6 +7,7 @@ import { DialogData, MatrixDialogComponent } from '../matrix-dialog/matrix-dialo
 import { MatrixService } from '../matrix.service';
 import { Storage } from '../storage';
 import { WarningDialogComponent } from '../warning-dialog/warning-dialog.component';
+import { SelectedTileTypeService } from '../selected-tile-type.service';
 
 @Component({
   selector: 'app-jeroo-matrix',
@@ -16,17 +17,18 @@ import { WarningDialogComponent } from '../warning-dialog/warning-dialog.compone
 export class JerooMatrixComponent implements AfterViewInit {
   @ViewChild('jerooGameCanvas', { static: true }) jerooGameCanvas: ElementRef;
   @Input() editingEnabled: boolean;
+
   mouseRow: number = null;
   mouseColumn: number = null;
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
   private mouseDown = false;
-  private selectedTileType: TileType = null;
 
   constructor(private matrixService: MatrixService, private dialog: MatDialog,
     public bytecodeService: BytecodeInterpreterService,
-    @Inject(LOCAL_STORAGE) private storage: WebStorageService) {
-  }
+    private selectedTileTypeService: SelectedTileTypeService,
+    @Inject(LOCAL_STORAGE) private storage: WebStorageService
+  ) { }
 
   ngAfterViewInit() {
     // check if something has been stored in the cache to load if it has
@@ -106,24 +108,6 @@ export class JerooMatrixComponent implements AfterViewInit {
     return this.context;
   }
 
-  selectedTileTypeChange(tileType: string) {
-    this.selectedTileType = this.tileTypeToString(tileType);
-  }
-
-  private tileTypeToString(tileType: string) {
-    if (tileType === 'grass') {
-      return TileType.Grass;
-    } else if (tileType === 'water') {
-      return TileType.Water;
-    } else if (tileType === 'flower') {
-      return TileType.Flower;
-    } else if (tileType === 'net') {
-      return TileType.Net;
-    } else {
-      throw new Error('Unknown TileType');
-    }
-  }
-
   canvasGestureUp() {
     this.mouseDown = false;
     // save board when user is done editing
@@ -177,10 +161,10 @@ export class JerooMatrixComponent implements AfterViewInit {
     if (tileCol > 0 && tileRow > 0
       && tileCol < cols - 1 && tileRow < rows - 1) {
       // update the col and row
-      if (this.editingEnabled && this.mouseDown && this.selectedTileType !== null) {
+      if (this.editingEnabled && this.mouseDown && this.selectedTileTypeService) {
         // only re-render if we change the map
-        if (this.matrixService.getStaticTile(tileCol, tileRow) !== this.selectedTileType) {
-          this.matrixService.setStaticTile(tileCol, tileRow, this.selectedTileType);
+        if (this.matrixService.getStaticTile(tileCol, tileRow) !== this.selectedTileTypeService.selectedTileType) {
+          this.matrixService.setStaticTile(tileCol, tileRow, this.selectedTileTypeService.selectedTileType);
           this.matrixService.render(this.context);
         }
       }

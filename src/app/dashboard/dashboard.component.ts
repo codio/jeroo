@@ -15,11 +15,8 @@ import { CodeService } from '../code.service';
 import { EditorPreferencesComponent } from './editor-preferences/editor-preferences.component';
 import { CodeSaveDialogComponent } from './code-save-dialog/code-save-dialog.component';
 import { IslandSaveDialogComponent } from './island-save-dialog/island-save-dialog.component';
-
-interface Speed {
-  name: string;
-  value: number;
-}
+import { SelectedTileTypeService } from '../selected-tile-type.service';
+import { TileType } from '../jerooTileType';
 
 @Component({
   selector: 'app-dashboard',
@@ -34,9 +31,9 @@ export class DashboardComponent implements AfterViewInit {
   @ViewChild('fileSaver', { static: true }) fileSaver: ElementRef;
 
   private speeds = [475, 350, 225, 125, 25, 2];
-  runtimeSpeed = this.speeds[2];
   speedIndex = 3;
-  speedsRadio: Speed[] = [
+  runtimeSpeed = this.speeds[this.speedIndex - 1];
+  speedRadios = [
     { name: '1 - Slow', value: 1 },
     { name: '2', value: 2 },
     { name: '3 - Medium', value: 3 },
@@ -44,7 +41,10 @@ export class DashboardComponent implements AfterViewInit {
     { name: '5 - Fast', value: 5 },
     { name: '6 - Max', value: 6 }
   ];
-  selectedSpeedRadio = this.speedsRadio[2].value;
+
+  private tileTypes = [TileType.Grass, TileType.Water, TileType.Flower, TileType.Net];
+  // set the default selected tile to whatever is in the service
+  tileTypeIndex = this.tileTypes.indexOf(this.selectedTileTypeService.selectedTileType);
 
   jerooEditorState: EditorState = {
     reset: true,
@@ -59,6 +59,7 @@ export class DashboardComponent implements AfterViewInit {
     private messageService: MessageService,
     private printService: PrintService,
     private codeService: CodeService,
+    private selectedTileTypeService: SelectedTileTypeService,
     public dialog: MatDialog
   ) {
     this.hotkeysService.add(new Hotkey('f2', (_event: KeyboardEvent): boolean => {
@@ -330,5 +331,9 @@ export class DashboardComponent implements AfterViewInit {
 
   openCopyright() {
     this.dialog.open(DashboardDialogCopyrightComponent);
+  }
+
+  onTileTypeRadioClick(tileTypeIndex: number) {
+    this.selectedTileTypeService.selectedTileType = this.tileTypes[tileTypeIndex];
   }
 }
