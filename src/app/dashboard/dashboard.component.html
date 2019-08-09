@@ -5,7 +5,7 @@
       <button mat-menu-item [matMenuTriggerFor]="edit">Source Edit</button>
       <button mat-menu-item [matMenuTriggerFor]="run">Run</button>
       <button mat-menu-item [matMenuTriggerFor]="speed">Run Speed</button>
-      <button mat-menu-item [matMenuTriggerFor]="islandfile">Island File</button>
+      <button mat-menu-item [matMenuTriggerFor]="islandFile">Island File</button>
       <button mat-menu-item [matMenuTriggerFor]="islandEdit">Island Edit</button>
       <button mat-menu-item [matMenuTriggerFor]="help">Help</button>
     </mat-nav-list>
@@ -18,11 +18,11 @@
           <button mat-icon-button (click)="sidenav.toggle()">
             <fa-icon icon="bars"></fa-icon>
           </button>
-          <img src="assets/JerooLogo.png" alt="Jeroo Logo" />
+          <a href="https://jeroo.org"><img src="assets/JerooLogo.png" alt="Jeroo Logo" /></a>
         </div>
         <div fxLayout="row" fxHide.lt-md>
           <div fxLayout="row" fxLayoutAlign="center center">
-            <img src="assets/JerooLogo.png" alt="Jeroo Logo" />
+            <a href="https://jeroo.org"><img src="assets/JerooLogo.png" alt="Jeroo Logo" /></a>
           </div>
           <div fxLayout="row" fxLayoutAlign="center start" class="toolbar">
             <div fxLayout="column" fxLayoutAlign="center center">
@@ -77,7 +77,7 @@
               </div>
             </div>
             <div fxLayout="column" fxLayoutAlign="center center">
-              <button id="islandFileMenu" mat-button [matMenuTriggerFor]="islandfile">Island File</button>
+              <button id="islandFileMenu" mat-button [matMenuTriggerFor]="islandFile">Island File</button>
               <div>
                 <button id="newIslandButton" mat-icon-button matTooltip="Create new island layout" [disabled]="!islandEditingEnabled()" (click)="clearMap()">
                   <fa-icon icon="eraser"></fa-icon>
@@ -170,7 +170,7 @@
         </mat-radio-group>
       </ng-template>
     </mat-menu>
-    <mat-menu #islandfile="matMenu">
+    <mat-menu #islandFile="matMenu">
       <ng-template matMenuContent>
         <button id="newMapMenuItem" mat-menu-item [disabled]="!islandEditingEnabled()" (click)="clearMap()">
           <fa-icon icon="eraser"></fa-icon><span class="menu-text">New<span class="shortcut-tip">Ctrl+Shift+N</span></span>
@@ -238,8 +238,6 @@
         <a mat-menu-item routerLink="{{getHelpUrl()}}" target="_blank"><span>Langauge Summary<span class="shortcut-tip">F8</span></span></a>
         <mat-divider ></mat-divider>
         <a mat-menu-item routerLink="{{getTutorialUrl()}}" target="_blank"><span>Getting Started Tutorial</span></a>
-        <mat-divider></mat-divider>
-        <a mat-menu-item href="http://jeroo.org" target="_blank">Jeroo Home Page</a>
         <mat-divider></mat-divider>
         <a id="aboutMenuItem" mat-menu-item (click)="openAboutJeroo()">About Jeroo</a>
         <a id="awardsMenuItem" mat-menu-item (click)="openAwards()">Awards Received</a>
