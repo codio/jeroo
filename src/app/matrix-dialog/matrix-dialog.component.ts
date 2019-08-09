@@ -4,8 +4,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { WarningDialogComponent } from '../warning-dialog/warning-dialog.component';
 
 export interface DialogData {
-  xValue: number;
-  yValue: number;
+  colValue: number;
+  rowValue: number;
 }
 
 @Component({
@@ -15,15 +15,15 @@ export interface DialogData {
 })
 export class MatrixDialogComponent implements OnInit {
   form: FormGroup;
-  widthValue: number;
-  heightValue: number;
+  colValue: number;
+  rowValue: number;
 
   constructor(private fb: FormBuilder,
     public dialogRef: MatDialogRef<MatrixDialogComponent>,
     private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) data: DialogData) {
-    this.widthValue = data.xValue;
-    this.heightValue = data.yValue;
+    this.colValue = data.colValue;
+    this.rowValue = data.rowValue;
   }
 
   save() {
@@ -43,8 +43,8 @@ export class MatrixDialogComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.fb.group({
-      xValue: [this.widthValue, [Validators.min(1), Validators.max(50), Validators.pattern('[0-9]*'), Validators.required]],
-      yValue: [this.heightValue, [Validators.min(1), Validators.max(50), Validators.pattern('[0-9]*'), Validators.required]]
+      colValue: [this.colValue, [Validators.min(1), Validators.max(50), Validators.pattern('[0-9]*'), Validators.required]],
+      rowValue: [this.rowValue, [Validators.min(1), Validators.max(50), Validators.pattern('[0-9]*'), Validators.required]]
     });
   }
 }

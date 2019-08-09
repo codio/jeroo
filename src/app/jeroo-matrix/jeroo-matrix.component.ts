@@ -2,7 +2,6 @@ import { AfterViewInit, Component, ElementRef, Inject, Input, ViewChild } from '
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { LOCAL_STORAGE, WebStorageService } from 'angular-webstorage-service';
 import { BytecodeInterpreterService } from '../bytecode-interpreter.service';
-import { TileType } from '../jerooTileType';
 import { DialogData, MatrixDialogComponent } from '../matrix-dialog/matrix-dialog.component';
 import { MatrixService } from '../matrix.service';
 import { Storage } from '../storage';
@@ -56,15 +55,15 @@ export class JerooMatrixComponent implements AfterViewInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
     dialogConfig.data = {
-      xValue: this.matrixService.getCols() - 2,
-      yValue: this.matrixService.getRows() - 2
+      colValue: this.matrixService.getCols() - 2,
+      rowValue: this.matrixService.getRows() - 2
     };
 
     const dialogRef = this.dialog.open(MatrixDialogComponent, dialogConfig);
     dialogRef.afterClosed().subscribe((data: DialogData) => {
       if (data && this.editingEnabled) {
-        this.matrixService.setCols(+data.xValue + 2);
-        this.matrixService.setRows(+data.yValue + 2);
+        this.matrixService.setCols(+data.colValue + 2);
+        this.matrixService.setRows(+data.rowValue + 2);
         this.matrixService.resetMap();
         this.matrixService.resetDynamicMap();
         this.matrixService.resetJeroos();
