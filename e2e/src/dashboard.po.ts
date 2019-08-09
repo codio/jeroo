@@ -21,10 +21,10 @@ export class DashboardPage {
   setMatrixSize(cols: number, rows: number) {
     this.getIslandEditMenu().click();
     this.getChangeMapSize().click();
-    this.getXValueInput().clear();
-    this.getXValueInput().sendKeys(`${cols}`);
-    this.getYValueInput().clear();
-    this.getYValueInput().sendKeys(`${rows}`);
+    this.getColValueInput().clear();
+    this.getColValueInput().sendKeys(`${cols}`);
+    this.getRowValueInput().clear();
+    this.getRowValueInput().sendKeys(`${rows}`);
     this.getSubmitMatrixDialogButton().click();
     this.getYesWarningButton().click();
   }
@@ -73,12 +73,12 @@ export class DashboardPage {
     return element(by.id('submitMatrixDialogButton'));
   }
 
-  getXValueInput() {
-    return element(by.id('xValueInput'));
+  getColValueInput() {
+    return element(by.id('colValueInput'));
   }
 
-  getYValueInput() {
-    return element(by.id('yValueInput'));
+  getRowValueInput() {
+    return element(by.id('rowValueInput'));
   }
 
   getYesWarningButton() {
@@ -138,8 +138,8 @@ export class DashboardPage {
   async getMatrixSize() {
     this.getIslandEditMenu().click();
     this.getChangeMapSize().click();
-    const numCols = parseInt(await this.getXValueInput().getAttribute('value'), 10);
-    const numRows = parseInt(await this.getYValueInput().getAttribute('value'), 10);
+    const numCols = parseInt(await this.getColValueInput().getAttribute('value'), 10);
+    const numRows = parseInt(await this.getRowValueInput().getAttribute('value'), 10);
     this.getCloseMatrixDialogButton().click();
     return { cols: numCols, rows: numRows };
   }

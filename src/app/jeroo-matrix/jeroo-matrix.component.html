@@ -2,7 +2,7 @@
 </canvas>
 <div fxLayout="column" fxLayoutAlign=" center" fxLayoutGap="10px">
   <div>
-    <div *ngIf="mouseRow && mouseColumn; else elseBlock">
+    <div *ngIf="mouseRow !== null && mouseColumn !== null; else elseBlock">
       Cursor Location: ({{mouseRow}}, {{mouseColumn}})
     </div>
     <ng-template #elseBlock>
