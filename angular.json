@@ -31,7 +31,12 @@
               "src/jeroo-theme.scss"
             ],
             "scripts": [
-              "src/compiler/_build/default/JerooCompiler.bc.js"
+              {
+                "input": "src/compiler/_build/default/JerooCompiler.bc.js",
+                "lazy": true,
+                "bundleName": "JerooCompiler"
+              }
+
             ]
           },
           "configurations": {
@@ -90,7 +95,11 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "src/compiler/_build/default/JerooCompiler.bc.js"
+              {
+                "input": "src/compiler/_build/default/JerooCompiler.bc.js",
+                "lazy": true,
+                "bundleName": "JerooCompiler"
+              }
             ],
             "assets": [
               "src/favicon.ico",
