@@ -171,7 +171,9 @@ let gen_code_decl id_loc args pos =
     Bytecode.NEW (id_loc, x, y, 0, Bytecode.East, pos.lnum)
   | { a = AST.IntExpr(x); _ } :: { a = AST.IntExpr(y); _ } :: { a = AST.IntExpr(num_flowers); _ } :: [] ->
     Bytecode.NEW (id_loc, x, y, num_flowers, Bytecode.East, pos.lnum)
-  | { a = AST.IntExpr(x); _ } :: { a = AST.IntExpr(y); _ } :: { a = AST.IntExpr(num_flowers); _ } :: direction :: [] ->
+  | { a = AST.IntExpr(x); _ } :: { a = AST.IntExpr(y); _ } :: direction :: [] ->
+    Bytecode.NEW (id_loc, x, y, 0, (compass_dir_of_expr direction), pos.lnum)
+  | { a = AST.IntExpr(x); _ } :: { a = AST.IntExpr(y); _ } :: direction :: { a = AST.IntExpr(num_flowers); _ } :: [] ->
     Bytecode.NEW (id_loc, x, y, num_flowers, (compass_dir_of_expr direction), pos.lnum)
   | _ -> raise_type_exception ()
 

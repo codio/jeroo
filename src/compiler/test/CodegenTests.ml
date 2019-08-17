@@ -125,7 +125,7 @@ let codegen_jeroo_decl_set_x_y_flowers _test_ctxt =
 
   assert_equal expected_tbl jeroo_tbl
 
-let codegen_jeroo_decl_set_x_y_flowers_direction _test_ctxt =
+let codegen_jeroo_decl_set_x_y_direction _test_ctxt =
   let ast = { language = AST.Java;
     extension_fxns = [];
     main_fxn = {
@@ -145,13 +145,99 @@ let codegen_jeroo_decl_set_x_y_flowers_direction _test_ctxt =
                         pos = { lnum = 2; cnum = 0; };
                       };
                       {
-                        a = AST.IntExpr(5);
+                        a = AST.SouthExpr;
+                        pos = { lnum = 2; cnum = 0; };
+                      }
+                    ]);
+                pos = { lnum = 2; cnum = 0; };
+              });
+            pos = { lnum = 2; cnum = 0; };
+          })
+      ];
+      start_lnum = 1;
+      end_lnum = 3;
+    }
+  } in
+  let bytecode, jeroo_tbl = Codegen.codegen ast in
+
+  let expected_tbl = create_expected_tbl () in
+  Hashtbl.add expected_tbl "j" 0;
+
+
+  assert_equal ~printer:[%show: Bytecode.bytecode list] [
+    Bytecode.JUMP (1, Pane.Main, 1);
+    Bytecode.NEW (0, 1, 2, 0, Bytecode.South, 2);
+    Bytecode.RETR (Pane.Main, 3);
+  ] (List.of_seq bytecode);
+
+  assert_equal expected_tbl jeroo_tbl
+
+let codegen_jeroo_decl_set_flowers _test_ctxt =
+  let ast = { language = AST.Java;
+    extension_fxns = [];
+    main_fxn = {
+      stmts = [
+        AST.DeclStmt("Jeroo", "j", {
+            a = AST.UnOpExpr(AST.New, {
+                a = AST.FxnAppExpr({
+                    a = AST.IdExpr("Jeroo");
+                    pos = { lnum = 2; cnum = 0; };
+                  }, [
+                      {
+                        a = AST.IntExpr(10);
+                        pos = { lnum = 2; cnum = 0; };
+                      };
+                    ]);
+                pos = { lnum = 2; cnum = 0; };
+              });
+            pos = { lnum = 2; cnum = 0; };
+          })
+      ];
+      start_lnum = 1;
+      end_lnum = 3;
+    }
+  } in
+  let bytecode, jeroo_tbl = Codegen.codegen ast in
+
+  let expected_tbl = create_expected_tbl () in
+  Hashtbl.add expected_tbl "j" 0;
+
+
+  assert_equal ~printer:[%show: Bytecode.bytecode list] [
+    Bytecode.JUMP (1, Pane.Main, 1);
+    Bytecode.NEW (0, 0, 0, 10, Bytecode.East, 2);
+    Bytecode.RETR (Pane.Main, 3);
+  ] (List.of_seq bytecode);
+
+  assert_equal expected_tbl jeroo_tbl
+
+let codegen_jeroo_decl_set_x_y_direction_flowers _test_ctxt =
+  let ast = { language = AST.Java;
+    extension_fxns = [];
+    main_fxn = {
+      stmts = [
+        AST.DeclStmt("Jeroo", "j", {
+            a = AST.UnOpExpr(AST.New, {
+                a = AST.FxnAppExpr({
+                    a = AST.IdExpr("Jeroo");
+                    pos = { lnum = 2; cnum = 0; };
+                  }, [
+                      {
+                        a = AST.IntExpr(1);
+                        pos = { lnum = 2; cnum = 0; };
+                      };
+                      {
+                        a = AST.IntExpr(2);
                         pos = { lnum = 2; cnum = 0; };
                       };
                       {
                         a = AST.SouthExpr;
                         pos = { lnum = 2; cnum = 0; };
-                      }
+                      };
+                      {
+                        a = AST.IntExpr(5);
+                        pos = { lnum = 2; cnum = 0; };
+                      };
                     ]);
                 pos = { lnum = 2; cnum = 0; };
               });
@@ -1284,9 +1370,10 @@ let codegen_while _test_ctxt =
 let suite =
   "Codegen">::: [
     "Generate jeroo decl with default args">:: codegen_jeroo_decl_no_args;
+    "Generage jeroo decl with custom flowers">:: codegen_jeroo_decl_set_flowers;
     "Generate jeroo decl with custom x and y">:: codegen_jeroo_decl_set_x_y;
     "Generate jeroo decl with custom x, y, and flowers">:: codegen_jeroo_decl_set_x_y_flowers;
-    "Generate jeroo decl with custom x, y, flowers, and direction">:: codegen_jeroo_decl_set_x_y_flowers_direction;
+    "Generate jeroo decl with custom x, y, direction, and flowers">:: codegen_jeroo_decl_set_x_y_direction_flowers;
     "Generate Jeroo hop">:: codegen_jeroo_hop;
     "Generate CSR for multiple Jeroos">:: codegen_multiple_jeroos_csr;
     "Generate pick instruction">:: codegen_pick_flower;
