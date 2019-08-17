@@ -359,8 +359,8 @@ let create_jeroo_env () =
   add_ctor_to_symbol_table ctor_id [] jeroo_env;
   add_ctor_to_symbol_table ctor_id [JerooType.NumT] jeroo_env;
   add_ctor_to_symbol_table ctor_id [JerooType.NumT; JerooType.NumT] jeroo_env;
-  add_ctor_to_symbol_table ctor_id [JerooType.NumT; JerooType.NumT; JerooType.CompassDirT] jeroo_env;
   add_ctor_to_symbol_table ctor_id [JerooType.NumT; JerooType.NumT; JerooType.NumT] jeroo_env;
+  add_ctor_to_symbol_table ctor_id [JerooType.NumT; JerooType.NumT; JerooType.CompassDirT] jeroo_env;
   add_ctor_to_symbol_table ctor_id [JerooType.NumT; JerooType.NumT; JerooType.CompassDirT; JerooType.NumT] jeroo_env;
 
   jeroo_env
