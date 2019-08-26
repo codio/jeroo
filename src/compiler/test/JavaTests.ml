@@ -593,7 +593,7 @@ let parse_missing_semicolon _test_ctxt =
       pos = { lnum = 1; cnum = 39 };
       pane = Pane.Main;
       exception_type = "error";
-      message = "expected one of `;`, `.`, or an operator, found `}`\n";
+      message = "expected one of `;`, `.`, or an operator\n";
     }) (fun () -> Compiler.compile code)
 
 (* TODO: complete all of these tasks in a future story *)
