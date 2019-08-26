@@ -51,7 +51,7 @@ and _token state = parse
 
         DEDENT { lnum; cnum }
       end else
-        EOF { lnum; cnum }
+        EOF
     }
   | ((whitespace* comment? newline)* whitespace* comment?) newline
     {
@@ -78,55 +78,55 @@ and _token state = parse
   | whitespace+
     { _token state lexbuf }
   | "def"
-      { DEF { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { DEF ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | "and"
-      { AND { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { AND ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | "or"
-      { OR { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { OR ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | "not"
-      { NOT { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { NOT ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | "if"
-      { IF { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { IF ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | "elif"
-      { ELIF { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { ELIF ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | "else"
-      { ELSE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { ELSE ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | "while"
-      { WHILE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { WHILE ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | "True"
-    { TRUE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+    { TRUE ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | "False"
-    { FALSE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+    { FALSE ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | "NORTH"
-      { NORTH { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { NORTH ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | "SOUTH"
-      { SOUTH { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { SOUTH ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | "EAST"
-      { EAST { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { EAST ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | "WEST"
-      { WEST { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { WEST ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | "AHEAD"
-      { AHEAD { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { AHEAD ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | "HERE"
-      { HERE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { HERE ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | "LEFT"
-      { LEFT { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { LEFT ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | "RIGHT"
-      { RIGHT { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { RIGHT ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | "self"
-    { SELF { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+    { SELF ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | '('
-      { LPAREN { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { LPAREN ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | ')'
-      { RPAREN { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { RPAREN ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | ':'
-      { COLON { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { COLON ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | ','
-      { COMMA { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { COMMA ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | '='
-      { EQ { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { EQ ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | '.'
-    { DOT { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+    { DOT ({ lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | identifier as id
     {  ID (id, { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }) }
   | decimalinteger as i

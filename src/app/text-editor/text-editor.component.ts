@@ -21,6 +21,7 @@ export class TextEditorComponent implements AfterViewInit {
   set code(val) {
     if (this.editor) {
       const cursor = (this.editor as any).getCursor();
+      // TODO: the undo/redo buttons might be getting messed up here
       this.editor.setValue(val);
       (this.editor as any).setCursor(cursor);
       this.codeChange.emit(this.editor.getValue());

@@ -10,6 +10,7 @@ let () =
       LexingUtilsTests.suite;
       SymbolTableTests.suite;
       StringUtilsTests.suite;
+      DequeTests.suite;
       IntegrationTests.suite
     ] in
   run_test_tt_main tests

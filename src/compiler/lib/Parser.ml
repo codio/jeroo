@@ -2,15 +2,15 @@ open AST
 open Position
 
 let make_main_fxn = function
-  | { id = "main"; stmts; start_lnum; end_lnum; } :: [] -> { stmts; start_lnum; end_lnum }
-  | { id; start_lnum; _ } :: [] -> raise (Exceptions.CompileException {
-      pos = { lnum = start_lnum; cnum = 0 };
+  | { a = { id = "main"; stmts}; pos } :: [] -> { a = { stmts }; pos }
+  | { a = { id; _ };  pos } :: [] -> raise (Exceptions.CompileException {
+      pos;
       pane = Pane.Main;
       exception_type = "error";
       message = Printf.sprintf "main method should be named `main`, found `%s`\n" id
     })
-  | { start_lnum; _ } :: _ -> raise (Exceptions.CompileException {
-      pos = { lnum = start_lnum; cnum = 0 };
+  | { pos; _ } :: _ -> raise (Exceptions.CompileException {
+      pos;
       pane = Pane.Main;
       exception_type = "error";
       message = "main method should be the only method in the main panel"
@@ -23,126 +23,145 @@ let make_main_fxn = function
     })
 
 let parse_java extensions_code main_code =
-  let rec loop lexbuf checkpoint pane =
-    try
-      match checkpoint with
-      | JavaParser.MenhirInterpreter.InputNeeded _ ->
-        let token = JavaLexer.token lexbuf in
-        let startp = lexbuf.lex_start_p in
-        let endp = lexbuf.lex_curr_p in
-        let checkpoint = JavaParser.MenhirInterpreter.offer checkpoint (token, startp, endp) in
-        loop lexbuf checkpoint pane
-      | JavaParser.MenhirInterpreter.Shifting _ | JavaParser.MenhirInterpreter.AboutToReduce _ ->
-        let checkpoint = JavaParser.MenhirInterpreter.resume checkpoint in
-        loop lexbuf checkpoint pane
-      | JavaParser.MenhirInterpreter.HandlingError env ->
-        let error_state = JavaParser.MenhirInterpreter.current_state_number env in
-        let lnum = LexingUtils.get_lnum lexbuf in
-        let cnum = LexingUtils.get_cnum lexbuf in
-        let message = JavaMessages.message error_state in
+  let parse code pane =
+    let rec loop lexbuf checkpoint pane last_token_opt =
+      try
+        match checkpoint with
+        | JavaParser.MenhirInterpreter.InputNeeded _ ->
+          let token = JavaLexer.token lexbuf in
+          let startp = lexbuf.lex_start_p in
+          let endp = lexbuf.lex_curr_p in
+          let checkpoint = JavaParser.MenhirInterpreter.offer checkpoint (token, startp, endp) in
+          loop lexbuf checkpoint pane (Some token)
+        | JavaParser.MenhirInterpreter.Shifting _ | JavaParser.MenhirInterpreter.AboutToReduce _ ->
+          let checkpoint = JavaParser.MenhirInterpreter.resume checkpoint in
+          loop lexbuf checkpoint pane last_token_opt
+        | JavaParser.MenhirInterpreter.HandlingError env ->
+          (* make the error message prefix, ex: "expected `;`" *)
+          let error_state = JavaParser.MenhirInterpreter.current_state_number env in
+          let message_prefix = JavaMessages.message error_state |> String.trim in
+
+          (* make the error message suffix, ex: ", found `)`" *)
+          let message_suffix = match last_token_opt with
+            | Some token when token <> JavaParser.EOF ->
+              Printf.sprintf ", found `%s`"
+                (JavaTokenMapper.map_token token)
+            | _ -> ""
+          in
+
+          let message = message_prefix ^ message_suffix ^ "\n" in
+          raise (Exceptions.CompileException {
+              pos = {
+                lnum = LexingUtils.get_lnum lexbuf;
+                cnum = LexingUtils.get_cnum lexbuf;
+              };
+              pane;
+              exception_type = "error";
+              message
+            })
+        | JavaParser.MenhirInterpreter.Accepted tree -> tree
+        | JavaParser.MenhirInterpreter.Rejected ->
+          let lnum = LexingUtils.get_lnum lexbuf in
+          let cnum = LexingUtils.get_cnum lexbuf in
+          raise (Exceptions.CompileException {
+              pos = {
+                lnum;
+                cnum;
+              };
+              pane;
+              exception_type = "error";
+              message = "Syntax Error"
+            })
+      with
+      | Exceptions.LexingException e ->
         raise (Exceptions.CompileException {
-            pos = {
-              lnum;
-              cnum
-            };
             pane;
-            exception_type = "error";
-            message
+            pos = e.pos;
+            exception_type = e.exception_type;
+            message = e.message;
           })
-      | JavaParser.MenhirInterpreter.Accepted tree -> tree
-      | JavaParser.MenhirInterpreter.Rejected ->
-        let lnum = LexingUtils.get_lnum lexbuf in
-        let cnum = LexingUtils.get_cnum lexbuf in
-        raise (Exceptions.CompileException {
-            pos = {
-              lnum;
-              cnum;
-            };
-            pane;
-            exception_type = "error";
-            message = "Syntax Error"
-          })
-    with
-    | Exceptions.LexingException e ->
-      raise (Exceptions.CompileException {
+    in
+    let lexbuf = Lexing.from_string code in
+    loop lexbuf (JavaParser.Incremental.translation_unit lexbuf.lex_curr_p) pane None
+  in
+  let extension_fxns = parse extensions_code Pane.Extensions in
+  let main_fxns = parse main_code Pane.Main in
+  let main_fxn = make_main_fxn main_fxns in
+  {
+    extension_fxns;
+    main_fxn;
+  }
+
+let parse_vb extensions_code main_code =
+  let parse code pane =
+    let rec loop lexbuf state checkpoint pane last_token_opt =
+      try
+        match checkpoint with
+        | VBParser.MenhirInterpreter.InputNeeded _ ->
+          let token = VBLexer.token state lexbuf in
+          let startp = lexbuf.lex_start_p in
+          let endp = lexbuf.lex_curr_p in
+          let checkpoint = VBParser.MenhirInterpreter.offer checkpoint (token, startp, endp) in
+          loop lexbuf state checkpoint pane (Some token)
+        | VBParser.MenhirInterpreter.Shifting _ | VBParser.MenhirInterpreter.AboutToReduce _ ->
+          let checkpoint = VBParser.MenhirInterpreter.resume checkpoint in
+          loop lexbuf state checkpoint pane last_token_opt
+        | VBParser.MenhirInterpreter.HandlingError env ->
+          (* make the error message prefix, ex: "expected new line" *)
+          let error_state = VBParser.MenhirInterpreter.current_state_number env in
+          let message_prefix = VBMessages.message error_state |> String.trim in
+
+          (* make the message suffix, ex: ", found `)`" *)
+          let message_suffix = match last_token_opt with
+            | Some last_token when last_token <> VBParser.EOF ->
+              Printf.sprintf ", found `%s`"
+                (VBTokenMapper.map_token last_token)
+            | _ -> ""
+          in
+
+          let message = message_prefix ^ message_suffix ^ "\n" in
+          raise (Exceptions.CompileException {
+              pos = {
+                lnum = LexingUtils.get_lnum lexbuf;
+                cnum = LexingUtils.get_cnum lexbuf;
+              };
+              pane;
+              exception_type = "error";
+              message
+            })
+        | VBParser.MenhirInterpreter.Accepted tree -> tree
+        | VBParser.MenhirInterpreter.Rejected ->
+          (* this should never happen *)
+          raise (Exceptions.CompileException {
+              pos = {
+                lnum = LexingUtils.get_lnum lexbuf;
+                cnum = LexingUtils.get_cnum lexbuf;
+              };
+              pane;
+              exception_type = "error";
+              message = "Syntax Error"
+            })
+      with
+      | Exceptions.LexingException e -> raise (Exceptions.CompileException {
           pane;
           pos = e.pos;
           exception_type = e.exception_type;
           message = e.message;
         })
+    in
+    let lexbuf = Lexing.from_string code in
+    loop lexbuf (VBLexerState.create ()) (VBParser.Incremental.translation_unit lexbuf.lex_curr_p) pane None
   in
-  let extensions_code_lexbuf = Lexing.from_string extensions_code in
-  let extension_fxns = loop extensions_code_lexbuf (JavaParser.Incremental.translation_unit extensions_code_lexbuf.lex_curr_p) Pane.Extensions in
-  let main_code_lexbuf = Lexing.from_string main_code in
-  let main_fxns = loop main_code_lexbuf (JavaParser.Incremental.translation_unit main_code_lexbuf.lex_curr_p) Pane.Main in
+  let extension_fxns = parse extensions_code Pane.Extensions in
+  let main_fxns = parse main_code Pane.Main in
   let main_fxn = make_main_fxn main_fxns in
   {
     extension_fxns;
     main_fxn;
-    language = AST.Java
-  }
-
-let parse_vb extensions_code main_code =
-  let rec loop lexbuf state checkpoint pane =
-    try
-      match checkpoint with
-      | VBParser.MenhirInterpreter.InputNeeded _ ->
-        let token = VBLexer.token state lexbuf in
-        let startp = lexbuf.lex_start_p in
-        let endp = lexbuf.lex_curr_p in
-        let checkpoint = VBParser.MenhirInterpreter.offer checkpoint (token, startp, endp) in
-        loop lexbuf state checkpoint pane
-      | VBParser.MenhirInterpreter.Shifting _ | VBParser.MenhirInterpreter.AboutToReduce _ ->
-        let checkpoint = VBParser.MenhirInterpreter.resume checkpoint in
-        loop lexbuf state checkpoint pane
-      | VBParser.MenhirInterpreter.HandlingError env ->
-        let error_state = VBParser.MenhirInterpreter.current_state_number env in
-        let lnum = LexingUtils.get_lnum lexbuf in
-        let cnum = LexingUtils.get_cnum lexbuf in
-        let message = VBMessages.message error_state in
-        raise (Exceptions.CompileException {
-            pos = {
-              lnum;
-              cnum;
-            };
-            pane;
-            exception_type = "error";
-            message
-          })
-      | VBParser.MenhirInterpreter.Accepted tree -> tree
-      | VBParser.MenhirInterpreter.Rejected ->
-        let lnum = LexingUtils.get_lnum lexbuf in
-        let cnum = LexingUtils.get_cnum lexbuf in
-        raise (Exceptions.CompileException {
-            pos = {
-              lnum;
-              cnum;
-            };
-            pane;
-            exception_type = "error";
-            message = "Syntax Error"
-          })
-    with
-    | Exceptions.LexingException e -> raise (Exceptions.CompileException {
-        pane;
-        pos = e.pos;
-        exception_type = e.exception_type;
-        message = e.message;
-      })
-  in
-  let extensions_code_lexbuf = Lexing.from_string extensions_code in
-  let extension_fxns = loop extensions_code_lexbuf (VBLexerState.create ()) (VBParser.Incremental.translation_unit extensions_code_lexbuf.lex_curr_p) Pane.Extensions in
-  let main_code_lexbuf = Lexing.from_string main_code in
-  let main_fxns = loop main_code_lexbuf (VBLexerState.create ()) (VBParser.Incremental.translation_unit main_code_lexbuf.lex_curr_p) Pane.Main in
-  let main_fxn = make_main_fxn main_fxns in
-  {
-    extension_fxns;
-    main_fxn;
-    language = AST.VB;
   }
 
 let parse_python extensions_code main_code =
-  let rec loop lexbuf state checkpoint pane =
+  let rec loop code lexbuf state checkpoint pane last_token_opt =
     try
       match checkpoint with
       | PythonParser.MenhirInterpreter.InputNeeded _ ->
@@ -150,19 +169,27 @@ let parse_python extensions_code main_code =
         let startp = lexbuf.lex_start_p in
         let endp = lexbuf.lex_curr_p in
         let checkpoint = PythonParser.MenhirInterpreter.offer checkpoint (token, startp, endp) in
-        loop lexbuf state checkpoint pane
+        loop code lexbuf state checkpoint pane (Some token)
       | PythonParser.MenhirInterpreter.Shifting _ | PythonParser.MenhirInterpreter.AboutToReduce _ ->
         let checkpoint = PythonParser.MenhirInterpreter.resume checkpoint in
-        loop lexbuf state checkpoint pane
+        loop code lexbuf state checkpoint pane last_token_opt
       | PythonParser.MenhirInterpreter.HandlingError env ->
+        (* make the error message prefix, ex: "expected `:`" *)
         let error_state = PythonParser.MenhirInterpreter.current_state_number env in
-        let message = PythonMessages.message error_state in
-        let lnum = LexingUtils.get_lnum lexbuf in
-        let cnum = LexingUtils.get_cnum lexbuf in
+        let message_prefix = PythonMessages.message error_state |> String.trim in
+
+        (* make the error message suffix, ex: ", found `)`" *)
+        let message_suffix = match last_token_opt with
+          | Some last_token when last_token <> PythonParser.EOF ->
+            Printf.sprintf ", found `%s`" (PythonTokenMapper.map_token last_token)
+          | _ -> ""
+        in
+
+        let message = message_prefix ^ message_suffix ^ "\n" in
         raise (Exceptions.CompileException {
             pos = {
-              lnum;
-              cnum;
+              lnum = LexingUtils.get_lnum lexbuf;
+              cnum = LexingUtils.get_cnum lexbuf;
             };
             pane;
             exception_type = "error";
@@ -190,13 +217,26 @@ let parse_python extensions_code main_code =
       })
   in
   let extensions_code_lexbuf = Lexing.from_string extensions_code in
-  let extension_fxns = loop extensions_code_lexbuf (PythonLexerState.create ()) (PythonParser.Incremental.fxns extensions_code_lexbuf.lex_curr_p) Pane.Extensions in
+  let extension_fxns = loop
+      extensions_code
+      extensions_code_lexbuf
+      (PythonLexerState.create ())
+      (PythonParser.Incremental.fxns extensions_code_lexbuf.lex_curr_p)
+      Pane.Extensions
+      None
+  in
   let main_code_lexbuf = Lexing.from_string main_code in
-  let main_fxn = loop main_code_lexbuf (PythonLexerState.create ()) (PythonParser.Incremental.main_fxn main_code_lexbuf.lex_curr_p) Pane.Main in
+  let main_fxn = loop
+      main_code
+      main_code_lexbuf
+      (PythonLexerState.create ())
+      (PythonParser.Incremental.main_fxn main_code_lexbuf.lex_curr_p)
+      Pane.Main
+      None
+  in
   {
     extension_fxns;
     main_fxn;
-    language = AST.Python;
   }
 
 let split_code lines =
@@ -220,7 +260,8 @@ let parse code =
     parse_java extensions_code main_code
   | "@VB" :: lines ->
     let (extensions_code, main_code) = split_code lines in
-    parse_vb extensions_code main_code
+    let ast = parse_vb extensions_code main_code in
+    ast
   | "@PYTHON" :: lines ->
     let (extensions_code, main_code) = split_code lines in
     parse_python extensions_code main_code

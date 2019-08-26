@@ -6,8 +6,8 @@ type value =
   | JerooV of int
   | ObjV of (string, value) SymbolTable.t
 
-type codegen_state = {
-  code_queue : Bytecode.bytecode Queue.t;
+type state = {
+  bytecode : Bytecode.bytecode Deque.t;
   mutable num_jeroos : int;
   mutable pane : Pane.t
 }
@@ -39,6 +39,37 @@ let compass_dir_of_expr meta_expr =
   | AST.WestExpr -> Bytecode.West
   | _ -> raise_type_exception ()
 
+(* get the line number assiciated to the bytecode instruction *)
+(* could be simplified if the bytecode instructions were stored as meta *)
+let lnum_of_bytecode_instr = function
+  | Bytecode.CSR (_, _, lnum)
+  | Bytecode.JUMP_LBL (_, _, lnum)
+  | Bytecode.JUMP (_, _, lnum)
+  | Bytecode.BZ_LBL (_, _, lnum)
+  | Bytecode.BZ (_, _, lnum)
+  | Bytecode.LABEL (_, _, lnum)
+  | Bytecode.NEW (_, _, _, _, _, lnum)
+  | Bytecode.TURN (_, _, lnum)
+  | Bytecode.HOP (_, _, lnum)
+  | Bytecode.PICK (_, lnum)
+  | Bytecode.TOSS (_, lnum)
+  | Bytecode.PLANT (_, lnum)
+  | Bytecode.GIVE (_, _, lnum)
+  | Bytecode.TRUE (_, lnum)
+  | Bytecode.FALSE (_, lnum)
+  | Bytecode.HASFLWR (_, lnum)
+  | Bytecode.ISNET (_, _, lnum)
+  | Bytecode.ISWATER (_, _, lnum)
+  | Bytecode.ISJEROO (_, _, lnum)
+  | Bytecode.ISFLWR (_, _, lnum)
+  | Bytecode.FACING (_, _, lnum)
+  | Bytecode.NOT (_, lnum)
+  | Bytecode.AND (_, lnum)
+  | Bytecode.OR (_, lnum)
+  | Bytecode.RETR (_, lnum)
+  | Bytecode.CALLBK (_, lnum)
+    -> lnum
+
 (* convert labels to memory locations *)
 let remove_labels bytecode =
   (* create table from labels to memory locations *)
@@ -46,7 +77,7 @@ let remove_labels bytecode =
   (* counter to keep track of the memory location *)
   let mem_loc = ref 0 in
   bytecode
-  |> Seq.iter (function
+  |> List.iter (function
       | Bytecode.LABEL (s, _, _) -> Hashtbl.add label_tbl s (!mem_loc)
       (* only increment the counter on non-labels *)
       (* since they get removed in the instruction set *)
@@ -55,7 +86,7 @@ let remove_labels bytecode =
 
   (* swap out the jump to labels to jump to memory locations *)
   bytecode
-  |> Seq.filter_map (function
+  |> List.filter_map (function
       | Bytecode.JUMP_LBL (lbl, pane_num, line_num) ->
         Some (Bytecode.JUMP ((Hashtbl.find label_tbl lbl), pane_num, line_num))
       | Bytecode.BZ_LBL (lbl, pane_num, line_num) ->
@@ -64,101 +95,101 @@ let remove_labels bytecode =
       | _ as instruction -> Some (instruction)
     )
 
-let rec gen_code_expr codegen_state symbol_table meta_expr =
+let rec gen_code_expr state symbol_table meta_expr =
   let expr = meta_expr.a in
   let line_num = meta_expr.pos.lnum in
   match expr with
   | AST.TrueExpr ->
-    Queue.add (Bytecode.TRUE (codegen_state.pane, line_num)) codegen_state.code_queue
+    Deque.insert_back (Bytecode.TRUE (state.pane, line_num)) state.bytecode
   | AST.FalseExpr ->
-    Queue.add (Bytecode.FALSE (codegen_state.pane, line_num)) codegen_state.code_queue
+    Deque.insert_back (Bytecode.FALSE (state.pane, line_num)) state.bytecode
   | AST.IntExpr _ | AST.IdExpr _
   | AST.NorthExpr | AST.SouthExpr | AST.EastExpr | AST.WestExpr
   | AST.AheadExpr | AST.LeftExpr | AST.RightExpr | AST.HereExpr -> ()
-  | AST.BinOpExpr (e1, AST.And, e2) ->
-    gen_code_expr codegen_state symbol_table e1;
-    gen_code_expr codegen_state symbol_table e2;
-    Queue.add (Bytecode.AND (codegen_state.pane, line_num)) codegen_state.code_queue
-  | AST.BinOpExpr (e1, AST.Or, e2) ->
-    gen_code_expr codegen_state symbol_table e1;
-    gen_code_expr codegen_state symbol_table e2;
-    Queue.add (Bytecode.OR (codegen_state.pane, line_num)) codegen_state.code_queue
-  | AST.UnOpExpr (AST.Not, e) ->
-    gen_code_expr codegen_state symbol_table e;
-    Queue.add (Bytecode.NOT (codegen_state.pane, line_num)) codegen_state.code_queue
-  | AST.BinOpExpr ({ a = AST.IdExpr(id); _ }, AST.Dot, e) ->
+  | AST.BinOpExpr (e1, (AST.And, _), e2) ->
+    gen_code_expr state symbol_table e1;
+    gen_code_expr state symbol_table e2;
+    Deque.insert_back (Bytecode.AND (state.pane, line_num)) state.bytecode
+  | AST.BinOpExpr (e1, (AST.Or, _), e2) ->
+    gen_code_expr state symbol_table e1;
+    gen_code_expr state symbol_table e2;
+    Deque.insert_back (Bytecode.OR (state.pane, line_num)) state.bytecode
+  | AST.UnOpExpr ((AST.Not, _), e) ->
+    gen_code_expr state symbol_table e;
+    Deque.insert_back (Bytecode.NOT (state.pane, line_num)) state.bytecode
+  | AST.BinOpExpr ({ a = AST.IdExpr(id); _ }, (AST.Dot, _), e) ->
     let jeroo_tbl_opt = SymbolTable.find symbol_table "Jeroo" in
     let jerooV_opt = SymbolTable.find symbol_table id in
     begin match (jerooV_opt, jeroo_tbl_opt) with
       | (Some(JerooV(id_loc)), Some(ObjV(jeroo_tbl))) ->
-        Queue.add (Bytecode.CSR (id_loc, codegen_state.pane, line_num)) codegen_state.code_queue;
-        gen_code_expr codegen_state jeroo_tbl e
+        Deque.insert_back (Bytecode.CSR (id_loc, state.pane, line_num)) state.bytecode;
+        gen_code_expr state jeroo_tbl e
       | _ -> raise_type_exception ()
     end
-  | AST.FxnAppExpr ({ a = AST.IdExpr(id); _ }, args) -> gen_code_fxn_app codegen_state symbol_table id args meta_expr.pos
+  | AST.FxnAppExpr ({ a = AST.IdExpr(id); _ }, args) -> gen_code_fxn_app state symbol_table id args meta_expr.pos
   | _ -> raise_type_exception ()
 
-and gen_code_fxn_app codegen_state symbol_table id args pos =
+and gen_code_fxn_app state symbol_table id args pos =
   match (id, args) with
   | ("hop", []) ->
-    let instr = Bytecode.HOP (1, codegen_state.pane, pos.lnum) in
-    Queue.add instr codegen_state.code_queue
+    let instr = Bytecode.HOP (1, state.pane, pos.lnum) in
+    Deque.insert_back instr state.bytecode
   | ("hop", { a = AST.IntExpr(n); _ } :: []) ->
-    let instr = Bytecode.HOP (n, codegen_state.pane, pos.lnum) in
-    Queue.add instr codegen_state.code_queue
+    let instr = Bytecode.HOP (n, state.pane, pos.lnum) in
+    Deque.insert_back instr state.bytecode
   | ("pick", []) ->
-    let instr = Bytecode.PICK (codegen_state.pane, pos.lnum) in
-    Queue.add instr codegen_state.code_queue
+    let instr = Bytecode.PICK (state.pane, pos.lnum) in
+    Deque.insert_back instr state.bytecode
   | ("plant", []) ->
-    let instr = Bytecode.PLANT (codegen_state.pane, pos.lnum) in
-    Queue.add instr codegen_state.code_queue
+    let instr = Bytecode.PLANT (state.pane, pos.lnum) in
+    Deque.insert_back instr state.bytecode
   | ("toss", []) ->
-    let instr = Bytecode.TOSS (codegen_state.pane, pos.lnum) in
-    Queue.add instr codegen_state.code_queue
+    let instr = Bytecode.TOSS (state.pane, pos.lnum) in
+    Deque.insert_back instr state.bytecode
   | ("give", []) ->
-    let instr = Bytecode.GIVE (Bytecode.Ahead, codegen_state.pane, pos.lnum) in
-    Queue.add instr codegen_state.code_queue
+    let instr = Bytecode.GIVE (Bytecode.Ahead, state.pane, pos.lnum) in
+    Deque.insert_back instr state.bytecode
   | ("give", meta_e :: []) ->
-    let instr = Bytecode.GIVE ((relative_dir_of_expr meta_e), codegen_state.pane, pos.lnum) in
-    Queue.add  instr codegen_state.code_queue
+    let instr = Bytecode.GIVE ((relative_dir_of_expr meta_e), state.pane, pos.lnum) in
+    Deque.insert_back  instr state.bytecode
   | ("turn", meta_e :: []) ->
-    let instr = Bytecode.TURN ((relative_dir_of_expr meta_e), codegen_state.pane, pos.lnum) in
-    Queue.add instr codegen_state.code_queue
+    let instr = Bytecode.TURN ((relative_dir_of_expr meta_e), state.pane, pos.lnum) in
+    Deque.insert_back instr state.bytecode
   | ("hasFlower", []) ->
-    let instr = Bytecode.HASFLWR (codegen_state.pane, pos.lnum) in
-    Queue.add instr codegen_state.code_queue
+    let instr = Bytecode.HASFLWR (state.pane, pos.lnum) in
+    Deque.insert_back instr state.bytecode
   | ("isJeroo", meta_e :: []) ->
-    let instr = Bytecode.ISJEROO ((relative_dir_of_expr meta_e), codegen_state.pane, pos.lnum) in
-    Queue.add instr codegen_state.code_queue
+    let instr = Bytecode.ISJEROO ((relative_dir_of_expr meta_e), state.pane, pos.lnum) in
+    Deque.insert_back instr state.bytecode
   | ("isFacing", meta_e :: []) ->
-    let instr = Bytecode.FACING ((compass_dir_of_expr meta_e), codegen_state.pane, pos.lnum) in
-    Queue.add instr codegen_state.code_queue
+    let instr = Bytecode.FACING ((compass_dir_of_expr meta_e), state.pane, pos.lnum) in
+    Deque.insert_back instr state.bytecode
   | ("isFlower", meta_e :: []) ->
-    let instr = Bytecode.ISFLWR ((relative_dir_of_expr meta_e), codegen_state.pane, pos.lnum) in
-    Queue.add instr codegen_state.code_queue
+    let instr = Bytecode.ISFLWR ((relative_dir_of_expr meta_e), state.pane, pos.lnum) in
+    Deque.insert_back instr state.bytecode
   | ("isNet", meta_e :: []) ->
-    let instr = Bytecode.ISNET ((relative_dir_of_expr meta_e), codegen_state.pane, pos.lnum) in
-    Queue.add instr codegen_state.code_queue
+    let instr = Bytecode.ISNET ((relative_dir_of_expr meta_e), state.pane, pos.lnum) in
+    Deque.insert_back instr state.bytecode
   | ("isWater", meta_e :: []) ->
-    let instr = Bytecode.ISWATER ((relative_dir_of_expr meta_e), codegen_state.pane, pos.lnum) in
-    Queue.add instr codegen_state.code_queue
+    let instr = Bytecode.ISWATER ((relative_dir_of_expr meta_e), state.pane, pos.lnum) in
+    Deque.insert_back instr state.bytecode
   | ("isClear", meta_e :: []) ->
     let relative_dir = relative_dir_of_expr meta_e in
-    let instrs = [
-      Bytecode.ISJEROO (relative_dir, codegen_state.pane, pos.lnum);
-      Bytecode.ISWATER (relative_dir, codegen_state.pane, pos.lnum);
-      Bytecode.ISNET (relative_dir, codegen_state.pane, pos.lnum);
-      Bytecode.ISFLWR (relative_dir, codegen_state.pane, pos.lnum);
-      Bytecode.OR (codegen_state.pane, pos.lnum);
-      Bytecode.OR (codegen_state.pane, pos.lnum);
-      Bytecode.OR (codegen_state.pane, pos.lnum);
-      Bytecode.NOT (codegen_state.pane, pos.lnum)
-    ] |> List.to_seq in
-    Queue.add_seq codegen_state.code_queue instrs
+    [
+      Bytecode.ISJEROO (relative_dir, state.pane, pos.lnum);
+      Bytecode.ISWATER (relative_dir, state.pane, pos.lnum);
+      Bytecode.ISNET (relative_dir, state.pane, pos.lnum);
+      Bytecode.ISFLWR (relative_dir, state.pane, pos.lnum);
+      Bytecode.OR (state.pane, pos.lnum);
+      Bytecode.OR (state.pane, pos.lnum);
+      Bytecode.OR (state.pane, pos.lnum);
+      Bytecode.NOT (state.pane, pos.lnum)
+    ]
+    |> List.iter (fun instr -> Deque.insert_back instr state.bytecode)
   | _ when (SymbolTable.mem symbol_table id) ->
     (* calling a user-defined function *)
-    Queue.add (Bytecode.CALLBK (codegen_state.pane, pos.lnum)) codegen_state.code_queue;
-    Queue.add (Bytecode.JUMP_LBL (id, codegen_state.pane, pos.lnum)) codegen_state.code_queue
+    Deque.insert_back (Bytecode.CALLBK (state.pane, pos.lnum)) state.bytecode;
+    Deque.insert_back (Bytecode.JUMP_LBL (id, state.pane, pos.lnum)) state.bytecode
   | _ -> raise_type_exception ()
 
 let gen_code_decl id_loc args pos =
@@ -177,110 +208,129 @@ let gen_code_decl id_loc args pos =
     Bytecode.NEW (id_loc, x, y, num_flowers, (compass_dir_of_expr direction), pos.lnum)
   | _ -> raise_type_exception ()
 
-let rec gen_code_stmt codegen_state symbol_table stmt =
+let rec gen_code_stmt state symbol_table stmt =
   match stmt with
-  | AST.BlockStmt stmts -> gen_code_block_stmt codegen_state symbol_table stmts
-  | AST.ExprStmt expr -> gen_code_expr_stmt codegen_state symbol_table expr
-  | AST.DeclStmt (ty, id, meta_expr) -> gen_code_decl_stmt codegen_state symbol_table ty id meta_expr
-  | AST.IfStmt { a = (e, stmt); pos } -> gen_code_if codegen_state symbol_table e stmt pos
-  | AST.IfElseStmt { a = (e, s1, s2); pos } -> gen_code_if_else codegen_state symbol_table e s1 s2 pos
-  | AST.WhileStmt { a = (e, s); pos } -> gen_code_while codegen_state symbol_table e s pos
+  | AST.BlockStmt stmts -> gen_code_block_stmt state symbol_table stmts
+  | AST.ExprStmt expr -> gen_code_expr_stmt state symbol_table expr
+  | AST.DeclStmt (ty, id, meta_expr) -> gen_code_decl_stmt state symbol_table ty id meta_expr
+  | AST.IfStmt { a = (e, stmt); pos } -> gen_code_if state symbol_table e stmt pos
+  | AST.IfElseStmt { a = (e, s1, s2); pos } -> gen_code_if_else state symbol_table e s1 s2 pos
+  | AST.WhileStmt { a = (e, s); pos } -> gen_code_while state symbol_table e s pos
 
-and gen_code_decl_stmt codegen_state symbol_table ty id meta_expr =
+and gen_code_decl_stmt state symbol_table ty id meta_expr =
   if (not (String.equal ty "Jeroo")) || (SymbolTable.mem symbol_table id)
   then raise_type_exception ()
-  else begin
-    let id_loc = codegen_state.num_jeroos in
-    codegen_state.num_jeroos <- succ codegen_state.num_jeroos;
+  else
+    let id_loc = state.num_jeroos in
+    state.num_jeroos <- succ state.num_jeroos;
     SymbolTable.add symbol_table id (JerooV id_loc);
     let expr = meta_expr.a in
     match expr with
-    | AST.UnOpExpr (AST.New, { a = AST.FxnAppExpr ({ a = AST.IdExpr(ctor); _ }, args); _ }) ->
+    | AST.UnOpExpr ((AST.New, _), { a = AST.FxnAppExpr ({ a = AST.IdExpr(ctor); _ }, args); _ }) ->
       if not (String.equal ctor "Jeroo")
       then raise_type_exception ()
-      else begin
-        Queue.add (gen_code_decl id_loc args meta_expr.pos) codegen_state.code_queue;
-        meta_expr.pos.lnum
-      end
+      else Deque.insert_back (gen_code_decl id_loc args meta_expr.pos) state.bytecode;
     | _ -> raise_type_exception ()
-  end;
 
-and gen_code_block_stmt codegen_state symbol_table stmts =
-  (* fold_left will always return the line number of the last statement executed *)
+and gen_code_block_stmt state symbol_table stmts =
   stmts
-  |> List.fold_left (fun _ stmt -> gen_code_stmt codegen_state symbol_table stmt) 0
+  |> List.iter (fun stmt -> gen_code_stmt state symbol_table stmt)
 
-and gen_code_expr_stmt codegen_state symbol_table expr =
-  begin match expr.a with
-    | Some e -> gen_code_expr codegen_state symbol_table e
-    | _ -> ()
-  end;
-  expr.pos.lnum
+and gen_code_expr_stmt state symbol_table expr =
+  match expr.a with
+  | Some e -> gen_code_expr state symbol_table e
+  | _ -> ()
 
-and gen_code_if codegen_state symbol_table e stmt pos =
-  gen_code_expr codegen_state symbol_table e;
-  let jmp_lbl = "if_lbl_" ^ (string_of_int (Queue.length codegen_state.code_queue)) in
-  let jmp = (Bytecode.BZ_LBL (jmp_lbl, codegen_state.pane, pos.lnum)) in
-  Queue.add jmp codegen_state.code_queue;
+and gen_code_if state symbol_table e stmt pos =
+  gen_code_expr state symbol_table e;
+  let jmp_lbl = "if_lbl_" ^ (string_of_int (Deque.length state.bytecode)) in
+  let jmp = (Bytecode.BZ_LBL (jmp_lbl, state.pane, pos.lnum)) in
+  Deque.insert_back jmp state.bytecode;
 
   let stmt_tbl = SymbolTable.add_level symbol_table in
-  let end_lnum = gen_code_stmt codegen_state stmt_tbl stmt in
+  gen_code_stmt state stmt_tbl stmt;
+  let end_lnum =
+    Deque.get_back state.bytecode
+    |> Option.map lnum_of_bytecode_instr
+    |> Option.value ~default:0
+  in
 
-  Queue.add (Bytecode.LABEL (jmp_lbl, codegen_state.pane, end_lnum)) codegen_state.code_queue;
-  end_lnum
+  Deque.insert_back (Bytecode.LABEL (jmp_lbl, state.pane, end_lnum)) state.bytecode
 
-and gen_code_if_else codegen_state symbol_table e s1 s2 pos =
+and gen_code_if_else state symbol_table e s1 s2 pos =
   (* generate code for the condition *)
-  gen_code_expr codegen_state symbol_table e;
+  gen_code_expr state symbol_table e;
 
   (* if the condition is false, jump to the else block, else execute the true block *)
-  let else_lbl = "else_lbl_" ^ (string_of_int (Queue.length codegen_state.code_queue)) in
-  let else_jmp = (Bytecode.BZ_LBL (else_lbl, codegen_state.pane, pos.lnum)) in
-  Queue.add else_jmp codegen_state.code_queue;
+  let else_lbl = "else_lbl_" ^ (string_of_int (Deque.length state.bytecode)) in
+  let else_jmp = (Bytecode.BZ_LBL (else_lbl, state.pane, pos.lnum)) in
+  Deque.insert_back else_jmp state.bytecode;
 
   let parent_tbl = symbol_table in
   (* generate the code for the if-block *)
   let s1_tbl = SymbolTable.add_level parent_tbl in
-  let true_end_lnum = gen_code_stmt codegen_state s1_tbl s1 in
-
+  gen_code_stmt state s1_tbl s1;
+  let true_end_lnum =
+    Deque.get_back state.bytecode
+    |> Option.map lnum_of_bytecode_instr
+    |> Option.value ~default:0
+  in
   (* at the end of the true block, jump to the end of the if-else block *)
-  let done_lbl = "done_lbl_" ^ (string_of_int (Queue.length codegen_state.code_queue)) in
-  let done_jmp = (Bytecode.JUMP_LBL (done_lbl, codegen_state.pane, true_end_lnum)) in
-  Queue.add done_jmp codegen_state.code_queue;
-  Queue.add (Bytecode.LABEL (else_lbl, codegen_state.pane, true_end_lnum)) codegen_state.code_queue;
+  let done_lbl = "done_lbl_" ^ (string_of_int (Deque.length state.bytecode)) in
+  let done_jmp = (Bytecode.JUMP_LBL (done_lbl, state.pane, true_end_lnum)) in
+  Deque.insert_back done_jmp state.bytecode;
+  Deque.insert_back (Bytecode.LABEL (else_lbl, state.pane, true_end_lnum)) state.bytecode;
 
   (* generate the code for the else-block *)
   let s2_tbl = SymbolTable.add_level parent_tbl in
-  let false_end_lnum = gen_code_stmt codegen_state s2_tbl s2 in
+  gen_code_stmt state s2_tbl s2;
+  let false_end_lnum =
+    Deque.get_back state.bytecode
+    |> Option.map lnum_of_bytecode_instr
+    |> Option.value ~default:0
+  in
 
-  Queue.add (Bytecode.LABEL (done_lbl, codegen_state.pane, false_end_lnum)) codegen_state.code_queue;
-  false_end_lnum
+  Deque.insert_back (Bytecode.LABEL (done_lbl, state.pane, false_end_lnum)) state.bytecode
 
-and gen_code_while codegen_state symbol_table e s pos =
-  let loop_lbl = "loop_lbl_" ^ (string_of_int (Queue.length codegen_state.code_queue)) in
-  Queue.add (Bytecode.LABEL (loop_lbl, codegen_state.pane, pos.lnum)) codegen_state.code_queue;
-  gen_code_expr codegen_state symbol_table e;
-  let done_lbl = "done_lbl_" ^ (string_of_int (Queue.length codegen_state.code_queue)) in
-  Queue.add (Bytecode.BZ_LBL (done_lbl, codegen_state.pane, e.pos.lnum)) codegen_state.code_queue;
+and gen_code_while state symbol_table e s pos =
+  let loop_lbl = "loop_lbl_" ^ (string_of_int (Deque.length state.bytecode)) in
+  Deque.insert_back (Bytecode.LABEL (loop_lbl, state.pane, pos.lnum)) state.bytecode;
+  gen_code_expr state symbol_table e;
+  let done_lbl = "done_lbl_" ^ (string_of_int (Deque.length state.bytecode)) in
+  Deque.insert_back (Bytecode.BZ_LBL (done_lbl, state.pane, e.pos.lnum)) state.bytecode;
 
   let stmt_tbl = SymbolTable.add_level symbol_table in
-  let end_while_lnum = gen_code_stmt codegen_state stmt_tbl s in
+  gen_code_stmt state stmt_tbl s;
+  let end_while_lnum =
+    Deque.get_back state.bytecode
+    |> Option.map lnum_of_bytecode_instr
+    |> Option.value ~default:0
+  in
 
-  Queue.add (Bytecode.JUMP_LBL (loop_lbl, codegen_state.pane, end_while_lnum)) codegen_state.code_queue;
-  Queue.add (Bytecode.LABEL (done_lbl, codegen_state.pane, end_while_lnum)) codegen_state.code_queue;
-  end_while_lnum
+  Deque.insert_back (Bytecode.JUMP_LBL (loop_lbl, state.pane, end_while_lnum)) state.bytecode;
+  Deque.insert_back (Bytecode.LABEL (done_lbl, state.pane, end_while_lnum)) state.bytecode
 
-let gen_code_fxn codegen_state symbol_table fxn =
-  SymbolTable.add symbol_table fxn.id FunV;
-  Queue.add (Bytecode.LABEL (fxn.id, codegen_state.pane, fxn.start_lnum)) codegen_state.code_queue;
+let gen_code_fxn state symbol_table (fxn : AST.fxn meta) =
+  SymbolTable.add symbol_table fxn.a.id FunV;
+  Deque.insert_back (Bytecode.LABEL (fxn.a.id, state.pane, fxn.pos.lnum)) state.bytecode;
   let child_tbl = SymbolTable.add_level symbol_table in
-  fxn.stmts
-  |> List.iter (fun stmt -> ignore (gen_code_stmt codegen_state child_tbl stmt));
-  Queue.add (Bytecode.RETR (codegen_state.pane, fxn.end_lnum)) codegen_state.code_queue
+  fxn.a.stmts
+  |> List.iter (fun stmt -> gen_code_stmt state child_tbl stmt);
+
+  let last_stmt_lnum =
+    (Option.bind
+       (* get the last element in the stmt list *)
+       (* if it is empty, just return None *)
+       (List.nth_opt fxn.a.stmts (fxn.a.stmts |> List.length |> pred |> (max 0)))
+       AST.stmt_pos)
+    |> Option.map (fun pos -> pos.lnum)
+    |> Option.value ~default:fxn.pos.lnum
+  in
+  Deque.insert_back (Bytecode.RETR (state.pane, last_stmt_lnum)) state.bytecode
 
 let add_extension_fxns_to_env extension_fxns env =
   extension_fxns
-  |> List.iter (fun fxn -> SymbolTable.add env fxn.id FunV)
+  |> List.iter (fun fxn -> SymbolTable.add env fxn.a.id FunV)
 
 let gen_code_extension_fxns extension_fxns env state =
   state.pane <- Pane.Extensions;
@@ -290,17 +340,18 @@ let gen_code_extension_fxns extension_fxns env state =
 let gen_code_main_fxn main_fxn env state =
   state.pane <- Pane.Main;
   let fxn = {
-    id = "main";
-    stmts = main_fxn.stmts;
-    start_lnum = main_fxn.start_lnum;
-    end_lnum = main_fxn.end_lnum;
+    a = {
+      id = "main";
+      stmts = main_fxn.a.stmts;
+    };
+    pos = main_fxn.pos;
   }
   in
   gen_code_fxn state env fxn
 
 let codegen translation_unit =
-  let codegen_state = {
-    code_queue = Queue.create();
+  let state = {
+    bytecode = Deque.create ();
     num_jeroos = 0;
     pane = Pane.Extensions
   }
@@ -313,12 +364,12 @@ let codegen translation_unit =
   SymbolTable.add main_tbl "Jeroo" (ObjV extension_tbl);
 
   (* at the start of execution, jump to main *)
-  Queue.add (Bytecode.JUMP_LBL ("main", Pane.Main, translation_unit.main_fxn.start_lnum)) codegen_state.code_queue;
+  Deque.insert_back (Bytecode.JUMP_LBL ("main", Pane.Main, translation_unit.main_fxn.pos.lnum)) state.bytecode;
 
   (* generate the code *)
-  gen_code_extension_fxns translation_unit.extension_fxns extension_tbl codegen_state;
-  gen_code_main_fxn translation_unit.main_fxn main_tbl codegen_state;
-  let code_with_labels = Queue.to_seq codegen_state.code_queue in
+  gen_code_extension_fxns translation_unit.extension_fxns extension_tbl state;
+  gen_code_main_fxn translation_unit.main_fxn main_tbl state;
+  let code_with_labels = Deque.to_list state.bytecode in
 
   (* remove the labels *)
   let bytecode = remove_labels code_with_labels in

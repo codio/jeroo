@@ -54,7 +54,7 @@ describe('Jeroo Tests', () => {
     page.getSpeed6().click();
 
     page.getRunContinousButton().click();
-    browser.sleep(1000);
+    browser.sleep(1250);
 
     expect(page.getFinalMessage().getText()).toBe('Main:Line 8:LOGIC ERROR: Jeroo is on water');
     expect(page.getJerooName('0').getText()).toBe('j');
@@ -103,7 +103,7 @@ describe('Jeroo Tests', () => {
     page.getSpeed6().click();
 
     page.getRunContinousButton().click();
-    browser.sleep(1000);
+    browser.sleep(1250);
 
     expect(page.getFinalMessage().getText()).toBe('Program completed');
     expect(page.getJerooName('0').getText()).toBe('l');
@@ -134,7 +134,7 @@ describe('Jeroo Tests', () => {
     page.getSpeed6().click();
 
     page.getRunContinousButton().click();
-    browser.sleep(1000);
+    browser.sleep(1250);
 
     expect(page.getFinalMessage().getText()).toBe('Program completed');
     expect(page.getJerooName('0').getText()).toBe('j');
@@ -182,7 +182,7 @@ describe('Jeroo Tests', () => {
     page.getSpeed6().click();
 
     page.getRunContinousButton().click();
-    browser.sleep(1000);
+    browser.sleep(1250);
 
     expect(page.getFinalMessage().getText()).toBe('Main:Line 7:LOGIC ERROR: Jeroo is on water');
     expect(page.getJerooName('0').getText()).toBe('j');
@@ -233,7 +233,7 @@ describe('Jeroo Tests', () => {
     page.getSpeed6().click();
 
     page.getRunContinousButton().click();
-    browser.sleep(1000);
+    browser.sleep(1250);
 
     expect(page.getFinalMessage().getText()).toBe('Program completed');
     expect(page.getJerooName('0').getText()).toBe('l');
@@ -267,7 +267,7 @@ describe('Jeroo Tests', () => {
     page.getSpeed6().click();
 
     page.getRunContinousButton().click();
-    browser.sleep(1000);
+    browser.sleep(1250);
 
     expect(page.getFinalMessage().getText()).toBe('Program completed');
     expect(page.getJerooName('0').getText()).toBe('j');
@@ -314,7 +314,7 @@ describe('Jeroo Tests', () => {
     page.getSpeed6().click();
 
     page.getRunContinousButton().click();
-    browser.sleep(1000);
+    browser.sleep(1250);
 
     expect(page.getFinalMessage().getText()).toBe('Main:Line 8:LOGIC ERROR: Jeroo is on water');
     expect(page.getJerooName('0').getText()).toBe('j');
@@ -361,7 +361,7 @@ describe('Jeroo Tests', () => {
     page.getSpeed6().click();
 
     page.getRunContinousButton().click();
-    browser.sleep(1000);
+    browser.sleep(1250);
 
     expect(page.getFinalMessage().getText()).toBe('Program completed');
     expect(page.getJerooName('0').getText()).toBe('l');
@@ -391,7 +391,7 @@ describe('Jeroo Tests', () => {
     page.getSpeed6().click();
 
     page.getRunContinousButton().click();
-    browser.sleep(1000);
+    browser.sleep(1250);
 
     expect(page.getFinalMessage().getText()).toBe('Program completed');
     expect(page.getJerooName('0').getText()).toBe('j');
@@ -409,7 +409,7 @@ describe('Jeroo Tests', () => {
     page.getRunButton().click();
 
     browser.sleep(500);
-    expect(page.getFinalMessage().getText()).toBe('Main:Line 3:Column 1:error:expected one of `;`, `.`, or an operator');
+    expect(page.getFinalMessage().getText()).toBe('Main:Line 3:Column 1:error:expected one of `;`, `.`, or an operator, found `j`');
   });
 
   it('Should reload previous work', async () => {

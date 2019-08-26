@@ -9,14 +9,16 @@ let parse_method _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [];
-                     start_lnum = 1;
-                     end_lnum = 2;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [];
+      };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_decl _test_ctxt =
@@ -27,34 +29,36 @@ let parse_decl _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.DeclStmt("Jeroo", "j", {
-                           a = AST.UnOpExpr(AST.New, {
-                               a = AST.FxnAppExpr({
-                                   a = AST.IdExpr("Jeroo");
-                                   pos = { lnum = 2; cnum = 26 };
-                                 }, [
-                                     {
-                                       a = AST.IntExpr(1);
-                                       pos = { lnum = 2; cnum = 28 };
-                                     };
-                                     {
-                                       a = AST.IntExpr(2);
-                                       pos = { lnum = 2; cnum = 31 };
-                                     };
-                                   ]);
-                               pos = { lnum = 2; cnum = 26 };
-                             });
-                           pos = { lnum = 2; cnum = 20 };
-                         })
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 3;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.DeclStmt("Jeroo", "j", {
+              a = AST.UnOpExpr((AST.New, "new"), {
+                  a = AST.FxnAppExpr({
+                      a = AST.IdExpr("Jeroo");
+                      pos = { lnum = 2; cnum = 26 };
+                    }, [
+                        {
+                          a = AST.IntExpr(1);
+                          pos = { lnum = 2; cnum = 28 };
+                        };
+                        {
+                          a = AST.IntExpr(2);
+                          pos = { lnum = 2; cnum = 31 };
+                        };
+                      ]);
+                  pos = { lnum = 2; cnum = 26 };
+                });
+              pos = { lnum = 2; cnum = 20 };
+            })
+        ];
+      };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_if_stmt _test_ctxt =
@@ -66,22 +70,24 @@ let parse_if_stmt _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.IfStmt
-                         { a = ({
-                               a = AST.TrueExpr;
-                               pos = { lnum = 2; cnum = 8 };
-                             }, AST.BlockStmt []);
-                           pos = { lnum = 2; cnum = 2 };
-                         }
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 4;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.IfStmt
+            { a = ({
+                  a = AST.TrueExpr;
+                  pos = { lnum = 2; cnum = 8 };
+                }, AST.BlockStmt []);
+              pos = { lnum = 2; cnum = 2 };
+            }
+        ];
+      };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_if_stmt_no_paren _test_ctxt =
@@ -93,22 +99,24 @@ let parse_if_stmt_no_paren _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.IfStmt
-                         { a = ({
-                               a = AST.TrueExpr;
-                               pos = { lnum = 2; cnum = 7 };
-                             }, AST.BlockStmt []);
-                           pos = { lnum = 2; cnum = 2 };
-                         }
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 4;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.IfStmt
+            { a = ({
+                  a = AST.TrueExpr;
+                  pos = { lnum = 2; cnum = 7 };
+                }, AST.BlockStmt []);
+              pos = { lnum = 2; cnum = 2 };
+            }
+        ];
+      };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_elseif_stmt _test_ctxt =
@@ -121,28 +129,30 @@ let parse_elseif_stmt _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.IfElseStmt {
-                         a = ({
-                             a = AST.TrueExpr;
-                             pos = { lnum = 2; cnum = 8 };
-                           }, AST.BlockStmt [], AST.IfStmt
-                               { a = ({
-                                     a = AST.FalseExpr;
-                                     pos = { lnum = 3; cnum = 13 };
-                                   }, AST.BlockStmt []);
-                                 pos = { lnum = 3; cnum = 6 };
-                               });
-                         pos = { lnum = 2; cnum = 2 };
-                       }
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 5;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.IfElseStmt {
+            a = ({
+                a = AST.TrueExpr;
+                pos = { lnum = 2; cnum = 8 };
+              }, AST.BlockStmt [], AST.IfStmt
+                  { a = ({
+                        a = AST.FalseExpr;
+                        pos = { lnum = 3; cnum = 13 };
+                      }, AST.BlockStmt []);
+                    pos = { lnum = 3; cnum = 6 };
+                  });
+            pos = { lnum = 2; cnum = 2 };
+          }
+        ];
+      };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_elseif_no_paren_stmt _test_ctxt =
@@ -155,28 +165,30 @@ let parse_elseif_no_paren_stmt _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.IfElseStmt {
-                         a = ({
-                             a = AST.TrueExpr;
-                             pos = { lnum = 2; cnum = 7 };
-                           }, AST.BlockStmt [], AST.IfStmt {
-                             a = ({
-                                 a = AST.FalseExpr;
-                                 pos = { lnum = 3; cnum = 12 };
-                               }, AST.BlockStmt []);
-                             pos = { lnum = 3; cnum = 6 };
-                           });
-                         pos = { lnum = 2; cnum = 2 };
-                       }
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 5;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.IfElseStmt {
+            a = ({
+                a = AST.TrueExpr;
+                pos = { lnum = 2; cnum = 7 };
+              }, AST.BlockStmt [], AST.IfStmt {
+                a = ({
+                    a = AST.FalseExpr;
+                    pos = { lnum = 3; cnum = 12 };
+                  }, AST.BlockStmt []);
+                pos = { lnum = 3; cnum = 6 };
+              });
+            pos = { lnum = 2; cnum = 2 };
+          }
+        ];
+      };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_elseif_list_stmt _test_ctxt =
@@ -191,34 +203,36 @@ let parse_elseif_list_stmt _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.IfElseStmt {
-                         a = {
-                           a = AST.TrueExpr;
-                           pos = { lnum = 2; cnum = 8 };
-                         }, AST.BlockStmt [], AST.IfElseStmt {
-                             a = ({
-                                 a = AST.FalseExpr;
-                                 pos = { lnum = 3; cnum = 13 };
-                               }, AST.BlockStmt [], AST.IfElseStmt {
-                                 a = ({
-                                     a = AST.TrueExpr;
-                                     pos = { lnum = 4; cnum = 12 };
-                                   }, AST.BlockStmt [], AST.BlockStmt []);
-                                 pos = { lnum = 4; cnum = 6 };
-                               });
-                             pos = { lnum = 3; cnum = 6 };
-                           };
-                         pos = { lnum = 2; cnum = 2 };
-                       }
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 7;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.IfElseStmt {
+            a = {
+              a = AST.TrueExpr;
+              pos = { lnum = 2; cnum = 8 };
+            }, AST.BlockStmt [], AST.IfElseStmt {
+                a = ({
+                    a = AST.FalseExpr;
+                    pos = { lnum = 3; cnum = 13 };
+                  }, AST.BlockStmt [], AST.IfElseStmt {
+                    a = ({
+                        a = AST.TrueExpr;
+                        pos = { lnum = 4; cnum = 12 };
+                      }, AST.BlockStmt [], AST.BlockStmt []);
+                    pos = { lnum = 4; cnum = 6 };
+                  });
+                pos = { lnum = 3; cnum = 6 };
+              };
+            pos = { lnum = 2; cnum = 2 };
+          }
+        ];
+      };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_elseif_list_no_paren_stmt _test_ctxt =
@@ -232,34 +246,36 @@ let parse_elseif_list_no_paren_stmt _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.IfElseStmt {
-                         a = {
-                           a = AST.TrueExpr;
-                           pos = { lnum = 2; cnum = 7 };
-                         }, AST.BlockStmt [], AST.IfElseStmt {
-                             a = {
-                               a = AST.FalseExpr;
-                               pos = { lnum = 3; cnum = 12 };
-                             }, AST.BlockStmt [], AST.IfElseStmt {
-                                 a = {
-                                   a = AST.TrueExpr;
-                                   pos = { lnum = 4; cnum = 11 };
-                                 }, AST.BlockStmt [], AST.BlockStmt [];
-                                 pos = { lnum = 4; cnum = 6 };
-                               };
-                             pos = { lnum = 3; cnum = 6 };
-                           };
-                         pos = { lnum = 2; cnum = 2 };
-                       }
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 7;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.IfElseStmt {
+            a = {
+              a = AST.TrueExpr;
+              pos = { lnum = 2; cnum = 7 };
+            }, AST.BlockStmt [], AST.IfElseStmt {
+                a = {
+                  a = AST.FalseExpr;
+                  pos = { lnum = 3; cnum = 12 };
+                }, AST.BlockStmt [], AST.IfElseStmt {
+                    a = {
+                      a = AST.TrueExpr;
+                      pos = { lnum = 4; cnum = 11 };
+                    }, AST.BlockStmt [], AST.BlockStmt [];
+                    pos = { lnum = 4; cnum = 6 };
+                  };
+                pos = { lnum = 3; cnum = 6 };
+              };
+            pos = { lnum = 2; cnum = 2 };
+          }
+        ];
+      };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_while_stmt _test_ctxt =
@@ -271,22 +287,22 @@ let parse_while_stmt _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.WhileStmt {
-                         a = ({
-                             a = AST.TrueExpr;
-                             pos = { lnum = 2; cnum = 11 };
-                           }, AST.BlockStmt []);
-                         pos = { lnum = 2; cnum = 5 };
-                       }
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 4;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {       stmts = [
+          AST.WhileStmt {
+            a = ({
+                a = AST.TrueExpr;
+                pos = { lnum = 2; cnum = 11 };
+              }, AST.BlockStmt []);
+            pos = { lnum = 2; cnum = 5 };
+          }];
+        };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_while_no_paren _test_ctxt =
@@ -298,22 +314,24 @@ let parse_while_no_paren _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.WhileStmt {
-                         a = ({
-                             a = AST.TrueExpr;
-                             pos = { lnum = 2; cnum = 10 };
-                           }, AST.BlockStmt []);
-                         pos = { lnum = 2; cnum = 5 };
-                       }
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 4;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.WhileStmt {
+            a = ({
+                a = AST.TrueExpr;
+                pos = { lnum = 2; cnum = 10 };
+              }, AST.BlockStmt []);
+            pos = { lnum = 2; cnum = 5 };
+          }
+        ];
+      };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_and _test_ctxt =
@@ -325,28 +343,30 @@ let parse_and _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.IfStmt {
-                         a = ({
-                             a = AST.BinOpExpr({
-                                 a = AST.TrueExpr;
-                                 pos = { lnum = 2; cnum = 7 };
-                               }, AST.And, {
-                                   a = AST.TrueExpr;
-                                   pos = { lnum = 2; cnum = 16 };
-                                 });
-                             pos = { lnum = 2; cnum = 11 };
-                           }, AST.BlockStmt []);
-                         pos = { lnum = 2; cnum = 2 };
-                       }
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 4;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.IfStmt {
+            a = ({
+                a = AST.BinOpExpr({
+                    a = AST.TrueExpr;
+                    pos = { lnum = 2; cnum = 7 };
+                  }, (AST.And, "and"), {
+                      a = AST.TrueExpr;
+                      pos = { lnum = 2; cnum = 16 };
+                    });
+                pos = { lnum = 2; cnum = 11 };
+              }, AST.BlockStmt []);
+            pos = { lnum = 2; cnum = 2 };
+          }
+        ];
+      };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_or _test_ctxt =
@@ -358,28 +378,30 @@ let parse_or _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.IfStmt{
-                         a = ({
-                             a = AST.BinOpExpr({
-                                 a = AST.TrueExpr;
-                                 pos = { lnum = 2; cnum = 7 };
-                               }, AST.Or, {
-                                   a = AST.TrueExpr;
-                                   pos = { lnum = 2; cnum = 15 };
-                                 });
-                             pos = { lnum = 2; cnum = 10 };
-                           }, AST.BlockStmt []);
-                         pos = { lnum = 2; cnum = 2 };
-                       }
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 4;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.IfStmt{
+            a = ({
+                a = AST.BinOpExpr({
+                    a = AST.TrueExpr;
+                    pos = { lnum = 2; cnum = 7 };
+                  }, (AST.Or, "or"), {
+                      a = AST.TrueExpr;
+                      pos = { lnum = 2; cnum = 15 };
+                    });
+                pos = { lnum = 2; cnum = 10 };
+              }, AST.BlockStmt []);
+            pos = { lnum = 2; cnum = 2 };
+          }
+        ];
+      };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_not _test_ctxt =
@@ -391,25 +413,27 @@ let parse_not _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.IfStmt {
-                         a = ({
-                             a = AST.UnOpExpr(AST.Not, {
-                                 a = AST.FalseExpr;
-                                 pos = { lnum = 2; cnum = 12 };
-                               });
-                             pos = { lnum = 2; cnum = 6 };
-                           }, AST.BlockStmt []);
-                         pos = { lnum = 2; cnum = 2 };
-                       }
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 4;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.IfStmt {
+            a = ({
+                a = AST.UnOpExpr((AST.Not, "not"), {
+                    a = AST.FalseExpr;
+                    pos = { lnum = 2; cnum = 12 };
+                  });
+                pos = { lnum = 2; cnum = 6 };
+              }, AST.BlockStmt []);
+            pos = { lnum = 2; cnum = 2 };
+          }
+        ];
+      };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_comment _test_ctxt =
@@ -420,14 +444,16 @@ let parse_comment _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [];
-                     start_lnum = 2;
-                     end_lnum = 3;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [];
+      };
+      pos = { lnum = 2; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_fxn_call _test_ctxt =
@@ -438,38 +464,40 @@ let parse_fxn_call _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.ExprStmt({
-                           a = Some({
-                               a = AST.FxnAppExpr({
-                                   a = AST.IdExpr("foobar");
-                                   pos = { lnum = 2; cnum = 6 };
-                                 }, [
-                                     {
-                                       a = AST.IntExpr(20);
-                                       pos = { lnum = 2; cnum = 9 };
-                                     };
-                                     {
-                                       a = AST.IdExpr("five");
-                                       pos = { lnum = 2; cnum = 15 };
-                                     };
-                                     {
-                                       a = AST.NorthExpr;
-                                       pos = { lnum = 2; cnum = 22 };
-                                     }
-                                   ]);
-                               pos = { lnum = 2; cnum = 6 };
-                             });
-                           pos = { lnum = 2; cnum = 0 };
-                         })
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 3;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.ExprStmt({
+              a = Some({
+                  a = AST.FxnAppExpr({
+                      a = AST.IdExpr("foobar");
+                      pos = { lnum = 2; cnum = 6 };
+                    }, [
+                        {
+                          a = AST.IntExpr(20);
+                          pos = { lnum = 2; cnum = 9 };
+                        };
+                        {
+                          a = AST.IdExpr("five");
+                          pos = { lnum = 2; cnum = 15 };
+                        };
+                        {
+                          a = AST.NorthExpr;
+                          pos = { lnum = 2; cnum = 22 };
+                        }
+                      ]);
+                  pos = { lnum = 2; cnum = 6 };
+                });
+              pos = { lnum = 2; cnum = 0 };
+            })
+        ];
+      };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_obj_fxn_call _test_ctxt =
@@ -480,34 +508,36 @@ let parse_obj_fxn_call _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.ExprStmt({
-                           a = Some {
-                               a = AST.BinOpExpr({
-                                   a = AST.IdExpr("foo");
-                                   pos = { lnum = 2; cnum = 3 };
-                                 }, AST.Dot, {
-                                     a = AST.FxnAppExpr({
-                                         a = AST.IdExpr("bar");
-                                         pos = { lnum = 2; cnum = 7 };
-                                       }, [{
-                                         a = AST.AheadExpr;
-                                         pos = { lnum = 2; cnum = 13 };
-                                       }]);
-                                     pos = { lnum = 2; cnum = 7 };
-                                   });
-                               pos = { lnum = 2; cnum = 4 };
-                             };
-                           pos = { lnum = 2; cnum = 0 };
-                         })
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 3;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.ExprStmt({
+              a = Some {
+                  a = AST.BinOpExpr({
+                      a = AST.IdExpr("foo");
+                      pos = { lnum = 2; cnum = 3 };
+                    }, (AST.Dot, "."), {
+                        a = AST.FxnAppExpr({
+                            a = AST.IdExpr("bar");
+                            pos = { lnum = 2; cnum = 7 };
+                          }, [{
+                            a = AST.AheadExpr;
+                            pos = { lnum = 2; cnum = 13 };
+                          }]);
+                        pos = { lnum = 2; cnum = 7 };
+                      });
+                  pos = { lnum = 2; cnum = 4 };
+                };
+              pos = { lnum = 2; cnum = 0 };
+            })
+        ];
+      };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_not_precedence _test_ctxt =
@@ -519,31 +549,33 @@ let parse_not_precedence _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.IfStmt {
-                         a = ({
-                             a = AST.BinOpExpr({
-                                 a = AST.TrueExpr;
-                                 pos = { lnum = 2; cnum = 7 };
-                               }, AST.And, {
-                                   a = AST.UnOpExpr(AST.Not, {
-                                       a = AST.FalseExpr;
-                                       pos = { lnum = 2; cnum = 21 };
-                                     });
-                                   pos = { lnum = 2; cnum = 15 };
-                                 });
-                             pos = { lnum = 2; cnum = 11 };
-                           }, AST.BlockStmt []);
-                         pos = { lnum = 2; cnum = 2 };
-                       }
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 4;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.IfStmt {
+            a = ({
+                a = AST.BinOpExpr({
+                    a = AST.TrueExpr;
+                    pos = { lnum = 2; cnum = 7 };
+                  }, (AST.And, "and"), {
+                      a = AST.UnOpExpr((AST.Not, "not"), {
+                          a = AST.FalseExpr;
+                          pos = { lnum = 2; cnum = 21 };
+                        });
+                      pos = { lnum = 2; cnum = 15 };
+                    });
+                pos = { lnum = 2; cnum = 11 };
+              }, AST.BlockStmt []);
+            pos = { lnum = 2; cnum = 2 };
+          }
+        ];
+      };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_paren_precedence _test_ctxt =
@@ -555,31 +587,33 @@ let parse_paren_precedence _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.IfStmt {
-                         a = ({
-                             a = AST.UnOpExpr(AST.Not, {
-                                 a = AST.BinOpExpr({
-                                     a = AST.TrueExpr;
-                                     pos = { lnum = 2; cnum = 12 };
-                                   }, AST.And, {
-                                       a = AST.FalseExpr;
-                                       pos = { lnum = 2; cnum = 22 };
-                                     });
-                                 pos = { lnum = 2; cnum = 16 };
-                               });
-                             pos = { lnum = 2; cnum = 6 };
-                           }, AST.BlockStmt []);
-                         pos = { lnum = 2; cnum = 2 };
-                       }
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 4;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.IfStmt {
+            a = ({
+                a = AST.UnOpExpr((AST.Not, "not"), {
+                    a = AST.BinOpExpr({
+                        a = AST.TrueExpr;
+                        pos = { lnum = 2; cnum = 12 };
+                      }, (AST.And, "and"), {
+                          a = AST.FalseExpr;
+                          pos = { lnum = 2; cnum = 22 };
+                        });
+                    pos = { lnum = 2; cnum = 16 };
+                  });
+                pos = { lnum = 2; cnum = 6 };
+              }, AST.BlockStmt []);
+            pos = { lnum = 2; cnum = 2 };
+          }
+        ];
+      };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_and_or_precedence _test_ctxt =
@@ -591,34 +625,36 @@ let parse_and_or_precedence _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.IfStmt {
-                         a = ({
-                             a = AST.BinOpExpr({
-                                 a = AST.TrueExpr;
-                                 pos = { lnum = 2; cnum = 7 };
-                               }, AST.Or, {
-                                   a = AST.BinOpExpr({
-                                       a = AST.FalseExpr;
-                                       pos = { lnum = 2; cnum = 16 };
-                                     }, AST.And, {
-                                         a = AST.TrueExpr;
-                                         pos = { lnum = 2; cnum = 25 };
-                                       });
-                                   pos = { lnum = 2; cnum = 20 };
-                                 });
-                             pos = { lnum = 2; cnum = 10 };
-                           }, AST.BlockStmt []);
-                         pos = { lnum = 2; cnum = 2 };
-                       }
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 4;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.IfStmt {
+            a = ({
+                a = AST.BinOpExpr({
+                    a = AST.TrueExpr;
+                    pos = { lnum = 2; cnum = 7 };
+                  }, (AST.Or, "or"), {
+                      a = AST.BinOpExpr({
+                          a = AST.FalseExpr;
+                          pos = { lnum = 2; cnum = 16 };
+                        }, (AST.And, "and"), {
+                            a = AST.TrueExpr;
+                            pos = { lnum = 2; cnum = 25 };
+                          });
+                      pos = { lnum = 2; cnum = 20 };
+                    });
+                pos = { lnum = 2; cnum = 10 };
+              }, AST.BlockStmt []);
+            pos = { lnum = 2; cnum = 2 };
+          }
+        ];
+      };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_arbitrary_newlines _test_ctxt =
@@ -637,15 +673,16 @@ let parse_arbitrary_newlines _test_ctxt =
              "\n"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                     ];
-                     start_lnum = 3;
-                     end_lnum = 7;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [];
+      };
+      pos = { lnum = 3; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_fxn_list _test_ctxt =
@@ -659,21 +696,24 @@ let parse_fxn_list _test_ctxt =
              "\n"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [
-                     {
-                       id = "foo";
-                       stmts = [];
-                       start_lnum = 1;
-                       end_lnum = 2;
-                     }
-                   ];
-                   main_fxn = {
-                     stmts = [];
-                     start_lnum = 1;
-                     end_lnum = 2;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [
+      {
+        a = {
+          id = "foo";
+          stmts = [];
+        };
+        pos = { lnum = 1; cnum = 3 }
+      }
+    ];
+    main_fxn = {
+      a = {
+        stmts = [];
+      };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_stmt_list _test_ctxt =
@@ -687,29 +727,31 @@ let parse_stmt_list _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.IfStmt {
-                         a = ({
-                             a = AST.TrueExpr;
-                             pos = { lnum = 2; cnum = 7 };
-                           }, AST.BlockStmt []);
-                         pos = { lnum = 2; cnum = 2 };
-                       };
-                       AST.WhileStmt {
-                         a = ({
-                             a = AST.TrueExpr;
-                             pos = { lnum = 4; cnum = 11 };
-                           }, AST.BlockStmt []);
-                         pos = { lnum = 4; cnum = 5 };
-                       }
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 6;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.IfStmt {
+            a = ({
+                a = AST.TrueExpr;
+                pos = { lnum = 2; cnum = 7 };
+              }, AST.BlockStmt []);
+            pos = { lnum = 2; cnum = 2 };
+          };
+          AST.WhileStmt {
+            a = ({
+                a = AST.TrueExpr;
+                pos = { lnum = 4; cnum = 11 };
+              }, AST.BlockStmt []);
+            pos = { lnum = 4; cnum = 5 };
+          }
+        ];
+      };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 let parse_negative_int _test_ctxt =
@@ -720,28 +762,30 @@ let parse_negative_int _test_ctxt =
              "end sub"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.VB;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.ExprStmt({
-                           a = Some {
-                               a = AST.FxnAppExpr({
-                                   a = AST.IdExpr("foo");
-                                   pos = { lnum = 2; cnum = 3 };
-                                 }, [{
-                                   a = AST.IntExpr(-1);
-                                   pos = { lnum = 2; cnum = 6 };
-                                 }]);
-                               pos = { lnum = 2; cnum = 3 };
-                             };
-                           pos = { lnum = 2; cnum = 0 };
-                         })
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 3;
-                   }
-                 } in
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.ExprStmt({
+              a = Some {
+                  a = AST.FxnAppExpr({
+                      a = AST.IdExpr("foo");
+                      pos = { lnum = 2; cnum = 3 };
+                    }, [{
+                      a = AST.IntExpr(-1);
+                      pos = { lnum = 2; cnum = 6 };
+                    }]);
+                  pos = { lnum = 2; cnum = 3 };
+                };
+              pos = { lnum = 2; cnum = 0 };
+            })
+        ];
+      };
+      pos = { lnum = 1; cnum = 3 }
+    }
+  }
+  in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
 (* TODO: complete all of these tasks in a future story *)
