@@ -1,17 +1,16 @@
 %{
 open AST
-open Position
 %}
 %token <int * Position.t> INT
 %token <string * Position.t> ID
-%token <Position.t> TRUE FALSE
-%token <Position.t> NOT AND OR EQ
-%token <Position.t> METHOD IF ELSE WHILE NEW
-%token <Position.t> LPAREN RPAREN
-%token <Position.t> LBRACKET RBRACKET
-%token <Position.t> COMMA DOT SEMICOLON
-%token <Position.t> LEFT RIGHT AHEAD HERE
-%token <Position.t> NORTH EAST SOUTH WEST
+%token <Position.t * string> TRUE FALSE
+%token <Position.t * string> NOT AND OR EQ
+%token <Position.t * string> METHOD IF ELSE WHILE NEW
+%token <Position.t * string> LPAREN RPAREN
+%token <Position.t * string> LBRACKET RBRACKET
+%token <Position.t * string> COMMA DOT SEMICOLON
+%token <Position.t * string> LEFT RIGHT AHEAD HERE
+%token <Position.t * string> NORTH EAST SOUTH WEST
 %token EOF
 
 %left OR
@@ -20,7 +19,7 @@ open Position
 %right NOT
 %left DOT
 
-%start <AST.fxn list> translation_unit
+%start <AST.fxn AST.meta list> translation_unit
 
 %on_error_reduce expr
 %%
@@ -29,38 +28,38 @@ translation_unit:
   | fs = fxn* EOF { fs }
 
 fxn:
-  | METHOD id_pos = ID LPAREN RPAREN b = block
+  | pos_s = METHOD id_pos = ID LPAREN RPAREN stmts = block
     {
-      let (stmts, start_pos, end_pos) = b in
       {
-        stmts;
-        id = fst id_pos;
-        start_lnum = start_pos.lnum;
-        end_lnum = end_pos.lnum;
+        a = {
+          stmts;
+          id = fst id_pos;
+        };
+        pos = fst pos_s
       }
     }
 
 block:
-  | start_pos = LBRACKET stmts = stmt* end_pos = RBRACKET { (stmts, start_pos, end_pos) }
+  | LBRACKET stmts = stmt* RBRACKET { stmts }
 
 stmt:
   | s = open_stmt { s }
   | s = closed_stmt { s }
 
 open_stmt:
-  | pos = IF LPAREN e = expr RPAREN s = stmt { AST.IfStmt{ a = (e, s); pos } }
-  | pos = IF LPAREN e = expr RPAREN s1 = closed_stmt ELSE s2 = open_stmt { AST.IfElseStmt{ a = (e, s1, s2); pos } }
-  | pos = WHILE LPAREN e = expr RPAREN s = open_stmt { AST.WhileStmt{ a = (e, s); pos } }
+  | pos_s = IF LPAREN e = expr RPAREN s = stmt { AST.IfStmt{ a = (e, s); pos = fst pos_s } }
+  | pos_s = IF LPAREN e = expr RPAREN s1 = closed_stmt ELSE s2 = open_stmt { AST.IfElseStmt{ a = (e, s1, s2); pos  = fst pos_s } }
+  | pos_s = WHILE LPAREN e = expr RPAREN s = open_stmt { AST.WhileStmt{ a = (e, s); pos = fst pos_s } }
 
 closed_stmt:
   | s = simple_stmt { s }
-  | pos = IF LPAREN e = expr RPAREN s1 = closed_stmt ELSE s2 = closed_stmt { AST.IfElseStmt{ a = (e, s1, s2); pos } }
-  | pos = WHILE LPAREN e = expr RPAREN s = closed_stmt { AST.WhileStmt{ a = (e, s); pos } }
+  | pos_s = IF LPAREN e = expr RPAREN s1 = closed_stmt ELSE s2 = closed_stmt { AST.IfElseStmt{ a = (e, s1, s2); pos = fst pos_s } }
+  | pos_s = WHILE LPAREN e = expr RPAREN s = closed_stmt { AST.WhileStmt{ a = (e, s); pos = fst pos_s } }
 
 simple_stmt:
-  | b = block { let (stmts, _, _) = b in AST.BlockStmt(stmts) }
+  | stmts = block { AST.BlockStmt(stmts) }
   | ty_pos = ID id_pos = ID EQ e = expr SEMICOLON { AST.DeclStmt(fst ty_pos, fst id_pos, e) }
-  | e = expr? pos = SEMICOLON { AST.ExprStmt({ a = e; pos }) }
+  | e = expr? pos_s = SEMICOLON { AST.ExprStmt({ a = e; pos = fst pos_s }) }
 
 arguments:
   | args = separated_list(COMMA, expr) { args }
@@ -71,23 +70,23 @@ expr:
 
 arith_expr:
   | e = primary_expr { e }
-  | e1 = expr pos = AND e2 = expr { { a = AST.BinOpExpr(e1, AST.And, e2); pos } }
-  | e1 = expr pos = OR e2 = expr { { a = AST.BinOpExpr(e1, AST.Or, e2); pos } }
-  | e1 = expr pos = DOT e2 = expr { { a = AST.BinOpExpr(e1, AST.Dot, e2); pos } }
-  | pos = NEW e = expr { { a = AST.UnOpExpr (AST.New, e); pos } }
-  | pos = NOT e = expr { { a = AST.UnOpExpr(AST.Not, e); pos } }
+  | e1 = expr pos_s = AND e2 = expr { { a = AST.BinOpExpr(e1, (AST.And, (snd pos_s)), e2); pos = fst pos_s } }
+  | e1 = expr pos_s = OR e2 = expr { { a = AST.BinOpExpr(e1, (AST.Or, (snd pos_s)), e2); pos = fst pos_s } }
+  | e1 = expr pos_s = DOT e2 = expr { { a = AST.BinOpExpr(e1, (AST.Dot, (snd pos_s)), e2); pos = fst pos_s } }
+  | pos_s = NEW e = expr { { a = AST.UnOpExpr ((AST.New, (snd pos_s)), e); pos = fst pos_s } }
+  | pos_s = NOT e = expr { { a = AST.UnOpExpr((AST.Not, (snd pos_s)), e); pos = fst pos_s } }
 
 primary_expr:
   | id_pos = ID { { a = AST.IdExpr (fst id_pos); pos = snd id_pos } }
   | i_pos = INT { { a = AST.IntExpr (fst i_pos); pos = snd i_pos } }
-  | pos = TRUE { { a = AST.TrueExpr; pos } }
-  | pos = FALSE { { a = AST.FalseExpr; pos } }
-  | pos = LEFT { { a = AST.LeftExpr; pos } }
-  | pos = RIGHT { { a = AST.RightExpr; pos } }
-  | pos = AHEAD { { a = AST.AheadExpr; pos } }
-  | pos = HERE { { a = AST.HereExpr; pos } }
-  | pos = NORTH { { a = AST.NorthExpr; pos } }
-  | pos = EAST { { a = AST.EastExpr; pos } }
-  | pos = SOUTH { { a = AST.SouthExpr; pos } }
-  | pos = WEST { { a = AST.WestExpr; pos } }
+  | pos_s = TRUE { { a = AST.TrueExpr; pos = fst pos_s } }
+  | pos_s = FALSE { { a = AST.FalseExpr; pos = fst pos_s } }
+  | pos_s = LEFT { { a = AST.LeftExpr; pos = fst pos_s } }
+  | pos_s = RIGHT { { a = AST.RightExpr; pos = fst pos_s } }
+  | pos_s = AHEAD { { a = AST.AheadExpr; pos = fst pos_s } }
+  | pos_s = HERE { { a = AST.HereExpr; pos = fst pos_s } }
+  | pos_s = NORTH { { a = AST.NorthExpr; pos = fst pos_s } }
+  | pos_s = EAST { { a = AST.EastExpr; pos = fst pos_s } }
+  | pos_s = SOUTH { { a = AST.SouthExpr; pos = fst pos_s } }
+  | pos_s = WEST { { a = AST.WestExpr; pos = fst pos_s } }
   | LPAREN e = expr RPAREN { e }

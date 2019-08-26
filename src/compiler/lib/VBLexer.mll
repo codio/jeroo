@@ -63,51 +63,55 @@ rule token state = parse
   | whitespace+
     { token state lexbuf }
   | d i m
-      { DIM { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { DIM ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | a s
-      { AS { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { AS ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | n e w
-      { NEW { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { NEW ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | s u b
-      { SUB { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { SUB ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | w h i l e
-      { WHILE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { WHILE ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | i f
-      { IF { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { IF ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | t h e n
-      { THEN { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { THEN ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | e l s e i f
-      { ELSEIF { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { ELSEIF ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | e l s e
-      { ELSE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
-  | e n d
-      { END { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { ELSE ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
+  | e n d whitespace+ s u b
+      { ENDSUB ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
+  | e n d whitespace+ i f
+      { ENDIF ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
+  | e n d whitespace w h i l e
+      { ENDWHILE ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | l e f t
-      { LEFT { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { LEFT ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | r i g h t
-      { RIGHT { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { RIGHT ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | a h e a d
-      { AHEAD { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { AHEAD ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | h e r e
-      { HERE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { HERE ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | n o r t h
-      { NORTH { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { NORTH ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | e a s t
-      { EAST { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { EAST ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | s o u t h
-      { SOUTH { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { SOUTH ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | w e s t
-      { WEST { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { WEST ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | t r u e
-      { TRUE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { TRUE ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | f a l s e
-      { FALSE { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { FALSE ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | a n d
-      { AND { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { AND ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | o r
-      { OR { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { OR ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | n o t
-      { NOT { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { NOT ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | j e r o o
       { ID ("Jeroo", { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }) }
   | h a s f l o w e r
@@ -125,15 +129,15 @@ rule token state = parse
   | i s c l e a r
       {ID ("isClear", { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }) }
   | '='
-      { EQ { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }}
+      { EQ ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | '('
-      { LPAREN { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }}
+      { LPAREN ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | ')'
-      { RPAREN { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }}
+      { RPAREN ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | ','
-      { COMMA { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }}
+      { COMMA ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | '.'
-      { DOT { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } }
+      { DOT ( { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf }, (Lexing.lexeme lexbuf)) }
   | int_constant as i
     { INT (int_of_string i, { lnum = LexingUtils.get_lnum lexbuf; cnum = LexingUtils.get_cnum lexbuf } ) }
   | identifier as id

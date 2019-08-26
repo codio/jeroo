@@ -28,14 +28,13 @@ type expr =
   | EastExpr
   | SouthExpr
   | WestExpr
-  (* left side expression, operator, right side expression *)
-  | BinOpExpr of expr meta * bin_op * expr meta
-  (* operator, expression *)
-  | UnOpExpr of un_op * expr meta
+  (* left side expression, operator with associated text, right side expression *)
+  | BinOpExpr of expr meta * (bin_op * string) * expr meta
+  (* uniary operator with associated text, expression *)
+  | UnOpExpr of (un_op * string) * expr meta
   (* expression, arguments *)
   | FxnAppExpr of expr meta * expr meta list
 [@@deriving show]
-
 
 type stmt =
   | BlockStmt of stmt list
@@ -53,64 +52,27 @@ type stmt =
 type fxn = {
   id : string;
   stmts : stmt list;
-  start_lnum : int;
-  end_lnum : int;
 }
 [@@deriving show]
 
 type main_fxn = {
   stmts : stmt list;
-  start_lnum : int;
-  end_lnum : int;
 }
-[@@deriving show]
-
-type language =
-  | Java
-  | VB
-  | Python
 [@@deriving show]
 
 type translation_unit = {
-  extension_fxns : fxn list;
-  main_fxn : main_fxn;
-  language : language
+  extension_fxns : fxn meta list;
+  main_fxn : main_fxn meta
 }
 [@@deriving show]
 
-let str_of_bin_op operator = function
-  | Java ->
-    begin match operator with
-      | And -> "&&"
-      | Or -> "||"
-      | Dot -> "."
-    end
-  | VB ->
-    begin match operator with
-      | And -> "And"
-      | Or -> "Or"
-      | Dot -> "."
-    end
-  | Python ->
-    begin match operator with
-      | And -> "and"
-      | Or -> "or"
-      | Dot -> "."
-    end
-
-let str_of_un_op operator = function
-  | Java ->
-    begin match operator with
-      | Not -> "!"
-      | New -> "new"
-    end
-  | VB ->
-    begin match operator with
-      | Not -> "Not"
-      | New -> "New"
-    end
-  | Python ->
-    begin match operator with
-      | Not -> "not"
-      | New -> "="
-    end
+let rec stmt_pos = function
+  | BlockStmt stmts ->
+    (* get the position of the first statement, if it exists *)
+    let stmt_opt = (List.nth_opt stmts 0) in
+    Option.bind stmt_opt stmt_pos
+  | IfStmt { pos; _ }
+  | IfElseStmt { pos; _ }
+  | WhileStmt { pos; _ }
+  | ExprStmt { pos; _ }
+  | DeclStmt (_, _, { pos; _ }) -> Some pos

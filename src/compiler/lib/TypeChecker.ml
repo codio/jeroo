@@ -4,7 +4,6 @@ let error = "error"
 
 type state = {
   pane : Pane.t;
-  lang : AST.language;
 }
 
 let rec score_args actual_args expected_args =
@@ -61,7 +60,7 @@ let rec type_of_expr expr env state =
     JerooType.CompassDirT
   | { a = AST.AheadExpr | AST.HereExpr | AST.LeftExpr | AST.RightExpr; _ } ->
     JerooType.RelativeDirT
-  | { a = AST.BinOpExpr (l, ((AST.And | AST.Or) as op), r); _ } ->
+  | { a = AST.BinOpExpr (l, ((AST.And, op_str) | (AST.Or, op_str)), r); _ } ->
     let l_t = type_of_expr l env state in
     let r_t = type_of_expr r env state in
     begin match (l_t, r_t) with
@@ -74,16 +73,16 @@ let rec type_of_expr expr env state =
             exception_type = error;
             message =
               Printf.sprintf "%s operator expected: `%s %s %s`, found: `%s %s %s`"
-                (AST.str_of_bin_op op state.lang)
+                op_str
                 (JerooType.string_of_type JerooType.BoolT)
-                (AST.str_of_bin_op op state.lang)
+                op_str
                 (JerooType.string_of_type JerooType.BoolT)
                 (JerooType.string_of_type l_t)
-                (AST.str_of_bin_op op state.lang)
+                op_str
                 (JerooType.string_of_type r_t)
           })
     end
-  | { a = AST.UnOpExpr ((AST.Not as op), e); _ } ->
+  | { a = AST.UnOpExpr ((AST.Not, op_str), e); _ } ->
     begin match type_of_expr e env state with
       | JerooType.BoolT -> JerooType.BoolT
       | t -> raise (Exceptions.CompileException {
@@ -91,11 +90,11 @@ let rec type_of_expr expr env state =
           pane = state.pane;
           exception_type = error;
           message =
-            Printf.sprintf "%s operator expected: `%s%s`, found: `%s%s`"
-              (AST.str_of_un_op op state.lang)
-              (AST.str_of_un_op op state.lang)
+            Printf.sprintf "%s operator expected: `%s %s`, found: `%s %s`"
+              op_str
+              op_str
               (JerooType.string_of_type JerooType.BoolT)
-              (AST.str_of_un_op op state.lang)
+              op_str
               (JerooType.string_of_type t)
         })
     end
@@ -109,9 +108,78 @@ let rec type_of_expr expr env state =
           message = get_not_found_message id env
         })
     end
-  | { a = AST.UnOpExpr (AST.New, ctor); _ } -> typecheck_new_expr ctor env state
+  | { a = AST.UnOpExpr ((AST.New, op_str), ctor_meta); _ } ->
+    begin match ctor_meta.a with
+      | AST.FxnAppExpr({ a = AST.IdExpr(id); _ }, args) ->
+        let args_t = args |> List.map (fun arg -> type_of_expr arg env state) in
+        begin match SymbolTable.find env id with
+          | Some (JerooType.ObjectT obj) ->
+            let matches = SymbolTable.find_all obj.env id in
+            let ctor = matches |> List.find_opt (function
+                | JerooType.CtorT ctor -> ctor.args = args_t
+                |  t ->
+                  (* the function we are calling is not a constructor, but has the Jeroo identifier *)
+                  raise (Exceptions.CompileException {
+                      pos = ctor_meta.pos;
+                      pane = state.pane;
+                      exception_type = error;
+                      message = "Expected Jeroo constructor, found " ^ (JerooType.string_of_type t)
+                    })
+              )
+            in
+            begin match ctor with
+              | Some(JerooType.CtorT _) ->
+                JerooType.ObjectT obj
+              | _ ->
+                (* construcotr has the wrong args *)
+                let actual_ctor = JerooType.CtorT {
+                    id;
+                    args = args_t;
+                  }
+                in
+                let message = "No match found for constructor with type: " ^
+                              (JerooType.string_of_type actual_ctor) ^ "\n"
+                in
+                let ctors = rank_ctors obj.env args_t in
+                raise (Exceptions.CompileException {
+                    pos = ctor_meta.pos;
+                    pane = state.pane;
+                    exception_type = error;
+                    message =
+                      if ((List.length ctors) > 0)
+                      then message ^ "Candidate constructors:\n" ^ (String.concat "\n" ctors)
+                      else message
+                  })
+            end
+          | Some(t) -> raise (Exceptions.CompileException {
+              pos = ctor_meta.pos;
+              pane = state.pane;
+              exception_type = error;
+              message =
+                Printf.sprintf
+                "`%s` operator must be used with an object constructor, found %s"
+                op_str
+                (JerooType.string_of_type t)
+            })
+          | None -> raise (Exceptions.CompileException {
+              pos = ctor_meta.pos;
+              pane = state.pane;
+              exception_type = error;
+              message = get_not_found_message id env
+            })
+        end
+      | _ -> raise (Exceptions.CompileException {
+          pos = ctor_meta.pos;
+          pane = state.pane;
+          exception_type = error;
+          message =
+            Printf.sprintf
+            "`%s` operator requiers function application"
+            op_str
+        })
+    end
   | { a = AST.FxnAppExpr (fxn, args); _ } -> typecheck_fxn_app fxn args env state
-  | { a = AST.BinOpExpr (l, (AST.Dot as op), r); _ } ->
+  | { a = AST.BinOpExpr (l, (AST.Dot, op_str), r); _ } ->
     begin match type_of_expr l env state with
       | JerooType.ObjectT obj -> type_of_expr r obj.env state
       | t -> raise (Exceptions.CompileException {
@@ -120,7 +188,7 @@ let rec type_of_expr expr env state =
           exception_type = error;
           message =
             Printf.sprintf "%s operator must be used with a Jeroo object, found %s"
-              (AST.str_of_bin_op op state.lang)
+              op_str
               (JerooType.string_of_type t)
         })
     end
@@ -175,68 +243,6 @@ and typecheck_fxn_app fxn args env state = match fxn.a with
       pane = state.pane;
       exception_type = error;
       message = "Function application must be used with an identifier"
-    })
-and typecheck_new_expr ctor_meta env state =
-  match ctor_meta.a with
-  | AST.FxnAppExpr({ a = AST.IdExpr(id); _ }, args) ->
-    let args_t = args |> List.map (fun arg -> type_of_expr arg env state) in
-    begin match SymbolTable.find env id with
-      | Some (JerooType.ObjectT obj) ->
-        let matches = SymbolTable.find_all obj.env id in
-        let ctor = matches |> List.find_opt (function
-            | JerooType.CtorT ctor -> ctor.args = args_t
-            |  t ->
-              (* the function we are calling is not a constructor, but has the Jeroo identifier *)
-              raise (Exceptions.CompileException {
-                  pos = ctor_meta.pos;
-                  pane = state.pane;
-                  exception_type = error;
-                  message = "Expected Jeroo constructor, found " ^ (JerooType.string_of_type t)
-                })
-          )
-        in
-        begin match ctor with
-          | Some(JerooType.CtorT _) ->
-            JerooType.ObjectT obj
-          | _ ->
-            (* construcotr has the wrong args *)
-            let actual_ctor = JerooType.CtorT {
-                id;
-                args = args_t;
-              }
-            in
-            let message = "No match found for constructor with type: " ^
-                          (JerooType.string_of_type actual_ctor) ^ "\n"
-            in
-            let ctors = rank_ctors obj.env args_t in
-            raise (Exceptions.CompileException {
-                pos = ctor_meta.pos;
-                pane = state.pane;
-                exception_type = error;
-                message =
-                  if ((List.length ctors) > 0)
-                  then message ^ "Candidate constructors:\n" ^ (String.concat "\n" ctors)
-                  else message
-              })
-        end
-      | Some(t) -> raise (Exceptions.CompileException {
-          pos = ctor_meta.pos;
-          pane = state.pane;
-          exception_type = error;
-          message = "`new` operator must be used with an object constructor, found " ^ (JerooType.string_of_type t)
-        })
-      | None -> raise (Exceptions.CompileException {
-          pos = ctor_meta.pos;
-          pane = state.pane;
-          exception_type = error;
-          message = get_not_found_message id env
-        })
-    end
-  | _ -> raise (Exceptions.CompileException {
-      pos = ctor_meta.pos;
-      pane = state.pane;
-      exception_type = error;
-      message = "`new` operator requiers function application"
     })
 
 let rec typecheck_stmt stmt env state =
@@ -385,8 +391,8 @@ let typecheck_fxn (fxn : AST.fxn) env state =
   |> List.iter (fun s -> typecheck_stmt s new_tbl state)
 
 let typecheck_extension_fxns extension_fxns env state =
-    extension_fxns
-    |> List.iter (fun f -> typecheck_fxn f env state)
+  extension_fxns
+  |> List.iter (fun f -> typecheck_fxn f.a env state)
 
 let typecheck_main_fxn main_fxn env state =
   let id = "main" in
@@ -405,13 +411,13 @@ let add_extension_fxns_to_env extension_fxns env state =
   extension_fxns
   |> List.iter (fun fxn ->
       let fxn_t = JerooType.FunT {
-          id = fxn.id;
+          id = fxn.a.id;
           args = [];
           retT = JerooType.VoidT;
         }
       in
-      check_duplicates fxn_t fxn.id env state;
-      SymbolTable.add env fxn.id fxn_t
+      check_duplicates fxn_t fxn.a.id env state;
+      SymbolTable.add env fxn.a.id fxn_t
     )
 
 let typecheck translation_unit =
@@ -422,17 +428,14 @@ let typecheck translation_unit =
       env = extensions_env;
     });
 
-  let lang = translation_unit.language in
   let extensions_state = {
     pane = Pane.Extensions;
-    lang
   }
   in
   add_extension_fxns_to_env translation_unit.extension_fxns extensions_env extensions_state;
   typecheck_extension_fxns translation_unit.extension_fxns extensions_env extensions_state;
   let main_state = {
     pane = Pane.Main;
-    lang
   }
   in
-  typecheck_main_fxn translation_unit.main_fxn main_env main_state
+  typecheck_main_fxn translation_unit.main_fxn.a main_env main_state

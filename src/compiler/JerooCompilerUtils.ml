@@ -14,7 +14,7 @@ let new_instruction op_init arg1 arg2 arg3 arg4 arg5 arg6 =
 
 let json_of_bytecode bytecode =
   bytecode
-  |> Seq.map (fun code -> match code with
+  |> List.map (fun code -> match code with
       | Bytecode.JUMP (n, pane, line_num) -> new_instruction "JUMP" n 0 0 0 (Pane.int_of_pane pane) line_num
       | Bytecode.JUMP_LBL (_, pane, line_num) -> new_instruction "JUMP" (-1) 0 0 0 (Pane.int_of_pane pane) line_num
       | Bytecode.BZ (n, pane, line_num) -> new_instruction "BZ" n 0 0 0 (Pane.int_of_pane pane) line_num
@@ -50,5 +50,5 @@ let json_of_bytecode bytecode =
       | Bytecode.OR (pane, line_num) -> new_instruction "OR" 0 0 0 0 (Pane.int_of_pane pane) line_num
       | Bytecode.NOT (pane, line_num) -> new_instruction "NOT" 0 0 0 0 (Pane.int_of_pane pane) line_num
     )
-  |> Array.of_seq
+  |> Array.of_list
   |> Js.array

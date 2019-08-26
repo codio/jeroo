@@ -8,14 +8,15 @@ let parse_method _test_ctxt =
              "method main() { }"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.Java;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [];
-                     start_lnum = 1;
-                     end_lnum = 1;
-                   };
-                 }
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = []
+      };
+      pos = { lnum = 1; cnum = 6; }
+    };
+  }
   in
   assert_equal ~printer:[%show: AST.translation_unit] ast expected
 
@@ -25,35 +26,36 @@ let parse_decl _test_ctxt =
              "method main() { Jeroo j = new Jeroo(1, 2); }"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.Java;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.DeclStmt("Jeroo", "j", {
-                           a = AST.UnOpExpr(AST.New, {
-                               a = AST.FxnAppExpr({
-                                   a = AST.IdExpr("Jeroo");
-                                   pos = { lnum = 1; cnum = 35 };
-                                 },
-                                   [
-                                     {
-                                       a = AST.IntExpr(1);
-                                       pos = { lnum = 1; cnum = 37 };
-                                     };
-                                     {
-                                       a = AST.IntExpr(2);
-                                       pos = { lnum = 1; cnum = 40 };
-                                     }
-                                   ]);
-                               pos = { lnum = 1; cnum = 35 };
-                             });
-                           pos = { lnum = 1; cnum = 29 };
-                         })
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 1;
-                   };
-                 }
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.DeclStmt("Jeroo", "j", {
+              a = AST.UnOpExpr((AST.New, "new"), {
+                  a = AST.FxnAppExpr({
+                      a = AST.IdExpr("Jeroo");
+                      pos = { lnum = 1; cnum = 35 };
+                    },
+                      [
+                        {
+                          a = AST.IntExpr(1);
+                          pos = { lnum = 1; cnum = 37 };
+                        };
+                        {
+                          a = AST.IntExpr(2);
+                          pos = { lnum = 1; cnum = 40 };
+                        }
+                      ]);
+                  pos = { lnum = 1; cnum = 35 };
+                });
+              pos = { lnum = 1; cnum = 29 };
+            })
+        ];
+      };
+      pos = { lnum = 1; cnum = 6 }
+    };
+  }
   in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
@@ -63,22 +65,23 @@ let parse_if_stmt _test_ctxt =
              "method main() { if (true) { } }"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.Java;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.IfStmt {
-                         a = ({
-                             a = AST.TrueExpr;
-                             pos = { lnum = 1; cnum = 24 };
-                           }, AST.BlockStmt []);
-                         pos = { lnum = 1; cnum = 18 };
-                       }
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 1;
-                   };
-                 }
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.IfStmt {
+            a = ({
+                a = AST.TrueExpr;
+                pos = { lnum = 1; cnum = 24 };
+              }, AST.BlockStmt []);
+            pos = { lnum = 1; cnum = 18 };
+          }
+        ];
+      };
+      pos = { lnum = 1; cnum = 6 }
+    };
+  }
   in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
@@ -89,18 +92,27 @@ let parse_if_else_stmt _test_ctxt =
     "method main() { if (true) { } else { }}"
   in
   let ast = Parser.parse code in
-  let expected = { AST.extension_fxns = [];
-                   main_fxn =
-                     {
-                       stmts =
-                         [(AST.IfElseStmt
-                             { AST.a =
-                                 ({ AST.a = AST.TrueExpr; pos = { Position.lnum = 1; cnum = 24 } },
-                                  (AST.BlockStmt []), (AST.BlockStmt []));
-                               pos = { Position.lnum = 1; cnum = 18 } })
-                         ];
-                       start_lnum = 1; end_lnum = 1 };
-                   language = AST.Java }
+  let expected = {
+    AST.extension_fxns = [];
+    main_fxn =
+      {
+        a = {
+          stmts =
+            [
+              (AST.IfElseStmt { a = (
+                   {
+                     a = AST.TrueExpr;
+                     pos = { Position.lnum = 1; cnum = 24 }
+                   },
+                   AST.BlockStmt [],
+                   AST.BlockStmt []
+                 );
+                   pos = { Position.lnum = 1; cnum = 18 } })
+            ];
+        };
+        pos = { lnum = 1; cnum = 6 };
+      };
+  }
   in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
@@ -110,28 +122,29 @@ let parse_dangling_if _test_ctxt =
              "method main() { if (true) if (false) {} else { }}"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.Java;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.IfStmt{
-                         a = {
-                           a = AST.TrueExpr;
-                           pos = { lnum = 1; cnum = 24 };
-                         }, AST.IfElseStmt
-                             { a = ({
-                                   a = AST.FalseExpr;
-                                   pos = { lnum = 1; cnum = 35 };
-                                 }, AST.BlockStmt [], AST.BlockStmt []);
-                               pos = { lnum = 1; cnum = 28 };
-                             };
-                         pos = { lnum = 1; cnum = 18 };
-                       };
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 1;
-                   };
-                 }
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.IfStmt{
+            a = {
+              a = AST.TrueExpr;
+              pos = { lnum = 1; cnum = 24 };
+            }, AST.IfElseStmt
+                { a = ({
+                      a = AST.FalseExpr;
+                      pos = { lnum = 1; cnum = 35 };
+                    }, AST.BlockStmt [], AST.BlockStmt []);
+                  pos = { lnum = 1; cnum = 28 };
+                };
+            pos = { lnum = 1; cnum = 18 };
+          };
+        ];
+      };
+      pos = { lnum = 1; cnum = 6 }
+    };
+  }
   in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
@@ -141,22 +154,23 @@ let parse_while_stmt _test_ctxt =
              "method main() { while(true) { }}"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.Java;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.WhileStmt {
-                         a = ({
-                             a = AST.TrueExpr;
-                             pos = { lnum = 1; cnum = 26 };
-                           }, AST.BlockStmt []);
-                         pos = { lnum = 1; cnum = 21 };
-                       }
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 1;
-                   };
-                 }
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.WhileStmt {
+            a = ({
+                a = AST.TrueExpr;
+                pos = { lnum = 1; cnum = 26 };
+              }, AST.BlockStmt []);
+            pos = { lnum = 1; cnum = 21 };
+          }
+        ];
+      };
+      pos = { lnum = 1; cnum = 6 }
+    };
+  }
   in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
@@ -166,29 +180,30 @@ let parse_and _test_ctxt =
              "method main() { if (true && true) { }}"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.Java;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.IfStmt
-                         {
-                           a = ({
-                               a = AST.BinOpExpr({
-                                   a = AST.TrueExpr;
-                                   pos = { lnum = 1; cnum = 24 };
-                                 }, AST.And, {
-                                     a = AST.TrueExpr;
-                                     pos = { lnum = 1; cnum = 32 };
-                                   });
-                               pos = { lnum = 1; cnum = 27 };
-                             }, AST.BlockStmt []);
-                           pos = { lnum = 1; cnum = 18 };
-                         }
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 1;
-                   };
-                 }
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.IfStmt
+            {
+              a = ({
+                  a = AST.BinOpExpr({
+                      a = AST.TrueExpr;
+                      pos = { lnum = 1; cnum = 24 };
+                    }, (AST.And, "&&"), {
+                        a = AST.TrueExpr;
+                        pos = { lnum = 1; cnum = 32 };
+                      });
+                  pos = { lnum = 1; cnum = 27 };
+                }, AST.BlockStmt []);
+              pos = { lnum = 1; cnum = 18 };
+            }
+        ];
+      };
+      pos = { lnum = 1; cnum = 6 }
+    };
+  }
   in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
@@ -198,28 +213,29 @@ let parse_or _test_ctxt =
              "method main() { if (true || true) { }}"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.Java;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.IfStmt
-                         { a = ({
-                               a = AST.BinOpExpr({
-                                   a = AST.TrueExpr;
-                                   pos = { lnum = 1; cnum = 24 };
-                                 }, AST.Or, {
-                                     a = AST.TrueExpr;
-                                     pos = { lnum = 1; cnum = 32 };
-                                   });
-                               pos = { lnum = 1; cnum = 27 };
-                             }, AST.BlockStmt []);
-                           pos = { lnum = 1; cnum = 18 };
-                         };
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 1;
-                   }
-                 }
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.IfStmt
+            { a = ({
+                  a = AST.BinOpExpr({
+                      a = AST.TrueExpr;
+                      pos = { lnum = 1; cnum = 24 };
+                    }, (AST.Or, "||"), {
+                        a = AST.TrueExpr;
+                        pos = { lnum = 1; cnum = 32 };
+                      });
+                  pos = { lnum = 1; cnum = 27 };
+                }, AST.BlockStmt []);
+              pos = { lnum = 1; cnum = 18 };
+            };
+        ];
+      };
+      pos = { lnum = 1; cnum = 6 }
+    }
+  }
   in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
@@ -229,25 +245,26 @@ let parse_not _test_ctxt =
              "method main() { if (!true) {} }"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.Java;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.IfStmt
-                         { a = ({
-                               a = AST.UnOpExpr(AST.Not, {
-                                   a = AST.TrueExpr;
-                                   pos = { lnum = 1; cnum = 25 };
-                                 });
-                               pos = { lnum = 1; cnum = 21 };
-                             }, AST.BlockStmt []);
-                           pos = { lnum = 1; cnum = 18 };
-                         };
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 1;
-                   }
-                 }
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.IfStmt
+            { a = ({
+                  a = AST.UnOpExpr((AST.Not, "!"), {
+                      a = AST.TrueExpr;
+                      pos = { lnum = 1; cnum = 25 };
+                    });
+                  pos = { lnum = 1; cnum = 21 };
+                }, AST.BlockStmt []);
+              pos = { lnum = 1; cnum = 18 };
+            };
+        ];
+      };
+      pos = { lnum = 1; cnum = 6 }
+    }
+  }
   in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
@@ -257,31 +274,32 @@ let parse_not_precedence _test_ctxt =
              "method main() { if (!true && false) {}}"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.Java;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.IfStmt
-                         { a = ({
-                               a = AST.BinOpExpr({
-                                   a = AST.UnOpExpr(AST.Not, {
-                                       a = AST.TrueExpr;
-                                       pos = { lnum = 1; cnum = 25 };
-                                     });
-                                   pos = { lnum = 1; cnum = 21 };
-                                 }, AST.And, {
-                                     a = AST.FalseExpr;
-                                     pos = { lnum = 1; cnum = 34 };
-                                   });
-                               pos = { lnum = 1; cnum = 28 };
-                             }, AST.BlockStmt []);
-                           pos = { lnum = 1; cnum = 18 };
-                         };
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 1;
-                   }
-                 }
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.IfStmt
+            { a = ({
+                  a = AST.BinOpExpr({
+                      a = AST.UnOpExpr((AST.Not, "!"), {
+                          a = AST.TrueExpr;
+                          pos = { lnum = 1; cnum = 25 };
+                        });
+                      pos = { lnum = 1; cnum = 21 };
+                    }, (AST.And, "&&"), {
+                        a = AST.FalseExpr;
+                        pos = { lnum = 1; cnum = 34 };
+                      });
+                  pos = { lnum = 1; cnum = 28 };
+                }, AST.BlockStmt []);
+              pos = { lnum = 1; cnum = 18 };
+            };
+        ];
+      };
+      pos = { lnum = 1; cnum = 6 }
+    }
+  }
   in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
@@ -292,33 +310,37 @@ let parse_paren_precedence _test_ctxt =
     "method main() { if (true && (false && false)) {} }"
   in
   let ast = Parser.parse code in
-  let expected = { AST.extension_fxns = [];
-                   main_fxn =
-                     {
-                       stmts =
-                         [(AST.IfStmt
+  let expected = {
+    AST.extension_fxns = [];
+    main_fxn =
+      {
+        a = {
+          stmts =
+            [(AST.IfStmt
+                { AST.a =
+                    ({ AST.a =
+                         (AST.BinOpExpr (
+                             { AST.a = AST.TrueExpr;
+                               pos = { Position.lnum = 1; cnum = 24 } },
+                             (AST.And, "&&"),
                              { AST.a =
-                                 ({ AST.a =
-                                      (AST.BinOpExpr (
-                                          { AST.a = AST.TrueExpr;
-                                            pos = { Position.lnum = 1; cnum = 24 } },
-                                          AST.And,
-                                          { AST.a =
-                                              (AST.BinOpExpr (
-                                                  { AST.a = AST.FalseExpr;
-                                                    pos = { Position.lnum = 1; cnum = 34 } },
-                                                  AST.And,
-                                                  { AST.a = AST.FalseExpr;
-                                                    pos = { Position.lnum = 1; cnum = 43 } }
-                                                ));
-                                            pos = { Position.lnum = 1; cnum = 37 } }
-                                        ));
-                                    pos = { Position.lnum = 1; cnum = 27 } },
-                                  (AST.BlockStmt []));
-                               pos = { Position.lnum = 1; cnum = 18 } })
-                         ];
-                       start_lnum = 1; end_lnum = 1 };
-                   language = AST.Java }
+                                 (AST.BinOpExpr (
+                                     { AST.a = AST.FalseExpr;
+                                       pos = { Position.lnum = 1; cnum = 34 } },
+                                     (AST.And, "&&"),
+                                     { AST.a = AST.FalseExpr;
+                                       pos = { Position.lnum = 1; cnum = 43 } }
+                                   ));
+                               pos = { Position.lnum = 1; cnum = 37 } }
+                           ));
+                       pos = { Position.lnum = 1; cnum = 27 } },
+                     (AST.BlockStmt []));
+                  pos = { Position.lnum = 1; cnum = 18 } })
+            ];
+        };
+        pos = { lnum = 1; cnum = 6 }
+      };
+  }
   in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
@@ -330,14 +352,15 @@ let parse_comment _test_ctxt =
     "method main() { }"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.Java;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [];
-                     start_lnum = 1;
-                     end_lnum = 1;
-                   }
-                 }
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [];
+      };
+      pos = { lnum = 1; cnum = 6 }
+    }
+  }
   in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
@@ -351,14 +374,15 @@ let parse_ml_comment _test_ctxt =
     "* multi line comment */method main() {}"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.Java;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [];
-                     start_lnum = 4;
-                     end_lnum = 4;
-                   }
-                 }
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a =  {
+        stmts = [];
+      };
+      pos = { lnum = 4; cnum = 29 }
+    }
+  }
   in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
@@ -368,22 +392,26 @@ let parse_fxn_app _test_ctxt =
              "method main() { foo(); }"
   in
   let ast = Parser.parse code in
-  let expected =  { AST.extension_fxns = [];
-                    main_fxn =
-                      {
-                        stmts =
-                          [(AST.ExprStmt
-                              { AST.a =
-                                  (Some { AST.a =
-                                            (AST.FxnAppExpr (
-                                                { AST.a = (AST.IdExpr "foo");
-                                                  pos = { Position.lnum = 1; cnum = 19 } },
-                                                []));
-                                          pos = { Position.lnum = 1; cnum = 19 } });
-                                pos = { Position.lnum = 1; cnum = 22 } })
-                          ];
-                        start_lnum = 1; end_lnum = 1 };
-                    language = AST.Java }
+  let expected =  {
+    AST.extension_fxns = [];
+    main_fxn =
+      {
+        a = {
+          stmts =
+            [(AST.ExprStmt
+                { AST.a =
+                    (Some { AST.a =
+                              (AST.FxnAppExpr (
+                                  { AST.a = (AST.IdExpr "foo");
+                                    pos = { Position.lnum = 1; cnum = 19 } },
+                                  []));
+                            pos = { Position.lnum = 1; cnum = 19 } });
+                  pos = { Position.lnum = 1; cnum = 22 } })
+            ];
+        };
+        pos = { lnum = 1; cnum = 6 }
+      };
+  }
   in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
@@ -393,34 +421,38 @@ let parse_obj_call _test_ctxt =
              "method main() { j.someFxn(1, NORTH);  }"
   in
   let ast = Parser.parse code in
-  let expected =  { AST.extension_fxns = [];
-                    main_fxn =
-                      {
-                        stmts =
-                          [(AST.ExprStmt
-                              { AST.a =
-                                  (Some { AST.a =
-                                            (AST.BinOpExpr (
-                                                { AST.a = (AST.IdExpr "j");
-                                                  pos = { Position.lnum = 1; cnum = 17 } },
-                                                AST.Dot,
-                                                { AST.a =
-                                                    (AST.FxnAppExpr (
-                                                        { AST.a = (AST.IdExpr "someFxn");
-                                                          pos = { Position.lnum = 1; cnum = 25 } },
-                                                        [{ AST.a = (AST.IntExpr 1);
-                                                           pos = { Position.lnum = 1; cnum = 27 } };
-                                                         { AST.a = AST.NorthExpr;
-                                                           pos = { Position.lnum = 1; cnum = 34 } }
-                                                        ]
-                                                      ));
-                                                  pos = { Position.lnum = 1; cnum = 25 } }
-                                              ));
-                                          pos = { Position.lnum = 1; cnum = 18 } });
-                                pos = { Position.lnum = 1; cnum = 36 } })
-                          ];
-                        start_lnum = 1; end_lnum = 1 };
-                    language = AST.Java }
+  let expected =  {
+    AST.extension_fxns = [];
+    main_fxn =
+      {
+        a = {
+          stmts =
+            [(AST.ExprStmt
+                { AST.a =
+                    (Some { AST.a =
+                              (AST.BinOpExpr (
+                                  { AST.a = (AST.IdExpr "j");
+                                    pos = { Position.lnum = 1; cnum = 17 } },
+                                  (AST.Dot, "."),
+                                  { AST.a =
+                                      (AST.FxnAppExpr (
+                                          { AST.a = (AST.IdExpr "someFxn");
+                                            pos = { Position.lnum = 1; cnum = 25 } },
+                                          [{ AST.a = (AST.IntExpr 1);
+                                             pos = { Position.lnum = 1; cnum = 27 } };
+                                           { AST.a = AST.NorthExpr;
+                                             pos = { Position.lnum = 1; cnum = 34 } }
+                                          ]
+                                        ));
+                                    pos = { Position.lnum = 1; cnum = 25 } }
+                                ));
+                            pos = { Position.lnum = 1; cnum = 18 } });
+                  pos = { Position.lnum = 1; cnum = 36 } })
+            ];
+        };
+        pos = { lnum = 1; cnum = 6 }
+      };
+  }
   in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
@@ -430,27 +462,28 @@ let parse_negative_int _test_ctxt =
              "method main() { foo(-1); }"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.Java;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       (AST.ExprStmt
-                          { AST.a =
-                              (Some { AST.a =
-                                        (AST.FxnAppExpr (
-                                            { AST.a = (AST.IdExpr "foo");
-                                              pos = { Position.lnum = 1; cnum = 19 } },
-                                            [{ AST.a = (AST.IntExpr (-1));
-                                               pos = { Position.lnum = 1; cnum = 22 } }
-                                            ]
-                                          ));
-                                      pos = { Position.lnum = 1; cnum = 19 } });
-                            pos = { Position.lnum = 1; cnum = 24 } })
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 1;
-                   }
-                 }
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          (AST.ExprStmt
+             { AST.a =
+                 (Some { AST.a =
+                           (AST.FxnAppExpr (
+                               { AST.a = (AST.IdExpr "foo");
+                                 pos = { Position.lnum = 1; cnum = 19 } },
+                               [{ AST.a = (AST.IntExpr (-1));
+                                  pos = { Position.lnum = 1; cnum = 22 } }
+                               ]
+                             ));
+                         pos = { Position.lnum = 1; cnum = 19 } });
+               pos = { Position.lnum = 1; cnum = 24 } })
+        ];
+      };
+      pos = { lnum = 1; cnum = 6 }
+    }
+  }
   in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
@@ -460,41 +493,42 @@ let parse_stmt_list _test_ctxt =
              "method main() { a.b(); c(); }"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.Java;
-                   extension_fxns = [];
-                   main_fxn = {
-                     stmts = [
-                       AST.ExprStmt({
-                           a = Some {
-                               a = AST.BinOpExpr({
-                                   a = AST.IdExpr("a");
-                                   pos = { lnum = 1; cnum = 17 };
-                                 }, AST.Dot, {
-                                     a = AST.FxnAppExpr({
-                                         a = AST.IdExpr("b");
-                                         pos = { lnum = 1; cnum = 19 };
-                                       }, []);
-                                     pos = { lnum = 1; cnum = 19 };
-                                   });
-                               pos = { lnum = 1; cnum = 18 };
-                             };
-                           pos = { lnum = 1; cnum = 22 };
-                         });
-                       AST.ExprStmt({
-                           a = Some {
-                               a = AST.FxnAppExpr({
-                                   a = AST.IdExpr("c");
-                                   pos = { lnum = 1; cnum = 24 };
-                                 }, []);
-                               pos = { lnum = 1; cnum = 24 };
-                             };
-                           pos = { lnum = 1; cnum = 27 };
-                         })
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 1;
-                   }
-                 }
+  let expected = {
+    extension_fxns = [];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.ExprStmt({
+              a = Some {
+                  a = AST.BinOpExpr({
+                      a = AST.IdExpr("a");
+                      pos = { lnum = 1; cnum = 17 };
+                    }, (AST.Dot, "."), {
+                        a = AST.FxnAppExpr({
+                            a = AST.IdExpr("b");
+                            pos = { lnum = 1; cnum = 19 };
+                          }, []);
+                        pos = { lnum = 1; cnum = 19 };
+                      });
+                  pos = { lnum = 1; cnum = 18 };
+                };
+              pos = { lnum = 1; cnum = 22 };
+            });
+          AST.ExprStmt({
+              a = Some {
+                  a = AST.FxnAppExpr({
+                      a = AST.IdExpr("c");
+                      pos = { lnum = 1; cnum = 24 };
+                    }, []);
+                  pos = { lnum = 1; cnum = 24 };
+                };
+              pos = { lnum = 1; cnum = 27 };
+            })
+        ];
+      };
+      pos = { lnum = 1; cnum = 6 }
+    }
+  }
   in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
@@ -510,41 +544,43 @@ let parse_extension_method _test_ctxt =
              "}"
   in
   let ast = Parser.parse code in
-  let expected = { language = AST.Java;
-                   extension_fxns = [{
-                       id = "foo";
-                       stmts = [
-                         AST.ExprStmt({
-                             a = Some {
-                                 a = AST.FxnAppExpr({
-                                     a = AST.IdExpr("hop");
-                                     pos = { lnum = 2; cnum = 3 };
-                                   }, []);
-                                 pos = { lnum = 2; cnum = 3 };
-                               };
-                             pos = { lnum = 2; cnum = 6 };
-                           })
-                       ];
-                       start_lnum = 1;
-                       end_lnum = 3;
-                     }];
-                   main_fxn = {
-                     stmts = [
-                       AST.ExprStmt({
-                           a = Some {
-                               a = AST.FxnAppExpr({
-                                   a = AST.IdExpr("hop");
-                                   pos = { lnum = 2; cnum = 3 };
-                                 }, []);
-                               pos = { lnum = 2; cnum = 3 };
-                             };
-                           pos = { lnum = 2; cnum = 6 };
-                         })
-                     ];
-                     start_lnum = 1;
-                     end_lnum = 4;
-                   }
-                 }
+  let expected = {
+    extension_fxns = [{
+        a = {
+          id = "foo";
+          stmts = [
+            AST.ExprStmt({
+                a = Some {
+                    a = AST.FxnAppExpr({
+                        a = AST.IdExpr("hop");
+                        pos = { lnum = 2; cnum = 3 };
+                      }, []);
+                    pos = { lnum = 2; cnum = 3 };
+                  };
+                pos = { lnum = 2; cnum = 6 };
+              })
+          ];
+        };
+        pos = { lnum = 1; cnum = 6 }
+      }];
+    main_fxn = {
+      a = {
+        stmts = [
+          AST.ExprStmt({
+              a = Some {
+                  a = AST.FxnAppExpr({
+                      a = AST.IdExpr("hop");
+                      pos = { lnum = 2; cnum = 3 };
+                    }, []);
+                  pos = { lnum = 2; cnum = 3 };
+                };
+              pos = { lnum = 2; cnum = 6 };
+            })
+        ];
+      };
+      pos = { lnum = 1; cnum = 6 }
+    }
+  }
   in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
@@ -557,7 +593,7 @@ let parse_missing_semicolon _test_ctxt =
       pos = { lnum = 1; cnum = 39 };
       pane = Pane.Main;
       exception_type = "error";
-      message = "expected one of `;`, `.`, or an operator\n";
+      message = "expected one of `;`, `.`, or an operator, found `}`\n";
     }) (fun () -> Compiler.compile code)
 
 (* TODO: complete all of these tasks in a future story *)
@@ -622,5 +658,5 @@ let suite =
     "Parse new empty rvalue">:: parse_new_empty_rvalue;
     "Parse malformed if stmt">:: parse_malformed_if_stmt;
     "Parse malformed while stmt">:: parse_malformed_while_stmt;
-    "Parse wild else stmt">:: parse_while_stmt;
+    "Parse wild else stmt">:: parse_wild_else_stmt;
   ]
