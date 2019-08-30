@@ -273,9 +273,13 @@ export class Jeroo {
   }
 
   private getLocation(direction: RelativeDirection): Point {
-    const directionNum = direction;
-    const myDirectionNum = this.direction;
-    const lookDirection = (directionNum + myDirectionNum) % 4;
+    if (direction === RelativeDirection.Here) {
+      return {
+        x: this.x,
+        y: this.y
+      };
+    }
+    const lookDirection = (direction + this.direction) % 4;
     const dx = STEP[lookDirection].x;
     const dy = STEP[lookDirection].y;
 
