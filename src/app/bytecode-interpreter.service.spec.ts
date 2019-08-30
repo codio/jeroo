@@ -488,6 +488,95 @@ describe('BytecodeInterpreterService', () => {
     expect(head).toBe(false);
   });
 
+  it('assert isFlower pushes 1 to the stack if there is a flower', () => {
+    const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
+    const matService: MatrixService = TestBed.get(MatrixService);
+    matService.setStaticTile(1, 2, TileType.Flower);
+    const newInstr = newInstruction('NEW', 0, 1, 1, 0, 2, 0);
+    const csrInstr = newInstruction('CSR', 0, 0, 0, 0, 0, 0);
+    const isFlowerInstr = newInstruction('ISFLWR', 1, 0, 0, 0, 0, 0);
+
+    service.executeBytecode(newInstr, matService);
+    service.executeBytecode(csrInstr, matService);
+    service.executeBytecode(isFlowerInstr, matService);
+
+    const cmpStack = service.getCmpStack();
+    const head = cmpStack[cmpStack.length - 1];
+    expect(head).toBe(true);
+  });
+
+  it('assert isFlower pushes 0 to the stack if there is no flower', () => {
+    const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
+    const matService: MatrixService = TestBed.get(MatrixService);
+    const newInstr = newInstruction('NEW', 0, 1, 1, 0, 2, 0);
+    const csrInstr = newInstruction('CSR', 0, 0, 0, 0, 0, 0);
+    const isFlowerInstr = newInstruction('ISFLWR', 1, 0, 0, 0, 0, 0);
+
+    service.executeBytecode(newInstr, matService);
+    service.executeBytecode(csrInstr, matService);
+    service.executeBytecode(isFlowerInstr, matService);
+
+    const cmpStack = service.getCmpStack();
+    const head = cmpStack[cmpStack.length - 1];
+    expect(head).toBe(false);
+  });
+
+  it('assert left works', () => {
+    const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
+    const matService: MatrixService = TestBed.get(MatrixService);
+    matService.setStaticTile(1, 1, TileType.Flower);
+
+    service.executeBytecode(newInstruction('NEW', 0, 0, 1, 0, 0, 0), matService);
+    service.executeBytecode(newInstruction('CSR', 0, 0, 0, 0, 0, 0), matService);
+    service.executeBytecode(newInstruction('ISFLWR', 3, 0, 0, 0, 0, 0), matService);
+
+    const cmpStack = service.getCmpStack();
+    const head = cmpStack[cmpStack.length - 1];
+    expect(head).toBe(true);
+  });
+
+  it('assert right works', () => {
+    const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
+    const matService: MatrixService = TestBed.get(MatrixService);
+    matService.setStaticTile(2, 1, TileType.Flower);
+
+    service.executeBytecode(newInstruction('NEW', 0, 0, 0, 0, 0, 0), matService);
+    service.executeBytecode(newInstruction('CSR', 0, 0, 0, 0, 0, 0), matService);
+    service.executeBytecode(newInstruction('ISFLWR', 1, 0, 0, 0, 0, 0), matService);
+
+    const cmpStack = service.getCmpStack();
+    const head = cmpStack[cmpStack.length - 1];
+    expect(head).toBe(true);
+  });
+
+  it('assert ahead works', () => {
+    const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
+    const matService: MatrixService = TestBed.get(MatrixService);
+    matService.setStaticTile(1, 1, TileType.Flower);
+
+    service.executeBytecode(newInstruction('NEW', 0, 1, 0, 0, 0, 0), matService);
+    service.executeBytecode(newInstruction('CSR', 0, 0, 0, 0, 0, 0), matService);
+    service.executeBytecode(newInstruction('ISFLWR', 0, 0, 0, 0, 0, 0), matService);
+
+    const cmpStack = service.getCmpStack();
+    const head = cmpStack[cmpStack.length - 1];
+    expect(head).toBe(true);
+  });
+
+  it('assert here works', () => {
+    const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
+    const matService: MatrixService = TestBed.get(MatrixService);
+    matService.setStaticTile(1, 1, TileType.Flower);
+
+    service.executeBytecode(newInstruction('NEW', 0, 0, 0, 0, 0, 0), matService);
+    service.executeBytecode(newInstruction('CSR', 0, 0, 0, 0, 0, 0), matService);
+    service.executeBytecode(newInstruction('ISFLWR', -1, 0, 0, 0, 0, 0), matService);
+
+    const cmpStack = service.getCmpStack();
+    const head = cmpStack[cmpStack.length - 1];
+    expect(head).toBe(true);
+  });
+
   it('assert not negates the top of the stack', () => {
     const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
     const matService: MatrixService = TestBed.get(MatrixService);
@@ -502,7 +591,7 @@ describe('BytecodeInterpreterService', () => {
     expect(head).toBe(false);
   });
 
-  it('assert and and\'s two booleans', () => {
+  it(`assert and and's two booleans`, () => {
     const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
     const matService: MatrixService = TestBed.get(MatrixService);
     const trueInstr1 = newInstruction('TRUE', 0, 0, 0, 0, 0, 0);
@@ -518,7 +607,7 @@ describe('BytecodeInterpreterService', () => {
     expect(head).toBe(false);
   });
 
-  it('assert or or\'s two booleans', () => {
+  it(`assert or or's two booleans`, () => {
     const service: BytecodeInterpreterService = TestBed.get(BytecodeInterpreterService);
     const matService: MatrixService = TestBed.get(MatrixService);
     const trueInstr1 = newInstruction('TRUE', 0, 0, 0, 0, 0, 0);
