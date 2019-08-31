@@ -409,7 +409,10 @@ describe('Jeroo Tests', () => {
     page.getRunButton().click();
 
     browser.sleep(500);
-    expect(page.getFinalMessage().getText()).toBe('Main:Line 3:Column 1:error:expected one of `;`, `.`, or an operator, found `j`');
+    expect(page.getFinalMessage().getText()).toBe(
+      'Main:Line 3:Column 1:error:expected one of `;`, `.`, or an operator, found `j`\n' +
+      'hint: unclosed `{` on line 1: column 15'
+    );
   });
 
   it('Should reload previous work', async () => {
