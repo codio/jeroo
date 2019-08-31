@@ -409,7 +409,7 @@ describe('Jeroo Tests', () => {
     page.getRunButton().click();
 
     browser.sleep(500);
-    expect(page.getFinalMessage().getText()).toBe('Main:Line 3:Column 1:error:expected one of `;`, `.`, or an operator');
+    expect(page.getFinalMessage().getText()).toBe('Main:Line 3:Column 1:error:expected one of `;`, `.`, or an operator, found `j`');
   });
 
   it('Should reload previous work', async () => {

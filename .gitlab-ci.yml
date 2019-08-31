@@ -61,7 +61,7 @@ test-angular:
     - node --version
     - yarn --version
     - yarn install
-    - ./node_modules/protractor/bin/webdriver-manager update
+    - yarn webdriver-manager update
     - yarn test --no-watch --no-progress --browsers=FirefoxHeadlessCI
     - yarn e2e --protractor-config=e2e/protractor-ci.conf.js
 
