@@ -785,7 +785,7 @@ let parse_syntax_error _test_ctxt =
       pos = { lnum = 1; cnum = 5 };
       pane = Pane.Extensions;
       exception_type = "error";
-      message = "expected `def`\n";
+      message = "expected `def`, found `while`\n";
     }) (fun () -> Compiler.compile code)
 
 (* TODO: complete all of these tasks in a future story *)
