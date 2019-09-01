@@ -789,37 +789,165 @@ let parse_syntax_error _test_ctxt =
     }) (fun () -> Compiler.compile code)
 
 (* TODO: complete all of these tasks in a future story *)
-let parse_lexing_error _test_ctxt = ()
+let parse_lexing_error _test_ctxt =
+  let code = "@PYTHON\n" ^
+             "@@\n" ^
+             "???"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 1 };
+      pane = Pane.Main;
+      exception_type = "error";
+      (* TODO: update this to surround user text in `'s *)
+      message = "Illegal character: ?";
+    }) (fun () -> Parser.parse code)
 
-let parse_unexpected_indent _test_ctxt = ()
+let parse_missing_rparen_in_expr _test_ctxt =
+  let code = "@PYTHON\n" ^
+             "@@\n" ^
+             "(true"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 4 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected either a newline or an operator, found `newline`\n" ^
+                "hint: unclosed `(` on line 1: column 1";
+    }) (fun () -> Parser.parse code)
 
-let parse_missing_dedent _test_ctxt = ()
+let parse_malformed_def _test_ctxt =
+  let code = "@PYTHON\n" ^
+             "def foo(self)\n" ^
+             "@@\n"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 12 };
+      pane = Pane.Extensions;
+      exception_type = "error";
+      message = "expected `:`, found `newline`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_missing_rparen_in_expr _test_ctxt = ()
+let parse_missing_rparen_in_fxn_app _test_ctxt =
+  let code = "@PYTHON\n" ^
+             "@@\n" ^
+             "j = Jeroo(1"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 10 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected either `)` or `,`, found `newline`\nhint: unclosed `(` on line 1: column 10";
+    }) (fun () -> Parser.parse code)
 
-let parse_malformed_def _test_ctxt = ()
+let parse_missing_comma_in_fxn_app _test_ctxt =
+  let code = "@PYTHON\n" ^
+             "@@\n" ^
+             "j = Jeroo(1"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 10 };
+      pane = Pane.Main;
+      exception_type = "error";
+      (* TODO: newline should be capatilized *)
+      message = "expected either `)` or `,`, found `newline`\nhint: unclosed `(` on line 1: column 10";
+    }) (fun () -> Parser.parse code)
 
-let parse_missing_rparen_in_fxn_app _test_ctxt = ()
+let parse_malformed_while_stmt _test_ctxt =
+  let code = "@PYTHON\n" ^
+             "@@\n" ^
+             "while true"
+  in
+  (* try ignore (Parser.parse code) with | Exceptions.CompileException e -> print_endline (Position.show e.pos); *)
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 9 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected one of `:`, `.`, or an operator, found `newline`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_missing_comma_in_fxn_app _test_ctxt = ()
+let parse_malformed_if_stmt _test_ctxt =
+  let code = "@PYTHON\n" ^
+             "@@\n" ^
+             "while true"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 9 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected one of `:`, `.`, or an operator, found `newline`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_missing_colon _test_ctxt = ()
+let parse_and_empty_rvalue _test_ctxt =
+  let code = "@PYTHON\n" ^
+             "@@\n" ^
+             "true and "
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 8 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected expression, found `newline`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_malformed_while_stmt _test_ctxt = ()
+let prase_or_empty_rvalue _test_ctxt =
+  let code = "@PYTHON\n" ^
+             "@@\n" ^
+             "true or "
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 7 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected expression, found `newline`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_malformed_if_stmt _test_ctxt = ()
+let parse_dot_empty_rvalue _test_ctxt =
+  let code = "@PYTHON\n" ^
+             "@@\n" ^
+             "true. "
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 5 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected expression, found `newline`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_and_empty_rvalue _test_ctxt = ()
+let parse_not_empty_rvalue _test_ctxt =
+  let code = "@PYTHON\n" ^
+             "@@\n" ^
+             "not"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 2 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected expression, found `newline`\n";
+    }) (fun () -> Parser.parse code)
 
-let prase_or_empty_rvalue _test_ctxt = ()
+let parse_wild_else_stmt _test_ctxt =
+  let code = "@PYTHON\n" ^
+             "@@\n" ^
+             "not"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 2 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected expression, found `newline`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_dot_empty_rvalue _test_ctxt = ()
-
-let parse_not_empty_rvalue _test_ctxt = ()
-
-let parse_wild_else_stmt _test_ctxt = ()
-
-let parse_missing_newline _test_ctxt = ()
+let parse_missing_newline _test_ctxt =
+  let code = "@PYTHON\n" ^
+             "@@\n" ^
+             "j.hop() j.hop()"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 9 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected either a newline or an operator, found `j`\n";
+    }) (fun () -> Parser.parse code)
 
 let suite =
   "Python Parsing">::: [
@@ -845,12 +973,9 @@ let suite =
     "Parse indentation with spaces and tabs">:: parse_indentation_with_tabs_and_spaces;
     "Parse syntax error">:: parse_syntax_error;
     "Parse lexing error">:: parse_lexing_error;
-    "Parse unexpected indent">:: parse_unexpected_indent;
-    "Parse missing dedent">:: parse_missing_dedent;
     "Parse missing rparen in expr">:: parse_missing_rparen_in_expr;
     "Parse missing comma in fxn app">:: parse_missing_comma_in_fxn_app;
     "Parse missing rparen in fxn app">:: parse_missing_rparen_in_fxn_app;
-    "Parse missing colon">:: parse_missing_colon;
     "Parse malformed while stmt">:: parse_malformed_while_stmt;
     "Parse malformed if stmt">:: parse_malformed_if_stmt;
     "Parse and empty rvalue">:: parse_and_empty_rvalue;
@@ -860,4 +985,5 @@ let suite =
     "Parse not empty rvalue">:: parse_not_empty_rvalue;
     "Parse wild else stmt">:: parse_wild_else_stmt;
     "Parse missing newline">:: parse_missing_newline;
+    "Parse malformed def">:: parse_malformed_def;
   ]
