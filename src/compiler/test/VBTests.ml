@@ -788,40 +788,249 @@ let parse_negative_int _test_ctxt =
   in
   assert_equal ~printer:[%show: AST.translation_unit] expected ast
 
-(* TODO: complete all of these tasks in a future story *)
-let parse_missing_end_sub _test_ctxt = ()
+let parse_missing_end_sub _test_ctxt =
+  let code = "@VB\n" ^
+             "@@\n" ^
+             "sub main()\n"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 11 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected either a statement or an `End Sub`\n" ^
+                "hint: unclosed `sub` on line 1: column 3";
+    }) (fun () -> Parser.parse code)
 
-let parse_missing_end_while _test_ctxt = ()
+let parse_missing_end_while _test_ctxt =
+  let code = "@VB\n" ^
+             "@@\n" ^
+             "sub main()\n" ^
+             "while true\n" ^
+             "end sub"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 3; cnum = 7 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected either a statement or an `End While`, found `end sub`\n" ^
+                "hint: unclosed `while` on line 2: column 5";
+    }) (fun () -> Parser.parse code)
 
-let parse_missing_end_if _test_ctxt = ()
+let parse_missing_end_if _test_ctxt =
+  let code = "@VB\n" ^
+             "@@\n" ^
+             "sub main()\n" ^
+             "if true then\n" ^
+             "end sub"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 3; cnum = 7 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected `End If`, found `end sub`\n" ^
+                "hint: unclosed `if` on line 2: column 2";
+    }) (fun () -> Parser.parse code)
 
-let parse_missing_main_fxn _test_ctxt = ()
+let parse_missing_main_fxn _test_ctxt =
+  let code = "@VB\n" ^
+             "@@\n"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 0; cnum = 0 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "cannot find main method";
+    }) (fun () -> Parser.parse code)
 
-let parse_lexing_error _test_ctxt = ()
+let parse_lexing_error _test_ctxt =
+  let code = "@VB\n" ^
+             "@@\n" ^
+             "sub main()\n" ^
+             "dim j as Jeroo = ???\n" ^
+             "end sub"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 2; cnum = 18 };
+      pane = Pane.Main;
+      exception_type = "error";
+      (* TODO: surround user input in `'s *)
+      message = "Illegal character: ?";
+    }) (fun () -> Parser.parse code)
 
-let parse_malformed_while_stmt _test_ctxt = ()
+let parse_malformed_while_stmt _test_ctxt =
+  let code = "@VB\n" ^
+             "@@\n" ^
+             "sub main()\n" ^
+             "dim j as Jeroo = ???\n" ^
+             "end sub"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 2; cnum = 18 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "Illegal character: ?";
+    }) (fun () -> Parser.parse code)
 
-let parse_malformed_if_stmt _test_ctxt = ()
+let parse_malformed_if_stmt _test_ctxt =
+  let code = "@VB\n" ^
+             "@@\n" ^
+             "sub main()\n" ^
+             "if true\n" ^
+             "end if\n" ^
+             "end sub"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 3; cnum = 0 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected one of `then`, `.`, or an operator, found `Newline`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_missing_newline_after_stmt _test_ctxt = ()
+let parse_missing_newline_after_stmt _test_ctxt =
+  let code = "@VB\n" ^
+             "@@\n" ^
+             "sub main()\n" ^
+             "dim j as Jeroo = new Jeroo()" ^
+             "j.hop()\n" ^
+             "end sub"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 2; cnum = 29 };
+      pane = Pane.Main;
+      exception_type = "error";
+      (* TODO: chnage the `new line` to `Newline` in the messages file *)
+      message = "expected either a new line or one of `.`, or an operator, found `j`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_missing_rparen_in_expr _test_ctxt = ()
+let parse_missing_rparen_in_expr _test_ctxt =
+  let code = "@VB\n" ^
+             "@@\n" ^
+             "sub main()\n" ^
+             "dim j as Jeroo = new Jeroo()" ^
+             "j.hop()\n" ^
+             "end sub"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 2; cnum = 29 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected either a new line or one of `.`, or an operator, found `j`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_and_empty_rvalue _test_ctxt = ()
+let parse_and_empty_rvalue _test_ctxt =
+  let code = "@VB\n" ^
+             "@@\n" ^
+             "sub main()\n" ^
+             "true and \n" ^
+             "end sub"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 3; cnum = 0 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected expression, found `Newline`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_or_empty_rvalue _test_ctxt = ()
+let parse_or_empty_rvalue _test_ctxt =
+  let code = "@VB\n" ^
+             "@@\n" ^
+             "sub main()\n" ^
+             "true or \n" ^
+             "end sub"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 3; cnum = 0 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected expression, found `Newline`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_dot_empty_rvalue _test_ctxt = ()
+let parse_dot_empty_rvalue _test_ctxt =
+  let code = "@VB\n" ^
+             "@@\n" ^
+             "sub main()\n" ^
+             "j.\n" ^
+             "end sub"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 3; cnum = 0 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected expression, found `Newline`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_not_empty_rvalue _test_ctxt = ()
+let parse_not_empty_rvalue _test_ctxt =
+  let code = "@VB\n" ^
+             "@@\n" ^
+             "sub main()\n" ^
+             "not \n" ^
+             "end sub"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 3; cnum = 0 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected expression, found `Newline`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_dim_empty_rvalue _test_ctxt = ()
+let parse_dim_empty_rvalue _test_ctxt =
+  let code = "@VB\n" ^
+             "@@\n" ^
+             "sub main()\n" ^
+             "dim j as Jeroo =  \n" ^
+             "end sub"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 3; cnum = 0 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected expression, found `Newline`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_wild_else_stmt _test_ctxt = ()
+let parse_wild_else_stmt _test_ctxt =
+  let code = "@VB\n" ^
+             "@@\n" ^
+             "sub main()\n" ^
+             "else\n" ^
+             "j.hop()\n" ^
+             "end sub"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 2; cnum = 4 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected either a statement or an `End Sub`, found `else`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_missing_rparen_in_fxn_app _test_ctxt = ()
+let parse_missing_rparen_in_fxn_app _test_ctxt =
+  let code = "@VB\n" ^
+             "@@\n" ^
+             "sub main()\n" ^
+             "j.hop(\n" ^
+             "end sub"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 3; cnum = 0 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected either an argument or a `)`, found `Newline`\n" ^
+                "hint: unclosed `(` on line 2: column 6";
+    }) (fun () -> Parser.parse code)
 
-let parse_missing_comma_in_fxn_app _test_ctxt = ()
+let parse_missing_comma_in_fxn_app _test_ctxt =
+  let code = "@VB\n" ^
+             "@@\n" ^
+             "sub main()\n" ^
+             "j.hop(1 2)\n" ^
+             "end sub"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 2; cnum = 9 };
+      pane = Pane.Main;
+      exception_type = "error";
+      (* TODO: reword this error message to ask for a comma followed by an additional argument *)
+      message = "expected either an additional argument or a `)`, found `2`\n";
+    }) (fun () -> Parser.parse code)
 
 let suite =
   "Visual Basic Parsing">::: [
@@ -865,4 +1074,5 @@ let suite =
     "Parse wild else stmt">:: parse_wild_else_stmt;
     "Parse missing rparen in fxn app">:: parse_missing_rparen_in_fxn_app;
     "Parse missing comma in fxn app">:: parse_missing_comma_in_fxn_app;
+    "Parse missing main fxn">:: parse_missing_main_fxn;
   ]

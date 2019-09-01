@@ -594,36 +594,182 @@ let parse_missing_semicolon _test_ctxt =
       pane = Pane.Main;
       exception_type = "error";
       message = "expected one of `;`, `.`, or an operator, found `}`\n";
-    }) (fun () -> Compiler.compile code)
+    }) (fun () -> Parser.parse code)
 
-(* TODO: complete all of these tasks in a future story *)
-let parse_missing_rparen_in_expr _test_ctxt = ()
+let parse_missing_rparen_in_expr _test_ctxt =
+  let code = "@Java\n" ^
+             "@@\n" ^
+             "method main() { (true || false; }"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 31 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected one of `)`, `.`, or an operator, found `;`\n" ^
+                "hint: unclosed `(` on line 1: column 17";
+    }) (fun () -> Parser.parse code)
 
-let parse_missing_rbrace _test_ctxt = ()
+let parse_missing_rbrace _test_ctxt =
+  let code = "@Java\n" ^
+             "@@\n" ^
+             "method main() { "
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 16 };
+      pane = Pane.Main;
+      exception_type = "error";
+      (* TODO: change to `expected either statement or `}` *)
+      message = "expected statement\n" ^
+                "hint: unclosed `{` on line 1: column 15";
+    }) (fun () -> Parser.parse code)
 
-let parse_missing_rparen_in_fxn_app _test_ctxt = ()
+let parse_missing_rparen_in_fxn_app _test_ctxt =
+  let code = "@Java\n" ^
+             "@@\n" ^
+             "method main() { Jeroo j = new Jeroo(; }"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 37 };
+      pane = Pane.Main;
+      exception_type = "error";
+      (* TODO: change to expected expression or `,` *)
+      message = "expected expression, found `;`\n" ^
+                "hint: unclosed `(` on line 1: column 36";
+    }) (fun () -> Parser.parse code)
 
-let parse_missing_comma_in_fxn_app _test_ctxt = ()
+let parse_missing_comma_in_fxn_app _test_ctxt =
+  let code = "@Java\n" ^
+             "@@\n" ^
+             "method main() { Jeroo j = new Jeroo(1 2); }"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 39 };
+      pane = Pane.Main;
+      exception_type = "error";
+      (* TODO: reword this error message to ask for a comma *)
+      message = "expected one of `)`, `.`, or an operator, found `2`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_lexing_error _test_ctxt = ()
+let parse_lexing_error _test_ctxt =
+  let code = "@Java\n" ^
+             "@@\n" ^
+             "method main() { ???; }"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 17 };
+      pane = Pane.Main;
+      exception_type = "error";
+      (* TODO: surround the ?/user input in `'s *)
+      message = "Illegal character: ?";
+    }) (fun () -> Parser.parse code)
 
-let parse_empty_main_fxn _test_ctxt = ()
+let parse_empty_main_fxn _test_ctxt =
+  let code = "@Java\n" ^
+             "@@\n" ^
+             ""
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 0; cnum = 0 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "cannot find main method";
+    }) (fun () -> Parser.parse code)
 
-let parse_and_empty_rvalue _test_ctxt = ()
+let parse_and_empty_rvalue _test_ctxt =
+  let code = "@Java\n" ^
+             "@@\n" ^
+             "method main() { true && ; }"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 25 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected expression, found `;`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_or_empty_rvalue _test_ctxt = ()
+let parse_or_empty_rvalue _test_ctxt =
+  let code = "@Java\n" ^
+             "@@\n" ^
+             "method main() { true || ; }"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 25 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected expression, found `;`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_dot_empty_rvalue _test_ctxt = ()
+let parse_dot_empty_rvalue _test_ctxt =
+  let code = "@Java\n" ^
+             "@@\n" ^
+             "method main() { j.; }"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 19 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected expression, found `;`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_not_empty_rvalue _test_ctxt = ()
+let parse_not_empty_rvalue _test_ctxt =
+  let code = "@Java\n" ^
+             "@@\n" ^
+             "method main() { !; }"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 19 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected expression, found `;`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_new_empty_rvalue _test_ctxt = ()
+let parse_new_empty_rvalue _test_ctxt =
+  let code = "@Java\n" ^
+             "@@\n" ^
+             "method main() { Jeroo j = new; }"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 30 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected expression, found `;`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_malformed_if_stmt _test_ctxt = ()
+let parse_malformed_if_stmt _test_ctxt =
+  let code = "@Java\n" ^
+             "@@\n" ^
+             "method main() { if true {} }"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 23 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected `(`, found `true`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_malformed_while_stmt _test_ctxt = ()
+let parse_malformed_while_stmt _test_ctxt =
+  let code = "@Java\n" ^
+             "@@\n" ^
+             "method main() { while true {} }"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 26 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected `(`, found `true`\n";
+    }) (fun () -> Parser.parse code)
 
-let parse_wild_else_stmt _test_ctxt = ()
+let parse_wild_else_stmt _test_ctxt =
+  let code = "@Java\n" ^
+             "@@\n" ^
+             "method main() { else {} }"
+  in
+  assert_raises (Exceptions.CompileException {
+      pos = { lnum = 1; cnum = 20 };
+      pane = Pane.Main;
+      exception_type = "error";
+      message = "expected statement, found `else`\n";
+    }) (fun () -> Parser.parse code)
 
 let suite =
   "Java Parsing">::: [
