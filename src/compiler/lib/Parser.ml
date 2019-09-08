@@ -127,198 +127,35 @@ let make_unablanced_help_msg unbalanced_stack =
 let parse_java extensions_code main_code =
   let parse code pane =
     let rec loop lexbuf checkpoint pane last_token_opt =
-      try
-        match checkpoint with
-        | JavaParser.MenhirInterpreter.InputNeeded _ ->
-          let token = JavaLexer.token lexbuf in
-          let startp = lexbuf.lex_start_p in
-          let endp = lexbuf.lex_curr_p in
-          let checkpoint = JavaParser.MenhirInterpreter.offer checkpoint (token, startp, endp) in
-          loop lexbuf checkpoint pane (Some token)
-        | JavaParser.MenhirInterpreter.Shifting _ | JavaParser.MenhirInterpreter.AboutToReduce _ ->
-          let checkpoint = JavaParser.MenhirInterpreter.resume checkpoint in
-          loop lexbuf checkpoint pane last_token_opt
-        | JavaParser.MenhirInterpreter.HandlingError env ->
-          (* make the unbalanced help messages *)
-          let unclosed_paren_stack, unclosed_bracket_stack = find_unbalanced_java_tokens code in
-          let unclosed_paren_help_msgs = make_unablanced_help_msg unclosed_paren_stack in
-          let unclosed_bracket_help_msgs = make_unablanced_help_msg unclosed_bracket_stack in
-          let unclosed_help_msg =
-            unclosed_paren_help_msgs @ unclosed_bracket_help_msgs
-            |> String.concat "\n"
-          in
-
-          (* make the error message prefix, ex: "expected `;`" *)
-          let error_state = JavaParser.MenhirInterpreter.current_state_number env in
-          let message_prefix = JavaMessages.message error_state |> String.trim in
-
-          (* make the error message suffix, ex: ", found `)`" *)
-          let message_suffix = match last_token_opt with
-            | Some token when token <> JavaParser.EOF ->
-              Printf.sprintf ", found `%s`"
-                (JavaTokenMapper.map_token token)
-            | _ -> ""
-          in
-
-          let message = message_prefix ^ message_suffix ^ "\n" ^ unclosed_help_msg in
-          raise (Exceptions.CompileException {
-              pos = {
-                lnum = LexingUtils.get_lnum lexbuf;
-                cnum = LexingUtils.get_cnum lexbuf;
-              };
-              pane;
-              exception_type = "error";
-              message
-            })
-        | JavaParser.MenhirInterpreter.Accepted tree -> tree
-        | JavaParser.MenhirInterpreter.Rejected ->
-          let lnum = LexingUtils.get_lnum lexbuf in
-          let cnum = LexingUtils.get_cnum lexbuf in
-          raise (Exceptions.CompileException {
-              pos = {
-                lnum;
-                cnum;
-              };
-              pane;
-              exception_type = "error";
-              message = "Syntax Error"
-            })
-      with
-      | Exceptions.LexingException e ->
-        raise (Exceptions.CompileException {
-            pane;
-            pos = e.pos;
-            exception_type = e.exception_type;
-            message = e.message;
-          })
-    in
-    let lexbuf = Lexing.from_string code in
-    loop lexbuf (JavaParser.Incremental.translation_unit lexbuf.lex_curr_p) pane None
-  in
-  let extension_fxns = parse extensions_code Pane.Extensions in
-  let main_fxns = parse main_code Pane.Main in
-  let main_fxn = make_main_fxn main_fxns in
-  {
-    extension_fxns;
-    main_fxn;
-  }
-
-let parse_vb extensions_code main_code =
-  let parse code pane =
-    let rec loop lexbuf state checkpoint pane last_token_opt =
-      try
-        match checkpoint with
-        | VBParser.MenhirInterpreter.InputNeeded _ ->
-          let token = VBLexer.token state lexbuf in
-          let startp = lexbuf.lex_start_p in
-          let endp = lexbuf.lex_curr_p in
-          let checkpoint = VBParser.MenhirInterpreter.offer checkpoint (token, startp, endp) in
-          loop lexbuf state checkpoint pane (Some token)
-        | VBParser.MenhirInterpreter.Shifting _ | VBParser.MenhirInterpreter.AboutToReduce _ ->
-          let checkpoint = VBParser.MenhirInterpreter.resume checkpoint in
-          loop lexbuf state checkpoint pane last_token_opt
-        | VBParser.MenhirInterpreter.HandlingError env ->
-          (* make the unbalanced help messages *)
-          let
-            unclosed_paren_stack,
-            unclosed_sub_stack,
-            unclosed_if_stack,
-            unclosed_while_stack
-            = find_unbalanced_vb_tokens code
-          in
-          let unclosed_paren_help_msgs = make_unablanced_help_msg unclosed_paren_stack in
-          let unclosed_sub_help_msgs = make_unablanced_help_msg unclosed_sub_stack in
-          let unclosed_if_help_msgs = make_unablanced_help_msg unclosed_if_stack in
-          let unclosed_while_stack = make_unablanced_help_msg unclosed_while_stack in
-          let unclosed_help_msg =
-            unclosed_paren_help_msgs @
-            unclosed_if_help_msgs @
-            unclosed_while_stack @
-            unclosed_sub_help_msgs
-            |> String.concat "\n"
-          in
-
-          (* make the error message prefix, ex: "expected new line" *)
-          let error_state = VBParser.MenhirInterpreter.current_state_number env in
-          let message_prefix = VBMessages.message error_state |> String.trim in
-
-          (* make the error message suffix, ex: ", found `)`" *)
-          let message_suffix = match last_token_opt with
-            | Some token when token <> VBParser.EOF ->
-              Printf.sprintf ", found `%s`"
-                (VBTokenMapper.map_token token)
-            | _ -> ""
-          in
-
-          let message = message_prefix ^ message_suffix ^ "\n" ^ unclosed_help_msg in
-          raise (Exceptions.CompileException {
-              pos = {
-                lnum = LexingUtils.get_lnum lexbuf;
-                cnum = LexingUtils.get_cnum lexbuf;
-              };
-              pane;
-              exception_type = "error";
-              message
-            })
-        | VBParser.MenhirInterpreter.Accepted tree -> tree
-        | VBParser.MenhirInterpreter.Rejected ->
-          (* this should never happen *)
-          raise (Exceptions.CompileException {
-              pos = {
-                lnum = LexingUtils.get_lnum lexbuf;
-                cnum = LexingUtils.get_cnum lexbuf;
-              };
-              pane;
-              exception_type = "error";
-              message = "Syntax Error"
-            })
-      with
-      | Exceptions.LexingException e -> raise (Exceptions.CompileException {
-          pane;
-          pos = e.pos;
-          exception_type = e.exception_type;
-          message = e.message;
-        })
-    in
-    let lexbuf = Lexing.from_string code in
-    loop lexbuf (VBLexerState.create ()) (VBParser.Incremental.translation_unit lexbuf.lex_curr_p) pane None
-  in
-  let extension_fxns = parse extensions_code Pane.Extensions in
-  let main_fxns = parse main_code Pane.Main in
-  let main_fxn = make_main_fxn main_fxns in
-  {
-    extension_fxns;
-    main_fxn;
-  }
-
-let parse_python extensions_code main_code =
-  let rec loop code lexbuf state checkpoint pane last_token_opt =
-    try
       match checkpoint with
-      | PythonParser.MenhirInterpreter.InputNeeded _ ->
-        let token = PythonLexer.token state lexbuf in
+      | JavaParser.MenhirInterpreter.InputNeeded _ ->
+        let token = JavaLexer.token lexbuf in
         let startp = lexbuf.lex_start_p in
         let endp = lexbuf.lex_curr_p in
-        let checkpoint = PythonParser.MenhirInterpreter.offer checkpoint (token, startp, endp) in
-        loop code lexbuf state checkpoint pane (Some token)
-      | PythonParser.MenhirInterpreter.Shifting _ | PythonParser.MenhirInterpreter.AboutToReduce _ ->
-        let checkpoint = PythonParser.MenhirInterpreter.resume checkpoint in
-        loop code lexbuf state checkpoint pane last_token_opt
-      | PythonParser.MenhirInterpreter.HandlingError env ->
-        (* make the unbalanced help message *)
-        let unclosed_paren_stack = find_unbalanced_python_tokens code in
+        let checkpoint = JavaParser.MenhirInterpreter.offer checkpoint (token, startp, endp) in
+        loop lexbuf checkpoint pane (Some token)
+      | JavaParser.MenhirInterpreter.Shifting _ | JavaParser.MenhirInterpreter.AboutToReduce _ ->
+        let checkpoint = JavaParser.MenhirInterpreter.resume checkpoint in
+        loop lexbuf checkpoint pane last_token_opt
+      | JavaParser.MenhirInterpreter.HandlingError env ->
+        (* make the unbalanced help messages *)
+        let unclosed_paren_stack, unclosed_bracket_stack = find_unbalanced_java_tokens code in
         let unclosed_paren_help_msgs = make_unablanced_help_msg unclosed_paren_stack in
-        let unclosed_help_msg = unclosed_paren_help_msgs |> String.concat "\n" in
+        let unclosed_bracket_help_msgs = make_unablanced_help_msg unclosed_bracket_stack in
+        let unclosed_help_msg =
+          unclosed_paren_help_msgs @ unclosed_bracket_help_msgs
+          |> String.concat "\n"
+        in
 
-        (* make the error message prefix, ex: "expected `:`" *)
-        let error_state = PythonParser.MenhirInterpreter.current_state_number env in
-        let message_prefix = PythonMessages.message error_state |> String.trim in
+        (* make the error message prefix, ex: "expected `;`" *)
+        let error_state = JavaParser.MenhirInterpreter.current_state_number env in
+        let message_prefix = JavaMessages.message error_state |> String.trim in
 
         (* make the error message suffix, ex: ", found `)`" *)
         let message_suffix = match last_token_opt with
-          | Some token when token <> PythonParser.EOF  ->
+          | Some token when token <> JavaParser.EOF ->
             Printf.sprintf ", found `%s`"
-              (PythonTokenMapper.map_token token)
+              (JavaTokenMapper.map_token token)
           | _ -> ""
         in
 
@@ -332,8 +169,8 @@ let parse_python extensions_code main_code =
             exception_type = "error";
             message
           })
-      | PythonParser.MenhirInterpreter.Accepted tree -> tree
-      | PythonParser.MenhirInterpreter.Rejected ->
+      | JavaParser.MenhirInterpreter.Accepted tree -> tree
+      | JavaParser.MenhirInterpreter.Rejected ->
         let lnum = LexingUtils.get_lnum lexbuf in
         let cnum = LexingUtils.get_cnum lexbuf in
         raise (Exceptions.CompileException {
@@ -345,6 +182,99 @@ let parse_python extensions_code main_code =
             exception_type = "error";
             message = "Syntax Error"
           })
+    in
+    try
+      let lexbuf = Lexing.from_string code in
+      loop lexbuf (JavaParser.Incremental.translation_unit lexbuf.lex_curr_p) pane None
+    with
+    | Exceptions.LexingException e ->
+      raise (Exceptions.CompileException {
+          pane;
+          pos = e.pos;
+          exception_type = e.exception_type;
+          message = e.message;
+        })
+  in
+  let extension_fxns = parse extensions_code Pane.Extensions in
+  let main_fxns = parse main_code Pane.Main in
+  let main_fxn = make_main_fxn main_fxns in
+  {
+    extension_fxns;
+    main_fxn;
+  }
+
+let parse_vb extensions_code main_code =
+  let parse code pane =
+    let rec loop lexbuf state checkpoint pane last_token_opt =
+      match checkpoint with
+      | VBParser.MenhirInterpreter.InputNeeded _ ->
+        let token = VBLexer.token state lexbuf in
+        let startp = lexbuf.lex_start_p in
+        let endp = lexbuf.lex_curr_p in
+        let checkpoint = VBParser.MenhirInterpreter.offer checkpoint (token, startp, endp) in
+        loop lexbuf state checkpoint pane (Some token)
+      | VBParser.MenhirInterpreter.Shifting _ | VBParser.MenhirInterpreter.AboutToReduce _ ->
+        let checkpoint = VBParser.MenhirInterpreter.resume checkpoint in
+        loop lexbuf state checkpoint pane last_token_opt
+      | VBParser.MenhirInterpreter.HandlingError env ->
+        (* make the unbalanced help messages *)
+        let
+          unclosed_paren_stack,
+          unclosed_sub_stack,
+          unclosed_if_stack,
+          unclosed_while_stack
+          = find_unbalanced_vb_tokens code
+        in
+        let unclosed_paren_help_msgs = make_unablanced_help_msg unclosed_paren_stack in
+        let unclosed_sub_help_msgs = make_unablanced_help_msg unclosed_sub_stack in
+        let unclosed_if_help_msgs = make_unablanced_help_msg unclosed_if_stack in
+        let unclosed_while_stack = make_unablanced_help_msg unclosed_while_stack in
+        let unclosed_help_msg =
+          unclosed_paren_help_msgs @
+          unclosed_if_help_msgs @
+          unclosed_while_stack @
+          unclosed_sub_help_msgs
+          |> String.concat "\n"
+        in
+
+        (* make the error message prefix, ex: "expected new line" *)
+        let error_state = VBParser.MenhirInterpreter.current_state_number env in
+        let message_prefix = VBMessages.message error_state |> String.trim in
+
+        (* make the error message suffix, ex: ", found `)`" *)
+        let message_suffix = match last_token_opt with
+          | Some token when token <> VBParser.EOF ->
+            Printf.sprintf ", found `%s`"
+              (VBTokenMapper.map_token token)
+          | _ -> ""
+        in
+
+        let message = message_prefix ^ message_suffix ^ "\n" ^ unclosed_help_msg in
+        raise (Exceptions.CompileException {
+            pos = {
+              lnum = LexingUtils.get_lnum lexbuf;
+              cnum = LexingUtils.get_cnum lexbuf;
+            };
+            pane;
+            exception_type = "error";
+            message
+          })
+      | VBParser.MenhirInterpreter.Accepted tree -> tree
+      | VBParser.MenhirInterpreter.Rejected ->
+        (* this should never happen *)
+        raise (Exceptions.CompileException {
+            pos = {
+              lnum = LexingUtils.get_lnum lexbuf;
+              cnum = LexingUtils.get_cnum lexbuf;
+            };
+            pane;
+            exception_type = "error";
+            message = "Syntax Error"
+          })
+    in
+    try
+      let lexbuf = Lexing.from_string code in
+      loop lexbuf (VBLexerState.create ()) (VBParser.Incremental.translation_unit lexbuf.lex_curr_p) pane None
     with
     | Exceptions.LexingException e -> raise (Exceptions.CompileException {
         pane;
@@ -353,23 +283,101 @@ let parse_python extensions_code main_code =
         message = e.message;
       })
   in
-  let extensions_code_lexbuf = Lexing.from_string extensions_code in
-  let extension_fxns = loop
-      extensions_code
-      extensions_code_lexbuf
-      (PythonLexerState.create ())
-      (PythonParser.Incremental.fxns extensions_code_lexbuf.lex_curr_p)
-      Pane.Extensions
-      None
+  let extension_fxns = parse extensions_code Pane.Extensions in
+  let main_fxns = parse main_code Pane.Main in
+  let main_fxn = make_main_fxn main_fxns in
+  {
+    extension_fxns;
+    main_fxn;
+  }
+
+let parse_python extensions_code main_code =
+  let rec loop code lexbuf state checkpoint pane last_token_opt =
+    match checkpoint with
+    | PythonParser.MenhirInterpreter.InputNeeded _ ->
+      let token = PythonLexer.token state lexbuf in
+      let startp = lexbuf.lex_start_p in
+      let endp = lexbuf.lex_curr_p in
+      let checkpoint = PythonParser.MenhirInterpreter.offer checkpoint (token, startp, endp) in
+      loop code lexbuf state checkpoint pane (Some token)
+    | PythonParser.MenhirInterpreter.Shifting _ | PythonParser.MenhirInterpreter.AboutToReduce _ ->
+      let checkpoint = PythonParser.MenhirInterpreter.resume checkpoint in
+      loop code lexbuf state checkpoint pane last_token_opt
+    | PythonParser.MenhirInterpreter.HandlingError env ->
+      (* make the unbalanced help message *)
+      let unclosed_paren_stack = find_unbalanced_python_tokens code in
+      let unclosed_paren_help_msgs = make_unablanced_help_msg unclosed_paren_stack in
+      let unclosed_help_msg = unclosed_paren_help_msgs |> String.concat "\n" in
+
+      (* make the error message prefix, ex: "expected `:`" *)
+      let error_state = PythonParser.MenhirInterpreter.current_state_number env in
+      let message_prefix = PythonMessages.message error_state |> String.trim in
+
+      (* make the error message suffix, ex: ", found `)`" *)
+      let message_suffix = match last_token_opt with
+        | Some token when token <> PythonParser.EOF  ->
+          Printf.sprintf ", found `%s`"
+            (PythonTokenMapper.map_token token)
+        | _ -> ""
+      in
+
+      let message = message_prefix ^ message_suffix ^ "\n" ^ unclosed_help_msg in
+      raise (Exceptions.CompileException {
+          pos = {
+            lnum = LexingUtils.get_lnum lexbuf;
+            cnum = LexingUtils.get_cnum lexbuf;
+          };
+          pane;
+          exception_type = "error";
+          message
+        })
+    | PythonParser.MenhirInterpreter.Accepted tree -> tree
+    | PythonParser.MenhirInterpreter.Rejected ->
+      (* this should never happen *)
+      raise (Exceptions.CompileException {
+          pos = {
+            lnum = LexingUtils.get_lnum lexbuf;
+            cnum = LexingUtils.get_cnum lexbuf;
+          };
+          pane;
+          exception_type = "error";
+          message = "Syntax Error"
+        })
   in
-  let main_code_lexbuf = Lexing.from_string main_code in
-  let main_fxn = loop
-      main_code
-      main_code_lexbuf
-      (PythonLexerState.create ())
-      (PythonParser.Incremental.main_fxn main_code_lexbuf.lex_curr_p)
-      Pane.Main
-      None
+  let extension_fxns =
+    try
+      let extensions_code_lexbuf = Lexing.from_string extensions_code in
+      loop
+        extensions_code
+        extensions_code_lexbuf
+        (PythonLexerState.create ())
+        (PythonParser.Incremental.fxns extensions_code_lexbuf.lex_curr_p)
+        Pane.Extensions
+        None
+    with
+    | Exceptions.LexingException e -> raise (Exceptions.CompileException {
+        pane = Pane.Extensions;
+        pos = e.pos;
+        exception_type = e.exception_type;
+        message = e.message;
+      })
+  in
+  let main_fxn = try
+      let main_code_lexbuf = Lexing.from_string main_code in
+      loop
+        main_code
+        main_code_lexbuf
+        (PythonLexerState.create ())
+        (PythonParser.Incremental.main_fxn main_code_lexbuf.lex_curr_p)
+        Pane.Main
+        None
+    with
+    | Exceptions.LexingException e -> raise (Exceptions.CompileException {
+        pane = Pane.Main;
+        pos = e.pos;
+        exception_type = e.exception_type;
+        message = e.message;
+      })
   in
   {
     extension_fxns;
