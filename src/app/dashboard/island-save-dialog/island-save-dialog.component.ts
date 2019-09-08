@@ -28,7 +28,7 @@ export class IslandSaveDialogComponent implements OnInit {
     const blob = new Blob([islandString], {
       type: 'text/plain'
     });
-    this.saveBlob(blob, `${this.form.value.name}.jsc`);
+    this.saveBlob(blob, `${this.form.value.name}.jev`);
     this.dialogRef.close();
   }
 
