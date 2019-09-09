@@ -5,7 +5,7 @@ import { BytecodeInterpreterService, RuntimeError } from '../bytecode-interprete
 import { MatrixService } from '../matrix.service';
 import { MessageService, LoggingMessage, CompilationErrorMessage, RuntimeErrorMessage } from '../message.service';
 import { TextEditorComponent } from '../text-editor/text-editor.component';
-import { CodeService, SelectedLanguage, SelectedTab } from '../code.service';
+import { CodeService, SelectedLanguage, SelectedTab, EditorCode } from '../code.service';
 import { Storage } from '../storage';
 
 interface Language {
@@ -79,7 +79,7 @@ export class EditorTabAreaComponent implements AfterViewInit {
     if (this.editorState.reset || this.instructions === null) {
       this.messageService.clear();
       this.messageService.addMessage(new LoggingMessage('Compiling...'));
-      const jerooCode = this.codeService.genCodeStr();
+      const jerooCode = this.codeService.genCodeStr(this.getCode());
       const result = JerooCompiler.compile(jerooCode);
       if (result.successful) {
         this.instructions = result.bytecode;
@@ -113,7 +113,7 @@ export class EditorTabAreaComponent implements AfterViewInit {
     if (this.editorState.reset || this.instructions === null) {
       this.messageService.clear();
       this.messageService.addMessage(new LoggingMessage('Compiling...'));
-      const jerooCode = this.codeService.genCodeStr();
+      const jerooCode = this.codeService.genCodeStr(this.getCode());
       const result = JerooCompiler.compile(jerooCode);
       if (result.successful) {
         this.instructions = result.bytecode;
@@ -291,7 +291,13 @@ export class EditorTabAreaComponent implements AfterViewInit {
 
   loadCodeFromCache() {
     const code = this.storage.get(Storage.Source);
-    this.codeService.loadCodeFromStr(code);
+    this.loadCode(code);
+  }
+
+  loadCode(codeStr: string) {
+    const editorCode = this.codeService.parseCodeFromStr(codeStr);
+    this.mainMethodTextEditor.setText(editorCode.mainMethodCode);
+    this.extensionMethodsTextEditor.setText(editorCode.extensionsMethodCode);
   }
 
   loadPreferencesFromCache() {
@@ -299,8 +305,15 @@ export class EditorTabAreaComponent implements AfterViewInit {
     this.codeService.prefrences = config;
   }
 
+  getCode(): EditorCode {
+    return {
+      extensionsMethodCode: this.extensionMethodsTextEditor.getText(),
+      mainMethodCode: this.mainMethodTextEditor.getText()
+    };
+  }
+
   saveToLocal() {
-    const code = this.codeService.genCodeStr();
+    const code = this.codeService.genCodeStr(this.getCode());
     this.storage.set(Storage.Source, code);
   }
 

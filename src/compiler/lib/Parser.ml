@@ -85,7 +85,6 @@ let parse_java extensions_code main_code =
 
 let parse_vb extensions_code main_code =
   let parse code pane =
-    (* TODO: make this function tail recursive *)
     let rec loop lexbuf state checkpoint pane =
       match checkpoint with
       | VBParser.MenhirInterpreter.InputNeeded _ ->
