@@ -1,9 +1,9 @@
 <mat-tab-group color="accent" (selectedIndexChange)="onEditorTabIndexChange($event)" [selectedIndex]="selectedTabIndex">
   <mat-tab label="Main Method">
-    <app-text-editor #mainMethodTextEditor [(code)]="codeService.mainMethodCode" (codeChange)="saveToLocal()" [lang]="codeService.selectedLanguage" [preferences]="codeService.prefrences"></app-text-editor>
+    <app-text-editor #mainMethodTextEditor (codeChange)="saveToLocal()" [lang]="codeService.selectedLanguage" [preferences]="codeService.prefrences"></app-text-editor>
   </mat-tab>
   <mat-tab label="Jeroo Methods">
-    <app-text-editor #extensionMethodsTextEditor [(code)]="codeService.extensionMethodCode" (codeChange)="saveToLocal()" [lang]="codeService.selectedLanguage" [preferences]="codeService.prefrences"></app-text-editor>
+    <app-text-editor #extensionMethodsTextEditor (codeChange)="saveToLocal()" [lang]="codeService.selectedLanguage" [preferences]="codeService.prefrences"></app-text-editor>
   </mat-tab>
 </mat-tab-group>
 <div class="language-form-container" fxLayout="column" fxLayoutAlign="none center">

@@ -1,7 +1,11 @@
-import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, ViewChild, ElementRef, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { CodeService } from 'src/app/code.service';
+import { CodeService, EditorCode } from 'src/app/code.service';
+
+export interface DialogData {
+  editorCode: EditorCode;
+}
 
 @Component({
   selector: 'app-code-save-dialog',
@@ -10,12 +14,16 @@ import { CodeService } from 'src/app/code.service';
 export class CodeSaveDialogComponent implements OnInit {
   @ViewChild('fileSaver', { static: true }) fileSaver: ElementRef;
   form: FormGroup;
+  editorCode: EditorCode;
 
   constructor(
     private fb: FormBuilder,
     private codeService: CodeService,
-    public dialogRef: MatDialogRef<CodeSaveDialogComponent>
-  ) { }
+    public dialogRef: MatDialogRef<CodeSaveDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) data: DialogData
+  ) {
+    this.editorCode = data.editorCode;
+  }
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -24,7 +32,7 @@ export class CodeSaveDialogComponent implements OnInit {
   }
 
   save() {
-    const jerooCodeString = this.codeService.genCodeStr();
+    const jerooCodeString = this.codeService.genCodeStr(this.editorCode);
     const blob = new Blob([jerooCodeString], {
       type: 'text/plain'
     });

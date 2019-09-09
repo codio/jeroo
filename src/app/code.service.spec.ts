@@ -1,16 +1,18 @@
 import { TestBed } from '@angular/core/testing';
-import { CodeService, SelectedLanguage } from './code.service';
+import { CodeService, SelectedLanguage, EditorCode } from './code.service';
 
 describe('CodeService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('assert genCodeStr generates code correctly', () => {
     const service: CodeService = TestBed.get(CodeService);
-    service.mainMethodCode = 'abcde\nfg';
-    service.extensionMethodCode = '123\n456';
+    const editorCode: EditorCode = {
+      extensionsMethodCode: '123\n456',
+      mainMethodCode: 'abcde\nfg'
+    };
     service.selectedLanguage = SelectedLanguage.Vb;
 
-    const actual = service.genCodeStr();
+    const actual = service.genCodeStr(editorCode);
     const expected = `@VB
 123
 456
@@ -20,7 +22,7 @@ fg`;
     expect(actual).toBe(expected);
   });
 
-  it('assert loadCodeFromStr loads code correctly', () => {
+  it('assert parseCodeFromStr loads code correctly', () => {
     const service: CodeService = TestBed.get(CodeService);
     const code = `@PYTHON
 a = b
@@ -30,13 +32,16 @@ a = b
 @@
 def main()
 `;
-    service.loadCodeFromStr(code);
+    const actualEditorCode = service.parseCodeFromStr(code);
     const expectedExtensionMethodCode = `a = b
 1 = 2
 # comment
 @`;
     const expectedMainMethodCode = `def main()`;
-    expect(service.extensionMethodCode).toBe(expectedExtensionMethodCode);
-    expect(service.mainMethodCode).toBe(expectedMainMethodCode);
+    const expectedEditorCode: EditorCode = {
+      extensionsMethodCode: expectedExtensionMethodCode,
+      mainMethodCode: expectedMainMethodCode
+    };
+    expect(actualEditorCode).toEqual(expectedEditorCode);
   });
 });
