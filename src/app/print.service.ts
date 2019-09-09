@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { EditorCode } from './code.service';
 
 @Injectable({
   providedIn: 'root'
@@ -7,21 +8,37 @@ import { Router } from '@angular/router';
 export class PrintService {
   constructor(private router: Router) { }
 
-  printDocument(documentName: string) {
+  printCode(editorCode: EditorCode) {
     this.router.navigate(['/',
-                          { outlets: {
-                            'print': ['print', documentName]
-                          } }]);
+      {
+        outlets: {
+          'print': ['print', 'code']
+        }
+      }], {
+        queryParams: {
+          extensionsMethodCode: editorCode.extensionsMethodCode,
+          mainMethodCode: editorCode.mainMethodCode
+        }
+      });
+  }
+
+  printIsland() {
+    this.router.navigate(['/',
+      {
+        outlets: {
+          'print': ['print', 'map']
+        }
+      }]);
   }
 
   onDataReady() {
     setTimeout(() => {
       window.print();
-      this.router.navigate([{ outlets: { print: null }}]);
+      this.router.navigate([{ outlets: { print: null } }]);
     });
   }
 
   navigateWithoutPrinting() {
-    this.router.navigate([{ outlets: { print: null }}]);
+    this.router.navigate([{ outlets: { print: null } }]);
   }
 }

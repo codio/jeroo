@@ -21,6 +21,11 @@ export interface EditorPreferences {
   colorTheme: Themes;
 }
 
+export interface EditorCode {
+  mainMethodCode: string;
+  extensionsMethodCode: string;
+}
+
 export enum SelectedTab {
   Main = 0,
   Extensions = 1
@@ -43,8 +48,6 @@ export interface Position {
   providedIn: 'root'
 })
 export class CodeService {
-  mainMethodCode = '';
-  extensionMethodCode = '';
   selectedLanguage = SelectedLanguage.Java;
   prefrences: EditorPreferences = {
     fontSize: 12,
@@ -61,7 +64,7 @@ export class CodeService {
     });
   }
 
-  genCodeStr() {
+  genCodeStr(code: EditorCode): string {
     let jerooCode = '';
     if (this.selectedLanguage === SelectedLanguage.Java) {
       jerooCode += '@Java\n';
@@ -72,13 +75,13 @@ export class CodeService {
     } else {
       throw new Error('Unsupported Language');
     }
-    jerooCode += this.extensionMethodCode;
+    jerooCode += code.extensionsMethodCode;
     jerooCode += '\n@@\n';
-    jerooCode += this.mainMethodCode;
+    jerooCode += code.mainMethodCode;
     return jerooCode;
   }
 
-  loadCodeFromStr(code: string) {
+  parseCodeFromStr(code: string): EditorCode {
     let mainMethodCodeBuffer = '';
     let extensionMethodCodeBuffer = '';
     let usingExtensionCodeBuffer = false;
@@ -106,8 +109,10 @@ export class CodeService {
       }
     });
 
-    this.extensionMethodCode = extensionMethodCodeBuffer.trim();
-    this.mainMethodCode = mainMethodCodeBuffer.trim();
+    return {
+      extensionsMethodCode: extensionMethodCodeBuffer.trim(),
+      mainMethodCode: mainMethodCodeBuffer.trim()
+    };
   }
 
   getCursorPosition(): Observable<Position> {

@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { CacheDialogComponent } from '../cache-dialog/cache-dialog.component';
 import { DashboardDialogAboutComponent } from './dashboard-dialog-about/dashboard-dialog-about.component';
@@ -11,7 +11,6 @@ import { JerooMatrixComponent } from '../jeroo-matrix/jeroo-matrix.component';
 import { MatrixService } from '../matrix.service';
 import { MessageService, LoggingMessage } from '../message.service';
 import { PrintService } from '../print.service';
-import { CodeService } from '../code.service';
 import { EditorPreferencesComponent } from './editor-preferences/editor-preferences.component';
 import { CodeSaveDialogComponent } from './code-save-dialog/code-save-dialog.component';
 import { IslandSaveDialogComponent } from './island-save-dialog/island-save-dialog.component';
@@ -58,7 +57,6 @@ export class DashboardComponent implements AfterViewInit {
     private hotkeysService: HotkeysService,
     private messageService: MessageService,
     private printService: PrintService,
-    private codeService: CodeService,
     private selectedTileTypeService: SelectedTileTypeService,
     public dialog: MatDialog
   ) {
@@ -163,17 +161,21 @@ export class DashboardComponent implements AfterViewInit {
       reader.readAsText(file, 'UTF-8');
       reader.onload = (readerEvent: any) => {
         const content: string = readerEvent.target.result;
-        this.codeService.loadCodeFromStr(content);
+        this.jerooEditor.loadCode(content);
       };
     }
   }
 
   saveCode() {
-    this.dialog.open(CodeSaveDialogComponent);
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data  = {
+      editorCode: this.jerooEditor.getCode()
+    };
+    this.dialog.open(CodeSaveDialogComponent, dialogConfig);
   }
 
   printCode() {
-    this.printService.printDocument('code');
+    this.printService.printCode(this.jerooEditor.getCode());
   }
 
   onUndoClick() {
@@ -276,7 +278,7 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   printIsland() {
-    this.printService.printDocument('map');
+    this.printService.printIsland();
   }
 
   changeMapSize() {

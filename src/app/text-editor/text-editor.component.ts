@@ -12,21 +12,6 @@ export class TextEditorComponent implements AfterViewInit {
 
   @Output()
   codeChange = new EventEmitter<string>();
-  @Input()
-  get code() {
-    if (this.editor) {
-      return this.editor.getValue();
-    }
-  }
-  set code(val) {
-    if (this.editor) {
-      const cursor = (this.editor as any).getCursor();
-      // TODO: the undo/redo buttons might be getting messed up here
-      this.editor.setValue(val);
-      (this.editor as any).setCursor(cursor);
-      this.codeChange.emit(this.editor.getValue());
-    }
-  }
 
   private preferencesVal: EditorPreferences;
   @Input()
@@ -97,7 +82,7 @@ export class TextEditorComponent implements AfterViewInit {
   }
 
   getText() {
-    return this.code;
+    return this.editor.getValue();
   }
 
   setText(incomingString: string) {
@@ -105,11 +90,11 @@ export class TextEditorComponent implements AfterViewInit {
   }
 
   undo() {
-    this.editor.execCommand('undo');
+    this.editor.getDoc().undo();
   }
 
   redo() {
-    this.editor.execCommand('redo');
+    this.editor.getDoc().redo();
   }
 
   toggleComment() {
