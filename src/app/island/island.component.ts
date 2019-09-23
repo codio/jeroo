@@ -95,8 +95,6 @@ export class JerooIslandComponent implements AfterViewInit {
         this.islandService.resetIsland();
         this.islandService.resetJeroos();
         this.islandService.resetDynamicIsland();
-        // if the board is cleared, also save into service incase the size has been changed
-        this.saveInLocal(this.islandService.toString());
         this.saveInLocal(this.islandService.toString());
         this.islandService.render(this.context);
       }
