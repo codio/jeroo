@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TileType } from './jerooTileType';
+import { TileType } from './tileType';
 
 @Injectable({
   providedIn: 'root'

@@ -4,6 +4,7 @@ cache:
   untracked: true
   key: "$CI_BUILD_REF_NAME"
   paths:
+    - src/compiler/_opam/
     - node_modules/
 
 stages:
@@ -22,6 +23,7 @@ build-ocaml:
     - cd src/compiler
     - sudo apk update
     - sudo apk add m4
+    - opam switch create ./ ocaml-base-compiler.4.08.1 || true
     - opam update && opam upgrade
     - ocamlc --version
     - opam --version
@@ -40,6 +42,7 @@ build-angular:
     - node --version
     - yarn --version
     - yarn install
+    - yarn stylelint
     - yarn lint
 # remove the --base-href when the sites moves into the "/" directory
     - yarn build --base-href=/beta/ --prod
