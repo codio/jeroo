@@ -1,8 +1,7 @@
 import 'hammerjs';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import {
   faFile,
   faFolder,
@@ -54,25 +53,6 @@ import { CodeSaveDialogComponent } from './dashboard/code-save-dialog/code-save-
 import { IslandSaveDialogComponent } from './dashboard/island-save-dialog/island-save-dialog.component';
 import { RuntimeErrorMessageComponent } from './messages/runtime-error-message/runtime-error-message.component';
 
-library.add(
-  faFile,
-  faFolder,
-  faSave,
-  faFolderOpen,
-  faCopy,
-  faPaste,
-  faCut,
-  faUndo,
-  faRedo,
-  faStepBackward,
-  faStepForward,
-  faPlay,
-  faPause,
-  faStop,
-  faBars,
-  faEraser,
-  faPrint
-);
 
 @NgModule({
   declarations: [
@@ -129,4 +109,26 @@ library.add(
     IslandSaveDialogComponent
   ]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(library: FaIconLibrary) {
+    library.addIcons(
+      faFile,
+      faFolder,
+      faSave,
+      faFolderOpen,
+      faCopy,
+      faPaste,
+      faCut,
+      faUndo,
+      faRedo,
+      faStepBackward,
+      faStepForward,
+      faPlay,
+      faPause,
+      faStop,
+      faBars,
+      faEraser,
+      faPrint
+    );
+  }
+}

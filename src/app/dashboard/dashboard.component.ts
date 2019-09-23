@@ -23,7 +23,7 @@ import { TileType } from '../tileType';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements AfterViewInit {
-  @ViewChild('IslandFileInput', { static: true }) islandFileInput: ElementRef | null = null;
+  @ViewChild('islandFileInput', { static: true }) islandFileInput: ElementRef | null = null;
   @ViewChild('codeFileInput', { static: true }) codeFileInput: ElementRef | null = null;
   @ViewChild('jerooIsland', { static: true }) jerooIsland: JerooIslandComponent | null = null;
   @ViewChild('jerooEditor', { static: true }) jerooEditor: EditorTabsComponent | null = null;
@@ -310,6 +310,7 @@ export class DashboardComponent implements AfterViewInit {
           const content: string = readerEvent.target.result;
           this.islandService.genIslandFromString(content);
           this.jerooIsland.redraw();
+          this.jerooIsland.saveInLocal(content);
         }
       };
     }
