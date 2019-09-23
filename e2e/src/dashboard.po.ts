@@ -18,14 +18,14 @@ export class DashboardPage {
     ) as Promise<String>;
   }
 
-  setMatrixSize(cols: number, rows: number) {
+  setIslandSize(cols: number, rows: number) {
     this.getIslandEditMenu().click();
-    this.getChangeMapSize().click();
+    this.getChangeIslandSize().click();
     this.getColValueInput().clear();
     this.getColValueInput().sendKeys(`${cols}`);
     this.getRowValueInput().clear();
     this.getRowValueInput().sendKeys(`${rows}`);
-    this.getSubmitMatrixDialogButton().click();
+    this.getSubmitIslandDialogButton().click();
     this.getYesWarningButton().click();
   }
 
@@ -57,20 +57,20 @@ export class DashboardPage {
     return element(by.id('islandEditMenu'));
   }
 
-  getNewMapMenuItem() {
-    return element(by.id('newMapMenuItem'));
+  getNewIslandMenuItem() {
+    return element(by.id('newIslandMenuItem'));
   }
 
-  getChangeMapSize() {
-    return element(by.id('changeMapSize'));
+  getChangeIslandSize() {
+    return element(by.id('changeIslandSize'));
   }
 
-  getCloseMatrixDialogButton() {
-    return element(by.id('closeMatrixDialogButton'));
+  getCloseIslandDialogButton() {
+    return element(by.id('closeIslandDialogButton'));
   }
 
-  getSubmitMatrixDialogButton() {
-    return element(by.id('submitMatrixDialogButton'));
+  getSubmitIslandDialogButton() {
+    return element(by.id('submitIslandDialogButton'));
   }
 
   getColValueInput() {
@@ -135,12 +135,12 @@ export class DashboardPage {
     return element(by.id('dontImportProjectBtn'));
   }
 
-  async getMatrixSize() {
+  async getIslandSize() {
     this.getIslandEditMenu().click();
-    this.getChangeMapSize().click();
+    this.getChangeIslandSize().click();
     const numCols = parseInt(await this.getColValueInput().getAttribute('value'), 10);
     const numRows = parseInt(await this.getRowValueInput().getAttribute('value'), 10);
-    this.getCloseMatrixDialogButton().click();
+    this.getCloseIslandDialogButton().click();
     return { cols: numCols, rows: numRows };
   }
 }

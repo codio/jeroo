@@ -26,7 +26,7 @@ export class PrintService {
     this.router.navigate(['/',
       {
         outlets: {
-          'print': ['print', 'map']
+          'print': ['print', 'island']
         }
       }]);
   }

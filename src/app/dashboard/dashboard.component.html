@@ -79,10 +79,10 @@
             <div fxLayout="column" fxLayoutAlign="center center">
               <button id="islandFileMenu" mat-button [matMenuTriggerFor]="islandFile">Island File</button>
               <div>
-                <button id="newIslandButton" mat-icon-button matTooltip="Create new island layout" [disabled]="!islandEditingEnabled()" (click)="clearMap()">
+                <button id="newIslandButton" mat-icon-button matTooltip="Create new island layout" [disabled]="!islandEditingEnabled()" (click)="clearIsland()">
                   <fa-icon icon="eraser"></fa-icon>
                 </button>
-                <button mat-icon-button matTooltip="Open an island file" [disabled]="!islandEditingEnabled()" (click)="openMapFile()">
+                <button mat-icon-button matTooltip="Open an island file" [disabled]="!islandEditingEnabled()" (click)="openIslandFile()">
                   <fa-icon icon="folder"></fa-icon>
                 </button>
                 <button mat-icon-button matTooltip="Save the island to a file" (click)="saveIsland()">
@@ -133,7 +133,7 @@
         <mat-divider></mat-divider>
         <button id="commentMenuItem" mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onToggleCommentLines()">Comment Lines<span class="shortcut-tip">Ctrl+/</span></button>
         <mat-divider></mat-divider>
-        <button id="formatMenuItem" mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onFormatSelectionClick()">Format Selection<span class="shortcut-tip">Ctrl+Shift+F</span></button>
+        <button id="formatMenuItem" mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onFormatClick()">Format<span class="shortcut-tip">Ctrl+Shift+F</span></button>
         <button id="indentMenuItem" mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onIndentSelectionClick()">Indent Selection<span class="shortcut-tip">Tab</span></button>
         <button id="unindentMenuItem" mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onUnindentSelectionClick()">Un-Indent Selection<span class="shortcut-tip">Shift+Tab</span></button>
         <mat-divider></mat-divider>
@@ -172,10 +172,10 @@
     </mat-menu>
     <mat-menu #islandFile="matMenu">
       <ng-template matMenuContent>
-        <button id="newMapMenuItem" mat-menu-item [disabled]="!islandEditingEnabled()" (click)="clearMap()">
+        <button id="newIslandMenuItem" mat-menu-item [disabled]="!islandEditingEnabled()" (click)="clearIsland()">
           <fa-icon icon="eraser"></fa-icon><span class="menu-text">New<span class="shortcut-tip">Ctrl+Shift+N</span></span>
         </button>
-        <button mat-menu-item [disabled]="!islandEditingEnabled()" (click)="openMapFile()">
+        <button mat-menu-item [disabled]="!islandEditingEnabled()" (click)="openIslandFile()">
           <fa-icon icon="folder"></fa-icon><span class="menu-text">Open<span class="shortcut-tip">Ctrl+Shift+O</span></span>
         </button>
         <mat-divider></mat-divider>
@@ -225,8 +225,8 @@
           </div>
           <mat-divider></mat-divider>
           <div>
-            <button id="changeMapSize" mat-menu-item [disabled]="!islandEditingEnabled()" (click)="changeMapSize()">
-              <span class="menu-text">Change Map Size</span>
+            <button id="changeIslandSize" mat-menu-item [disabled]="!islandEditingEnabled()" (click)="changeIslandSize()">
+              <span class="menu-text">Change Island Size</span>
             </button>
           </div>
         </mat-radio-group>
@@ -251,16 +251,16 @@
     <!--Text tabs Area-->
     <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
       <div fxFlex="60">
-        <app-editor-tab-area #jerooEditor [(editorState)]="jerooEditorState" [speed]="runtimeSpeed"></app-editor-tab-area>
+        <app-editor-tabs #jerooEditor [(editorState)]="jerooEditorState" [speed]="runtimeSpeed"></app-editor-tabs>
       </div>
-      <!--Matrix Area-->
-      <div class="jeroo-matrix-container" fxFlex="40">
-        <app-jeroo-matrix id="jerooMatrix" #jerooMatrix [editingEnabled]="islandEditingEnabled()"></app-jeroo-matrix>
+      <!--Island Area-->
+      <div class="jeroo-island-container" fxFlex="40">
+        <app-jeroo-island #jerooIsland [editingEnabled]="islandEditingEnabled()"></app-jeroo-island>
       </div>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
-<!-- map file input -->
-<input #mapFileInput class="invisible" type="file" file-accept="jev" (change)="mapFileSelected($event.target.files[0])" />
+<!-- Island file input -->
+<input #islandFileInput class="invisible" type="file" file-accept="jev" (change)="islandFileSelected($event.target.files[0])" />
 <!-- code file input -->
 <input #codeFileInput class="invisible" type="file" file-accept="jsc" (change)="codeFileSelected($event.target.files[0])" />

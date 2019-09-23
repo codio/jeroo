@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PrintLayoutComponent } from './print-layout/print-layout.component';
-import { PrintMapComponent } from './print-layout/print-map/print-map.component';
+import { PrintIslandComponent } from './print-layout/print-island/print-island.component';
 import { PrintCodeComponent } from './print-layout/print-code/print-code.component';
 
 
@@ -16,7 +16,7 @@ const routes: Routes = [
         component: PrintLayoutComponent,
         children: [
             {
-                path: 'map', component: PrintMapComponent
+                path: 'island', component: PrintIslandComponent
             },
             {
                 path: 'code', component: PrintCodeComponent

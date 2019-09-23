@@ -11,8 +11,8 @@ import { Storage } from 'src/app/storage';
   templateUrl: './editor-preferences.component.html'
 })
 export class EditorPreferencesComponent implements OnInit, AfterViewInit {
-  @ViewChild('editor', { static: true }) editorRef: ElementRef;
-  editor: CodeMirror.Editor;
+  @ViewChild('editor', { static: true }) editorTextArea: ElementRef | null = null;
+  editor: CodeMirror.Editor | null = null;
   colorThemes = [
     Themes.Default,
     Themes.Darcula,
@@ -20,7 +20,7 @@ export class EditorPreferencesComponent implements OnInit, AfterViewInit {
     Themes.Solarized,
     Themes.TheMattix
   ];
-  form: FormGroup;
+  form: FormGroup | null = null;
 
   constructor(
     public dialogRef: MatDialogRef<EditorPreferencesComponent>,
@@ -45,7 +45,7 @@ export class EditorPreferencesComponent implements OnInit, AfterViewInit {
     });
 
     this.form.valueChanges.subscribe((val: EditorPreferences) => {
-      if (this.editor && this.form.valid) {
+      if (this.editor && this.form && this.form.valid) {
         this.editor.getWrapperElement().style.fontSize = `${val.fontSize}px`;
         this.editor.setOption('theme', val.colorTheme);
       }
@@ -53,13 +53,16 @@ export class EditorPreferencesComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    const codemirror = this.codeMirrorService.getCodemirror();
-    this.editor = codemirror.fromTextArea(this.editorRef.nativeElement, {
-      theme: this.codeService.prefrences.colorTheme,
-      lineNumbers: true
-    });
-    this.editor.getWrapperElement().style.fontSize = `${this.codeService.prefrences.fontSize}px`;
-    this.editor.setSize(600, 200);
+    if (this.editorTextArea) {
+      const editorTextArea = this.editorTextArea.nativeElement;
+      const codemirror = this.codeMirrorService.getCodemirror();
+      this.editor = codemirror.fromTextArea(editorTextArea, {
+        theme: this.codeService.prefrences.colorTheme,
+        lineNumbers: true
+      });
+      this.editor.getWrapperElement().style.fontSize = `${this.codeService.prefrences.fontSize}px`;
+      this.editor.setSize(600, 200);
+    }
   }
 
   onCloseClick() {
@@ -67,7 +70,7 @@ export class EditorPreferencesComponent implements OnInit, AfterViewInit {
   }
 
   onSaveClick() {
-    if (this.form.valid) {
+    if (this.form && this.form.valid) {
       this.codeService.prefrences = this.form.value;
       this.storage.set(Storage.Preferences, this.form.value);
     }

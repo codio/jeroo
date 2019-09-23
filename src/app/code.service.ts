@@ -31,10 +31,12 @@ export enum SelectedTab {
   Extensions = 1
 }
 
-export function selectedTabToString(selectedTab: SelectedTab) {
-  switch (selectedTab) {
-    case SelectedTab.Main: return 'Main';
-    case SelectedTab.Extensions: return 'Extensions';
+export namespace SelectedTab {
+  export function toString(selectedTab: SelectedTab) {
+    switch (selectedTab) {
+      case SelectedTab.Main: return 'Main';
+      case SelectedTab.Extensions: return 'Extensions';
+    }
   }
 }
 

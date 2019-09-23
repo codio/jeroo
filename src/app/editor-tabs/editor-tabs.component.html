@@ -1,0 +1,22 @@
+<mat-tab-group color="accent" (selectedIndexChange)="onEditorTabIndexChange($event)" [selectedIndex]="selectedTabIndex">
+  <mat-tab label="Main Method">
+    <app-editor #mainMethodTextEditor (codeChange)="saveToLocal()" [lang]="codeService.selectedLanguage" [preferences]="codeService.prefrences"></app-editor>
+  </mat-tab>
+  <mat-tab label="Jeroo Methods">
+    <app-editor #extensionMethodsTextEditor (codeChange)="saveToLocal()" [lang]="codeService.selectedLanguage" [preferences]="codeService.prefrences"></app-editor>
+  </mat-tab>
+</mat-tab-group>
+<div class="language-form-container" fxLayout="column" fxLayoutAlign="none center">
+  <div>
+    <mat-form-field>
+      <mat-select placeholder="Current Language Style" [(ngModel)]="codeService.selectedLanguage" (ngModelChange)="saveToLocal()">
+        <mat-option *ngFor="let language of languages" [value]="language.value">
+          {{language.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
+<div class="messages-div">
+  <app-messages></app-messages>
+</div>

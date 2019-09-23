@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, ViewChild, Input } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CodeService, EditorCode } from 'src/app/code.service';
 import { CodemirrorService } from 'src/app/codemirror/codemirror.service';
@@ -12,11 +12,14 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./print-code.component.scss']
 })
 export class PrintCodeComponent implements AfterViewInit {
-  @ViewChild('mainMethodTextArea', { static: false }) mainMethodTextAreaRef: ElementRef;
-  @ViewChild('extensionMethodTextArea', { static: false }) extensionMethodTextAreaRef: ElementRef;
+  @ViewChild('mainMethodTextArea', { static: false }) mainMethodTextAreaRef: ElementRef | null = null;
+  @ViewChild('extensionMethodTextArea', { static: false }) extensionMethodTextAreaRef: ElementRef | null = null;
   displayMainMethod = false;
   displayExtensionMethods = false;
-  editorCode: EditorCode = null;
+  editorCode: EditorCode = {
+    mainMethodCode: '',
+    extensionsMethodCode: ''
+  };
 
   constructor(private printService: PrintService,
     private codeMirrorService: CodemirrorService,
@@ -28,8 +31,8 @@ export class PrintCodeComponent implements AfterViewInit {
   ngAfterViewInit() {
     setTimeout(() => {
       const dialogRef = this.dialog.open(PrintCodeDialogComponent);
-      dialogRef.afterClosed().subscribe((result: PrintCodeDialogResult) => {
-        if (result !== null && result !== undefined) {
+      dialogRef.afterClosed().subscribe((result: PrintCodeDialogResult | null) => {
+        if (result !== null) {
           this.route.queryParams.subscribe(params => {
             this.editorCode = {
               extensionsMethodCode: params.extensionsMethodCode,
@@ -61,14 +64,14 @@ export class PrintCodeComponent implements AfterViewInit {
       viewportMargin: Infinity
     };
 
-    if (this.displayMainMethod && this.editorCode) {
+    if (this.displayMainMethod && this.editorCode && this.mainMethodTextAreaRef) {
       const mainMethodEditor = codemirror.fromTextArea(this.mainMethodTextAreaRef.nativeElement, editorOptions);
       mainMethodEditor.setSize(null, 'auto');
       mainMethodEditor.getWrapperElement().style.paddingBottom = '10px';
       mainMethodEditor.setValue(this.editorCode.mainMethodCode);
     }
 
-    if (this.displayExtensionMethods && this.editorCode) {
+    if (this.displayExtensionMethods && this.editorCode && this.extensionMethodTextAreaRef) {
       const extensionMethodEditor = codemirror.fromTextArea(this.extensionMethodTextAreaRef.nativeElement, editorOptions);
       extensionMethodEditor.setSize(null, 'auto');
       extensionMethodEditor.getWrapperElement().style.paddingBottom = '10px';
