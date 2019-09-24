@@ -29,5 +29,5 @@ ABCDEFGHIJKLMNOPQRSTUVWXYZ +-*/= .,;:!? #&$%@|^</textarea>
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-raised-button color="primary" (click)="onCloseClick()">Close</button>
-  <button type="submit" mat-raised-button [disabled]="!form.valid" (click)="onSaveClick()">Save</button>
+  <button type="submit" mat-raised-button [disabled]="!form || !form.valid" (click)="onSaveClick()">Save</button>
 </mat-dialog-actions>

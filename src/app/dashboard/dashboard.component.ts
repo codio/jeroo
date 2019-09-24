@@ -6,16 +6,16 @@ import { DashboardDialogAboutComponent } from './dashboard-dialog-about/dashboar
 import { DashboardDialogAwardsComponent } from './dashboard-dialog-awards/dashboard-dialog-awards.component';
 import { DashboardDialogCopyrightComponent } from './dashboard-dialog-copyright/dashboard-dialog-copyright.component';
 import { DashboardDialogHistoryComponent } from './dashboard-dialog-history/dashboard-dialog-history.component';
-import { EditorState, EditorTabAreaComponent } from '../editor-tab-area/editor-tab-area.component';
-import { JerooMatrixComponent } from '../jeroo-matrix/jeroo-matrix.component';
-import { MatrixService } from '../matrix.service';
+import { EditorState, EditorTabsComponent } from '../editor-tabs/editor-tabs.component';
+import { JerooIslandComponent } from '../island/island.component';
+import { IslandService } from '../island.service';
 import { MessageService, LoggingMessage } from '../message.service';
 import { PrintService } from '../print.service';
 import { EditorPreferencesComponent } from './editor-preferences/editor-preferences.component';
 import { CodeSaveDialogComponent } from './code-save-dialog/code-save-dialog.component';
 import { IslandSaveDialogComponent } from './island-save-dialog/island-save-dialog.component';
 import { SelectedTileTypeService } from '../selected-tile-type.service';
-import { TileType } from '../jerooTileType';
+import { TileType } from '../tileType';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,11 +23,11 @@ import { TileType } from '../jerooTileType';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements AfterViewInit {
-  @ViewChild('mapFileInput', { static: true }) mapFileInput: ElementRef;
-  @ViewChild('codeFileInput', { static: true }) codeFileInput: ElementRef;
-  @ViewChild('jerooMatrix', { static: true }) jerooMatrix: JerooMatrixComponent;
-  @ViewChild('jerooEditor', { static: true }) jerooEditor: EditorTabAreaComponent;
-  @ViewChild('fileSaver', { static: true }) fileSaver: ElementRef;
+  @ViewChild('islandFileInput', { static: true }) islandFileInput: ElementRef | null = null;
+  @ViewChild('codeFileInput', { static: true }) codeFileInput: ElementRef | null = null;
+  @ViewChild('jerooIsland', { static: true }) jerooIsland: JerooIslandComponent | null = null;
+  @ViewChild('jerooEditor', { static: true }) jerooEditor: EditorTabsComponent | null = null;
+  @ViewChild('fileSaver', { static: true }) fileSaver: ElementRef | null = null;
 
   private speeds = [475, 350, 225, 125, 25, 2];
   speedIndex = 3;
@@ -53,7 +53,7 @@ export class DashboardComponent implements AfterViewInit {
   };
 
   constructor(
-    private matrixService: MatrixService,
+    private islandService: IslandService,
     private hotkeysService: HotkeysService,
     private messageService: MessageService,
     private printService: PrintService,
@@ -81,11 +81,11 @@ export class DashboardComponent implements AfterViewInit {
       return false;
     }));
     this.hotkeysService.add(new Hotkey('ctrl+shift+n', (_event: KeyboardEvent): boolean => {
-      this.clearMap();
+      this.clearIsland();
       return false;
     }));
     this.hotkeysService.add(new Hotkey('ctrl+shift+o', (_event: KeyboardEvent): boolean => {
-      this.openMapFile();
+      this.openIslandFile();
       return false;
     }));
     this.hotkeysService.add(new Hotkey('ctrl+shift+s', (_event: KeyboardEvent): boolean => {
@@ -119,28 +119,33 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    if (this.jerooEditor.hasCachedCode() || this.jerooEditor.hasCachedConfig() || this.jerooMatrix.hasCachedMatrix()) {
+    if (
+      (this.jerooEditor && this.jerooIsland) &&
+      (this.jerooEditor.hasCachedCode() || this.jerooEditor.hasCachedConfig() || this.jerooIsland.hasCachedIsland())
+    ) {
       // setTimeout prevents a console error
       // see: https://github.com/angular/material2/issues/5268
       setTimeout(() => {
         const dialogRef = this.dialog.open(CacheDialogComponent);
         dialogRef.afterClosed().subscribe(loadCache => {
-          if (loadCache) {
-            if (this.jerooEditor.hasCachedCode()) {
-              this.jerooEditor.loadCodeFromCache();
-            }
+          if (this.jerooEditor && this.jerooIsland) {
+            if (loadCache) {
+              if (this.jerooEditor.hasCachedCode()) {
+                this.jerooEditor.loadCodeFromCache();
+              }
 
-            if (this.jerooEditor.hasCachedConfig()) {
-              this.jerooEditor.loadPreferencesFromCache();
-            }
+              if (this.jerooEditor.hasCachedConfig()) {
+                this.jerooEditor.loadPreferencesFromCache();
+              }
 
-            if (this.jerooMatrix.hasCachedMatrix()) {
-              this.jerooMatrix.loadMatrixFromCache();
+              if (this.jerooIsland.hasCachedIsland()) {
+                this.jerooIsland.loadIslandFromCache();
+              }
+            } else {
+              this.jerooEditor.resetCache();
+              this.jerooEditor.resetPreferences();
+              this.jerooIsland.resetCache();
             }
-          } else {
-            this.jerooEditor.resetCache();
-            this.jerooEditor.resetPreferences();
-            this.jerooMatrix.resetCache();
           }
         });
       });
@@ -148,11 +153,16 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   newCodeFile() {
-    this.jerooEditor.clearCode();
+    if (this.jerooEditor) {
+      this.jerooEditor.clearCode();
+    }
   }
 
   openCodeFile() {
-    (this.codeFileInput.nativeElement as HTMLInputElement).click();
+    if (this.codeFileInput) {
+      const codeFileInput = this.codeFileInput.nativeElement as HTMLInputElement;
+      codeFileInput.click();
+    }
   }
 
   codeFileSelected(file: File) {
@@ -160,46 +170,67 @@ export class DashboardComponent implements AfterViewInit {
       const reader = new FileReader();
       reader.readAsText(file, 'UTF-8');
       reader.onload = (readerEvent: any) => {
-        const content: string = readerEvent.target.result;
-        this.jerooEditor.loadCode(content);
+        if (this.jerooEditor) {
+          const content: string = readerEvent.target.result;
+          this.jerooEditor.loadCode(content);
+        }
       };
     }
   }
 
   saveCode() {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.data  = {
-      editorCode: this.jerooEditor.getCode()
-    };
-    this.dialog.open(CodeSaveDialogComponent, dialogConfig);
+    if (this.jerooEditor) {
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.data = {
+        editorCode: this.jerooEditor.getCode()
+      };
+      this.dialog.open(CodeSaveDialogComponent, dialogConfig);
+    }
   }
 
   printCode() {
-    this.printService.printCode(this.jerooEditor.getCode());
+    if (this.jerooEditor) {
+      const editorCode = this.jerooEditor.getCode();
+      if (editorCode) {
+        this.printService.printCode(editorCode);
+      }
+    }
   }
 
   onUndoClick() {
-    this.jerooEditor.undo();
+    if (this.jerooEditor) {
+      this.jerooEditor.undo();
+    }
   }
 
   onRedoClick() {
-    this.jerooEditor.redo();
+    if (this.jerooEditor) {
+      this.jerooEditor.redo();
+    }
   }
 
   onToggleCommentLines() {
-    this.jerooEditor.toggleComment();
+    if (this.jerooEditor) {
+      this.jerooEditor.toggleComment();
+    }
   }
 
   onIndentSelectionClick() {
-    this.jerooEditor.indentSelection();
+    if (this.jerooEditor) {
+      this.jerooEditor.indentSelection();
+    }
   }
 
   onUnindentSelectionClick() {
-    this.jerooEditor.unindentSelection();
+    if (this.jerooEditor) {
+      this.jerooEditor.unindentSelection();
+    }
   }
 
-  onFormatSelectionClick() {
-    this.jerooEditor.formatSelection();
+  onFormatClick() {
+    if (this.jerooEditor) {
+      this.jerooEditor.format();
+    }
   }
 
   onEditorPreferenceClick() {
@@ -207,26 +238,32 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   onRunStepwiseClick() {
-    if (!this.runBtnDisabled()) {
-      this.jerooEditor.runStepwise(this.jerooMatrix.getContext());
+    if (this.jerooEditor && this.jerooIsland && !this.runBtnDisabled()) {
+      const context = this.jerooIsland.getContext();
+      if (context) {
+        this.jerooEditor.runStepwise(context);
+      }
     }
   }
 
   onRunContiniousClick() {
-    if (!this.runBtnDisabled()) {
-      this.jerooEditor.runContinious(this.jerooMatrix.getContext());
+    if (this.jerooEditor && this.jerooIsland && !this.runBtnDisabled()) {
+      const context = this.jerooIsland.getContext();
+      if (context) {
+        this.jerooEditor.runContinious(context);
+      }
     }
   }
 
   onResetClick() {
-    if (!this.resetBtnDisabled()) {
+    if (this.jerooEditor && this.jerooIsland && !this.resetBtnDisabled()) {
       this.jerooEditor.resetState();
-      this.jerooMatrix.resetState();
+      this.jerooIsland.resetState();
     }
   }
 
   onPauseClick() {
-    if (!this.pauseBtnDisabled()) {
+    if (this.jerooEditor && !this.pauseBtnDisabled()) {
       this.jerooEditor.pauseState();
       const message = new LoggingMessage('Program paused by user');
       this.messageService.addMessage(message);
@@ -234,7 +271,7 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   onStopClick() {
-    if (!this.stopBtnDisabled()) {
+    if (this.jerooEditor && !this.stopBtnDisabled()) {
       this.jerooEditor.stopState();
       this.messageService.clear();
       const message = new LoggingMessage('Program stopped by user');
@@ -251,24 +288,30 @@ export class DashboardComponent implements AfterViewInit {
     this.runtimeSpeed = this.speeds[this.speedIndex - 1];
   }
 
-  clearMap() {
-    if (this.jerooEditorState.reset) {
-      this.jerooMatrix.clearMap();
+  clearIsland() {
+    if (this.jerooIsland && this.jerooEditorState.reset) {
+      this.jerooIsland.clearIsland();
     }
   }
 
-  openMapFile() {
-    (this.mapFileInput.nativeElement as HTMLInputElement).click();
+  openIslandFile() {
+    if (this.islandFileInput) {
+      const islandFileInput = this.islandFileInput.nativeElement as HTMLInputElement;
+      islandFileInput.click();
+    }
   }
 
-  mapFileSelected(file: File) {
+  islandFileSelected(file: File) {
     if (this.islandEditingEnabled()) {
       const reader = new FileReader();
       reader.readAsText(file, 'UTF-8');
       reader.onload = (readerEvent: any) => {
-        const content: string = readerEvent.target.result;
-        this.matrixService.genMapFromString(content);
-        this.jerooMatrix.redraw();
+        if (this.jerooIsland) {
+          const content: string = readerEvent.target.result;
+          this.islandService.genIslandFromString(content);
+          this.jerooIsland.redraw();
+          this.jerooIsland.saveInLocal(content);
+        }
       };
     }
   }
@@ -281,16 +324,22 @@ export class DashboardComponent implements AfterViewInit {
     this.printService.printIsland();
   }
 
-  changeMapSize() {
-    this.jerooMatrix.openDialog();
+  changeIslandSize() {
+    if (this.jerooIsland) {
+      this.jerooIsland.openDialog();
+    }
   }
 
   getHelpUrl() {
-    return this.jerooEditor.getHelpUrl();
+    if (this.jerooEditor) {
+      return this.jerooEditor.getHelpUrl();
+    }
   }
 
   getTutorialUrl() {
-    return this.jerooEditor.getTutorialUrl();
+    if (this.jerooEditor) {
+      return this.jerooEditor.getTutorialUrl();
+    }
   }
 
   resetBtnDisabled() {

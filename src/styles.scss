@@ -5,7 +5,8 @@
 @import '~codemirror/theme/neat.css';
 @import '~codemirror/theme/the-matrix.css';
 
-html, body {
+html,
+body {
   margin: 0;
   height: 100%;
   font-family: 'Roboto', sans-serif;
@@ -34,7 +35,6 @@ html, body {
     display: block;
   }
 }
-
 
 .CodeMirror {
   border: 1px solid #eee;

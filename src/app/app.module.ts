@@ -1,8 +1,7 @@
 import 'hammerjs';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import {
   faFile,
   faFolder,
@@ -26,63 +25,44 @@ import { HotkeyModule } from 'angular2-hotkeys';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { JerooMatrixComponent } from './jeroo-matrix/jeroo-matrix.component';
-import { MatrixDialogComponent } from './matrix-dialog/matrix-dialog.component';
+import { JerooIslandComponent } from './island/island.component';
+import { ChnageIslandSizeDialogComponent } from './change-island-size-dialog/change-island-size-dialog.component';
 import { MaterialModule } from './material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { DisplayErrorMessageComponent } from './display-error-message/display-error-message.component';
-import { TextEditorComponent } from './text-editor/text-editor.component';
+import { MessagesComponent } from './messages/messages.component';
+import { EditorComponent } from './editor/editor.component';
 import { StorageServiceModule } from 'angular-webstorage-service';
 import { DashboardDialogAwardsComponent } from './dashboard/dashboard-dialog-awards/dashboard-dialog-awards.component';
 import { DashboardDialogHistoryComponent } from './dashboard/dashboard-dialog-history/dashboard-dialog-history.component';
 import { DashboardDialogCopyrightComponent } from './dashboard/dashboard-dialog-copyright/dashboard-dialog-copyright.component';
-import { EditorTabAreaComponent } from './editor-tab-area/editor-tab-area.component';
+import { EditorTabsComponent } from './editor-tabs/editor-tabs.component';
 import { CacheDialogComponent } from './cache-dialog/cache-dialog.component';
 import { JerooStatusComponent } from './jeroo-status/jeroo-status.component';
 import { DashboardDialogAboutComponent } from './dashboard/dashboard-dialog-about/dashboard-dialog-about.component';
 import { WarningDialogComponent } from './warning-dialog/warning-dialog.component';
 import { PrintLayoutComponent } from './print-layout/print-layout.component';
-import { PrintMapComponent } from './print-layout/print-map/print-map.component';
+import { PrintIslandComponent } from './print-layout/print-island/print-island.component';
 import { PrintCodeComponent } from './print-layout/print-code/print-code.component';
 import { PrintCodeDialogComponent } from './print-layout/print-code/print-code-dialog/print-code-dialog.component';
 import { EditorPreferencesComponent } from './dashboard/editor-preferences/editor-preferences.component';
-import { CompilationErrorMessageComponent } from './display-error-message/compilation-error-message/compilation-error-message.component';
-import { LoggingMessageComponent } from './display-error-message/logging-message/logging-message.component';
+import { CompilationErrorMessageComponent } from './messages/compilation-error-message/compilation-error-message.component';
+import { LoggingMessageComponent } from './messages/logging-message/logging-message.component';
 import { CodeSaveDialogComponent } from './dashboard/code-save-dialog/code-save-dialog.component';
 import { IslandSaveDialogComponent } from './dashboard/island-save-dialog/island-save-dialog.component';
-import { RuntimeErrorMessageComponent } from './display-error-message/runtime-error-message/runtime-error-message.component';
+import { RuntimeErrorMessageComponent } from './messages/runtime-error-message/runtime-error-message.component';
 
-library.add(
-  faFile,
-  faFolder,
-  faSave,
-  faFolderOpen,
-  faCopy,
-  faPaste,
-  faCut,
-  faUndo,
-  faRedo,
-  faStepBackward,
-  faStepForward,
-  faPlay,
-  faPause,
-  faStop,
-  faBars,
-  faEraser,
-  faPrint
-);
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
-    JerooMatrixComponent,
-    MatrixDialogComponent,
-    DisplayErrorMessageComponent,
-    TextEditorComponent,
-    EditorTabAreaComponent,
+    JerooIslandComponent,
+    ChnageIslandSizeDialogComponent,
+    MessagesComponent,
+    EditorComponent,
+    EditorTabsComponent,
     CacheDialogComponent,
     JerooStatusComponent,
     DashboardDialogAboutComponent,
@@ -91,7 +71,7 @@ library.add(
     DashboardDialogCopyrightComponent,
     WarningDialogComponent,
     PrintLayoutComponent,
-    PrintMapComponent,
+    PrintIslandComponent,
     PrintCodeComponent,
     PrintCodeDialogComponent,
     EditorPreferencesComponent,
@@ -116,7 +96,7 @@ library.add(
   providers: [],
   bootstrap: [AppComponent],
   entryComponents: [
-    MatrixDialogComponent,
+    ChnageIslandSizeDialogComponent,
     CacheDialogComponent,
     DashboardDialogAboutComponent,
     DashboardDialogAwardsComponent,
@@ -129,4 +109,26 @@ library.add(
     IslandSaveDialogComponent
   ]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(library: FaIconLibrary) {
+    library.addIcons(
+      faFile,
+      faFolder,
+      faSave,
+      faFolderOpen,
+      faCopy,
+      faPaste,
+      faCut,
+      faUndo,
+      faRedo,
+      faStepBackward,
+      faStepForward,
+      faPlay,
+      faPause,
+      faStop,
+      faBars,
+      faEraser,
+      faPrint
+    );
+  }
+}
