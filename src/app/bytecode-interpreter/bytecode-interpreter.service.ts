@@ -201,7 +201,7 @@ export class BytecodeInterpreterService {
         break;
       }
       case 'NOT': {
-        const not = !this.cmpStack[this.cmpStack.length - 1];
+        const not = !this.cmpStack.pop();
         this.cmpStack.push(not);
         break;
       }
