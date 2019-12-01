@@ -14,7 +14,7 @@ stages:
   - generate-documentation
 
 build-ocaml:
-  image: ocaml/opam2:alpine-3.10-ocaml-4.08
+  image: ocaml/opam2:alpine-3.10-ocaml-4.09
   stage: build-ocaml
   artifacts:
     paths:
@@ -23,7 +23,7 @@ build-ocaml:
     - cd src/compiler
     - sudo apk update
     - sudo apk add m4
-    - opam switch create ./ ocaml-base-compiler.4.08.1 || true
+    - opam switch create ./ ocaml-base-compiler.4.09.0 || true
     - opam update && opam upgrade
     - ocamlc --version
     - opam --version
@@ -33,7 +33,7 @@ build-ocaml:
     - dune runtest
 
 build-angular:
-  image: node:12-alpine
+  image: node:13-alpine
   stage: build-angular
   artifacts:
     paths:
@@ -56,7 +56,7 @@ test-angular:
     - apt-get install -qq -o=Dpkg::Use-Pty=0 gnupg2 curl firefox -y
     - firefox --version
     - apt install gnupg2 curl -yq
-    - curl -sL https://deb.nodesource.com/setup_12.x | bash -
+    - curl -sL https://deb.nodesource.com/setup_13.x | bash -
     - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
     - echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
     - apt -qq update
