@@ -65,11 +65,15 @@ export class CodeSaveDialogComponent implements OnInit {
       const fileSaver = (this.fileSaver.nativeElement as HTMLAnchorElement);
       const saveBlob = (function() {
         return function() {
-          const url = window.URL.createObjectURL(blob);
-          fileSaver.href = url;
-          fileSaver.download = fileName;
-          fileSaver.click();
-          window.URL.revokeObjectURL(url);
+          if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+            window.navigator.msSaveOrOpenBlob(blob, fileName);  
+          } else {
+            const url = window.URL.createObjectURL(blob);
+            fileSaver.href = url;
+            fileSaver.download = fileName;
+            fileSaver.click();
+            window.URL.revokeObjectURL(url);
+          }
         };
       }());
 
