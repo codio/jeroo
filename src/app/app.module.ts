@@ -70,6 +70,8 @@ import { LoggingMessageComponent } from './messages/logging-message/logging-mess
 import { CodeSaveDialogComponent } from './dashboard/code-save-dialog/code-save-dialog.component';
 import { IslandSaveDialogComponent } from './dashboard/island-save-dialog/island-save-dialog.component';
 import { RuntimeErrorMessageComponent } from './messages/runtime-error-message/runtime-error-message.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 
 @NgModule({
@@ -110,6 +112,7 @@ import { RuntimeErrorMessageComponent } from './messages/runtime-error-message/r
     FontAwesomeModule,
     StorageServiceModule,
     HotkeyModule.forRoot(),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [],
   bootstrap: [AppComponent],
