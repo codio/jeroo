@@ -1,8 +1,13 @@
 export const pythonMode: any = {
   start: [
     {
-      regex: /def|while|if|else|elif/,
+      regex: /while|if/,
       token: 'keyword'
+    },
+    {
+      regex: /def|else|elif/,
+      token: 'keyword',
+      dedent: true
     },
     {
       regex: /True|False|and|or|not|self|NORTH|SOUTH|EAST|WEST|AHEAD|LEFT|RIGHT|HERE/,
@@ -43,6 +48,7 @@ export const pythonMode: any = {
   ],
   meta: {
     dontIndentStates: ['comment'],
-    lineComment: '#'
+    lineComment: '#',
+    electricInput: /else|elif|def/
   }
 };
