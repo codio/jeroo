@@ -66,7 +66,7 @@ export class CodeSaveDialogComponent implements OnInit {
       const saveBlob = (function() {
         return function() {
           if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-            window.navigator.msSaveOrOpenBlob(blob, fileName);  
+            window.navigator.msSaveOrOpenBlob(blob, fileName);
           } else {
             const url = window.URL.createObjectURL(blob);
             fileSaver.href = url;
