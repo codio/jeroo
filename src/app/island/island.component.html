@@ -1,4 +1,4 @@
-<!-- --------------------------------------------------------------------
+<!--
 Jeroo is a programming language learning tool for students and teachers.
 Copyright (C) <2019>  <Benjamin Konz>
 
@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
---------------------------------------------------------------------- -->
+-->
 
 <canvas name="jerooCanvas" #jerooGameCanvas [className]="editingEnabled ? 'jeroo-island default-cursor' : 'jeroo-island not-allowed-cursor'" (mousedown)="canvasMouseDown($event)" (mouseup)="canvasGestureUp()" (mousemove)="canvasMouseMove($event)" (touchstart)="canvasTapDown($event)" (touchend)="canvasGestureUp()" (touchmove)="canvasTapMove($event)" (panstart)="null">
 </canvas>
