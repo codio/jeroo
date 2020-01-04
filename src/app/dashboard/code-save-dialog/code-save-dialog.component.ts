@@ -20,6 +20,7 @@ import { Component, ViewChild, ElementRef, OnInit, Inject } from '@angular/core'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { CodeService, EditorCode } from 'src/app/code.service';
+import { FileSaveService } from '../file-save.service';
 
 export interface DialogData {
   editorCode: EditorCode;
@@ -37,6 +38,7 @@ export class CodeSaveDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private codeService: CodeService,
+    private fileSaveService: FileSaveService,
     public dialogRef: MatDialogRef<CodeSaveDialogComponent>,
     @Inject(MAT_DIALOG_DATA) data: DialogData
   ) {
@@ -63,17 +65,7 @@ export class CodeSaveDialogComponent implements OnInit {
   private saveBlob(blob: Blob, fileName: string) {
     if (this.fileSaver) {
       const fileSaver = (this.fileSaver.nativeElement as HTMLAnchorElement);
-      const saveBlob = (function() {
-        return function() {
-          const url = window.URL.createObjectURL(blob);
-          fileSaver.href = url;
-          fileSaver.download = fileName;
-          fileSaver.click();
-          window.URL.revokeObjectURL(url);
-        };
-      }());
-
-      saveBlob();
+      this.fileSaveService.saveBlob(fileSaver, blob, fileName);
     }
   }
 
