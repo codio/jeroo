@@ -20,6 +20,7 @@ import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { IslandService } from 'src/app/island.service';
+import { FileSaveService } from '../file-save.service';
 
 @Component({
   selector: 'app-island-save-dialog',
@@ -32,6 +33,7 @@ export class IslandSaveDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private islandService: IslandService,
+    private fileSaveService: FileSaveService,
     public dialogRef: MatDialogRef<IslandSaveDialogComponent>
   ) { }
 
@@ -55,21 +57,7 @@ export class IslandSaveDialogComponent implements OnInit {
   private saveBlob(blob: Blob, fileName: string) {
     if (this.fileSaver) {
       const fileSaver = this.fileSaver.nativeElement as HTMLAnchorElement;
-      const saveBlob = (function() {
-        return function() {
-         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-            window.navigator.msSaveOrOpenBlob(blob, fileName);
-          } else {
-            const url = window.URL.createObjectURL(blob);
-            fileSaver.href = url;
-            fileSaver.download = fileName;
-            fileSaver.click();
-            window.URL.revokeObjectURL(url);
-          }
-        };
-      }());
-
-      saveBlob();
+      this.fileSaveService.saveBlob(fileSaver, blob, fileName);
     }
   }
 
