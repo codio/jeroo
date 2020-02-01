@@ -19,11 +19,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <h1 mat-dialog-title><b>About Jeroo</b></h1>
 <div mat-dialog-content>
   <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
-    <div fxFlex="80">
+    <div fxFlex="100">
       <div>
-        <b>Jeroo version 0.1.7</b>
+        <b>Jeroo version {{this.jerooVersion}}</b>
         <ul>
-          <li><p>Built with Angular</p></li>
+          <li>
+            <p>Built with Angular</p>
+          </li>
         </ul>
       </div>
       <div>
@@ -35,32 +37,54 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <div>
         <b>Jeroo development has taken place at:</b>
         <ul>
-          <li><p>Northwest Missouri State University</p></li>
-          <li><p>University of Hartford</p></li>
-          <li><p>University of Nebraska at Omaha</p></li>
+          <li>
+            <p>Northwest Missouri State University</p>
+          </li>
+          <li>
+            <p>University of Hartford</p>
+          </li>
+          <li>
+            <p>University of Nebraska at Omaha</p>
+          </li>
         </ul>
       </div>
       <div>
         <b>The Jeroo Team:</b>
         <ul>
-          <li><p>Ben Konz</p></li>
-          <li><p>Caelan Bryan</p></li>
-          <li><p>Thomas Connole</p></li>
-          <li><p>John Adam</p></li>
-          <li><p>Dean sanders</p></li>
-          <li><p>Brian Dorn</p></li>
-          <li><p>Christina Shell (art work)</p></li>
+          <li>
+            <p>Ben Konz</p>
+          </li>
+          <li>
+            <p>Caelan Bryan</p>
+          </li>
+          <li>
+            <p>Thomas Connole</p>
+          </li>
+          <li>
+            <p>John Adam</p>
+          </li>
+          <li>
+            <p>Dean sanders</p>
+          </li>
+          <li>
+            <p>Brian Dorn</p>
+          </li>
+          <li>
+            <p>Christina Shell (art work)</p>
+          </li>
         </ul>
       </div>
       <div>
         <b>Send comments and suggestions to:</b>
         <ul>
-          <li><p>support@jeroo.org</p></li>
+          <li>
+            <p><a href="mailto:support@jeroo.org">support@jeroo.org</a></p>
+          </li>
         </ul>
       </div>
     </div>
   </div>
 </div>
 <div mat-dialog-actions>
-  <button name="closeAboutButton" mat-button (click)="onCloseClick()">Close</button>
+  <button name="closeAboutButton" mat-raised-button color="primary" (click)="onCloseClick()">Close</button>
 </div>

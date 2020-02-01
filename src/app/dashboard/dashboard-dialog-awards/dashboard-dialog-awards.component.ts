@@ -21,7 +21,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-dashboard-dialog-awards',
-  templateUrl: './dashboard-dialog-awards.component.html'
+  templateUrl: './dashboard-dialog-awards.component.html',
+  styleUrls: ['./dashboard-dialog-awards.component.scss']
 })
 export class DashboardDialogAwardsComponent {
   constructor(public dialogRef: MatDialogRef<DashboardDialogAwardsComponent>) {}
