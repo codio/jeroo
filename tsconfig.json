@@ -17,6 +17,7 @@
     "strictNullChecks": true,
     "noImplicitAny": true,
     "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
     "typeRoots": [
       "node_modules/@types"
     ],

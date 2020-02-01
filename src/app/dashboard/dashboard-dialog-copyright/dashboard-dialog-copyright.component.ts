@@ -21,7 +21,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-dashboard-dialog-copyright',
-  templateUrl: './dashboard-dialog-copyright.component.html'
+  templateUrl: './dashboard-dialog-copyright.component.html',
+  styleUrls: ['./dashboard-dialog-copyright.component.scss']
 })
 export class DashboardDialogCopyrightComponent {
 

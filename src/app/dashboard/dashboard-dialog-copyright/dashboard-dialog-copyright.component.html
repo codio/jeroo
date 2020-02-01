@@ -20,19 +20,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <div mat-dialog-content>
   <div>
     <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
-      <div fxFlex="80">
-        <b>Copyright 2002-2015 Dean Sanders, Brian Dorn</b>
-        <ul>
-          <li><p>Jeroo is available free of charge and may be distributed freely. </p></li>
-          <li><p>
-            Without written permission, Jeroo may not be sold for profit,
-            nor included in packages that are sold for profit.
-          </p></li>
-        </ul>
-      </div>
+      <p>
+        <b>Copyright 2002-2015 Dean Sanders, Brian Dorn</b><br /><br />
+
+        Jeroo is available as a part of the AGPLv3 license.
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU Affero General Public License as
+        published by the Free Software Foundation, either version 3 of the
+        License, or (at your option) any later version.<br /><br />
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+        GNU Affero General Public License for more details.<br /><br />
+
+        <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>
+      </p>
     </div>
   </div>
 </div>
 <div mat-dialog-actions>
-  <button name="closeCopyrightButton" mat-button (click)="onCloseClick()">Close</button>
+  <button name="closeCopyrightButton" mat-raised-button color="primary" (click)="onCloseClick()">Close</button>
 </div>

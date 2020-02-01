@@ -21,7 +21,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-dashboard-dialog-history',
-  templateUrl: './dashboard-dialog-history.component.html'
+  templateUrl: './dashboard-dialog-history.component.html',
+  styleUrls: ['./dashboard-dialog-history.component.scss']
 })
 export class DashboardDialogHistoryComponent {
 

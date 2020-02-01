@@ -8,6 +8,10 @@ More info: [jeroo.org](https://www.jeroo.org)
 
 Jeroo is a text-based coding environment designed to help novices master the basic mechanics of object oriented programming. It features a limited syntax to emphasize basic computational thinking skills like problem decomposition (ie, breaking things down into subtasks), the semantics of control structures like loops and ifs, and use of objects and state to solve problems. 
 
+ Solving problems involves writing a program that helps one or more kangaroo-like objects (ie, Jeroos) hop around an island while avoiding the nets set by animal collectors to achieve an objective. Along the way, Jeroos can pick up flowers growing on the island and use them to disarm nets. Jeroos must be careful to also stay out of the water, since they've never developed an ability to swim.
+
+Jeroo has been used in high school and university classrooms for nearly 20 years, and many teachers find that it provides a great transition tool between the modern block-based systems like Scratch and a more general purpose programming language. The system allows learners to program using a variety of syntax styles to best align with the target programming language in a curriculum. In particular, you can choose between Java/C#, Python, or Visual Basic style syntaxes all within the same tool. 
+
 ## Screenshots
 
 ![](https://www.jeroo.org/images/ScreenCapture.gif)
@@ -15,6 +19,10 @@ Jeroo is a text-based coding environment designed to help novices master the bas
 ## Resources for Teachers and Students
 
 Our Introduction to Jeroo textbook provides an overview of how to program with Jeroo and gives more details about the system's backstory. Three different versions of the book are linked below, corresponding to the three language styles available. Pick the one that matches your target language. Note that the appendix materials showing screenshots of Jeroo are based on the stand-alone program, rather than the new web-based Jeroo--they're still a work in progress. 
+
+- [Java/C#/Javascript](https://www.jeroo.org/docs/JerooDocJava.pdf)
+- [Python Syntax](https://www.jeroo.org/docs/JerooDocPython.pdf)
+- [VB Syntax](https://www.jeroo.org/docs/JerooDocVB.pdf)
 
 ## The Team
 
