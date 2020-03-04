@@ -40,6 +40,7 @@ export class JerooIslandComponent implements AfterViewInit {
   private canvas: HTMLCanvasElement | null = null;
   private context: CanvasRenderingContext2D | null = null;
   private mouseDown = false;
+  private toggle = true;
 
   constructor(private islandService: IslandService, private dialog: MatDialog,
     public bytecodeService: BytecodeInterpreterService,
@@ -47,6 +48,15 @@ export class JerooIslandComponent implements AfterViewInit {
     @Inject(LOCAL_STORAGE) private storage: WebStorageService
   ) { }
 
+
+  getToggle(){
+    return this.toggle;
+  }
+
+  setToggle(){
+    console.log(this.toggle);
+    this.toggle = !this.toggle;
+  }
   ngAfterViewInit() {
     if (this.jerooGameCanvas) {
       // check if something has been stored in the cache to load if it has
@@ -106,6 +116,19 @@ export class JerooIslandComponent implements AfterViewInit {
     }
   }
 
+  getIslandCols() {
+    // let numbers = Array(this.islandService.getCols()).fill(0,this.islandService.getCols(),this.islandService.getCols()); // [0,1,2,3,4]
+    let numbers = Array.from(Array(this.islandService.getCols()).keys())
+    return numbers;
+
+  }
+
+  getIslandRows(){
+    // let numbers = Array(this.islandService.getRows()).fill(0,this.islandService.getRows(),this.islandService.getRows())
+    let numbers = Array.from(Array(this.islandService.getRows()).keys()) // [0,1,2,3,4]
+    return numbers;
+
+  }
   clearIsland() {
     const dialogRef = this.dialog.open(WarningDialogComponent);
     dialogRef.afterClosed().subscribe((cont) => {

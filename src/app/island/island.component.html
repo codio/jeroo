@@ -15,18 +15,44 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+<div [hidden]="!getToggle()">
+  <canvas name="jerooCanvas" #jerooGameCanvas
+    [className]="editingEnabled ? 'jeroo-island default-cursor' : 'jeroo-island not-allowed-cursor'"
+    (mousedown)="canvasMouseDown($event)" (mouseup)="canvasGestureUp()" (mousemove)="canvasMouseMove($event)"
+    (touchstart)="canvasTapDown($event)" (touchend)="canvasGestureUp()" (touchmove)="canvasTapMove($event)"
+    (panstart)="null">
+  </canvas>
+</div>
+<div [hidden]="getToggle()">
+  <table>
+    <thead>
+    </thead>
+    <tbody>
+      <tr *ngFor="let y of getIslandRows()">
+        <td *ngFor="let x of getIslandCols()">
+          {{islandService.getJeroo(x,y) ? (islandService.getJeroo(x,y).getId()) : islandService.getTile(x,y) }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-<canvas name="jerooCanvas" #jerooGameCanvas [className]="editingEnabled ? 'jeroo-island default-cursor' : 'jeroo-island not-allowed-cursor'" (mousedown)="canvasMouseDown($event)" (mouseup)="canvasGestureUp()" (mousemove)="canvasMouseMove($event)" (touchstart)="canvasTapDown($event)" (touchend)="canvasGestureUp()" (touchmove)="canvasTapMove($event)" (panstart)="null">
-</canvas>
+
 <div fxLayout="column" fxLayoutAlign=" center" fxLayoutGap="10px">
   <div>
     <div *ngIf="mouseRow !== null && mouseColumn !== null; else elseBlock">
       Cursor Location: ({{mouseRow}}, {{mouseColumn}})
     </div>
+
     <ng-template #elseBlock>
       Cursor off of map
     </ng-template>
   </div>
+  <!-- <pre>{{islandService.toString()}}</pre> -->
+
+
+  <button (click)="setToggle()">Toggle View</button>
+
+
   <div>
     <app-jeroo-status></app-jeroo-status>
   </div>

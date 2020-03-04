@@ -70,8 +70,9 @@ export class EditorComponent implements AfterViewInit {
         theme: 'default',
         lineNumbers: true,
         extraKeys: {
-          'Tab': 'defaultTab',
-          'Shift-Tab': 'indentLess',
+          'Tab': false,
+          'Shift-Tab': 'defaultTab',
+		  'Shift-Ctrl-Tab' : 'indentLess',
           'Shift-Ctrl-F': 'indentAuto',
           'Ctrl-/': 'toggleComment',
           'Ctrl-z': 'undo',
@@ -82,7 +83,7 @@ export class EditorComponent implements AfterViewInit {
       this.editor.setOption('autoCloseBrackets', '{}()');
       this.editor.setOption('theme', this.preferences.colorTheme);
       this.editor.getWrapperElement().style.fontSize = `${this.preferences.fontSize}px`;
-      this.editor.setSize(null, 500);
+      this.editor.setSize("100%", null);
       this.editor.refresh();
 
       this.editor.on('change', (editor) => {
