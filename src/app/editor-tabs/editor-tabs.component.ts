@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { AfterViewInit, Component, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { LOCAL_STORAGE, WebStorageService } from 'angular-webstorage-service';
+import { LOCAL_STORAGE, WebStorageService } from 'ngx-webstorage-service';
 import { BytecodeInterpreterService, RuntimeError } from '../bytecode-interpreter/bytecode-interpreter.service';
 import { IslandService } from '../island.service';
 import { MessageService, LoggingMessage, CompilationErrorMessage, RuntimeErrorMessage } from '../message.service';
@@ -95,11 +95,9 @@ export class EditorTabsComponent implements AfterViewInit {
     this.codeService.getCursorPosition().subscribe((position) => {
       this.selectedTabIndex = position.pane;
       const editor = this.getSelectedEditor();
-      if (editor) {
-        editor.refresh();
-        editor.focus();
-        editor.setCursor({ line: position.lnum - 1, ch: position.cnum });
-      }
+      editor?.refresh();
+      editor?.focus();
+      editor?.setCursor({ line: position.lnum - 1, ch: position.cnum });
     });
   }
 
@@ -191,9 +189,9 @@ export class EditorTabsComponent implements AfterViewInit {
   }
 
   private cleanupExecution() {
-    if (this.mainMethodEditor != null && this.extensionMethodsEditor) {
+    if (this.mainMethodEditor != null) {
       this.mainMethodEditor.setReadOnly(false);
-      this.extensionMethodsEditor.setReadOnly(false);
+      this.extensionMethodsEditor?.setReadOnly(false);
       this.unhighlightPreviousLine();
       this.previousInstruction = null;
       this.messageService.clear();
@@ -233,55 +231,35 @@ export class EditorTabsComponent implements AfterViewInit {
     const runtimeError: RuntimeError = e;
     this.messageService.clear();
     this.unhighlightPreviousLine();
-    this.selectedTabIndex = runtimeError.pane_num;
+    this.selectedTabIndex = runtimeError.paneNum;
     const editor = this.getSelectedEditor();
-    if (editor) {
-      editor.highlightErrorLine(runtimeError.line_num);
-      this.messageService.addMessage(new RuntimeErrorMessage(runtimeError.message, runtimeError.pane_num, runtimeError.line_num));
-      this.stopState();
-    }
+    editor?.highlightErrorLine(runtimeError.lineNum);
+    this.messageService.addMessage(new RuntimeErrorMessage(runtimeError.message, runtimeError.paneNum, runtimeError.lineNum));
+    this.stopState();
   }
 
   undo() {
-    const editor = this.getSelectedEditor();
-    if (editor) {
-      editor.undo();
-    }
+    this.getSelectedEditor()?.undo();
   }
 
   redo() {
-    const editor = this.getSelectedEditor();
-    if (editor) {
-      editor.redo();
-    }
+    this.getSelectedEditor()?.redo();
   }
 
   toggleComment() {
-    const editor = this.getSelectedEditor();
-    if (editor) {
-      editor.toggleComment();
-    }
+    this.getSelectedEditor()?.toggleComment();
   }
 
   indentSelection() {
-    const editor = this.getSelectedEditor();
-    if (editor) {
-      editor.indentSelection();
-    }
+    this.getSelectedEditor()?.indentSelection();
   }
 
   unindentSelection() {
-    const editor = this.getSelectedEditor();
-    if (editor) {
-      editor.unindentSelection();
-    }
+    this.getSelectedEditor()?.unindentSelection();
   }
 
   format() {
-    const editor = this.getSelectedEditor();
-    if (editor) {
-      editor.format();
-    }
+    this.getSelectedEditor()?.format();
   }
 
   executingState() {
@@ -292,17 +270,15 @@ export class EditorTabsComponent implements AfterViewInit {
   }
 
   resetState() {
-    if (this.mainMethodEditor && this.extensionMethodsEditor) {
-      this.editorState.reset = true;
-      this.editorState.executing = false;
-      this.editorState.paused = false;
-      this.editorState.stopped = false;
-      this.messageService.clear();
-      this.bytecodeService.reset();
-      this.unhighlightPreviousLine();
-      this.mainMethodEditor.setReadOnly(false);
-      this.extensionMethodsEditor.setReadOnly(false);
-    }
+    this.editorState.reset = true;
+    this.editorState.executing = false;
+    this.editorState.paused = false;
+    this.editorState.stopped = false;
+    this.messageService.clear();
+    this.bytecodeService.reset();
+    this.unhighlightPreviousLine();
+    this.mainMethodEditor?.setReadOnly(false);
+    this.extensionMethodsEditor?.setReadOnly(false);
   }
 
   pauseState() {
@@ -322,12 +298,10 @@ export class EditorTabsComponent implements AfterViewInit {
   onEditorTabIndexChange(index: number) {
     this.selectedTabIndex = index;
     const selectedEditor = this.getSelectedEditor();
-    if (selectedEditor) {
-      setTimeout(() => {
-        selectedEditor.refresh();
-        selectedEditor.focus();
-      });
-    }
+    setTimeout(() => {
+      selectedEditor?.refresh();
+      selectedEditor?.focus();
+    });
   }
 
   getHelpUrl() {
@@ -414,10 +388,9 @@ export class EditorTabsComponent implements AfterViewInit {
   }
 
   clearCode() {
-    if (this.mainMethodEditor && this.extensionMethodsEditor &&
-      !this.mainMethodEditor.isReadOnly() && !this.extensionMethodsEditor.isReadOnly()) {
-      this.mainMethodEditor.setText('');
-      this.extensionMethodsEditor.setText('');
+    if (!this.mainMethodEditor?.isReadOnly() && !this.extensionMethodsEditor?.isReadOnly()) {
+      this.mainMethodEditor?.setText('');
+      this.extensionMethodsEditor?.setText('');
       this.resetCache();
     }
   }

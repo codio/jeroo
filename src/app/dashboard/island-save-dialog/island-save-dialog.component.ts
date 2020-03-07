@@ -44,21 +44,18 @@ export class IslandSaveDialogComponent implements OnInit {
   }
 
   save() {
-    if (this.form) {
-      const islandString = this.islandService.toString();
-      const blob = new Blob([islandString], {
-        type: 'text/plain'
-      });
-      this.saveBlob(blob, `${this.form.value.name}.jev`);
-      this.dialogRef.close();
-    }
+    // TODO: this might need a check to see if the form is valid
+    const islandString = this.islandService.toString();
+    const blob = new Blob([islandString], {
+      type: 'text/plain'
+    });
+    this.saveBlob(blob, `${this.form?.value.name}.jev`);
+    this.dialogRef.close();
   }
 
   private saveBlob(blob: Blob, fileName: string) {
-    if (this.fileSaver) {
-      const fileSaver = this.fileSaver.nativeElement as HTMLAnchorElement;
-      this.fileSaveService.saveBlob(fileSaver, blob, fileName);
-    }
+    const fileSaver = this.fileSaver?.nativeElement as HTMLAnchorElement;
+    this.fileSaveService.saveBlob(fileSaver, blob, fileName);
   }
 
   close() {

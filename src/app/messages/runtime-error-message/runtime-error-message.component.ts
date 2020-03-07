@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Component, Input } from '@angular/core';
 import { RuntimeErrorMessage } from 'src/app/message.service';
-import { CodeService, SelectedTab } from 'src/app/code.service';
+import { CodeService, SelectedTab, SelectedTabUtils } from 'src/app/code.service';
 
 @Component({
   selector: 'app-runtime-error-message',
@@ -35,14 +35,14 @@ export class RuntimeErrorMessageComponent {
     event.preventDefault();
     if (this.runtimeErrorMessage) {
       this.codeService.setCursorPosition({
-        lnum: this.runtimeErrorMessage.line_num,
+        lnum: this.runtimeErrorMessage.lineNum,
         cnum: 0,
-        pane: this.runtimeErrorMessage.pane_num
+        pane: this.runtimeErrorMessage.paneNum
       });
     }
   }
 
   selectedTabToString(selectedTab: SelectedTab) {
-    return SelectedTab.toString(selectedTab);
+    return SelectedTabUtils.toString(selectedTab);
   }
 }

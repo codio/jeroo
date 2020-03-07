@@ -30,7 +30,7 @@ export class PrintService {
     this.router.navigate(['/',
       {
         outlets: {
-          'print': ['print', 'code']
+          print: ['print', 'code']
         }
       }], {
         queryParams: {
@@ -44,7 +44,7 @@ export class PrintService {
     this.router.navigate(['/',
       {
         outlets: {
-          'print': ['print', 'island']
+          print: ['print', 'island']
         }
       }]);
   }

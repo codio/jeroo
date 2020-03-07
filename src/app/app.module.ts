@@ -39,7 +39,6 @@ import {
   faEraser,
   faPrint
 } from '@fortawesome/free-solid-svg-icons';
-import { HotkeyModule } from 'angular2-hotkeys';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -51,7 +50,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MessagesComponent } from './messages/messages.component';
 import { EditorComponent } from './editor/editor.component';
-import { StorageServiceModule } from 'angular-webstorage-service';
+import { StorageServiceModule } from 'ngx-webstorage-service';
 import { DashboardDialogAwardsComponent } from './dashboard/dashboard-dialog-awards/dashboard-dialog-awards.component';
 import { DashboardDialogHistoryComponent } from './dashboard/dashboard-dialog-history/dashboard-dialog-history.component';
 import { DashboardDialogCopyrightComponent } from './dashboard/dashboard-dialog-copyright/dashboard-dialog-copyright.component';
@@ -109,7 +108,6 @@ import { RuntimeErrorMessageComponent } from './messages/runtime-error-message/r
     ReactiveFormsModule,
     FontAwesomeModule,
     StorageServiceModule,
-    HotkeyModule.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent],

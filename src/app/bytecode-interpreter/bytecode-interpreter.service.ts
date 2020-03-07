@@ -23,7 +23,7 @@ import { TileType } from '../tileType';
 import { Subject } from 'rxjs';
 
 export class RuntimeError extends Error {
-  constructor(message: string, public pane_num: number, public line_num: number) {
+  constructor(message: string, public paneNum: number, public lineNum: number) {
     super(message);
   }
 }

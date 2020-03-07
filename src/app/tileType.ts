@@ -23,13 +23,13 @@ export enum TileType {
   Net = 'N'
 }
 
-export namespace TileType {
+export class TileTileUtil {
   /**
    * Convert a character to a TileType.
    * @param char character to convert.
    * @returns Converted tile.
    */
-  export function stringToTileType(char: string) {
+  public static stringToTileType(char: string) {
     if (char === TileType.Grass) {
       return TileType.Grass;
     } else if (char === TileType.Water) {
@@ -42,5 +42,4 @@ export namespace TileType {
       throw new Error('Invalid TileType in island');
     }
   }
-
 }

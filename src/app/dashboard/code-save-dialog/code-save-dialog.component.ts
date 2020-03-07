@@ -63,10 +63,8 @@ export class CodeSaveDialogComponent implements OnInit {
   }
 
   private saveBlob(blob: Blob, fileName: string) {
-    if (this.fileSaver) {
-      const fileSaver = (this.fileSaver.nativeElement as HTMLAnchorElement);
+      const fileSaver = (this.fileSaver?.nativeElement as HTMLAnchorElement);
       this.fileSaveService.saveBlob(fileSaver, blob, fileName);
-    }
   }
 
   close() {

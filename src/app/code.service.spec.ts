@@ -23,7 +23,7 @@ describe('CodeService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('assert genCodeStr generates code correctly', () => {
-    const service: CodeService = TestBed.get(CodeService);
+    const service = TestBed.inject(CodeService);
     const editorCode: EditorCode = {
       extensionsMethodCode: '123\n456',
       mainMethodCode: 'abcde\nfg'
@@ -41,7 +41,7 @@ fg`;
   });
 
   it('assert parseCodeFromStr loads code correctly', () => {
-    const service: CodeService = TestBed.get(CodeService);
+    const service = TestBed.inject(CodeService);
     const code = `@PYTHON
 a = b
 1 = 2

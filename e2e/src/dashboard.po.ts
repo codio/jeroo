@@ -33,7 +33,7 @@ export class DashboardPage {
   getCodeMirrorTest() {
     return browser.executeScript(
       `var editor = document.getElementsByClassName('CodeMirror')[0].CodeMirror; return editor.getValue();`
-    ) as Promise<String>;
+    ) as Promise<string>;
   }
 
   setIslandSize(cols: number, rows: number) {

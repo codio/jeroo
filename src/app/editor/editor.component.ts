@@ -63,46 +63,42 @@ export class EditorComponent implements AfterViewInit {
   constructor(private codemirrorService: CodemirrorService) { }
 
   ngAfterViewInit() {
-    if (this.editorTextArea) {
-      const editorTextArea = this.editorTextArea.nativeElement as HTMLTextAreaElement;
-      this.editor = this.codemirrorService.getCodemirror().fromTextArea(editorTextArea, {
-        mode: 'jeroo-java',
-        theme: 'default',
-        lineNumbers: true,
-        extraKeys: {
-          'Tab': 'defaultTab',
-          'Shift-Tab': 'indentLess',
-          'Shift-Ctrl-F': 'indentAuto',
-          'Ctrl-/': 'toggleComment',
-          'Ctrl-z': 'undo',
-          'Shift-Ctrl-Z': 'redo'
-        }
-      });
-      this.editor.setOption('matchBrackets', true);
-      this.editor.setOption('autoCloseBrackets', '{}()');
-      this.editor.setOption('theme', this.preferences.colorTheme);
-      this.editor.getWrapperElement().style.fontSize = `${this.preferences.fontSize}px`;
-      this.editor.setSize(null, 500);
-      this.editor.refresh();
+    const editorTextArea = this.editorTextArea?.nativeElement as HTMLTextAreaElement;
+    this.editor = this.codemirrorService.getCodemirror().fromTextArea(editorTextArea, {
+      mode: 'jeroo-java',
+      theme: 'default',
+      lineNumbers: true,
+      extraKeys: {
+        Tab: 'defaultTab',
+        'Shift-Tab': 'indentLess',
+        'Shift-Ctrl-F': (editor) => (editor as any).autoIndentAll(),
+        'Ctrl-/': 'toggleComment',
+        'Ctrl-z': 'undo',
+        'Shift-Ctrl-Z': 'redo'
+      }
+    });
+    this.editor.setOption('matchBrackets', true);
+    this.editor.setOption('autoCloseBrackets', '{}()');
+    this.editor.setOption('theme', this.preferences.colorTheme);
+    this.editor.getWrapperElement().style.fontSize = `${this.preferences.fontSize}px`;
+    this.editor.setSize(null, 500);
+    this.editor.refresh();
 
-      this.editor.on('change', (editor) => {
-        this.codeChange.emit(editor.getValue());
-      });
-    }
+    this.editor.on('change', (editor) => {
+      this.codeChange.emit(editor.getValue());
+    });
   }
 
   private setMode(language: SelectedLanguage) {
-    if (this.editor) {
-      if (language === SelectedLanguage.Java) {
-        this.editor.setOption('mode', 'jeroo-java');
-        this.editor.setOption('autoCloseBrackets', '{}()');
-      } else if (language === SelectedLanguage.Vb) {
-        this.editor.setOption('mode', 'jeroo-vb');
-        this.editor.setOption('autoCloseBrackets', '()');
-      } else if (language === SelectedLanguage.Python) {
-        this.editor.setOption('mode', 'jeroo-python');
-        this.editor.setOption('autoCloseBrackets', '()');
-      }
+    if (language === SelectedLanguage.Java) {
+      this.editor?.setOption('mode', 'jeroo-java');
+      this.editor?.setOption('autoCloseBrackets', '{}()');
+    } else if (language === SelectedLanguage.Vb) {
+      this.editor?.setOption('mode', 'jeroo-vb');
+      this.editor?.setOption('autoCloseBrackets', '()');
+    } else if (language === SelectedLanguage.Python) {
+      this.editor?.setOption('mode', 'jeroo-python');
+      this.editor?.setOption('autoCloseBrackets', '()');
     }
   }
 
@@ -115,71 +111,52 @@ export class EditorComponent implements AfterViewInit {
   }
 
   setText(incomingString: string) {
-    if (this.editor) {
-      this.editor.setValue(incomingString);
-    }
+    this.editor?.setValue(incomingString);
   }
 
   undo() {
-    if (this.editor) {
-      this.editor.getDoc().undo();
-    }
+    this.editor?.undo();
   }
 
   redo() {
-    if (this.editor) {
-      this.editor.getDoc().redo();
-    }
+    this.editor?.redo();
   }
 
   toggleComment() {
-    if (this.editor) {
-      this.editor.execCommand('toggleComment');
-    }
+    this.editor?.toggleComment();
   }
 
   indentSelection() {
-    if (this.editor) {
-      this.editor.execCommand('defaultTab');
-    }
+    this.editor?.execCommand('defaultTab');
   }
 
   unindentSelection() {
-    if (this.editor) {
-      this.editor.execCommand('indentLess');
-    }
+    this.editor?.execCommand('indentLess');
   }
 
   format() {
-    const totalLines = (this.editor as any).lineCount();
-    (this.editor as any).autoFormatRange({ line: 0, ch: 0 }, { line: totalLines });
+    (this.editor as any)?.autoIndentAll();
   }
 
   highlightLine(lineNum: number) {
-    if (this.editor) {
-      const line = this.editor.getDoc().getLineHandle(lineNum - 1);
-      if (line) {
-        this.editor.addLineClass(line, 'background', 'activeline-highlight');
-      }
+    const line = this.editor?.getLineHandle(lineNum - 1);
+    if (line) {
+      this.editor?.addLineClass(line, 'background', 'activeline-highlight');
     }
   }
 
   highlightErrorLine(lineNum: number) {
-    if (this.editor) {
-      const line = this.editor.getDoc().getLineHandle(lineNum - 1);
-      if (line) {
-        this.editor.addLineClass(line, 'background', 'errorline-highlight');
-      }
+    const line = this.editor?.getLineHandle(lineNum - 1);
+    if (line) {
+      this.editor?.addLineClass(line, 'background', 'errorline-highlight');
     }
   }
 
   unhighlightLine(lineNum: number) {
-    if (this.editor) {
-      const line = this.editor.getDoc().getLineHandle(lineNum - 1);
-      if (line) {
-        this.editor.removeLineClass(line, 'background', 'activeline-highlight');
-        this.editor.removeLineClass(line, 'background', 'errorline-highlight');
-      }
+    const line = this.editor?.getLineHandle(lineNum - 1);
+    if (line) {
+      this.editor?.removeLineClass(line, 'background', 'activeline-highlight');
+      this.editor?.removeLineClass(line, 'background', 'errorline-highlight');
     }
   }
 
@@ -192,32 +169,22 @@ export class EditorComponent implements AfterViewInit {
   }
 
   setReadOnly(readOnly: boolean) {
-    if (this.editor) {
-      this.editor.setOption('readOnly', readOnly);
-    }
+    this.editor?.setOption('readOnly', readOnly);
   }
 
   refresh() {
-    if (this.editor) {
-      this.editor.refresh();
-    }
+    this.editor?.refresh();
   }
 
   focus() {
-    if (this.editor) {
-      this.editor.focus();
-    }
+    this.editor?.focus();
   }
 
   getCursor() {
-    if (this.editor) {
-      return this.editor.getDoc().getCursor();
-    }
+    return this.editor?.getCursor();
   }
 
   setCursor(newPosition: CodeMirror.Position) {
-    if (this.editor) {
-      return this.editor.getDoc().setCursor(newPosition);
-    }
+    return this.editor?.setCursor(newPosition);
   }
 }

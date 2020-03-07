@@ -49,8 +49,8 @@ export enum SelectedTab {
   Extensions = 1
 }
 
-export namespace SelectedTab {
-  export function toString(selectedTab: SelectedTab) {
+export class SelectedTabUtils {
+  public static toString(selectedTab: SelectedTab) {
     switch (selectedTab) {
       case SelectedTab.Main: return 'Main';
       case SelectedTab.Extensions: return 'Extensions';

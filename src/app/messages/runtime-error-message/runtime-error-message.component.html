@@ -16,4 +16,4 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<pre *ngIf="runtimeErrorMessage" class="runtime-error-message"><a [routerLink]="" (click)="onPositionLinkClick($event)">{{selectedTabToString(runtimeErrorMessage.pane_num)}}:Line {{runtimeErrorMessage.line_num}}</a>:{{runtimeErrorMessage.message}}</pre>
+<pre *ngIf="runtimeErrorMessage" class="runtime-error-message"><a [routerLink]="" (click)="onPositionLinkClick($event)">{{selectedTabToString(runtimeErrorMessage.paneNum)}}:Line {{runtimeErrorMessage.lineNum}}</a>:{{runtimeErrorMessage.message}}</pre>

@@ -21,7 +21,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { CodeService, Themes, EditorPreferences } from 'src/app/code.service';
 import { CodemirrorService } from 'src/app/codemirror/codemirror.service';
-import { LOCAL_STORAGE, WebStorageService } from 'angular-webstorage-service';
+import { LOCAL_STORAGE, WebStorageService } from 'ngx-webstorage-service';
 import { Storage } from 'src/app/storage';
 
 @Component({
@@ -71,8 +71,7 @@ export class EditorPreferencesComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    if (this.editorTextArea) {
-      const editorTextArea = this.editorTextArea.nativeElement;
+      const editorTextArea = this.editorTextArea?.nativeElement;
       const codemirror = this.codeMirrorService.getCodemirror();
       this.editor = codemirror.fromTextArea(editorTextArea, {
         theme: this.codeService.prefrences.colorTheme,
@@ -80,7 +79,6 @@ export class EditorPreferencesComponent implements OnInit, AfterViewInit {
       });
       this.editor.getWrapperElement().style.fontSize = `${this.codeService.prefrences.fontSize}px`;
       this.editor.setSize(600, 200);
-    }
   }
 
   onCloseClick() {
@@ -88,7 +86,7 @@ export class EditorPreferencesComponent implements OnInit, AfterViewInit {
   }
 
   onSaveClick() {
-    if (this.form && this.form.valid) {
+    if (this.form?.valid) {
       this.codeService.prefrences = this.form.value;
       this.storage.set(Storage.Preferences, this.form.value);
     }
