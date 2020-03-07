@@ -30,8 +30,8 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./print-code.component.scss']
 })
 export class PrintCodeComponent implements AfterViewInit {
-  @ViewChild('mainMethodTextArea', { static: false }) mainMethodTextAreaRef: ElementRef | null = null;
-  @ViewChild('extensionMethodTextArea', { static: false }) extensionMethodTextAreaRef: ElementRef | null = null;
+  @ViewChild('mainMethodTextArea') mainMethodTextAreaRef: ElementRef | null = null;
+  @ViewChild('extensionMethodTextArea') extensionMethodTextAreaRef: ElementRef | null = null;
   displayMainMethod = false;
   displayExtensionMethods = false;
   editorCode: EditorCode = {

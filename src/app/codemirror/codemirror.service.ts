@@ -36,9 +36,6 @@ export class CodemirrorService {
     (CodeMirror as any).defineSimpleMode('jeroo-java', javaMode);
     (CodeMirror as any).defineSimpleMode('jeroo-vb', VBMode);
     (CodeMirror as any).defineSimpleMode('jeroo-python', pythonMode);
-    (CodeMirror as any).commands['toggleComment'] = (editor: CodeMirror.Editor) => (editor as any).toggleComment();
-    (CodeMirror as any).commands['undo'] = (editor: CodeMirror.Editor) => editor.getDoc().undo();
-    (CodeMirror as any).commands['redo'] = (editor: CodeMirror.Editor) => editor.getDoc().redo();
     CodeMirror.defineExtension('autoFormatRange', function(this: CodeMirror.Editor, from: CodeMirror.Position, to: CodeMirror.Position) {
       const cm = this;
       const outer = cm.getDoc().getMode();
@@ -46,7 +43,9 @@ export class CodemirrorService {
       const state = (CodeMirror as any).copyState(outer, cm.getTokenAt(from).state);
       const tabSize = cm.getOption('tabSize');
 
-      let out = '', lines = 0, atSol = from.ch === 0;
+      let out = '';
+      let lines = 0;
+      let atSol = from.ch === 0;
       function newline() {
         out += '\n';
         atSol = true;
@@ -57,7 +56,8 @@ export class CodemirrorService {
         const stream = new (CodeMirror as any).StringStream(text[i], tabSize);
         while (!stream.eol()) {
           const inner = CodeMirror.innerMode(outer, state);
-          const style = outer.token(stream, state), cur = stream.current();
+          const style = outer.token(stream, state);
+          const cur = stream.current();
           stream.start = stream.pos;
           if (!atSol || /\S/.test(cur)) {
             out += cur;
@@ -78,22 +78,16 @@ export class CodemirrorService {
         }
       }
 
-      cm.operation(function() {
+      cm.operation(() => {
         cm.getDoc().replaceRange(out, from, to);
         for (let cur = from.line + 1, end = from.line + lines; cur <= end; ++cur) {
           cm.indentLine(cur, 'smart');
         }
       });
     });
-
-    // Applies automatic mode-aware indentation to the specified range
-    CodeMirror.defineExtension('autoIndentRange', function(this: CodeMirror.Editor, from: CodeMirror.Position, to: CodeMirror.Position) {
-      const cmInstance = this;
-      this.operation(function() {
-        for (let i = from.line; i <= to.line; i++) {
-          cmInstance.indentLine(i, 'smart');
-        }
-      });
+    CodeMirror.defineExtension('autoIndentAll', function(this: CodeMirror.Editor) {
+      const totalLines = this.lineCount();
+      (this as any).autoFormatRange({ line: 0, ch: 0 }, { line: totalLines });
     });
   }
 

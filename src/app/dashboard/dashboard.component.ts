@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { Hotkey, HotkeysService } from 'angular2-hotkeys';
+import * as Mousetrap from 'mousetrap';
 import { CacheDialogComponent } from '../cache-dialog/cache-dialog.component';
 import { DashboardDialogAboutComponent } from './dashboard-dialog-about/dashboard-dialog-about.component';
 import { DashboardDialogAwardsComponent } from './dashboard-dialog-awards/dashboard-dialog-awards.component';
@@ -72,75 +72,75 @@ export class DashboardComponent implements AfterViewInit {
 
   constructor(
     private islandService: IslandService,
-    private hotkeysService: HotkeysService,
     private messageService: MessageService,
     private printService: PrintService,
     private selectedTileTypeService: SelectedTileTypeService,
-    public dialog: MatDialog
-  ) {
-    this.hotkeysService.add(new Hotkey('f2', (_event: KeyboardEvent): boolean => {
-      this.onResetClick();
-      return false;
-    }));
-    this.hotkeysService.add(new Hotkey('f3', (_event: KeyboardEvent): boolean => {
-      this.onRunStepwiseClick();
-      return false;
-    }));
-    this.hotkeysService.add(new Hotkey('f4', (_event: KeyboardEvent): boolean => {
-      this.onRunContiniousClick();
-      return false;
-    }));
-    this.hotkeysService.add(new Hotkey('f5', (_event: KeyboardEvent): boolean => {
-      this.onPauseClick();
-      return false;
-    }));
-    this.hotkeysService.add(new Hotkey('f6', (_event: KeyboardEvent): boolean => {
-      this.onStopClick();
-      return false;
-    }));
-    this.hotkeysService.add(new Hotkey('ctrl+shift+n', (_event: KeyboardEvent): boolean => {
-      this.clearIsland();
-      return false;
-    }));
-    this.hotkeysService.add(new Hotkey('ctrl+shift+o', (_event: KeyboardEvent): boolean => {
-      this.openIslandFile();
-      return false;
-    }));
-    this.hotkeysService.add(new Hotkey('ctrl+shift+s', (_event: KeyboardEvent): boolean => {
-      this.saveIsland();
-      return false;
-    }));
-    this.hotkeysService.add(new Hotkey('ctrl+shift+p', (_event: KeyboardEvent): boolean => {
-      this.printIsland();
-      return false;
-    }));
-    this.hotkeysService.add(new Hotkey('f8', (_event: KeyboardEvent): boolean => {
-      window.open(this.getHelpUrl());
-      return false;
-    }));
-    this.hotkeysService.add(new Hotkey('ctrl+n', (_event: KeyboardEvent): boolean => {
-      this.newCodeFile();
-      return false;
-    }));
-    this.hotkeysService.add(new Hotkey('ctrl+o', (_event: KeyboardEvent): boolean => {
-      this.openCodeFile();
-      return false;
-    }));
-    this.hotkeysService.add(new Hotkey('ctrl+s', (_event: KeyboardEvent): boolean => {
-      this.saveCode();
-      return false;
-    }));
-    this.hotkeysService.add(new Hotkey('ctrl+p', (_event: KeyboardEvent): boolean => {
-      this.printCode();
-      return false;
-    }));
-  }
+    public dialog: MatDialog,
+  ) { }
 
   ngAfterViewInit() {
-    if (
-      (this.jerooEditor && this.jerooIsland) &&
-      (this.jerooEditor.hasCachedCode() || this.jerooEditor.hasCachedConfig() || this.jerooIsland.hasCachedIsland())
-    ) {
+    const mousetrap = new Mousetrap(document.body);
+    mousetrap.bind('f2', _event => {
+      this.onResetClick();
+      return false;
+    });
+    mousetrap.bind('f3', _event => {
+      this.onRunStepwiseClick();
+      return false;
+    });
+    mousetrap.bind('f4', _event => {
+      this.onRunContiniousClick();
+      return false;
+    });
+    mousetrap.bind('f5', _event => {
+      this.onPauseClick();
+      return false;
+    });
+    mousetrap.bind('f6', _event => {
+      this.onStopClick();
+      return false;
+    });
+    mousetrap.bind('ctrl+shift+n', _event => {
+      this.clearIsland();
+      return false;
+    });
+    mousetrap.bind('ctrl+shift+o', _event => {
+      this.openIslandFile();
+      return false;
+    });
+    mousetrap.bind('ctrl+shift+s', _event => {
+      this.saveIsland();
+      return false;
+    });
+    mousetrap.bind('ctrl+shift+p', _event => {
+      this.printIsland();
+      return false;
+    });
+    mousetrap.bind('f8', _event => {
+      window.open(this.getHelpUrl());
+      return false;
+    });
+    mousetrap.bind('ctrl+n', _event => {
+      this.newCodeFile();
+      return false;
+    });
+    mousetrap.bind('ctrl+o', _event => {
+      this.openCodeFile();
+      return false;
+    });
+    mousetrap.bind('ctrl+s', _event => {
+      this.saveCode();
+      return false;
+    });
+    mousetrap.bind('ctrl+p', _event => {
+      this.printCode();
+      return false;
+    });
+    mousetrap.bind('ctrl+shift+f', _event => {
+      this.onFormatClick();
+      return false;
+    });
+    if ((this.jerooEditor?.hasCachedCode() || this.jerooEditor?.hasCachedConfig() || this.jerooIsland?.hasCachedIsland())) {
       // setTimeout prevents a console error
       // see: https://github.com/angular/material2/issues/5268
       setTimeout(() => {
@@ -171,16 +171,12 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   newCodeFile() {
-    if (this.jerooEditor) {
-      this.jerooEditor.clearCode();
-    }
+    this.jerooEditor?.clearCode();
   }
 
   openCodeFile() {
-    if (this.codeFileInput) {
-      const codeFileInput = this.codeFileInput.nativeElement as HTMLInputElement;
-      codeFileInput.click();
-    }
+    const codeFileInput = this.codeFileInput?.nativeElement as HTMLInputElement;
+    codeFileInput.click();
   }
 
   codeFileSelected(file: File) {
@@ -188,22 +184,18 @@ export class DashboardComponent implements AfterViewInit {
       const reader = new FileReader();
       reader.readAsText(file, 'UTF-8');
       reader.onload = (readerEvent: any) => {
-        if (this.jerooEditor) {
-          const content: string = readerEvent.target.result;
-          this.jerooEditor.loadCode(content);
-        }
+        const content: string = readerEvent.target.result;
+        this.jerooEditor?.loadCode(content);
       };
     }
   }
 
   saveCode() {
-    if (this.jerooEditor) {
-      const dialogConfig = new MatDialogConfig();
-      dialogConfig.data = {
-        editorCode: this.jerooEditor.getCode()
-      };
-      this.dialog.open(CodeSaveDialogComponent, dialogConfig);
-    }
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      editorCode: this.jerooEditor?.getCode()
+    };
+    this.dialog.open(CodeSaveDialogComponent, dialogConfig);
   }
 
   printCode() {
@@ -216,39 +208,27 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   onUndoClick() {
-    if (this.jerooEditor) {
-      this.jerooEditor.undo();
-    }
+    this.jerooEditor?.undo();
   }
 
   onRedoClick() {
-    if (this.jerooEditor) {
-      this.jerooEditor.redo();
-    }
+    this.jerooEditor?.redo();
   }
 
   onToggleCommentLines() {
-    if (this.jerooEditor) {
-      this.jerooEditor.toggleComment();
-    }
+    this.jerooEditor?.toggleComment();
   }
 
   onIndentSelectionClick() {
-    if (this.jerooEditor) {
-      this.jerooEditor.indentSelection();
-    }
+    this.jerooEditor?.indentSelection();
   }
 
   onUnindentSelectionClick() {
-    if (this.jerooEditor) {
-      this.jerooEditor.unindentSelection();
-    }
+    this.jerooEditor?.unindentSelection();
   }
 
   onFormatClick() {
-    if (this.jerooEditor) {
-      this.jerooEditor.format();
-    }
+    this.jerooEditor?.format();
   }
 
   onEditorPreferenceClick() {
@@ -256,41 +236,41 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   onRunStepwiseClick() {
-    if (this.jerooEditor && this.jerooIsland && !this.runBtnDisabled()) {
-      const context = this.jerooIsland.getContext();
+    if (!this.runBtnDisabled()) {
+      const context = this.jerooIsland?.getContext();
       if (context) {
-        this.jerooEditor.runStepwise(context);
+        this.jerooEditor?.runStepwise(context);
       }
     }
   }
 
   onRunContiniousClick() {
-    if (this.jerooEditor && this.jerooIsland && !this.runBtnDisabled()) {
-      const context = this.jerooIsland.getContext();
+    if (!this.runBtnDisabled()) {
+      const context = this.jerooIsland?.getContext();
       if (context) {
-        this.jerooEditor.runContinious(context);
+        this.jerooEditor?.runContinious(context);
       }
     }
   }
 
   onResetClick() {
-    if (this.jerooEditor && this.jerooIsland && !this.resetBtnDisabled()) {
-      this.jerooEditor.resetState();
-      this.jerooIsland.resetState();
+    if (!this.resetBtnDisabled()) {
+      this.jerooEditor?.resetState();
+      this.jerooIsland?.resetState();
     }
   }
 
   onPauseClick() {
-    if (this.jerooEditor && !this.pauseBtnDisabled()) {
-      this.jerooEditor.pauseState();
+    if (!this.pauseBtnDisabled()) {
+      this.jerooEditor?.pauseState();
       const message = new LoggingMessage('Program paused by user');
       this.messageService.addMessage(message);
     }
   }
 
   onStopClick() {
-    if (this.jerooEditor && !this.stopBtnDisabled()) {
-      this.jerooEditor.stopState();
+    if (!this.stopBtnDisabled()) {
+      this.jerooEditor?.stopState();
       this.messageService.clear();
       const message = new LoggingMessage('Program stopped by user');
       this.messageService.addMessage(message);
@@ -307,16 +287,14 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   clearIsland() {
-    if (this.jerooIsland && this.jerooEditorState.reset) {
-      this.jerooIsland.clearIsland();
+    if (this.jerooEditorState.reset) {
+      this.jerooIsland?.clearIsland();
     }
   }
 
   openIslandFile() {
-    if (this.islandFileInput) {
-      const islandFileInput = this.islandFileInput.nativeElement as HTMLInputElement;
-      islandFileInput.click();
-    }
+    const islandFileInput = this.islandFileInput?.nativeElement as HTMLInputElement;
+    islandFileInput.click();
   }
 
   islandFileSelected(file: File) {
@@ -324,12 +302,10 @@ export class DashboardComponent implements AfterViewInit {
       const reader = new FileReader();
       reader.readAsText(file, 'UTF-8');
       reader.onload = (readerEvent: any) => {
-        if (this.jerooIsland) {
-          const content: string = readerEvent.target.result;
-          this.islandService.genIslandFromString(content);
-          this.jerooIsland.redraw();
-          this.jerooIsland.saveInLocal(content);
-        }
+        const content: string = readerEvent.target.result;
+        this.islandService.genIslandFromString(content);
+        this.jerooIsland?.redraw();
+        this.jerooIsland?.saveInLocal(content);
       };
     }
   }

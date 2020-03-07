@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { AfterViewInit, Component, ElementRef, Inject, Input, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { LOCAL_STORAGE, WebStorageService } from 'angular-webstorage-service';
+import { LOCAL_STORAGE, WebStorageService } from 'ngx-webstorage-service';
 import { BytecodeInterpreterService } from '../bytecode-interpreter/bytecode-interpreter.service';
 import { DialogData, ChnageIslandSizeDialogComponent } from '../change-island-size-dialog/change-island-size-dialog.component';
 import { IslandService } from '../island.service';
@@ -48,14 +48,12 @@ export class JerooIslandComponent implements AfterViewInit {
   ) { }
 
   ngAfterViewInit() {
-    if (this.jerooGameCanvas) {
-      // check if something has been stored in the cache to load if it has
-      this.canvas = this.jerooGameCanvas.nativeElement as HTMLCanvasElement;
-      this.context = this.canvas.getContext('2d');
-      this.canvas.width = this.canvas.offsetWidth;
-      this.canvas.height = this.canvas.offsetHeight;
-      this.redraw();
-    }
+    // check if something has been stored in the cache to load if it has
+    this.canvas = this.jerooGameCanvas?.nativeElement as HTMLCanvasElement;
+    this.context = this.canvas.getContext('2d');
+    this.canvas.width = this.canvas.offsetWidth;
+    this.canvas.height = this.canvas.offsetHeight;
+    this.redraw();
   }
 
   loadIslandFromCache() {

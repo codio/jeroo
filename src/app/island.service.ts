@@ -20,7 +20,7 @@ import { Injectable } from '@angular/core';
 import { fromEvent } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Jeroo } from './bytecode-interpreter/jeroo';
-import { TileType } from './tileType';
+import { TileType, TileTileUtil } from './tileType';
 
 @Injectable({
   providedIn: 'root'
@@ -336,7 +336,7 @@ export class IslandService {
           }
           this.setStaticTile(0, row, TileType.Water);
           for (let col = 1; col < cols + 1; col++) {
-            const char = TileType.stringToTileType(lines[row - 1].charAt(col - 1));
+            const char = TileTileUtil.stringToTileType(lines[row - 1].charAt(col - 1));
             this.setStaticTile(col, row, char);
           }
           this.setStaticTile(cols + 1, row, TileType.Water);

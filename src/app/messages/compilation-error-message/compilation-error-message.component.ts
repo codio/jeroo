@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************** */
 
 import { Component, Input } from '@angular/core';
-import { CodeService, SelectedTab } from 'src/app/code.service';
+import { CodeService, SelectedTab, SelectedTabUtils } from 'src/app/code.service';
 import { CompilationErrorMessage } from 'src/app/message.service';
 
 @Component({
@@ -43,6 +43,6 @@ export class CompilationErrorMessageComponent {
   }
 
   selectedTabToString(selectedTab: SelectedTab) {
-    return SelectedTab.toString(selectedTab);
+    return SelectedTabUtils.toString(selectedTab);
   }
 }

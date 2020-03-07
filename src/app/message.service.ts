@@ -29,7 +29,7 @@ export class CompilationErrorMessage {
 }
 
 export class RuntimeErrorMessage {
-  constructor(public message: string, public pane_num: number, public line_num: number) {}
+  constructor(public message: string, public paneNum: number, public lineNum: number) {}
 }
 
 @Injectable({

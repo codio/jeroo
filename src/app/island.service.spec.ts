@@ -27,34 +27,34 @@ describe('IslandService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('get and set correctly find entities', () => {
-    const service: IslandService = TestBed.get(IslandService);
+    const service = TestBed.inject(IslandService);
     service.setStaticTile(1, 1, TileType.Water);
     expect(service.getTile(1, 1)).toBe(TileType.Water);
   });
 
   it('get and set jeroo gets and sets a jeroo', () => {
-    const service: IslandService = TestBed.get(IslandService);
+    const service = TestBed.inject(IslandService);
     const jeroo = new Jeroo(0, 1, 1, 1, CardinalDirection.East);
     service.setJeroo(1, 1, jeroo);
     expect(service.getJeroo(1, 1)).toBe(jeroo);
   });
 
   it('assert getTile prioritizes dynamic map', () => {
-    const service: IslandService = TestBed.get(IslandService);
+    const service = TestBed.inject(IslandService);
     service.setDynamicTile(0, 0, TileType.Water);
     service.setStaticTile(0, 0, TileType.Net);
     expect(service.getTile(0, 0)).toBe(TileType.Water);
   });
 
   it('reset map resets map', () => {
-    const service: IslandService = TestBed.get(IslandService);
+    const service = TestBed.inject(IslandService);
     service.setStaticTile(1, 1, TileType.Water);
     service.resetIsland();
     expect(service.getTile(1, 1)).toBe(TileType.Grass);
   });
 
   it('reset jeroos resets the jeroo array', () => {
-    const service: IslandService = TestBed.get(IslandService);
+    const service = TestBed.inject(IslandService);
     const jeroo = new Jeroo(0, 1, 1, 1, CardinalDirection.East);
     service.setJeroo(1, 1, jeroo);
     service.resetJeroos();
@@ -62,7 +62,7 @@ describe('IslandService', () => {
   });
 
   it('toString correctly converts map to a string', () => {
-    const service: IslandService = TestBed.get(IslandService);
+    const service = TestBed.inject(IslandService);
     service.setStaticTile(6, 6, TileType.Water);
     service.setStaticTile(2, 3, TileType.Flower);
     service.setStaticTile(24, 24, TileType.Net);
@@ -97,7 +97,7 @@ describe('IslandService', () => {
   });
 
   it('genMapFromString correctly loads a map from a string', () => {
-    const service: IslandService = TestBed.get(IslandService);
+    const service = TestBed.inject(IslandService);
     const map =
       'W......................W\n' +
       '........................\n' +
@@ -138,7 +138,7 @@ describe('IslandService', () => {
   });
 
   it('genMapFromString correctly adjusts size of map', () => {
-    const service: IslandService = TestBed.get(IslandService);
+    const service = TestBed.inject(IslandService);
     const map =
       '.....\n' +
       '.....\n' +
@@ -149,7 +149,7 @@ describe('IslandService', () => {
   });
 
   it('genMapFromString throws error on unknown TileType', () => {
-    const service: IslandService = TestBed.get(IslandService);
+    const service = TestBed.inject(IslandService);
     const oldRows = service.getRows();
     const oldCols = service.getCols();
     const map =
@@ -161,7 +161,7 @@ describe('IslandService', () => {
   });
 
   it('genMapFromString throws error on jagged map', () => {
-    const service: IslandService = TestBed.get(IslandService);
+    const service = TestBed.inject(IslandService);
     const oldRows = service.getRows();
     const oldCols = service.getCols();
     const map =
@@ -173,7 +173,7 @@ describe('IslandService', () => {
   });
 
   it('genMapFromString empty string creates empty map', () => {
-    const service: IslandService = TestBed.get(IslandService);
+    const service = TestBed.inject(IslandService);
     const map = '';
     service.genIslandFromString(map);
     expect(service.getCols()).toBe(0);
@@ -181,7 +181,7 @@ describe('IslandService', () => {
   });
 
   it('genMapFromString sets map size correctly', () => {
-    const service: IslandService = TestBed.get(IslandService);
+    const service = TestBed.inject(IslandService);
     service.setRows(30);
     service.setCols(20);
     const map = service.toString();
