@@ -42,6 +42,7 @@ build-angular:
     - node --version
     - yarn --version
     - yarn install
+    - yarn ng --version
     - yarn stylelint src/*.scss
     - yarn lint
 # remove the --base-href when the sites moves into the "/" directory
@@ -65,5 +66,6 @@ test-angular:
     - yarn --version
     - yarn install
     - yarn webdriver-manager update
+    - yarn ng --version
     - yarn test --no-watch --no-progress --browsers=FirefoxHeadlessCI
     - yarn e2e --protractor-config=e2e/protractor-ci.conf.js
