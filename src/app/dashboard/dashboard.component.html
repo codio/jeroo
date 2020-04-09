@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <mat-sidenav-container>
   <mat-sidenav #sidenav role="navigation">
     <mat-nav-list>
-      <button mat-menu-item [matMenuTriggerFor]="file">Source File</button>
+      <button class = "navBtn" mat-menu-item [matMenuTriggerFor]="file">Source File</button>
       <button mat-menu-item [matMenuTriggerFor]="edit">Source Edit</button>
       <button mat-menu-item [matMenuTriggerFor]="run">Run</button>
       <button mat-menu-item [matMenuTriggerFor]="speed">Run Speed</button>
@@ -46,13 +46,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <div fxLayout="column" fxLayoutAlign="center center">
               <button id="sourceFileMenu" mat-button [matMenuTriggerFor]="file">Source File</button>
               <div>
-                <button mat-icon-button matTooltip="New File" [disabled]="!editorEditingEnabled()" (click)="newCodeFile()">
+                <button mat-icon-button matTooltip="New File" [disabled]="!editorEditingEnabled()" (click)="newCodeFile()" aria-label="text">
                   <fa-icon icon="file"></fa-icon>
                 </button>
-                <button mat-icon-button matTooltip="Open File" [disabled]="!editorEditingEnabled()" (click)="openCodeFile()">
+                <button mat-icon-button matTooltip="Open File" [disabled]="!editorEditingEnabled()" (click)="openCodeFile()" aria-label="text">
                   <fa-icon icon="folder"></fa-icon>
                 </button>
-                <button mat-icon-button matTooltip="Save" (click)="saveCode()">
+                <button mat-icon-button matTooltip="Save" (click)="saveCode()" aria-label="text">
                   <fa-icon icon="save"></fa-icon>
                 </button>
               </div>
@@ -60,10 +60,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <div fxLayout="column" fxLayoutAlign="center center">
               <button id="sourceEditMenu" mat-button [matMenuTriggerFor]="edit">Source Edit</button>
               <div>
-                <button id="undoButton" mat-icon-button matTooltip="Undo" [disabled]="!editorEditingEnabled()" (click)="onUndoClick()">
+                <button id="undoButton" mat-icon-button matTooltip="Undo" [disabled]="!editorEditingEnabled()" (click)="onUndoClick()" aria-label="text">
                   <fa-icon icon="undo"></fa-icon>
                 </button>
-                <button id="redoButton" mat-icon-button matTooltip="Redo" [disabled]="!editorEditingEnabled()" (click)="onRedoClick()">
+                <button id="redoButton" mat-icon-button matTooltip="Redo" [disabled]="!editorEditingEnabled()" (click)="onRedoClick()" aria-label="text">
                   <fa-icon icon="redo"></fa-icon>
                 </button>
               </div>
@@ -71,19 +71,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <div fxLayout="column" fxLayoutAlign="center center">
               <button id="runMenu" mat-button [matMenuTriggerFor]="run">Run</button>
               <div>
-                <button id="resetButton" mat-icon-button matTooltip="Reset the program and the island" [disabled]="resetBtnDisabled()" (click)="onResetClick()">
+                <button id="resetButton" mat-icon-button matTooltip="Reset the program and the island" [disabled]="resetBtnDisabled()" (click)="onResetClick()" aria-label="text">
                   <fa-icon icon="step-backward"></fa-icon>
                 </button>
-                <button id="runButton" mat-icon-button matTooltip="Run the program step-by-step" [disabled]="runBtnDisabled()" (click)="onRunStepwiseClick()">
+                <button id="runButton" mat-icon-button matTooltip="Run the program step-by-step" [disabled]="runBtnDisabled()" (click)="onRunStepwiseClick()" aria-label="text">
                   <fa-icon icon="play"></fa-icon>
                 </button>
-                <button id="runContiniousButton" mat-icon-button matTooltip="Run the program continuously" [disabled]="runBtnDisabled()" (click)="onRunContiniousClick()">
+                <button id="runContiniousButton" mat-icon-button matTooltip="Run the program continuously" [disabled]="runBtnDisabled()" (click)="onRunContiniousClick()" aria-label="text">
                   <fa-icon icon="step-forward"></fa-icon>
                 </button>
-                <button id="pauseButton" mat-icon-button matTooltip="Pause a currently running program" [disabled]="pauseBtnDisabled()" (click)="onPauseClick()">
+                <button id="pauseButton" mat-icon-button matTooltip="Pause a currently running program" [disabled]="pauseBtnDisabled()" (click)="onPauseClick()" aria-label="text">
                   <fa-icon icon="pause"></fa-icon>
                 </button>
-                <button id="stopButton" mat-icon-button matTooltip="Stop a running program" [disabled]="stopBtnDisabled()" (click)="onStopClick()">
+                <button id="stopButton" mat-icon-button matTooltip="Stop a running program" [disabled]="stopBtnDisabled()" (click)="onStopClick()" aria-label="text">
                   <fa-icon icon="stop"></fa-icon>
                 </button>
               </div>
@@ -97,16 +97,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <div fxLayout="column" fxLayoutAlign="center center">
               <button id="islandFileMenu" mat-button [matMenuTriggerFor]="islandFile">Island File</button>
               <div>
-                <button id="newIslandButton" mat-icon-button matTooltip="Create new island layout" [disabled]="!islandEditingEnabled()" (click)="clearIsland()">
+                <button id="newIslandButton" mat-icon-button matTooltip="Create new island layout" [disabled]="!islandEditingEnabled()" (click)="clearIsland()" aria-label="text">
                   <fa-icon icon="eraser"></fa-icon>
                 </button>
-                <button mat-icon-button matTooltip="Open an island file" [disabled]="!islandEditingEnabled()" (click)="openIslandFile()">
+                <button mat-icon-button matTooltip="Open an island file" [disabled]="!islandEditingEnabled()" (click)="openIslandFile()" aria-label="text">
                   <fa-icon icon="folder"></fa-icon>
                 </button>
-                <button mat-icon-button matTooltip="Save the island to a file" (click)="saveIsland()">
+                <button mat-icon-button matTooltip="Save the island to a file" (click)="saveIsland()" aria-label="text">
                   <fa-icon icon="save"></fa-icon>
                 </button>
-                <button mat-icon-button matTooltip="Print the island layout" (click)="printIsland()">
+                <button mat-icon-button matTooltip="Print the island layout" (click)="printIsland()" aria-label="text">
                   <fa-icon icon="print"></fa-icon>
                 </button>
               </div>
@@ -212,7 +212,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           <div mat-menu-item (click)="onTileTypeRadioClick(0)">
             <mat-radio-button [value]="0">
               <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="3px">
-                <img src="assets/images/grass.jpg" alt="grass" height="20">
+                <img src="assets/images/grass.jpg" alt="grass image" height="20">
                 <span>Grass</span>
               </div>
             </mat-radio-button>
@@ -220,7 +220,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           <div mat-menu-item (click)="onTileTypeRadioClick(1)">
             <mat-radio-button [value]="1">
               <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="3px">
-                <img src="assets/images/water.jpg" alt="water" height="20">
+                <img src="assets/images/water.jpg" alt="water image" height="20">
                 <span>Water</span>
               </div>
             </mat-radio-button>
@@ -228,7 +228,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           <div mat-menu-item (click)="onTileTypeRadioClick(2)">
             <mat-radio-button [value]="2">
               <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="3px">
-                <img src="assets/images/flower.jpg" alt="flower" height="20">
+                <img src="assets/images/flower.jpg" alt="flower image" height="20">
                 <span>Flower</span>
               </div>
             </mat-radio-button>
