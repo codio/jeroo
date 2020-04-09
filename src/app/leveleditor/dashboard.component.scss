@@ -1,4 +1,4 @@
-<!--
+/* **********************************************************************
 Jeroo is a programming language learning tool for students and teachers.
 Copyright (C) <2019>  <Benjamin Konz>
 
@@ -14,8 +14,35 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
+********************************************************************** */
 
-<router-outlet></router-outlet>
-<router-outlet name="print"></router-outlet>
+mat-sidenav-container, mat-sidenav-content, mat-sidenav {
+  height: 100%;
+}
 
+mat-sidenav {
+  width: 250px;
+}
+
+.toolbar {
+  padding-top: 8px;
+  padding-bottom: 2px;
+}
+
+.menu-text {
+  padding-left: 10px;
+}
+
+.shortcut-tip {
+  float: right;
+  color: #999999;
+  padding-left: 10px;
+}
+
+.jeroo-island-container {
+  height: 600px;
+}
+
+label {
+	visibility: hidden;
+}

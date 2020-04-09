@@ -16,6 +16,16 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<router-outlet></router-outlet>
-<router-outlet name="print"></router-outlet>
-
+<h1 mat-dialog-title>Save Code</h1>
+<mat-dialog-content [formGroup]="form">
+  <mat-form-field>
+    <mat-label>File Name</mat-label>
+    <input matInput placeholder="name" formControlName="name">
+    <span matSuffix>.jsc</span>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button (click)="close()">Close</button>
+  <button mat-raised-button color="primary" type="submit" (click)="save()">Save</button>
+</mat-dialog-actions>
+<a #fileSaver class="invisible"></a>

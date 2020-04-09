@@ -34,7 +34,8 @@ export class IslandService {
   private jeroos: (Jeroo | null)[] = [];
   // used to store the map before any runtime edits
   private staticTileMap: TileType[] = [];
-
+  private column: number | null = null;
+  private row: number | null = null;
   constructor() {
     this.resetIsland();
     this.resetDynamicIsland();
@@ -76,6 +77,11 @@ export class IslandService {
     }
   }
 
+  setCursorPosition(x: number, y: number) {
+    this.column = x;
+    this.row = y;
+
+  }
   /**
    * @returns The number of rows in the island.
    */
@@ -257,6 +263,8 @@ export class IslandService {
 
   renderTile(context: CanvasRenderingContext2D, imageAtlas: HTMLImageElement, tileType: TileType, col: number, row: number) {
     const offset = this.tileTypeToNumber(tileType);
+
+
     context.drawImage(
       imageAtlas,
       offset * this.tsize,
@@ -268,6 +276,15 @@ export class IslandService {
       this.tsize,
       this.tsize
     );
+    if (col === this.column && row === this.row) {
+      context.strokeStyle = 'red';
+      context.fillRect(
+        (col + 1) * this.tsize,
+        (row + 1) * this.tsize,
+        this.tsize,
+        this.tsize
+      );
+    }
   }
 
   private tileTypeToNumber(tileType: TileType) {

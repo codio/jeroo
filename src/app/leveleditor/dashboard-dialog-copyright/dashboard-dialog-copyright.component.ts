@@ -1,4 +1,4 @@
-<!--
+/* **********************************************************************
 Jeroo is a programming language learning tool for students and teachers.
 Copyright (C) <2019>  <Benjamin Konz>
 
@@ -14,8 +14,22 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
+********************************************************************** */
 
-<router-outlet></router-outlet>
-<router-outlet name="print"></router-outlet>
+import { Component } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 
+@Component({
+  selector: 'app-dashboard-dialog-copyright',
+  templateUrl: './dashboard-dialog-copyright.component.html',
+  styleUrls: ['./dashboard-dialog-copyright.component.scss']
+})
+export class DashboardDialogCopyrightComponent {
+
+  constructor(
+    public dialogRef: MatDialogRef<DashboardDialogCopyrightComponent>) {}
+
+  onCloseClick(): void {
+    this.dialogRef.close();
+  }
+}

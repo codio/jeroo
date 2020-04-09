@@ -83,7 +83,7 @@ export class EditorComponent implements AfterViewInit {
       this.editor.setOption('autoCloseBrackets', '{}()');
       this.editor.setOption('theme', this.preferences.colorTheme);
       this.editor.getWrapperElement().style.fontSize = `${this.preferences.fontSize}px`;
-      this.editor.setSize("100%", null);
+      this.editor.setSize('100%', null);
       this.editor.refresh();
 
       this.editor.on('change', (editor) => {

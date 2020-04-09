@@ -1,0 +1,51 @@
+<!--
+Jeroo is a programming language learning tool for students and teachers.
+Copyright (C) <2019>  <Benjamin Konz>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<h1 mat-dialog-title>Editor Preferences</h1>
+<mat-dialog-content [formGroup]="form">
+  <div fxLayout="column" fxLayoutGap="10px">
+    <div>
+      <mat-form-field>
+        <input type="number" matInput placeholder="Font Size" formControlName="fontSize">
+        <mat-error>
+          Value must be between 1 and 30
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
+        <mat-label>Color Theme</mat-label>
+        <mat-select formControlName="colorTheme">
+          <mat-option *ngFor="let theme of colorThemes;" [value]="theme">
+            {{theme | titlecase}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <mat-divider></mat-divider>
+    <textarea #editor>Jeroo is a programming learning tool
+for teachers and students!
+
+abcdefghijklmnopqrstuvwxyz 0123456789 (){}[]
+ABCDEFGHIJKLMNOPQRSTUVWXYZ +-*/= .,;:!? #&$%@|^</textarea>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="onCloseClick()">Close</button>
+  <button type="submit" mat-raised-button [disabled]="!form || !form.valid" (click)="onSaveClick()">Save</button>
+</mat-dialog-actions>

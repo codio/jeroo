@@ -49,6 +49,7 @@ import { MaterialModule } from './material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { LevelEditorComponent } from './leveleditor/dashboard.component';
 import { MessagesComponent } from './messages/messages.component';
 import { EditorComponent } from './editor/editor.component';
 import { StorageServiceModule } from 'angular-webstorage-service';
@@ -76,6 +77,7 @@ import { RuntimeErrorMessageComponent } from './messages/runtime-error-message/r
   declarations: [
     AppComponent,
     DashboardComponent,
+    LevelEditorComponent,
     JerooIslandComponent,
     ChnageIslandSizeDialogComponent,
     MessagesComponent,

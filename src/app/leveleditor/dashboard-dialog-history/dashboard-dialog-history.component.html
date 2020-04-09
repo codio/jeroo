@@ -1,0 +1,83 @@
+<!--
+Jeroo is a programming language learning tool for students and teachers.
+Copyright (C) <2019>  <Benjamin Konz>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<h1 mat-dialog-title><b>Jeroo's History</b></h1>
+<div mat-dialog-content>
+  <div>
+    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
+      <div fxFlex="100">
+        <b>Early 1970's -- LOGO Turtles</b>
+        <ul>
+          <li><p>
+            Dr. Seymour papert of MIT had elementary students writing
+            programs to control the movements of turtle robots.
+          </p></li>
+        </ul>
+        <b>Late 1970's -- Karel The Robot</b>
+        <ul>
+          <li><p>
+            Dr. Richard Pattis developed Karel the Robot as a learning tool.
+            Students write program to move Karel around his virtual world,
+            and have him interact with his environment.
+          </p></li>
+        </ul>
+        <b>1990 -- Jessica</b>
+        <ul>
+          <li><p>
+            Lai Kwan Tong's master's project at Illinois State University
+            was Jessica, a derivative of Karel. Jessica introduced
+            the metaphor and basic GUI layout that is used in Jeroo.
+            Jessica was used for several years at Illinois State.
+          </p></li>
+        </ul>
+        <b>1999-2001 -- The Snipe Project</b>
+        <ul>
+          <li><p>
+            Student project teams at Northwest Missouri State University
+            specifed and developed a full prototype for a java-based successor to Jessica.
+            Students:
+            &#09;Erman Ayvaz, Time Bell, Brian Dorn, Brett Graves, John Otte, Michael Parneley, Jolaine Zweifel
+
+          </p></li>
+        </ul>
+        <b>2002 -- Jeroo</b>
+        <ul>
+          <li><p>
+            Using the Snipe project as a starting point, Dean Sanders and
+            Brian Dorn specified, designed, and implemented the first
+            version of Jeroo. They are coninually revising and updating
+            Jeroo to meet the needs of the growing community of users.
+          </p></li>
+        </ul>
+        <b>2019 -- Jeroo Web</b>
+        <ul>
+          <li><p>
+            Using the Jeroo project from 2002. Ben Konz, Calean Bryan,
+            Thomas Connole, and John Adam have implemented the first version
+            of a web based Jeroo. Ocaml was used to create the compiler. Angular
+            was used for the web framework. Items added to the jeroo program
+            are syntax highlighting, and jeroo board size editablity.
+          </p></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button name="closeHistoryButton" mat-raised-button color="primary" (click)="onCloseClick()">Close</button>
+</div>

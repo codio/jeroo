@@ -1,0 +1,299 @@
+<!--
+Jeroo is a programming language learning tool for students and teachers.
+Copyright (C) <2019>  <Benjamin Konz>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<mat-sidenav-container>
+  <mat-sidenav #sidenav role="navigation">
+    <mat-nav-list>
+      <button mat-menu-item [matMenuTriggerFor]="islandFile">Island File</button>
+      <button mat-menu-item [matMenuTriggerFor]="islandEdit">Island Edit</button>
+      <button mat-menu-item [matMenuTriggerFor]="help">Help</button>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <!--Toolbar Area-->
+    <mat-toolbar color="primary" class="toolbar">
+      <mat-toolbar-row>
+        <div fxLayout="row" fxLayoutAlign="none center" fxLayoutGap="3px" fxHide.gt-sm>
+          <button mat-icon-button (click)="sidenav.toggle()">
+            <fa-icon icon="bars"></fa-icon>
+          </button>
+          <a href="https://jeroo.org"><img src="assets/JerooLogo.png" alt="Jeroo Logo" /></a>
+        </div>
+        <div fxLayout="row" fxHide.lt-md>
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <a href="https://jeroo.org"><img src="assets/JerooLogo.png" alt="Jeroo Logo" /></a>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="center start" class="toolbar">
+            
+            <div fxLayout="column" fxLayoutAlign="center center">
+              <button id="islandFileMenu" mat-button [matMenuTriggerFor]="islandFile">Island File</button>
+              <div>
+                <button aria-label="test" id="newIslandButton" mat-icon-button matTooltip="Create new island layout" [disabled]="!islandEditingEnabled()" (click)="clearIsland()">
+                  <fa-icon icon="eraser"></fa-icon>
+                </button>
+                <button mat-icon-button matTooltip="Open an island file" [disabled]="!islandEditingEnabled()" (click)="openIslandFile()">
+                  <fa-icon icon="folder"></fa-icon>
+                </button>
+                <button mat-icon-button matTooltip="Save the island to a file" (click)="saveIsland()">
+                  <fa-icon icon="save"></fa-icon>
+                </button>
+                <button mat-icon-button matTooltip="Print the island layout" (click)="printIsland()">
+                  <fa-icon icon="print"></fa-icon>
+                </button>
+              </div>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="center center">
+              <button id="islandEditMenu" mat-button [matMenuTriggerFor]="islandEdit">Island Edit</button>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="center center">
+              <button id="helpMenu" mat-button [matMenuTriggerFor]="help">Help</button>
+            </div>
+          </div>
+        </div>
+      </mat-toolbar-row>
+    </mat-toolbar>
+    <!-- Menu Properties -->
+    <mat-menu #file="matMenu">
+      <ng-template matMenuContent>
+        <button mat-menu-item [disabled]="!editorEditingEnabled()" (click)="newCodeFile()">
+          <fa-icon icon="file"></fa-icon><span class="menu-text">New</span><span class="shortcut-tip">Ctrl+N</span>
+        </button>
+        <button mat-menu-item [disabled]="!editorEditingEnabled()" (click)="openCodeFile()">
+          <fa-icon icon="folder"></fa-icon><span class="menu-text">Open</span><span class="shortcut-tip">Ctrl+O</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="saveCode()">
+          <fa-icon icon="save"></fa-icon><span class="menu-text">Save</span><span class="shortcut-tip">Ctrl+S</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="printCode()">
+          <fa-icon icon="folder-open"></fa-icon><span class="menu-text">Print</span><span class="shortcut-tip">Ctrl+P</span>
+        </button>
+      </ng-template>
+    </mat-menu>
+    <mat-menu #edit="matMenu">
+      <ng-template matMenuContent>
+        <button id="undoMenuItem" mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onUndoClick()">
+          <fa-icon icon="undo"></fa-icon><span class="menu-text">Undo Last Edit</span><span class="shortcut-tip">Ctrl+Z</span>
+        </button>
+        <button id="redoMenuItem" mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onRedoClick()">
+          <fa-icon icon="redo"></fa-icon><span class="menu-text">Redo Last Undo</span><span class="shortcut-tip">Ctrl+Shift+Z</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button id="commentMenuItem" mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onToggleCommentLines()">Comment Lines<span class="shortcut-tip">Ctrl+/</span></button>
+        <mat-divider></mat-divider>
+        <button id="formatMenuItem" mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onFormatClick()">Format<span class="shortcut-tip">Ctrl+Shift+F</span></button>
+        <button id="indentMenuItem" mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onIndentSelectionClick()">Indent Selection<span class="shortcut-tip">Tab</span></button>
+        <button id="unindentMenuItem" mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onUnindentSelectionClick()">Un-Indent Selection<span class="shortcut-tip">Shift+Tab</span></button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="onEditorPreferenceClick()">Set Preferences</button>
+      </ng-template>
+    </mat-menu>
+    <mat-menu #run="matMenu">
+      <ng-template matMenuContent>
+        <button id="resetMenuItem" mat-menu-item [disabled]="resetBtnDisabled()" (click)="onResetClick()">
+          <fa-icon icon="step-backward"></fa-icon><span class="menu-text">Reset<span class="shortcut-tip">F2</span></span>
+        </button>
+        <button id="runMenuItem" mat-menu-item [disabled]="runBtnDisabled()" (click)="onRunStepwiseClick()">
+          <fa-icon icon="play"></fa-icon><span class="menu-text">Run Stepwise<span class="shortcut-tip">F3</span></span>
+        </button>
+        <button id="runContiniousMenuItem" mat-menu-item [disabled]="runBtnDisabled()" (click)="onRunContiniousClick()">
+          <fa-icon icon="step-forward"></fa-icon><span class="menu-text">Run Continuously<span class="shortcut-tip">F4</span></span>
+        </button>
+        <button id="pauseMenuItem" mat-menu-item [disabled]="pauseBtnDisabled()" (click)="onPauseClick()">
+          <fa-icon icon="pause"></fa-icon><span class="menu-text">Pause<span class="shortcut-tip">F5</span></span>
+        </button>
+        <button id="stopMenuItem" mat-menu-item [disabled]="stopBtnDisabled()" (click)="onStopClick()">
+          <fa-icon icon="stop"></fa-icon><span class="menu-text">Stop Run<span class="shortcut-tip">F6</span></span>
+        </button>
+      </ng-template>
+    </mat-menu>
+    <mat-menu #speed="matMenu">
+      <ng-template matMenuContent>
+        <mat-radio-group id="speedIndex" [(ngModel)]="speedIndex">
+          <div mat-menu-item *ngFor="let speedRadio of speedRadios" id="speed{{speedRadio.value}}Btn" (click)="onSpeedRadioClick(speedRadio.value)">
+            <mat-radio-button [value]="speedRadio.value">
+              <span>{{ speedRadio.name }}</span>
+            </mat-radio-button>
+          </div>
+        </mat-radio-group>
+      </ng-template>
+    </mat-menu>
+    <mat-menu #islandFile="matMenu">
+      <ng-template matMenuContent>
+        <button id="newIslandMenuItem" mat-menu-item [disabled]="!islandEditingEnabled()" (click)="clearIsland()">
+          <fa-icon icon="eraser"></fa-icon><span class="menu-text">New<span class="shortcut-tip">Ctrl+Shift+N</span></span>
+        </button>
+        <button mat-menu-item [disabled]="!islandEditingEnabled()" (click)="openIslandFile()">
+          <fa-icon icon="folder"></fa-icon><span class="menu-text">Open<span class="shortcut-tip">Ctrl+Shift+O</span></span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="saveIsland()">
+          <fa-icon icon="save"></fa-icon><span class="menu-text">Save<span class="shortcut-tip">Ctrl+Shift+S</span></span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="printIsland()">
+          <fa-icon icon="print"></fa-icon><span class="menu-text">Print<span class="shortcut-tip">Ctrl+Shift+P</span></span>
+        </button>
+      </ng-template>
+    </mat-menu>
+    <mat-menu #islandEdit="matMenu">
+      <ng-template matMenuContent>
+        <mat-radio-group [(ngModel)]="tileTypeIndex">
+          <div mat-menu-item (click)="onTileTypeRadioClick(0)">
+            <mat-radio-button [value]="0">
+              <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="3px">
+                <img src="assets/images/grass.jpg" alt="grass" height="20">
+                <span>Grass</span>
+              </div>
+            </mat-radio-button>
+          </div>
+          <div mat-menu-item (click)="onTileTypeRadioClick(1)">
+            <mat-radio-button [value]="1">
+              <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="3px">
+                <img src="assets/images/water.jpg" alt="water" height="20">
+                <span>Water</span>
+              </div>
+            </mat-radio-button>
+          </div>
+          <div mat-menu-item (click)="onTileTypeRadioClick(2)">
+            <mat-radio-button [value]="2">
+              <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="3px">
+                <img src="assets/images/flower.jpg" alt="flower" height="20">
+                <span>Flower</span>
+              </div>
+            </mat-radio-button>
+          </div>
+          <div mat-menu-item (click)="onTileTypeRadioClick(3)">
+            <mat-radio-button [value]="3">
+              <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="3px">
+                <img src="assets/images/net.jpg" alt="net" height="20">
+                <span>Net</span>
+              </div>
+            </mat-radio-button>
+          </div>
+          <mat-divider></mat-divider>
+          <div>
+            <button id="changeIslandSize" mat-menu-item [disabled]="!islandEditingEnabled()" (click)="changeIslandSize()">
+              <span class="menu-text">Change Island Size</span>
+            </button>
+          </div>
+        </mat-radio-group>
+      </ng-template>
+    </mat-menu>
+    <mat-menu #help="matMenu">
+      <ng-template matMenuContent>
+        <a mat-menu-item routerLink="{{getHelpUrl()}}" target="_blank"><span>Langauge Summary<span class="shortcut-tip">F8</span></span></a>
+        <mat-divider ></mat-divider>
+        <a mat-menu-item routerLink="{{getTutorialUrl()}}" target="_blank"><span>Getting Started Tutorial</span></a>
+        <mat-divider></mat-divider>
+        <a id="bugReportItem" mat-menu-item href="mailto:support@jeroo.org?cc=bdorn@unomaha.edu,benkonz@protonmail.com&subject=Enter the issue title&body=Enter the issue description">
+          File Bug Report
+        </a>
+        <mat-divider></mat-divider>
+        <a id="aboutMenuItem" mat-menu-item (click)="openAboutJeroo()">About Jeroo</a>
+        <a id="awardsMenuItem" mat-menu-item (click)="openAwards()">Awards Received</a>
+        <a id="historyMenuItem" mat-menu-item (click)="openHistory()">Jeroo's History</a>
+        <a id="copyrightMenuItem" mat-menu-item (click)="openCopyright()">Copyright Notice</a>
+      </ng-template>
+    </mat-menu>
+    <!--Text tabs Area-->
+    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
+      <!--Island Area-->
+      <div class="jeroo-island-container" fxFlex="40">
+        <app-jeroo-island #jerooIsland [editingEnabled]="islandEditingEnabled()"></app-jeroo-island>
+      </div>
+      <div>
+        <mat-radio-group [(ngModel)]="tileTypeIndex">
+          <div mat-menu-item (click)="onTileTypeRadioClick(0)">
+            <mat-radio-button [value]="0">
+              <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="3px">
+                <img src="assets/images/grass.jpg" alt="" height="20">
+                <span>Grass</span>
+              </div>
+            </mat-radio-button>
+          </div>
+          <div mat-menu-item (click)="onTileTypeRadioClick(1)">
+            <mat-radio-button [value]="1">
+              <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="3px">
+                <img src="assets/images/water.jpg" alt="water image" height="20">
+                <span>Water</span>
+              </div>
+            </mat-radio-button>
+          </div>
+          <div mat-menu-item (click)="onTileTypeRadioClick(2)">
+            <mat-radio-button [value]="2">
+              <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="3px">
+                <img src="assets/images/flower.jpg" alt="flower image" height="20">
+                <span>Flower</span>
+              </div>
+            </mat-radio-button>
+          </div>
+          <div mat-menu-item (click)="onTileTypeRadioClick(3)">
+            <mat-radio-button [value]="3">
+              <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="3px">
+                <img src="assets/images/net.jpg" alt="net image" height="20">
+                <span>Net</span>
+              </div>
+            </mat-radio-button>
+          </div>
+          <mat-divider></mat-divider>
+          <div>
+            <button id="changeIslandSize" mat-menu-item [disabled]="!islandEditingEnabled()" (click)="changeIslandSize()">
+              <span class="menu-text">Change Island Size</span>
+            </button>
+          </div>
+        </mat-radio-group>
+      </div>
+      <div>
+        <mat-radio-group [(ngModel)]="editTypeIndex">
+          <div mat-menu-item><!--(click)="onTileTypeRadioClick(0)">-->
+            <mat-radio-button [value]="0">
+              <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="3px">
+                
+                <span>Click</span>
+              </div>
+            </mat-radio-button>
+          </div>
+          <div mat-menu-item >
+            <mat-radio-button [value]="1">
+              <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="3px">
+               
+                <span>Area</span>
+              </div>
+            </mat-radio-button>
+          </div>
+          <div mat-menu-item >
+            <mat-radio-button [value]="2">
+              <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="3px">
+                
+                <span>Fill</span>
+              </div>
+            </mat-radio-button>
+          </div>
+          
+          <mat-divider></mat-divider>
+        </mat-radio-group>
+      </div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+<!-- Island file input -->
+<input #islandFileInput class="invisible" type="file" file-accept="jev" (change)="islandFileSelected($event.target.files[0])" />
+<!-- code file input -->
+<input #codeFileInput class="invisible" type="file" file-accept="jsc" (change)="codeFileSelected($event.target.files[0])" />

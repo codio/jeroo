@@ -29,8 +29,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </thead>
     <tbody>
       <tr *ngFor="let y of getIslandRows()">
-        <td *ngFor="let x of getIslandCols()">
-          {{islandService.getJeroo(x,y) ? (islandService.getJeroo(x,y).getId()) : islandService.getTile(x,y) }}</td>
+        <td *ngFor="let x of getIslandCols()" title="test" attr.aria-label>
+          <div role="navigation" attr.aria-label="{{x}} {{y}}">
+            {{islandService.getJeroo(x,y) ? (islandService.getJeroo(x,y).getId()) : islandService.getTile(x,y)}}
+          </div>
+          </td>
       </tr>
     </tbody>
   </table>
