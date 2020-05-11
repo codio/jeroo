@@ -21,7 +21,8 @@ import { IslandService } from '../island.service';
 import { Jeroo } from './jeroo';
 import { TileType } from '../tileType';
 import { Subject } from 'rxjs';
-
+import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { CardinalDirection } from './direction';
 export class RuntimeError extends Error {
   constructor(message: string, public pane_num: number, public line_num: number) {
     super(message);
@@ -40,7 +41,9 @@ export class BytecodeInterpreterService {
   private pcStack: Array<number> = [];
   private jerooChangeSource = new Subject<void>();
   jerooChange$ = this.jerooChangeSource.asObservable();
+  constructor(private liveAnnouncer: LiveAnnouncer) {
 
+  }
   executeInstructionsUntilLNumChanges(instructions: Array<Instruction>, islandService: IslandService) {
     if (this.validInstruction(instructions)) {
       const prevInstruction = this.getCurrentInstruction(instructions);
@@ -57,6 +60,7 @@ export class BytecodeInterpreterService {
 
   validInstruction(instructions: Array<Instruction>) {
     return this.pc < instructions.length;
+
   }
 
   getCurrentInstruction(instructions: Array<Instruction>) {
@@ -132,6 +136,8 @@ export class BytecodeInterpreterService {
 
           this.jerooArray[command.a] = jeroo;
           matService.setJeroo(jeroo.getX(), jeroo.getY(), jeroo);
+          this.liveAnnouncer.announce('Jeroo ' + this.jerooMap[jeroo.getId()] + ' created at '
+            + (jeroo.getX() - 1) + ' ' + (jeroo.getY() - 1));
         } catch (e) {
           throw new RuntimeError(e.message, 0, command.f);
         }
@@ -141,15 +147,21 @@ export class BytecodeInterpreterService {
         const direction = command.a;
         const jeroo = this.getCurrentJeroo();
         jeroo.turn(direction);
+        this.liveAnnouncer.announce('Jeroo ' + this.jerooMap[jeroo.getId()] + ' at ' + (jeroo.getX() - 1) + ' ' + (jeroo.getY() - 1) + ' turned ' + CardinalDirection[jeroo.getDirection()]);
         this.jerooChangeSource.next();
         break;
       }
       case 'HOP': {
         try {
+
           const currentJeroo = this.getCurrentJeroo();
+          const x = currentJeroo.getX();
+          const y = currentJeroo.getY();
           for (let n = 0; n < command.a; n++) {
             currentJeroo.hop(matService);
           }
+          this.liveAnnouncer.announce('Jeroo ' + this.jerooMap[currentJeroo.getId()] + ' hopped from '
+            + x + ' ' + y + ' to ' + (currentJeroo.getX() - 1) + ' ' + (currentJeroo.getY() - 1));
         } catch (e) {
           throw new RuntimeError(e.message, command.e, command.f);
         } finally {
@@ -158,21 +170,30 @@ export class BytecodeInterpreterService {
         break;
       }
       case 'TOSS': {
+        const jeroo = this.getCurrentJeroo();
         this.getCurrentJeroo().toss(matService);
+        this.liveAnnouncer.announce('Jeroo ' + this.jerooMap[jeroo.getId()] + ' at ' + (jeroo.getX() - 1) + ' ' + (jeroo.getY() - 1)
+          + ' tossed a flower ' + CardinalDirection[jeroo.getDirection()] + '. ' + jeroo.getNumFlowers() + ' flowers left');
         break;
       }
       case 'PLANT': {
+        const jeroo = this.getCurrentJeroo();
         this.getCurrentJeroo().plant(matService);
+        this.liveAnnouncer.announce('Jeroo ' + this.jerooMap[jeroo.getId()] + ' at ' + (jeroo.getX() - 1) + ' ' + (jeroo.getY() - 1) + ' planted a flower. ' + jeroo.getNumFlowers() + ' flowers left');
         break;
       }
       case 'GIVE': {
         const direction = command.a;
+        const jeroo = this.getCurrentJeroo();
         this.getCurrentJeroo().give(direction, matService);
+        this.liveAnnouncer.announce('Jeroo ' + this.jerooMap[jeroo.getId()] + ' at ' + (jeroo.getX() - 1) + ' ' + (jeroo.getY() - 1) + ' gave a flower ' + CardinalDirection[jeroo.getDirection()] + '. ' + jeroo.getNumFlowers() + ' flowers left');
         break;
       }
       case 'PICK': {
+        const jeroo = this.getCurrentJeroo();
         this.getCurrentJeroo().pick(matService);
         this.jerooChangeSource.next();
+        this.liveAnnouncer.announce('Jeroo ' + this.jerooMap[jeroo.getId()] + ' at ' + (jeroo.getX() - 1) + ' ' + (jeroo.getY() - 1) + ' picked a flower. ' + jeroo.getNumFlowers() + ' flowers left');
         break;
       }
       case 'TRUE': {
