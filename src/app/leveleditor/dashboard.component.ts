@@ -62,7 +62,7 @@ export class LevelEditorComponent implements AfterViewInit {
   private tileTypes = [TileType.Grass, TileType.Water, TileType.Flower, TileType.Net];
   // set the default selected tile to whatever is in the service
   tileTypeIndex = this.tileTypes.indexOf(this.selectedTileTypeService.selectedTileType);
-
+  editTypeIndex = 0;
   jerooEditorState: EditorState = {
     reset: true,
     executing: false,
@@ -170,6 +170,13 @@ export class LevelEditorComponent implements AfterViewInit {
     }
   }
 
+
+  undoLevelEdit() {
+    if (this.jerooIsland) {
+      this.jerooIsland.undo();
+    }
+
+  }
   newCodeFile() {
     if (this.jerooEditor) {
       this.jerooEditor.clearCode();
@@ -404,5 +411,11 @@ export class LevelEditorComponent implements AfterViewInit {
 
   onTileTypeRadioClick(tileTypeIndex: number) {
     this.selectedTileTypeService.selectedTileType = this.tileTypes[tileTypeIndex];
+  }
+  onEditTypeRadioClick(tileTypeIndex: number) {
+    if (this.jerooIsland) {
+      this.jerooIsland.setEditType(tileTypeIndex);
+    }
+
   }
 }

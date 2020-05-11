@@ -32,3 +32,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   margin-left: auto;
   margin-right: auto;
 }
+
+.hidden {
+position:absolute;
+left:-10000px;
+top:auto;
+width:1px;
+height:1px;
+overflow:hidden;
+}

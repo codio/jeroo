@@ -25,7 +25,7 @@ import { IslandService } from '../island.service';
 import { Storage } from '../storage';
 import { WarningDialogComponent } from '../warning-dialog/warning-dialog.component';
 import { SelectedTileTypeService } from '../selected-tile-type.service';
-
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 @Component({
   selector: 'app-jeroo-island',
   templateUrl: './island.component.html',
@@ -37,26 +37,209 @@ export class JerooIslandComponent implements AfterViewInit {
 
   mouseRow: number | null = null;
   mouseColumn: number | null = null;
+  selectionRow = 0;
+  selectionColumn = 0;
   private canvas: HTMLCanvasElement | null = null;
   private context: CanvasRenderingContext2D | null = null;
   private mouseDown = false;
-  private toggle = true;
-
-  constructor(private islandService: IslandService, private dialog: MatDialog,
+  private toggleView = true;
+  private toggleKeyboard = false;
+  private lastIslandEdit = this.islandService.toString();
+  private editType = 0;
+  private areaCornerSelected = false;
+  private cornerRow = 0;
+  private cornerCol = 0;
+  private filling = false;
+  constructor(private islandService: IslandService, private liveAnnouncer: LiveAnnouncer, private dialog: MatDialog,
     public bytecodeService: BytecodeInterpreterService,
     private selectedTileTypeService: SelectedTileTypeService,
     @Inject(LOCAL_STORAGE) private storage: WebStorageService
   ) { }
 
 
-  getToggle() {
-    return this.toggle;
+  getToggleView() {
+    return this.toggleView;
   }
 
-  setToggle() {
-    
-    this.toggle = !this.toggle;
+  setToggleView() {
+
+    this.toggleView = !this.toggleView;
   }
+
+  getToggleKeyboard() {
+    return this.toggleKeyboard;
+  }
+
+  setToggleKeyboard() {
+
+    this.toggleKeyboard = !this.toggleKeyboard;
+    if (this.toggleKeyboard) {
+      if (this.jerooGameCanvas) {
+        this.jerooGameCanvas.nativeElement.focus();
+        this.liveAnnouncer.announce('Keyboard controls enabled');
+      }
+    } else {
+      this.liveAnnouncer.announce('Keyboard controls disabled');
+    }
+  }
+
+  cursorUp() {
+    if (this.selectionRow > 0) {
+      this.selectionRow -= 1;
+      this.islandService.setSelectionPosition(this.selectionColumn, this.selectionRow);
+      if (this.context) {
+        this.islandService.render(this.context);
+      }
+    }
+  }
+  cursorDown() {
+    if (this.selectionRow < this.islandService.getRows() - 3) {
+      this.selectionRow += 1;
+      this.islandService.setSelectionPosition(this.selectionColumn, this.selectionRow);
+      if (this.context) {
+        this.islandService.render(this.context);
+      }
+
+    }
+  }
+  cursorLeft() {
+    if (this.selectionColumn > 0) {
+      this.selectionColumn -= 1;
+      this.islandService.setSelectionPosition(this.selectionColumn, this.selectionRow);
+      if (this.context) {
+        this.islandService.render(this.context);
+      }
+    }
+  }
+
+  cursorRight() {
+    if (this.selectionColumn < this.islandService.getCols() - 3) {
+      this.selectionColumn += 1;
+      this.islandService.setSelectionPosition(this.selectionColumn, this.selectionRow);
+      if (this.context) {
+        this.islandService.render(this.context);
+      }
+    }
+  }
+  cursorEnter() {
+    if (this.canvas && this.context) { // If the canvas and context are initialized
+      if (this.editingEnabled && this.selectedTileTypeService) { // If editing is enabled and the selectedTileTypeService is initialized
+        if (this.editType === 0) { // If the editor is in single tile mode
+          if (this.islandService.getStaticTile(this.selectionColumn + 1, this.selectionRow + 1)
+            !== this.selectedTileTypeService.selectedTileType) { // If the tile selected is different from the tile to be edited
+            this.islandService.setStaticTile(this.selectionColumn + 1, this.selectionRow + 1,
+              this.selectedTileTypeService.selectedTileType);
+            this.islandService.render(this.context);
+          }
+        } else if (this.editType === 1) {
+          if (this.areaCornerSelected) {
+            this.lastIslandEdit = this.islandService.toString();
+            const top = this.cornerRow > this.selectionRow ? this.selectionRow : this.cornerRow;
+            const bottom = this.cornerRow < this.selectionRow ? this.selectionRow : this.cornerRow;
+            const left = this.cornerCol > this.selectionColumn ? this.selectionColumn : this.cornerCol;
+            const right = this.cornerCol < this.selectionColumn ? this.selectionColumn : this.cornerCol;
+            for (let row = top; row <= bottom; row++) {
+              for (let col = left; col <= right; col++) {
+                this.islandService.setStaticTile(col + 1, row + 1,
+                  this.selectedTileTypeService.selectedTileType);
+              }
+            }
+            this.islandService.render(this.context);
+            this.areaCornerSelected = false;
+          } else {
+            this.cornerCol = this.selectionColumn;
+            this.cornerRow = this.selectionRow;
+            this.areaCornerSelected = true;
+          }
+        } else if (this.editType === 2) {
+          if (!this.filling) {
+            this.floodFill(this.selectionRow + 1, this.selectionColumn + 1);
+            this.islandService.render(this.context);
+          }
+
+        }
+      }
+    }
+  }
+  setEditType(tileTypeIndex: number) {
+    this.editType = tileTypeIndex;
+  }
+  undo() {
+    if (this.canvas && this.context) {
+      this.islandService.genIslandFromString(this.lastIslandEdit);
+      this.islandService.render(this.context);
+    }
+  }
+
+  floodFill(tileRow: number, tileCol: number) {
+    this.filling = true;
+    const cols = this.islandService.getCols();
+    const rows = this.islandService.getRows();
+    const queue = new Array<CoordinateType>();
+    if (!(tileRow === undefined || tileCol === undefined)) {
+      queue.push({ row: tileRow, col: tileCol });
+    }
+
+    const target = this.islandService.getStaticTile(tileCol, tileRow);
+    if (target === this.selectedTileTypeService.selectedTileType) {
+      this.filling = false;
+      return;
+    }
+    if (tileCol > 0 && tileRow > 0 && tileCol < cols - 1 && tileRow < rows - 1) {
+      if (this.islandService.getStaticTile(tileCol, tileRow) === target) {
+        this.islandService.setStaticTile(tileCol, tileRow, this.selectedTileTypeService.selectedTileType);
+      }
+
+    }
+    while (queue.length !== 0) {
+      let newCol = 0;
+      let newRow = 0;
+      const newThing = queue.shift();
+      if (newThing !== undefined) {
+        if (!(newThing.col === undefined || newThing.row === undefined)) {
+          newCol = newThing.col;
+          newRow = newThing.row;
+        }
+      }
+
+      if (!(newCol === undefined || newRow === undefined)) {
+        if (newCol + 1 > 0 && newRow > 0 && newCol + 1 < cols - 1 && newRow < rows - 1) {
+          if (this.islandService.getStaticTile(newCol + 1, newRow) === target) {
+            this.islandService.setStaticTile(newCol + 1, newRow, this.selectedTileTypeService.selectedTileType);
+            queue.push({ row: newRow, col: newCol + 1 });
+          }
+
+        }
+
+        if (newCol > 0 && newRow - 1 > 0 && newCol < cols - 1 && newRow - 1 < rows - 1) {
+          if (this.islandService.getStaticTile(newCol, newRow - 1) === target) {
+            this.islandService.setStaticTile(newCol, newRow - 1, this.selectedTileTypeService.selectedTileType);
+            queue.push({ row: newRow - 1, col: newCol });
+          }
+
+        }
+
+        if (newCol - 1 > 0 && newRow > 0 && newCol - 1 < cols - 1 && newRow < rows - 1) {
+          if (this.islandService.getStaticTile(newCol - 1, newRow) === target) {
+            this.islandService.setStaticTile(newCol - 1, newRow, this.selectedTileTypeService.selectedTileType);
+            queue.push({ row: newRow, col: newCol - 1 });
+          }
+
+        }
+
+        if (newCol > 0 && newRow + 1 > 0 && newCol < cols - 1 && newRow + 1 < rows - 1) {
+          if (this.islandService.getStaticTile(newCol, newRow + 1) === target) {
+            this.islandService.setStaticTile(newCol, newRow + 1, this.selectedTileTypeService.selectedTileType);
+            queue.push({ row: newRow + 1, col: newCol });
+          }
+
+        }
+      }
+
+    }
+    this.filling = false;
+  }
+
   ngAfterViewInit() {
     if (this.jerooGameCanvas) {
       // check if something has been stored in the cache to load if it has
@@ -116,6 +299,17 @@ export class JerooIslandComponent implements AfterViewInit {
     }
   }
 
+
+  getJerooNameOnTile(col: number, row: number) {
+    const jeroo = this.islandService.getJeroo(col, row);
+    if (jeroo !== null) {
+      return 'Jeroo' + this.bytecodeService.jerooMap[jeroo.getId()];
+    } else {
+      return null;
+    }
+
+  }
+
   getIslandCols() {
     // let numbers = Array(this.islandService.getCols()).fill(0,this.islandService.getCols(),this.islandService.getCols()); // [0,1,2,3,4]
     const numbers = Array.from(Array(this.islandService.getCols()).keys());
@@ -123,7 +317,7 @@ export class JerooIslandComponent implements AfterViewInit {
 
   }
 
-  getIslandRows(){
+  getIslandRows() {
     // let numbers = Array(this.islandService.getRows()).fill(0,this.islandService.getRows(),this.islandService.getRows())
     const numbers = Array.from(Array(this.islandService.getRows()).keys()); // [0,1,2,3,4]
     return numbers;
@@ -167,7 +361,10 @@ export class JerooIslandComponent implements AfterViewInit {
   }
 
   canvasMouseMove(event: MouseEvent) {
-    this.updateScreenFromMouseEvent(event);
+    if (!(this.mouseDown && this.editType === 1)) {
+      this.updateScreenFromMouseEvent(event);
+    }
+
   }
 
   canvasTapMove(event: TouchEvent) {
@@ -204,16 +401,54 @@ export class JerooIslandComponent implements AfterViewInit {
       // update the mouse locations
       this.mouseColumn = tileCol - 1;
       this.mouseRow = tileRow - 1;
-      this.islandService.setCursorPosition(this.mouseColumn, this.mouseRow);
+
       if (tileCol > 0 && tileRow > 0
         && tileCol < cols - 1 && tileRow < rows - 1) {
         // update the col and row
+        if (this.mouseDown) {
+          this.selectionColumn = tileCol - 1;
+          this.selectionRow = tileRow - 1;
+          this.islandService.setSelectionPosition(this.selectionColumn, this.selectionRow);
+          this.islandService.render(this.context);
+        }
+
         if (this.editingEnabled && this.mouseDown && this.selectedTileTypeService) {
           // only re-render if we change the map
-          if (this.islandService.getStaticTile(tileCol, tileRow) !== this.selectedTileTypeService.selectedTileType) {
-            this.islandService.setStaticTile(tileCol, tileRow, this.selectedTileTypeService.selectedTileType);
-            this.islandService.render(this.context);
+
+          if (this.editType === 0) {
+            if (this.islandService.getStaticTile(tileCol, tileRow) !== this.selectedTileTypeService.selectedTileType) {
+              this.lastIslandEdit = this.islandService.toString();
+              this.islandService.setStaticTile(tileCol, tileRow, this.selectedTileTypeService.selectedTileType);
+              this.islandService.render(this.context);
+            }
+          } else if (this.editType === 1) {
+            if (this.areaCornerSelected) {
+              this.lastIslandEdit = this.islandService.toString();
+              const top = this.cornerRow > this.selectionRow ? this.selectionRow : this.cornerRow;
+              const bottom = this.cornerRow < this.selectionRow ? this.selectionRow : this.cornerRow;
+              const left = this.cornerCol > this.selectionColumn ? this.selectionColumn : this.cornerCol;
+              const right = this.cornerCol < this.selectionColumn ? this.selectionColumn : this.cornerCol;
+              for (let row = top; row <= bottom; row++) {
+                for (let col = left; col <= right; col++) {
+                  this.islandService.setStaticTile(col + 1, row + 1,
+                    this.selectedTileTypeService.selectedTileType);
+                }
+              }
+              this.islandService.render(this.context);
+              this.areaCornerSelected = false;
+            } else {
+              this.cornerCol = this.selectionColumn;
+              this.cornerRow = this.selectionRow;
+              this.areaCornerSelected = true;
+            }
+          } else if (this.editType === 2) {
+            if (!this.filling) {
+              this.floodFill(this.selectionRow + 1, this.selectionColumn + 1);
+              this.islandService.render(this.context);
+            }
+
           }
+
         }
       } else {
         // off the island
@@ -249,3 +484,4 @@ export class JerooIslandComponent implements AfterViewInit {
     this.redraw();
   }
 }
+export interface CoordinateType { col: number; row: number; }

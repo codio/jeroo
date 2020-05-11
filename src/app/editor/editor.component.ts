@@ -71,12 +71,12 @@ export class EditorComponent implements AfterViewInit {
         lineNumbers: true,
         extraKeys: {
           'Tab': false,
-          'Shift-Tab': 'defaultTab',
-		  'Shift-Ctrl-Tab' : 'indentLess',
+          'Shift-Tab': 'indentLess',
           'Shift-Ctrl-F': 'indentAuto',
           'Ctrl-/': 'toggleComment',
           'Ctrl-z': 'undo',
-          'Shift-Ctrl-Z': 'redo'
+          'Shift-Ctrl-Z': 'redo',
+          'Shift-Ctrl-L': false
         }
       });
       this.editor.setOption('matchBrackets', true);
@@ -85,10 +85,24 @@ export class EditorComponent implements AfterViewInit {
       this.editor.getWrapperElement().style.fontSize = `${this.preferences.fontSize}px`;
       this.editor.setSize('100%', null);
       this.editor.refresh();
-
       this.editor.on('change', (editor) => {
         this.codeChange.emit(editor.getValue());
+        if (this.editor != null) {
+          this.editor.setOption('extraKeys', {
+            Tab: 'defaultTab',
+            'Shift-Tab': 'indentLess'
+          });
+          this.editor.setOption('extraKeys', {
+            'Shift-Ctrl-L': function (cm) {
+              cm.setOption('extraKeys', {
+                Tab: false,
+                'Shift-Tab': false
+              });
+            }
+          });
+        }
       });
+
     }
   }
 

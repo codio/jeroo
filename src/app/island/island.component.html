@@ -15,48 +15,89 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<div [hidden]="!getToggle()">
-  <canvas name="jerooCanvas" #jerooGameCanvas
+<div [hidden]="!getToggleView()">
+  <canvas name="jerooCanvas" #jerooGameCanvas role="application"
     [className]="editingEnabled ? 'jeroo-island default-cursor' : 'jeroo-island not-allowed-cursor'"
     (mousedown)="canvasMouseDown($event)" (mouseup)="canvasGestureUp()" (mousemove)="canvasMouseMove($event)"
     (touchstart)="canvasTapDown($event)" (touchend)="canvasGestureUp()" (touchmove)="canvasTapMove($event)"
-    (panstart)="null">
+    (panstart)="null" attr.aria-label="Graphical representation of level. Screenreader friendly representation is an invisible table">
   </canvas>
 </div>
-<div [hidden]="getToggle()">
+<div class="hidden" attr.aria-label="Screenreader friendly representation of level">
   <table>
     <thead>
     </thead>
     <tbody>
       <tr *ngFor="let y of getIslandRows()">
-        <td *ngFor="let x of getIslandCols()" title="test" attr.aria-label>
-          <div role="navigation" attr.aria-label="{{x}} {{y}}">
-            {{islandService.getJeroo(x,y) ? (islandService.getJeroo(x,y).getId()) : islandService.getTile(x,y)}}
+        <td *ngFor="let x of getIslandCols()" title="test">
+          <div>
+            Column {{y-1}} Row {{x-1}} Type {{this.islandService.getNameOfTile(y,x)}} {{getJerooNameOnTile(y,x)}}
+            <!--  {{islandService.getJeroo(x,y) ? (islandService.getJeroo(x,y).getId()) : islandService.getTile(x,y)}} -->
           </div>
-          </td>
+        </td>
       </tr>
     </tbody>
   </table>
 </div>
 
-
 <div fxLayout="column" fxLayoutAlign=" center" fxLayoutGap="10px">
   <div>
     <div *ngIf="mouseRow !== null && mouseColumn !== null; else elseBlock">
-      Cursor Location: ({{mouseRow}}, {{mouseColumn}})
+      <div>
+        Cursor Location: ({{mouseRow}}, {{mouseColumn}})
+      </div>
+      <div>
+        Selection Location: ({{selectionRow}}, {{selectionColumn}})
+      </div>
+
     </div>
 
     <ng-template #elseBlock>
-      Cursor off of map
+      <div>
+        Cursor off of map
+      </div>
+      <div>
+        Selection Location: ({{selectionRow}}, {{selectionColumn}})
+      </div>
+
     </ng-template>
   </div>
-  <!-- <pre>{{islandService.toString()}}</pre> -->
 
 
-  <button (click)="setToggle()">Toggle View</button>
 
+  <!-- 
 
+    <button (click)="setToggleView()">Toggle View</button>
+
+    <button (click)="setToggleKeyboard()">Toggle Keyboard</button>
+  -->
+  <!--
   <div>
-    <app-jeroo-status></app-jeroo-status>
+    <button mat-icon-button (click)="cursorUp()">
+      <fa-icon icon="arrow-up"></fa-icon>
+    </button>
+  </div>
+  <div>
+    <button mat-icon-button (click)="cursorLeft()">
+      <fa-icon icon="arrow-left"></fa-icon>
+    </button>
+    <button mat-icon-button (click)="cursorEnter()">
+      <fa-icon icon="pencil-alt"></fa-icon>
+    </button>
+    <button mat-icon-button (click)="cursorRight()">
+      <fa-icon icon="arrow-right"></fa-icon>
+    </button>
+  </div>
+  <div>
+    <button mat-icon-button (click)="cursorDown()">
+      <fa-icon icon="arrow-down"></fa-icon>
+    </button>
   </div>
 </div>
+-->
+
+  <div>
+    <div>
+      <app-jeroo-status></app-jeroo-status>
+    </div>
+  </div>

@@ -34,8 +34,8 @@ export class IslandService {
   private jeroos: (Jeroo | null)[] = [];
   // used to store the map before any runtime edits
   private staticTileMap: TileType[] = [];
-  private column: number | null = null;
-  private row: number | null = null;
+  private selectionCol = 0;
+  private selectionRow = 0;
   constructor() {
     this.resetIsland();
     this.resetDynamicIsland();
@@ -77,10 +77,10 @@ export class IslandService {
     }
   }
 
-  setCursorPosition(x: number, y: number) {
-    this.column = x;
-    this.row = y;
 
+  setSelectionPosition(x: number, y: number) {
+    this.selectionCol = x;
+    this.selectionRow = y;
   }
   /**
    * @returns The number of rows in the island.
@@ -125,6 +125,22 @@ export class IslandService {
   setStaticTile(col: number, row: number, tile: TileType) {
     this.staticTileMap[row * this.cols + col] = tile;
   }
+
+
+  getNameOfTile(col: number, row: number) {
+    if (this.getTile(col, row) === 'W') {
+      return 'Water';
+    } else if (this.getTile(col, row) === '.') {
+      return 'Grass';
+    } else if (this.getTile(col, row) === 'F') {
+      return 'Flower';
+    } else if (this.getTile(col, row) === 'N') {
+      return 'Net';
+    } else {
+      return 'Error';
+    }
+  }
+
 
   /**
    * get a tile from both maps
@@ -263,8 +279,6 @@ export class IslandService {
 
   renderTile(context: CanvasRenderingContext2D, imageAtlas: HTMLImageElement, tileType: TileType, col: number, row: number) {
     const offset = this.tileTypeToNumber(tileType);
-
-
     context.drawImage(
       imageAtlas,
       offset * this.tsize,
@@ -276,15 +290,41 @@ export class IslandService {
       this.tsize,
       this.tsize
     );
-    if (col === this.column && row === this.row) {
-      context.strokeStyle = 'red';
-      context.fillRect(
-        (col + 1) * this.tsize,
-        (row + 1) * this.tsize,
+    if (col - 1 === this.selectionCol && row - 1 === this.selectionRow) {
+      context.strokeStyle = 'black';
+      context.strokeRect(
+        (col) * this.tsize,
+        (row) * this.tsize,
         this.tsize,
         this.tsize
       );
+      context.strokeStyle = 'white';
+      context.strokeRect(
+        (col) * this.tsize + 1,
+        (row) * this.tsize + 1,
+        this.tsize - 2,
+        this.tsize - 2
+      );
+      context.strokeStyle = 'white';
+      context.strokeRect(
+        (col) * this.tsize + 2,
+        (row) * this.tsize + 2,
+        this.tsize - 4,
+        this.tsize - 4
+      );
+      context.strokeStyle = 'black';
+      context.strokeRect(
+        (col) * this.tsize + 3,
+        (row) * this.tsize + 3,
+        this.tsize - 6,
+        this.tsize - 6
+      );
     }
+
+
+
+
+
   }
 
   private tileTypeToNumber(tileType: TileType) {

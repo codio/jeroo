@@ -37,7 +37,12 @@ import {
   faStop,
   faBars,
   faEraser,
-  faPrint
+  faPrint,
+  faArrowRight,
+  faArrowLeft,
+  faArrowDown,
+  faArrowUp,
+  faPencilAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { HotkeyModule } from 'angular2-hotkeys';
 import { NgModule } from '@angular/core';
@@ -148,7 +153,12 @@ export class AppModule {
       faStop,
       faBars,
       faEraser,
-      faPrint
+      faPrint,
+      faArrowRight,
+      faArrowLeft,
+      faArrowDown,
+      faArrowUp,
+      faPencilAlt
     );
   }
 }
