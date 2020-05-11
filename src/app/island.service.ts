@@ -214,6 +214,11 @@ export class IslandService {
   renderJeroo(context: CanvasRenderingContext2D, imageAtlas: HTMLImageElement, jeroo: Jeroo, col: number, row: number) {
     const jerooOffset = jeroo.getId() * 2 + 1;
     const directionOffset = jeroo.getDirection();
+
+    const tile = this.getTile(col, row);
+    if (tile !== null) {
+      this.renderTile(context, imageAtlas, tile, col, row);
+    }
     if (jeroo.isInFlower()) {
       context.drawImage(
         imageAtlas,

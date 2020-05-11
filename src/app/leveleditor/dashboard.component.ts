@@ -177,6 +177,33 @@ export class LevelEditorComponent implements AfterViewInit {
     }
 
   }
+
+  cursorRight(){
+    if (this.jerooIsland) {
+      this.jerooIsland.cursorRight();
+    }
+  }
+
+  cursorLeft(){
+    if (this.jerooIsland) {
+      this.jerooIsland.cursorLeft();
+    }
+  }
+  cursorUp(){
+    if (this.jerooIsland) {
+      this.jerooIsland.cursorUp();
+    }
+  }
+  cursorDown(){
+    if (this.jerooIsland) {
+      this.jerooIsland.cursorDown();
+    }
+  }
+  cursorEnter(){
+    if (this.jerooIsland) {
+      this.jerooIsland.cursorEnter();
+    }
+  }
   newCodeFile() {
     if (this.jerooEditor) {
       this.jerooEditor.clearCode();
