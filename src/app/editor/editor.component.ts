@@ -22,8 +22,7 @@ import { SelectedLanguage, EditorPreferences, Themes } from '../code.service';
 
 @Component({
   selector: 'app-editor',
-  templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.scss']
+  templateUrl: './editor.component.html'
 })
 export class EditorComponent implements AfterViewInit {
   @ViewChild('editorTextarea', { static: true }) editorTextArea: ElementRef | null = null;
