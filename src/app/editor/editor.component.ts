@@ -76,9 +76,9 @@ export class EditorComponent implements AfterViewInit {
           'Ctrl-/': 'toggleComment',
           'Ctrl-z': 'undo',
           'Shift-Ctrl-Z': 'redo',
-		  'Shift-Ctrl-L' : false
-		}
-		});
+          'Shift-Ctrl-L': false
+        }
+      });
       this.editor.setOption('matchBrackets', true);
       this.editor.setOption('autoCloseBrackets', '{}()');
       this.editor.setOption('theme', this.preferences.colorTheme);
@@ -87,21 +87,22 @@ export class EditorComponent implements AfterViewInit {
       this.editor.refresh();
       this.editor.on('change', (editor) => {
         this.codeChange.emit(editor.getValue());
-		if(this.editor != null) {
-			this.editor.setOption("extraKeys", {
-				Tab: 'defaultTab',
-				'Shift-Tab': 'indentLess'
-				});
-			this.editor.setOption("extraKeys", {
-			'Shift-Ctrl-L' : function(cm) {
-				cm.setOption("extraKeys", {
-					Tab: false,
-					'Shift-Tab': false
-				});
-			}});
-		}
+        if (this.editor != null) {
+          this.editor.setOption('extraKeys', {
+            Tab: 'defaultTab',
+            'Shift-Tab': 'indentLess'
+          });
+          this.editor.setOption('extraKeys', {
+            'Shift-Ctrl-L': function (cm) {
+              cm.setOption('extraKeys', {
+                Tab: false,
+                'Shift-Tab': false
+              });
+            }
+          });
+        }
       });
-	  
+
     }
   }
 
