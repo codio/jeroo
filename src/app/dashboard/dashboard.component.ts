@@ -405,4 +405,10 @@ export class DashboardComponent implements AfterViewInit {
   onTileTypeRadioClick(tileTypeIndex: number) {
     this.selectedTileTypeService.selectedTileType = this.tileTypes[tileTypeIndex];
   }
+
+  saveLanguage(){
+    if(this.jerooEditor){
+      this.jerooEditor.saveToLocal();
+    }
+  }
 }

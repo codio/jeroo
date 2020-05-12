@@ -158,7 +158,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <button id="indentMenuItem" mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onIndentSelectionClick()">Indent Selection<span class="shortcut-tip">Tab</span></button>
         <button id="unindentMenuItem" mat-menu-item [disabled]="!editorEditingEnabled()" (click)="onUnindentSelectionClick()">Un-Indent Selection<span class="shortcut-tip">Shift+Tab</span></button>
         <mat-divider></mat-divider>
-        <button mat-menu-item (click)="onEditorPreferenceClick()">Set Preferences</button>
+        <button mat-menu-item (childEvent)="saveLanguage()" (click)="onEditorPreferenceClick()">Set Preferences</button>
       </ng-template>
     </mat-menu>
     <mat-menu #run="matMenu">
@@ -285,3 +285,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <input #islandFileInput class="invisible" type="file" file-accept="jev" (change)="islandFileSelected($event.target.files[0])" />
 <!-- code file input -->
 <input #codeFileInput class="invisible" type="file" file-accept="jsc" (change)="codeFileSelected($event.target.files[0])" />
+{{jerooEditor.SelectedLanguage}}

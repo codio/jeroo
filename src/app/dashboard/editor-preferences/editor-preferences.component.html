@@ -52,7 +52,7 @@ ABCDEFGHIJKLMNOPQRSTUVWXYZ +-*/= .,;:!? #&$%@|^</textarea>
 <div class="language-form-container" fxLayout="column" fxLayoutAlign="none center">
   <div>
     <mat-form-field>
-      <mat-select placeholder="Current Language Style" [(ngModel)]="codeService.selectedLanguage" (ngModelChange)="saveToLocal()">
+      <mat-select placeholder="Current Language Style" [(ngModel)]="codeService.selectedLanguage" (ngModelChange)="saveLanguage()">
         <mat-option *ngFor="let language of languages" [value]="language.value">
           {{language.viewValue}}
         </mat-option>

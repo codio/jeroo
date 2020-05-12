@@ -16,14 +16,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************** */
 
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, Inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, Inject, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { CodeService, Themes, EditorPreferences, SelectedLanguage} from 'src/app/code.service';
+import { CodeService, Themes, EditorPreferences, SelectedLanguage } from 'src/app/code.service';
 import { CodemirrorService } from 'src/app/codemirror/codemirror.service';
 import { LOCAL_STORAGE, WebStorageService } from 'angular-webstorage-service';
 import { Storage } from 'src/app/storage';
-import { EditorTabsComponent } from 'src/app/editor-tabs/editor-tabs.component';
+//import { EditorTabsComponent } from 'src/app/editor-tabs/editor-tabs.component';
 
 interface Language {
   value: SelectedLanguage;
@@ -58,7 +58,7 @@ export class EditorPreferencesComponent implements OnInit, AfterViewInit {
     private fb: FormBuilder,
     private codeMirrorService: CodemirrorService,
     public codeService: CodeService,
-    public editorTabs: EditorTabsComponent,
+    //public editorTabs: EditorTabsComponent,
     @Inject(LOCAL_STORAGE) private storage: WebStorageService
   ) { }
 
@@ -96,8 +96,13 @@ export class EditorPreferencesComponent implements OnInit, AfterViewInit {
       this.editor.setSize(600, 200);
     }
   }
-  saveToLocal() {
-    this.editorTabs.saveToLocal();
+  // saveToLocal() {
+  //   this.editorTabs.saveToLocal();
+  // }
+
+  @Output() childEvent = new EventEmitter();
+  saveLanguage() {
+    this.childEvent.emit('this is a test');
   }
 
   onCloseClick() {
