@@ -19,15 +19,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { CodeService, Themes, EditorPreferences } from 'src/app/code.service';
+import { CodeService, Themes, EditorPreferences, SelectedLanguage} from 'src/app/code.service';
 import { CodemirrorService } from 'src/app/codemirror/codemirror.service';
 import { LOCAL_STORAGE, WebStorageService } from 'angular-webstorage-service';
 import { Storage } from 'src/app/storage';
+
+interface Language {
+  value: SelectedLanguage;
+  viewValue: string;
+}
 
 @Component({
   selector: 'app-editor-preferences',
   templateUrl: './editor-preferences.component.html'
 })
+
 export class EditorPreferencesComponent implements OnInit, AfterViewInit {
   @ViewChild('editor', { static: true }) editorTextArea: ElementRef | null = null;
   editor: CodeMirror.Editor | null = null;
@@ -39,6 +45,12 @@ export class EditorPreferencesComponent implements OnInit, AfterViewInit {
     Themes.TheMattix
   ];
   form: FormGroup | null = null;
+
+  languages: Language[] = [
+    { viewValue: 'JAVA/C++/C#', value: SelectedLanguage.Java },
+    { viewValue: 'VB.NET', value: SelectedLanguage.Vb },
+    { viewValue: 'PYTHON', value: SelectedLanguage.Python }
+  ];
 
   constructor(
     public dialogRef: MatDialogRef<EditorPreferencesComponent>,

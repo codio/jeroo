@@ -49,12 +49,11 @@ export class JerooIslandComponent implements AfterViewInit {
   ) { }
 
 
-  getToggle(){
+  getToggle() {
     return this.toggle;
   }
 
-  setToggle(){
-    console.log(this.toggle);
+  setToggle() {
     this.toggle = !this.toggle;
   }
   ngAfterViewInit() {
@@ -118,14 +117,14 @@ export class JerooIslandComponent implements AfterViewInit {
 
   getIslandCols() {
     // let numbers = Array(this.islandService.getCols()).fill(0,this.islandService.getCols(),this.islandService.getCols()); // [0,1,2,3,4]
-    let numbers = Array.from(Array(this.islandService.getCols()).keys())
+    const numbers = Array.from(Array(this.islandService.getCols()).keys());
     return numbers;
 
   }
 
-  getIslandRows(){
+  getIslandRows() {
     // let numbers = Array(this.islandService.getRows()).fill(0,this.islandService.getRows(),this.islandService.getRows())
-    let numbers = Array.from(Array(this.islandService.getRows()).keys()) // [0,1,2,3,4]
+    const numbers = Array.from(Array(this.islandService.getRows()).keys()); // [0,1,2,3,4]
     return numbers;
 
   }

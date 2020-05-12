@@ -49,3 +49,14 @@ ABCDEFGHIJKLMNOPQRSTUVWXYZ +-*/= .,;:!? #&$%@|^</textarea>
   <button mat-raised-button color="primary" (click)="onCloseClick()">Close</button>
   <button type="submit" mat-raised-button [disabled]="!form || !form.valid" (click)="onSaveClick()">Save</button>
 </mat-dialog-actions>
+<div class="language-form-container" fxLayout="column" fxLayoutAlign="none center">
+  <div>
+    <mat-form-field>
+      <mat-select placeholder="Current Language Style" [(ngModel)]="codeService.selectedLanguage" (ngModelChange)="saveToLocal()">
+        <mat-option *ngFor="let language of languages" [value]="language.value">
+          {{language.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
