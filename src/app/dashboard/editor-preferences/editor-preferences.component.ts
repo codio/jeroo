@@ -23,6 +23,7 @@ import { CodeService, Themes, EditorPreferences, SelectedLanguage} from 'src/app
 import { CodemirrorService } from 'src/app/codemirror/codemirror.service';
 import { LOCAL_STORAGE, WebStorageService } from 'angular-webstorage-service';
 import { Storage } from 'src/app/storage';
+import { EditorTabsComponent } from 'src/app/editor-tabs/editor-tabs.component';
 
 interface Language {
   value: SelectedLanguage;
@@ -56,7 +57,8 @@ export class EditorPreferencesComponent implements OnInit, AfterViewInit {
     public dialogRef: MatDialogRef<EditorPreferencesComponent>,
     private fb: FormBuilder,
     private codeMirrorService: CodemirrorService,
-    private codeService: CodeService,
+    public codeService: CodeService,
+    public editorTabs: EditorTabsComponent,
     @Inject(LOCAL_STORAGE) private storage: WebStorageService
   ) { }
 
@@ -93,6 +95,9 @@ export class EditorPreferencesComponent implements OnInit, AfterViewInit {
       this.editor.getWrapperElement().style.fontSize = `${this.codeService.prefrences.fontSize}px`;
       this.editor.setSize(600, 200);
     }
+  }
+  saveToLocal() {
+    this.editorTabs.saveToLocal();
   }
 
   onCloseClick() {
