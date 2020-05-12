@@ -17,10 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
 <div *ngIf="bytecodeService.jerooArray.length > 0">
-  <div fxLayout="column" fxLayoutGap="5px">
+  <div fxLayout="column" fxLayoutGap="0px">
     <div fxLayout="row" fxLayoutGap="60px">
       <div *ngFor="let jeroo of bytecodeService.jerooArray.slice(0,2)">
-        <div fxLayout="row" fxLayoutGap="10px">
+        <div fxLayout="row" fxLayoutGap="5px">
           <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="center center">
             <div>
               <canvas #canvas id="{{jeroo.getId()}}"></canvas>
@@ -42,7 +42,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </div>
     <div fxLayout="row" fxLayoutGap="60px">
       <div *ngFor="let jeroo of bytecodeService.jerooArray.slice(2,4)">
-        <div fxLayout="row" fxLayoutGap="10px">
+        <div fxLayout="row" fxLayoutGap="5px">
           <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="center center">
             <div>
               <canvas #canvas id="{{jeroo.getId()}}"></canvas>
