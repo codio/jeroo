@@ -44,7 +44,7 @@ export class JerooIslandComponent implements AfterViewInit {
   private mouseDown = false;
   private toggleView = true;
   private toggleKeyboard = false;
-  private lastIslandEdit = this.islandService.toString();
+  private lastIslandEdit = [this.islandService.toString()];
   private editType = 0;
   private areaCornerSelected = false;
   private cornerRow = 0;
@@ -137,7 +137,7 @@ export class JerooIslandComponent implements AfterViewInit {
           }
         } else if (this.editType === 1) {
           if (this.areaCornerSelected) {
-            this.lastIslandEdit = this.islandService.toString();
+            this.lastIslandEdit.push(this.islandService.toString());
             const top = this.cornerRow > this.selectionRow ? this.selectionRow : this.cornerRow;
             const bottom = this.cornerRow < this.selectionRow ? this.selectionRow : this.cornerRow;
             const left = this.cornerCol > this.selectionColumn ? this.selectionColumn : this.cornerCol;
@@ -157,6 +157,7 @@ export class JerooIslandComponent implements AfterViewInit {
           }
         } else if (this.editType === 2) {
           if (!this.filling) {
+            this.lastIslandEdit.push(this.islandService.toString());
             this.floodFill(this.selectionRow + 1, this.selectionColumn + 1);
             this.islandService.render(this.context);
           }
@@ -170,7 +171,13 @@ export class JerooIslandComponent implements AfterViewInit {
   }
   undo() {
     if (this.canvas && this.context) {
-      this.islandService.genIslandFromString(this.lastIslandEdit);
+
+      let lastIsland = this.lastIslandEdit.pop();
+      if (lastIsland !== undefined) {
+        this.islandService.genIslandFromString(lastIsland);
+
+      }
+
       this.islandService.render(this.context);
     }
   }
@@ -421,13 +428,13 @@ export class JerooIslandComponent implements AfterViewInit {
 
           if (this.editType === 0) {
             if (this.islandService.getStaticTile(tileCol, tileRow) !== this.selectedTileTypeService.selectedTileType) {
-              this.lastIslandEdit = this.islandService.toString();
+              this.lastIslandEdit.push(this.islandService.toString());
               this.islandService.setStaticTile(tileCol, tileRow, this.selectedTileTypeService.selectedTileType);
               this.islandService.render(this.context);
             }
           } else if (this.editType === 1) {
             if (this.areaCornerSelected) {
-              this.lastIslandEdit = this.islandService.toString();
+              this.lastIslandEdit.push(this.islandService.toString());
               const top = this.cornerRow > this.selectionRow ? this.selectionRow : this.cornerRow;
               const bottom = this.cornerRow < this.selectionRow ? this.selectionRow : this.cornerRow;
               const left = this.cornerCol > this.selectionColumn ? this.selectionColumn : this.cornerCol;
@@ -447,6 +454,7 @@ export class JerooIslandComponent implements AfterViewInit {
             }
           } else if (this.editType === 2) {
             if (!this.filling) {
+              this.lastIslandEdit.push(this.islandService.toString());
               this.floodFill(this.selectionRow + 1, this.selectionColumn + 1);
               this.islandService.render(this.context);
             }
