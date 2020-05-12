@@ -119,7 +119,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </div>
           </div>
         </div>
-      </mat-toolbar-row>
+		<div id = "statusDiv" fxLayout="row" fxLayout.xs="column" >
+			<app-jeroo-status></app-jeroo-status>
+		</div>
+	  </mat-toolbar-row>
     </mat-toolbar>
     <!-- Menu Properties -->
     <mat-menu #file="matMenu">

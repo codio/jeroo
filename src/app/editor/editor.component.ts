@@ -27,6 +27,7 @@ import { SelectedLanguage, EditorPreferences, Themes } from '../code.service';
 export class EditorComponent implements AfterViewInit {
   @ViewChild('editorTextarea', { static: true }) editorTextArea: ElementRef | null = null;
   private editor: CodeMirror.Editor | null = null;
+  // private tabMode = "Navigation";
 
   @Output()
   codeChange = new EventEmitter<string>();
@@ -87,19 +88,68 @@ export class EditorComponent implements AfterViewInit {
       this.editor.refresh();
       this.editor.on('change', (editor) => {
         this.codeChange.emit(editor.getValue());
+        // this.tabMode = "Indent";
+
         if (this.editor != null) {
           this.editor.setOption('extraKeys', {
-            Tab: 'defaultTab',
-            'Shift-Tab': 'indentLess'
+            'Tab': 'defaultTab',
+            'Shift-Tab': 'indentLess',
+            'Shift-Ctrl-F': 'indentAuto',
+            'Ctrl-/': 'toggleComment',
+            'Ctrl-z': 'undo',
+            'Shift-Ctrl-Z': 'redo',
+            'Shift-Ctrl-L': false
           });
           this.editor.setOption('extraKeys', {
             'Shift-Ctrl-L': function (cm) {
-              cm.setOption('extraKeys', {
-                Tab: false,
-                'Shift-Tab': false
-              });
+              if (cm !== null) {
+                const currentKey = (cm.getOption('extraKeys'));
+                if (currentKey !== undefined) {
+                  const defaultTab = <string>'Tab: defaultTab';
+                  const tabIsIndent = (currentKey.toString().search(defaultTab)) !== -1;
+                  if (tabIsIndent) {
+                    cm.setOption('extraKeys', {
+                      'Tab': 'defaultTab',
+                      'Shift-Tab': 'indentLess',
+                      'Shift-Ctrl-F': 'indentAuto',
+                      'Ctrl-/': 'toggleComment',
+                      'Ctrl-z': 'undo',
+                      'Shift-Ctrl-Z': 'redo',
+                      'Shift-Ctrl-L': false
+                    });
+                  } else {
+                    cm.setOption('extraKeys', {
+                      'Shift-Tab': false,
+                      'Shift-Ctrl-F': 'indentAuto',
+                      'Ctrl-/': 'toggleComment',
+                      'Ctrl-z': 'undo',
+                      'Shift-Ctrl-Z': 'redo',
+                      'Shift-Ctrl-L': false
+                    });
+                  }
+                }
+              }
             }
           });
+          //     Code that was supposed to change the display for tab status.
+          //     We were unable access the tabmode variable in the above functions
+          //     contained within the keybinds, and we were unable to access a toString for extraKeys.
+
+          //     var currentKey = (this.editor.getOption('extraKeys'));
+          //     console.log(currentKey);
+          //     if (currentKey !== undefined) {
+          //       //var defaultTab = <string>'Tab: defaultTab';
+          //       console.log(JSON.stringify(currentKey));
+          //       //var tabIsIndent = (currentKey.toString().search('defaultTab'));
+          //       console.log(tabIsIndent);
+          //       if (tabIsIndent != -1) {
+          //         this.tabMode = "Indent";
+          //       }
+          //       else {
+          //         this.tabMode = "Navigation";
+          //       }
+          //     }
+          //     console.log(this.tabMode);
         }
       });
 
@@ -119,6 +169,10 @@ export class EditorComponent implements AfterViewInit {
         this.editor.setOption('autoCloseBrackets', '()');
       }
     }
+  }
+
+  toggleTab() {
+
   }
 
   getText() {
