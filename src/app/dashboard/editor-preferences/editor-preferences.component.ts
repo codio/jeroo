@@ -23,7 +23,7 @@ import { CodeService, Themes, EditorPreferences, SelectedLanguage } from 'src/ap
 import { CodemirrorService } from 'src/app/codemirror/codemirror.service';
 import { LOCAL_STORAGE, WebStorageService } from 'angular-webstorage-service';
 import { Storage } from 'src/app/storage';
-//import { EditorTabsComponent } from 'src/app/editor-tabs/editor-tabs.component';
+
 
 interface Language {
   value: SelectedLanguage;
@@ -45,6 +45,7 @@ export class EditorPreferencesComponent implements OnInit, AfterViewInit {
     Themes.Solarized,
     Themes.TheMattix
   ];
+  @Output() childEvent = new EventEmitter();
   form: FormGroup | null = null;
 
   languages: Language[] = [
@@ -58,7 +59,6 @@ export class EditorPreferencesComponent implements OnInit, AfterViewInit {
     private fb: FormBuilder,
     private codeMirrorService: CodemirrorService,
     public codeService: CodeService,
-    //public editorTabs: EditorTabsComponent,
     @Inject(LOCAL_STORAGE) private storage: WebStorageService
   ) { }
 
@@ -96,11 +96,7 @@ export class EditorPreferencesComponent implements OnInit, AfterViewInit {
       this.editor.setSize(600, 200);
     }
   }
-  // saveToLocal() {
-  //   this.editorTabs.saveToLocal();
-  // }
 
-  @Output() childEvent = new EventEmitter();
   saveLanguage() {
     this.childEvent.emit('this is a test');
   }

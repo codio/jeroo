@@ -172,7 +172,7 @@ export class JerooIslandComponent implements AfterViewInit {
   undo() {
     if (this.canvas && this.context) {
 
-      let lastIsland = this.lastIslandEdit.pop();
+      const lastIsland = this.lastIslandEdit.pop();
       if (lastIsland !== undefined) {
         this.islandService.genIslandFromString(lastIsland);
 

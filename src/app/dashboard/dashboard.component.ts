@@ -406,8 +406,8 @@ export class DashboardComponent implements AfterViewInit {
     this.selectedTileTypeService.selectedTileType = this.tileTypes[tileTypeIndex];
   }
 
-  saveLanguage(){
-    if(this.jerooEditor){
+  saveLanguage() {
+    if (this.jerooEditor) {
       this.jerooEditor.saveToLocal();
     }
   }

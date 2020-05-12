@@ -178,28 +178,28 @@ export class LevelEditorComponent implements AfterViewInit {
 
   }
 
-  cursorRight(){
+  cursorRight() {
     if (this.jerooIsland) {
       this.jerooIsland.cursorRight();
     }
   }
 
-  cursorLeft(){
+  cursorLeft() {
     if (this.jerooIsland) {
       this.jerooIsland.cursorLeft();
     }
   }
-  cursorUp(){
+  cursorUp() {
     if (this.jerooIsland) {
       this.jerooIsland.cursorUp();
     }
   }
-  cursorDown(){
+  cursorDown() {
     if (this.jerooIsland) {
       this.jerooIsland.cursorDown();
     }
   }
-  cursorEnter(){
+  cursorEnter() {
     if (this.jerooIsland) {
       this.jerooIsland.cursorEnter();
     }
