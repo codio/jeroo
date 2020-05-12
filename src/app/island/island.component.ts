@@ -86,6 +86,7 @@ export class JerooIslandComponent implements AfterViewInit {
   cursorUp() {
     if (this.selectionRow > 0) {
       this.selectionRow -= 1;
+      this.liveAnnouncer.announce('Cursor set to ' + this.selectionColumn + ' ' + this.selectionRow);
       this.islandService.setSelectionPosition(this.selectionColumn, this.selectionRow);
       if (this.context) {
         this.islandService.render(this.context);
@@ -95,6 +96,7 @@ export class JerooIslandComponent implements AfterViewInit {
   cursorDown() {
     if (this.selectionRow < this.islandService.getRows() - 3) {
       this.selectionRow += 1;
+      this.liveAnnouncer.announce('Cursor set to ' + this.selectionColumn + ' ' + this.selectionRow);
       this.islandService.setSelectionPosition(this.selectionColumn, this.selectionRow);
       if (this.context) {
         this.islandService.render(this.context);
@@ -105,6 +107,7 @@ export class JerooIslandComponent implements AfterViewInit {
   cursorLeft() {
     if (this.selectionColumn > 0) {
       this.selectionColumn -= 1;
+      this.liveAnnouncer.announce('Cursor set to ' + this.selectionColumn + ' ' + this.selectionRow);
       this.islandService.setSelectionPosition(this.selectionColumn, this.selectionRow);
       if (this.context) {
         this.islandService.render(this.context);
@@ -115,6 +118,7 @@ export class JerooIslandComponent implements AfterViewInit {
   cursorRight() {
     if (this.selectionColumn < this.islandService.getCols() - 3) {
       this.selectionColumn += 1;
+      this.liveAnnouncer.announce('Cursor set to ' + this.selectionColumn + ' ' + this.selectionRow);
       this.islandService.setSelectionPosition(this.selectionColumn, this.selectionRow);
       if (this.context) {
         this.islandService.render(this.context);
