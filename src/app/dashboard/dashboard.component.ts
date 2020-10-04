@@ -34,6 +34,7 @@ import { CodeSaveDialogComponent } from './code-save-dialog/code-save-dialog.com
 import { IslandSaveDialogComponent } from './island-save-dialog/island-save-dialog.component';
 import { SelectedTileTypeService } from '../selected-tile-type.service';
 import { TileType } from '../tileType';
+import { EditorWarningDialogComponent } from '../editor-warning-dialog/editor-warning-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -146,32 +147,47 @@ export class DashboardComponent implements AfterViewInit {
       setTimeout(() => {
         const dialogRef = this.dialog.open(CacheDialogComponent);
         dialogRef.afterClosed().subscribe(loadCache => {
-          if (this.jerooEditor && this.jerooIsland) {
-            if (loadCache) {
-              if (this.jerooEditor.hasCachedCode()) {
-                this.jerooEditor.loadCodeFromCache();
-              }
-
-              if (this.jerooEditor.hasCachedConfig()) {
-                this.jerooEditor.loadPreferencesFromCache();
-              }
-
-              if (this.jerooIsland.hasCachedIsland()) {
-                this.jerooIsland.loadIslandFromCache();
-              }
-            } else {
-              this.jerooEditor.resetCache();
-              this.jerooEditor.resetPreferences();
-              this.jerooIsland.resetCache();
-            }
+          if (loadCache) {
+            this.loadEditorFromCache();
+          } else {
+            // warn about deleting the previously saved editor
+            this.dialog.open(EditorWarningDialogComponent)
+              .afterClosed().subscribe((cont) => {
+                if (cont) {
+                  this.jerooEditor?.resetCache();
+                  this.jerooEditor?.resetPreferences();
+                  this.jerooIsland?.resetCache();
+                } else {
+                  this.loadEditorFromCache();
+                }
+              });
           }
         });
       });
     }
   }
 
+  loadEditorFromCache() {
+    if (this.jerooEditor?.hasCachedCode()) {
+      this.jerooEditor?.loadCodeFromCache();
+    }
+
+    if (this.jerooEditor?.hasCachedConfig()) {
+      this.jerooEditor?.loadPreferencesFromCache();
+    }
+
+    if (this.jerooIsland?.hasCachedIsland()) {
+      this.jerooIsland?.loadIslandFromCache();
+    }
+  }
+
   newCodeFile() {
-    this.jerooEditor?.clearCode();
+    this.dialog.open(EditorWarningDialogComponent)
+      .afterClosed().subscribe((cont) => {
+        if (cont) {
+          this.jerooEditor?.clearCode();
+        }
+      });
   }
 
   openCodeFile() {

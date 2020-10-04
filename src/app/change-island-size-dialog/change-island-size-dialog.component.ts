@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { WarningDialogComponent } from '../warning-dialog/warning-dialog.component';
+import { IslandWarningDialogComponent } from '../island-warning-dialog/island-warning-dialog.component';
 
 export interface DialogData {
   colValue: number;
@@ -45,7 +45,7 @@ export class ChnageIslandSizeDialogComponent implements OnInit {
   }
 
   save() {
-    const dialogRef = this.dialog.open(WarningDialogComponent);
+    const dialogRef = this.dialog.open(IslandWarningDialogComponent);
     dialogRef.afterClosed().subscribe((cont) => {
       if (cont && this.form) {
         this.dialogRef.close(this.form.value);

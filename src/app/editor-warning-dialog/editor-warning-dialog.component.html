@@ -20,12 +20,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <div mat-dialog-content>
   <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
     <div fxFlex="80">
-      <p>Doing this will cause the board to reset and it will be lost permanently.</p>
+      <p>Doing this will cause the editor to reset and it will be lost permanently.</p>
       <p>Would you like to continue?</p>
     </div>
   </div>
 </div>
 <div mat-dialog-actions>
-  <button id="noWarningButton" mat-raised-button color="primary" (click)="onCloseClick()">No</button>
-  <button id="yesWarningButton" type="submit" mat-raised-button (click)="onContinueClick()">Yes</button>
+  <button id="noEditorWarningBtn" mat-raised-button color="primary" (click)="onCloseClick()">No</button>
+  <button id="yesEditorWarningBtn" type="submit" mat-raised-button (click)="onContinueClick()">Yes</button>
 </div>

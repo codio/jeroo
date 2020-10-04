@@ -23,7 +23,7 @@ import { BytecodeInterpreterService } from '../bytecode-interpreter/bytecode-int
 import { DialogData, ChnageIslandSizeDialogComponent } from '../change-island-size-dialog/change-island-size-dialog.component';
 import { IslandService } from '../island.service';
 import { Storage } from '../storage';
-import { WarningDialogComponent } from '../warning-dialog/warning-dialog.component';
+import { IslandWarningDialogComponent } from '../island-warning-dialog/island-warning-dialog.component';
 import { SelectedTileTypeService } from '../selected-tile-type.service';
 
 @Component({
@@ -105,7 +105,7 @@ export class JerooIslandComponent implements AfterViewInit {
   }
 
   clearIsland() {
-    const dialogRef = this.dialog.open(WarningDialogComponent);
+    const dialogRef = this.dialog.open(IslandWarningDialogComponent);
     dialogRef.afterClosed().subscribe((cont) => {
       if (cont && this.context) {
         this.islandService.resetIsland();

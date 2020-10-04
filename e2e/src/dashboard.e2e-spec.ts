@@ -442,7 +442,7 @@ describe('Jeroo Tests', () => {
     browser.sleep(500);
     const expectedIslandSize = { cols: 20, rows: 30 };
     const actualIslandSize = page.getIslandSize();
-    const actualCode = await page.getCodeMirrorTest();
+    const actualCode = await page.getCodeMirrorText();
     expect(expectedCode).toBe(actualCode);
     expect(expectedIslandSize).toEqual(actualIslandSize);
   });
@@ -456,10 +456,11 @@ describe('Jeroo Tests', () => {
 
     browser.sleep(500);
     page.getDontImportProjectDialogBtn().click();
+    page.getEditorWarningDialogYesBtn().click();
     browser.sleep(500);
     const expectedIslandSize = { cols: 24, rows: 24 };
     const actualIslandSize = page.getIslandSize();
-    const actualCode = await page.getCodeMirrorTest();
+    const actualCode = await page.getCodeMirrorText();
     expect(actualCode).toBe('');
     expect(expectedIslandSize).toEqual(actualIslandSize);
   });
