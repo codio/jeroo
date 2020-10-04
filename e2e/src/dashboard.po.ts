@@ -30,7 +30,7 @@ export class DashboardPage {
     );
   }
 
-  getCodeMirrorTest() {
+  getCodeMirrorText() {
     return browser.executeScript(
       `var editor = document.getElementsByClassName('CodeMirror')[0].CodeMirror; return editor.getValue();`
     ) as Promise<string>;
@@ -100,11 +100,11 @@ export class DashboardPage {
   }
 
   getYesWarningButton() {
-    return element(by.id('yesWarningButton'));
+    return element(by.id('yesIslandWarningBtn'));
   }
 
   getNoWarningButton() {
-    return element(by.id('noWarningButton'));
+    return element(by.id('noIslandWarningBtn'));
   }
 
   getMainEditorTab() {
@@ -151,6 +151,10 @@ export class DashboardPage {
 
   getDontImportProjectDialogBtn() {
     return element(by.id('dontImportProjectBtn'));
+  }
+
+  getEditorWarningDialogYesBtn() {
+    return element(by.id('yesEditorWarningBtn'));
   }
 
   async getIslandSize() {

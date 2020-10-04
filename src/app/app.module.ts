@@ -58,7 +58,7 @@ import { EditorTabsComponent } from './editor-tabs/editor-tabs.component';
 import { CacheDialogComponent } from './cache-dialog/cache-dialog.component';
 import { JerooStatusComponent } from './jeroo-status/jeroo-status.component';
 import { DashboardDialogAboutComponent } from './dashboard/dashboard-dialog-about/dashboard-dialog-about.component';
-import { WarningDialogComponent } from './warning-dialog/warning-dialog.component';
+import { IslandWarningDialogComponent } from './island-warning-dialog/island-warning-dialog.component';
 import { PrintLayoutComponent } from './print-layout/print-layout.component';
 import { PrintIslandComponent } from './print-layout/print-island/print-island.component';
 import { PrintCodeComponent } from './print-layout/print-code/print-code.component';
@@ -69,6 +69,7 @@ import { LoggingMessageComponent } from './messages/logging-message/logging-mess
 import { CodeSaveDialogComponent } from './dashboard/code-save-dialog/code-save-dialog.component';
 import { IslandSaveDialogComponent } from './dashboard/island-save-dialog/island-save-dialog.component';
 import { RuntimeErrorMessageComponent } from './messages/runtime-error-message/runtime-error-message.component';
+import { EditorWarningDialogComponent } from './editor-warning-dialog/editor-warning-dialog.component';
 
 
 @NgModule({
@@ -86,7 +87,7 @@ import { RuntimeErrorMessageComponent } from './messages/runtime-error-message/r
     DashboardDialogAwardsComponent,
     DashboardDialogHistoryComponent,
     DashboardDialogCopyrightComponent,
-    WarningDialogComponent,
+    IslandWarningDialogComponent,
     PrintLayoutComponent,
     PrintIslandComponent,
     PrintCodeComponent,
@@ -96,7 +97,8 @@ import { RuntimeErrorMessageComponent } from './messages/runtime-error-message/r
     LoggingMessageComponent,
     CodeSaveDialogComponent,
     IslandSaveDialogComponent,
-    RuntimeErrorMessageComponent
+    RuntimeErrorMessageComponent,
+    EditorWarningDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -119,7 +121,7 @@ import { RuntimeErrorMessageComponent } from './messages/runtime-error-message/r
     DashboardDialogAwardsComponent,
     DashboardDialogHistoryComponent,
     DashboardDialogCopyrightComponent,
-    WarningDialogComponent,
+    IslandWarningDialogComponent,
     PrintCodeDialogComponent,
     EditorPreferencesComponent,
     CodeSaveDialogComponent,
