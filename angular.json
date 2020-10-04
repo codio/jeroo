@@ -38,6 +38,9 @@
                 "input": "src/compiler/_build/default/JerooCompiler.bc.js",
                 "bundleName": "JerooCompiler"
               }
+            ],
+            "allowedCommonJsDependencies": [
+              "codemirror"
             ]
           },
           "configurations": {

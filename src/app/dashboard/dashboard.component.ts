@@ -80,63 +80,63 @@ export class DashboardComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     const mousetrap = new Mousetrap(document.body);
-    mousetrap.bind('f2', _event => {
+    mousetrap.bind('f2', () => {
       this.onResetClick();
       return false;
     });
-    mousetrap.bind('f3', _event => {
+    mousetrap.bind('f3', () => {
       this.onRunStepwiseClick();
       return false;
     });
-    mousetrap.bind('f4', _event => {
+    mousetrap.bind('f4', () => {
       this.onRunContiniousClick();
       return false;
     });
-    mousetrap.bind('f5', _event => {
+    mousetrap.bind('f5', () => {
       this.onPauseClick();
       return false;
     });
-    mousetrap.bind('f6', _event => {
+    mousetrap.bind('f6', () => {
       this.onStopClick();
       return false;
     });
-    mousetrap.bind('ctrl+shift+n', _event => {
+    mousetrap.bind('ctrl+shift+n', () => {
       this.clearIsland();
       return false;
     });
-    mousetrap.bind('ctrl+shift+o', _event => {
+    mousetrap.bind('ctrl+shift+o', () => {
       this.openIslandFile();
       return false;
     });
-    mousetrap.bind('ctrl+shift+s', _event => {
+    mousetrap.bind('ctrl+shift+s', () => {
       this.saveIsland();
       return false;
     });
-    mousetrap.bind('ctrl+shift+p', _event => {
+    mousetrap.bind('ctrl+shift+p', () => {
       this.printIsland();
       return false;
     });
-    mousetrap.bind('f8', _event => {
+    mousetrap.bind('f8', () => {
       window.open(this.getHelpUrl());
       return false;
     });
-    mousetrap.bind('ctrl+n', _event => {
+    mousetrap.bind('ctrl+n', () => {
       this.newCodeFile();
       return false;
     });
-    mousetrap.bind('ctrl+o', _event => {
+    mousetrap.bind('ctrl+o', () => {
       this.openCodeFile();
       return false;
     });
-    mousetrap.bind('ctrl+s', _event => {
+    mousetrap.bind('ctrl+s', () => {
       this.saveCode();
       return false;
     });
-    mousetrap.bind('ctrl+p', _event => {
+    mousetrap.bind('ctrl+p', () => {
       this.printCode();
       return false;
     });
-    mousetrap.bind('ctrl+shift+f', _event => {
+    mousetrap.bind('ctrl+shift+f', () => {
       this.onFormatClick();
       return false;
     });

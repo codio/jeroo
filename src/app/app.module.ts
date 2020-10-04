@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************** */
 
 import 'hammerjs';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import {
@@ -108,6 +108,7 @@ import { RuntimeErrorMessageComponent } from './messages/runtime-error-message/r
     ReactiveFormsModule,
     FontAwesomeModule,
     StorageServiceModule,
+    HammerModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
