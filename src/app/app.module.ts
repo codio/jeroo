@@ -50,7 +50,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MessagesComponent } from './messages/messages.component';
 import { EditorComponent } from './editor/editor.component';
-import { StorageServiceModule } from 'ngx-webstorage-service';
 import { DashboardDialogAwardsComponent } from './dashboard/dashboard-dialog-awards/dashboard-dialog-awards.component';
 import { DashboardDialogHistoryComponent } from './dashboard/dashboard-dialog-history/dashboard-dialog-history.component';
 import { DashboardDialogCopyrightComponent } from './dashboard/dashboard-dialog-copyright/dashboard-dialog-copyright.component';
@@ -109,7 +108,6 @@ import { EditorWarningDialogComponent } from './editor-warning-dialog/editor-war
     FormsModule,
     ReactiveFormsModule,
     FontAwesomeModule,
-    StorageServiceModule,
     HammerModule,
   ],
   providers: [],

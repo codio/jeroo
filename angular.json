@@ -40,7 +40,9 @@
               }
             ],
             "allowedCommonJsDependencies": [
-              "codemirror"
+              "codemirror",
+              "hammerjs",
+              "mousetrap"
             ]
           },
           "configurations": {
