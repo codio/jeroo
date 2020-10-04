@@ -42,9 +42,9 @@ export class JerooIslandComponent implements AfterViewInit {
   private mouseDown = false;
 
   constructor(private islandService: IslandService, private dialog: MatDialog,
-    public bytecodeService: BytecodeInterpreterService,
-    private selectedTileTypeService: SelectedTileTypeService,
-    @Inject(LOCAL_STORAGE) private storage: WebStorageService
+              public bytecodeService: BytecodeInterpreterService,
+              private selectedTileTypeService: SelectedTileTypeService,
+              @Inject(LOCAL_STORAGE) private storage: WebStorageService
   ) { }
 
   ngAfterViewInit() {

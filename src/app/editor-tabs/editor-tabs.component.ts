@@ -76,11 +76,11 @@ export class EditorTabsComponent implements AfterViewInit {
   }
 
   constructor(private messageService: MessageService,
-    private bytecodeService: BytecodeInterpreterService,
-    private islandService: IslandService,
-    public codeService: CodeService,
-    public dialog: MatDialog,
-    @Inject(LOCAL_STORAGE) private storage: WebStorageService) {
+              private bytecodeService: BytecodeInterpreterService,
+              private islandService: IslandService,
+              public codeService: CodeService,
+              public dialog: MatDialog,
+              @Inject(LOCAL_STORAGE) private storage: WebStorageService) {
   }
 
   ngAfterViewInit() {

@@ -37,9 +37,9 @@ export class ChnageIslandSizeDialogComponent implements OnInit {
   rowValue: number;
 
   constructor(private fb: FormBuilder,
-    public dialogRef: MatDialogRef<ChnageIslandSizeDialogComponent>,
-    private dialog: MatDialog,
-    @Inject(MAT_DIALOG_DATA) data: DialogData) {
+              public dialogRef: MatDialogRef<ChnageIslandSizeDialogComponent>,
+              private dialog: MatDialog,
+              @Inject(MAT_DIALOG_DATA) data: DialogData) {
     this.colValue = data.colValue;
     this.rowValue = data.rowValue;
   }

@@ -40,10 +40,10 @@ export class PrintCodeComponent implements AfterViewInit {
   };
 
   constructor(private printService: PrintService,
-    private codeMirrorService: CodemirrorService,
-    public codeService: CodeService,
-    public dialog: MatDialog,
-    private route: ActivatedRoute) { }
+              private codeMirrorService: CodemirrorService,
+              public codeService: CodeService,
+              public dialog: MatDialog,
+              private route: ActivatedRoute) { }
 
   // access it in here
   ngAfterViewInit() {
