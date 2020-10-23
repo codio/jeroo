@@ -23,6 +23,7 @@ import {
   CardinalDirection,
   RelativeDirection
 } from './direction';
+import { CollisionType } from './CollisionType';
 
 const STEP: Point[] = [
   // north
@@ -48,10 +49,7 @@ const STEP: Point[] = [
 ];
 
 export class Jeroo {
-  private inWater = false;
-  private inNet = false;
-  private inFlower = false;
-  private inJeroo = false;
+  private collisionType: CollisionType | null = null;
   /**
    * Create a new Jeroo
    * @param id A unique numerical identifier for this jeroo.
@@ -139,41 +137,26 @@ export class Jeroo {
 
     const nextJeroo = islandService.getJeroo(nextLocation.x, nextLocation.y);
     if (nextJeroo) {
-      nextJeroo.setInJeroo(true);
-      this.inJeroo = true;
-      this.inWater = false;
-      this.inNet = false;
-      this.inFlower = false;
+      nextJeroo.setInJeroo();
+      this.collisionType = CollisionType.Jeroo;
       throw new Error('LOGIC ERROR: Jeroo has collided with another jeroo');
     }
     islandService.setJeroo(this.getX(), this.getY(), this);
     if (nextTile === TileType.Flower) {
-      this.inFlower = true;
-      this.inWater = false;
-      this.inNet = false;
-      this.inJeroo = false;
+      this.collisionType = CollisionType.Flower;
     } else {
-      this.inFlower = false;
+      this.collisionType = null;
     }
     if (!islandService.isInBounds(nextLocation.x, nextLocation.y)) {
-      this.inWater = true;
-      this.inNet = false;
-      this.inFlower = false;
-      this.inJeroo = false;
+      this.collisionType = CollisionType.Water;
       throw new Error('LOGIC ERROR: Jeroo is out of bounds');
     }
     if (nextTile === TileType.Water) {
-      this.inWater = true;
-      this.inNet = false;
-      this.inFlower = false;
-      this.inJeroo = false;
+      this.collisionType = CollisionType.Water;
       throw new Error('LOGIC ERROR: Jeroo is on water');
     }
     if (nextTile === TileType.Net) {
-      this.inNet = true;
-      this.inWater = false;
-      this.inFlower = false;
-      this.inJeroo = false;
+      this.collisionType = CollisionType.Net;
       throw new Error('LOGIC ERROR: Jeroo is on a net');
     }
   }
@@ -203,6 +186,7 @@ export class Jeroo {
   plant(islandService: IslandService) {
     if (this.numFlowers > 0) {
       this.numFlowers--;
+      this.collisionType = CollisionType.Flower;
       islandService.setDynamicTile(this.x, this.y, TileType.Flower);
     }
   }
@@ -233,9 +217,7 @@ export class Jeroo {
     const tile = islandService.getTile(this.x, this.y);
     if (tile === TileType.Flower) {
       this.numFlowers++;
-      this.inFlower = false;
-      this.inWater = false;
-      this.inNet = false;
+      this.collisionType = null;
       islandService.setDynamicTile(this.x, this.y, TileType.Grass);
     }
   }
@@ -308,26 +290,26 @@ export class Jeroo {
   }
 
   isInWater() {
-    return this.inWater;
+    return this.collisionType === CollisionType.Water;
   }
 
   isInNet() {
-    return this.inNet;
+    return this.collisionType === CollisionType.Net;
   }
 
   isInFlower() {
-    return this.inFlower;
+    return this.collisionType === CollisionType.Flower;
   }
 
-  setInFlower(val: boolean) {
-    this.inFlower = val;
+  setInFlower() {
+    this.collisionType = CollisionType.Flower;
   }
 
   isInJeroo() {
-    return this.inJeroo;
+    return this.collisionType === CollisionType.Jeroo;
   }
 
-  setInJeroo(val: boolean) {
-    this.inJeroo = val;
+  setInJeroo() {
+    this.collisionType = CollisionType.Jeroo;
   }
 }

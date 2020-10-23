@@ -127,7 +127,7 @@ export class BytecodeInterpreterService {
           const direction = command.e;
           const jeroo = new Jeroo(command.a, col, row, command.d, direction);
           if (tile === TileType.Flower) {
-            jeroo.setInFlower(true);
+            jeroo.setInFlower();
           }
 
           this.jerooArray[command.a] = jeroo;
