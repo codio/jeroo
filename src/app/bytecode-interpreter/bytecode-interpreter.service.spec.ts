@@ -170,6 +170,24 @@ describe('BytecodeInterpreterService', () => {
     expect(matService.getJeroo(5, 1)).toBe(currentJeroo);
   });
 
+  it('assert hop onto flower sets isInFlower to true', () => {
+    const service = TestBed.inject(BytecodeInterpreterService);
+    const matService = TestBed.inject(IslandService);
+    matService.setStaticTile(5, 1, TileType.Flower);
+    const newInstr = newInstruction('NEW', 0, 0, 1, 0, 1, 0);
+    const csrInstr = newInstruction('CSR', 0, 0, 0, 0, 0, 0);
+    const turnInstr = newInstruction('HOP', 3, 0, 0, 0, 0, 0);
+
+    service.executeBytecode(newInstr, matService);
+    service.executeBytecode(csrInstr, matService);
+    service.executeBytecode(turnInstr, matService);
+    const currentJeroo = service.getCurrentJeroo();
+    expect(currentJeroo.getX()).toBe(5);
+    expect(currentJeroo.getY()).toBe(1);
+    expect(matService.getJeroo(5, 1)).toBe(currentJeroo);
+    expect(matService.getJeroo(5, 1)?.isInFlower()).toBe(true);
+  });
+
   it('assert hopping on a net throws error', () => {
     const service = TestBed.inject(BytecodeInterpreterService);
     const matService = TestBed.inject(IslandService);
@@ -273,6 +291,7 @@ describe('BytecodeInterpreterService', () => {
 
     const currentJeroo = service.getCurrentJeroo();
     expect(currentJeroo.getNumFlowers()).toBe(0);
+    expect(currentJeroo.isInFlower()).toBe(true);
     expect(matService.getTile(2, 2)).toBe(TileType.Flower);
   });
 
@@ -289,6 +308,7 @@ describe('BytecodeInterpreterService', () => {
 
     const currentJeroo = service.getCurrentJeroo();
     expect(currentJeroo.getNumFlowers()).toBe(0);
+    expect(currentJeroo.isInFlower()).toBe(false);
     expect(matService.getTile(1, 1)).toBe(TileType.Grass);
   });
 
