@@ -32,6 +32,10 @@ import { PrintService } from '../print.service';
 import { EditorPreferencesComponent } from './editor-preferences/editor-preferences.component';
 import { CodeSaveDialogComponent } from './code-save-dialog/code-save-dialog.component';
 import { IslandSaveDialogComponent } from './island-save-dialog/island-save-dialog.component';
+import { CodeSaveToServerDialogComponent } from './code-save-to-server-dialog/code-save-to-server-dialog.component';
+import { IslandSaveToServerDialogComponent } from './island-save-to-server-dialog/island-save-to-server-dialog.component';
+import { CodeOpenDialogComponent } from './code-open-dialog/code-open-dialog.component';
+import { IslandOpenDialogComponent } from './island-open-dialog/island-open-dialog.component';
 import { SelectedTileTypeService } from '../selected-tile-type.service';
 import { TileType } from '../tileType';
 import { EditorWarningDialogComponent } from '../editor-warning-dialog/editor-warning-dialog.component';
@@ -130,7 +134,7 @@ export class DashboardComponent implements AfterViewInit {
       return false;
     });
     mousetrap.bind('ctrl+s', () => {
-      this.saveCode();
+      this.saveCodeToServer();
       return false;
     });
     mousetrap.bind('ctrl+p', () => {
@@ -212,6 +216,22 @@ export class DashboardComponent implements AfterViewInit {
       editorCode: this.jerooEditor?.getCode()
     };
     this.dialog.open(CodeSaveDialogComponent, dialogConfig);
+  }
+
+  saveCodeToServer() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      editorCode: this.jerooEditor?.getCode()
+    };
+    this.dialog.open(CodeSaveToServerDialogComponent, dialogConfig);
+  }
+
+  openCodeFileFromServer() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      jerooEditor: this.jerooEditor
+    };
+    this.dialog.open(CodeOpenDialogComponent, dialogConfig);
   }
 
   printCode() {
@@ -328,6 +348,18 @@ export class DashboardComponent implements AfterViewInit {
 
   saveIsland() {
     this.dialog.open(IslandSaveDialogComponent);
+  }
+
+  saveIslandToServer() {
+    this.dialog.open(IslandSaveToServerDialogComponent);
+  }
+
+  openIslandFileFromServer() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      jerooEditor: this.jerooEditor
+    };
+    this.dialog.open(IslandOpenDialogComponent, dialogConfig);
   }
 
   printIsland() {
