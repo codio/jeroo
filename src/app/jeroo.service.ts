@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 import {Observable, of} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 
+import { environment } from '../environments/environment';
 import {LoggingMessage, MessageService} from 'src/app/message.service';
 
 @Injectable({
@@ -10,13 +11,17 @@ import {LoggingMessage, MessageService} from 'src/app/message.service';
 })
 
 export class JerooService {
+    serverLink: string;
+
     constructor(
         private httpClient: HttpClient,
-        private messageService: MessageService
-    ) { }
+        private messageService: MessageService,
+    ) {
+        this.serverLink = environment.serverLink || '/service';
+    }
 
     public upload(formData: any): Observable<HttpEvent<string>> {
-        return this.httpClient.post('/service/upload', formData, {
+        return this.httpClient.post(`${this.serverLink}/upload`, formData, {
             reportProgress: true,
             observe: 'events',
             responseType: 'text'
@@ -27,7 +32,7 @@ export class JerooService {
 
     public list(filterExt: string): Observable<string[]> {
         return this.httpClient.get<string[]>(
-          '/service/list',
+          `${this.serverLink}/list`,
           {params: {filter: filterExt}}
           ).pipe(
             catchError(this.handleError<string[]>('list', []))
@@ -35,7 +40,7 @@ export class JerooService {
     }
 
     public load(fileName: string): Observable<string> {
-        return this.httpClient.get(`/service/files/${fileName}`, {responseType: 'text'}).pipe(
+        return this.httpClient.get(`${this.serverLink}/files/${fileName}`, {responseType: 'text'}).pipe(
             catchError(this.handleError('load file', ''))
         );
     }
