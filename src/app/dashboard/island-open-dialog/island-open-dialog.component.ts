@@ -48,6 +48,7 @@ export class IslandOpenDialogComponent implements OnInit {
       .subscribe(content => {
         if (content) {
           this.islandService.genIslandFromString(content);
+          this.jerooIsland?.setFileName(fileName.replace('.jev', ''));
           this.jerooIsland?.redraw();
           this.jerooIsland?.saveInLocal(content);
         }

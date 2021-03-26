@@ -197,6 +197,7 @@ export class DashboardComponent implements AfterViewInit {
         .subscribe((content: string | null) => {
           if (content !== null) {
             this.islandService.genIslandFromString(content);
+            this.jerooIsland?.setFileName(fileName.replace('.jev', ''));
             this.jerooIsland?.redraw();
             this.jerooIsland?.saveInLocal(content);
           }
@@ -205,6 +206,7 @@ export class DashboardComponent implements AfterViewInit {
       this.jerooService.load(fileName)
         .subscribe(content => {
           if (content !== null) {
+            this.jerooEditor?.setFileName(fileName.replace('.jsc', ''));
             this.jerooEditor?.loadCode(content);
           }
         });
@@ -261,7 +263,8 @@ export class DashboardComponent implements AfterViewInit {
   saveCodeToServer() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
-      editorCode: this.jerooEditor?.getCode()
+      editorCode: this.jerooEditor?.getCode(),
+      fileName: this.jerooEditor?.getFileName()
     };
     this.dialog.open(CodeSaveToServerDialogComponent, dialogConfig);
   }
@@ -391,7 +394,11 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   saveIslandToServer() {
-    this.dialog.open(IslandSaveToServerDialogComponent);
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      fileName: this.jerooIsland?.getFileName()
+    };
+    this.dialog.open(IslandSaveToServerDialogComponent, dialogConfig);
   }
 
   openIslandFileFromServer() {

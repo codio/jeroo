@@ -42,6 +42,7 @@ export class CodeOpenDialogComponent implements OnInit {
     this.jerooService.load(fileName)
       .subscribe(content => {
         if (content) {
+          this.jerooEditor?.setFileName(fileName.replace('.jsc', ''));
           this.jerooEditor?.loadCode(content);
         }
         this.close();

@@ -28,6 +28,7 @@ import { catchError, map } from 'rxjs/operators';
 
 export interface DialogData {
   editorCode: EditorCode;
+  fileName: string;
 }
 
 @Component({
@@ -40,6 +41,7 @@ export class CodeSaveToServerDialogComponent implements OnInit {
   files: object[]  = [];
   form: FormGroup | null = null;
   editorCode: EditorCode;
+  fileName: string;
 
   constructor(
     private fb: FormBuilder,
@@ -49,11 +51,12 @@ export class CodeSaveToServerDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) data: DialogData
   ) {
     this.editorCode = data.editorCode;
+    this.fileName = data.fileName;
   }
 
   ngOnInit() {
     this.form = this.fb.group({
-      name: []
+      name: [this.fileName]
     });
   }
 

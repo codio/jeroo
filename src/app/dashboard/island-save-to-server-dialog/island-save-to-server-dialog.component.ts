@@ -16,8 +16,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************** */
 
-import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, ViewChild, ElementRef, OnInit, Inject} from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { IslandService } from 'src/app/island.service';
 
@@ -26,6 +26,10 @@ import {HttpErrorResponse, HttpEventType} from '@angular/common/http';
 import {of} from 'rxjs';
 import {JerooService} from '../../jeroo.service';
 
+export interface DialogData {
+  fileName: string;
+}
+
 @Component({
   selector: 'app-island-save-to-server-dialog',
   templateUrl: './island-save-to-server-dialog.component.html'
@@ -33,17 +37,21 @@ import {JerooService} from '../../jeroo.service';
 export class IslandSaveToServerDialogComponent implements OnInit {
   @ViewChild('fileSaver', { static: true }) fileSaver: ElementRef | null = null;
   form: FormGroup | null = null;
+  fileName: string;
 
   constructor(
     private fb: FormBuilder,
     private islandService: IslandService,
     private jerooService: JerooService,
-    public dialogRef: MatDialogRef<IslandSaveToServerDialogComponent>
-  ) { }
+    public dialogRef: MatDialogRef<IslandSaveToServerDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) data: DialogData
+  ) {
+    this.fileName = data.fileName;
+  }
 
   ngOnInit() {
     this.form = this.fb.group({
-      name: []
+      name: [this.fileName]
     });
   }
 

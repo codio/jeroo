@@ -40,12 +40,15 @@ export class JerooIslandComponent implements AfterViewInit {
   private canvas: HTMLCanvasElement | null = null;
   private context: CanvasRenderingContext2D | null = null;
   private mouseDown = false;
+  private fileName: string;
 
   constructor(private islandService: IslandService, private dialog: MatDialog,
               public bytecodeService: BytecodeInterpreterService,
               private selectedTileTypeService: SelectedTileTypeService,
               @Inject(LOCAL_STORAGE) private storage: WebStorageService
-  ) { }
+  ) {
+    this.fileName = '';
+  }
 
   ngAfterViewInit() {
     // check if something has been stored in the cache to load if it has
@@ -108,6 +111,7 @@ export class JerooIslandComponent implements AfterViewInit {
     const dialogRef = this.dialog.open(IslandWarningDialogComponent);
     dialogRef.afterClosed().subscribe((cont) => {
       if (cont && this.context) {
+        this.setFileName('');
         this.islandService.resetIsland();
         this.islandService.resetJeroos();
         this.islandService.resetDynamicIsland();
@@ -222,5 +226,13 @@ export class JerooIslandComponent implements AfterViewInit {
     this.islandService.resetJeroos();
     this.islandService.resetDynamicIsland();
     this.redraw();
+  }
+
+  setFileName(fileName: string) {
+    this.fileName = fileName;
+  }
+
+  getFileName() {
+    return this.fileName;
   }
 }
