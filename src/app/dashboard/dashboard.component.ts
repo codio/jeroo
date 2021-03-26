@@ -153,7 +153,6 @@ export class DashboardComponent implements AfterViewInit {
     const urlTree = this.router.parseUrl(this.router.url);
     const queryParams = urlTree.queryParams;
     const fileName = queryParams.fileName;
-    console.log('fileName', fileName);
     this.loadStateFromServer(fileName);
 
     // if ((this.jerooEditor?.hasCachedCode() || this.jerooEditor?.hasCachedConfig() || this.jerooIsland?.hasCachedIsland())) {
