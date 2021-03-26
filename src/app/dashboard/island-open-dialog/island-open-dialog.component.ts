@@ -46,7 +46,7 @@ export class IslandOpenDialogComponent implements OnInit {
   openFile(fileName: string) {
     this.jerooService.load(fileName)
       .subscribe(content => {
-        if (content) {
+        if (content !== null) {
           this.islandService.genIslandFromString(content);
           this.jerooIsland?.setFileName(fileName.replace('.jev', ''));
           this.jerooIsland?.redraw();
