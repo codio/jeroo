@@ -39,10 +39,9 @@ export class JerooService {
         );
     }
 
-    public load(fileName: string): Observable<string> {
-        return this.httpClient.get(`${this.serverLink}/files/${fileName}`, {responseType: 'text'}).pipe(
-            catchError(this.handleError('load file', ''))
-        );
+    public load(fileName: string): Observable<string | null> {
+        return this.httpClient.get(`${this.serverLink}/files/${fileName}`, {responseType: 'text'})
+          .pipe(catchError(this.handleError('load file', null)));
     }
 
     /**

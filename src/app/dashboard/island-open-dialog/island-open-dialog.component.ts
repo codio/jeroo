@@ -46,9 +46,11 @@ export class IslandOpenDialogComponent implements OnInit {
   openFile(fileName: string) {
     this.jerooService.load(fileName)
       .subscribe(content => {
-        this.islandService.genIslandFromString(content);
-        this.jerooIsland?.redraw();
-        this.jerooIsland?.saveInLocal(content);
+        if (content) {
+          this.islandService.genIslandFromString(content);
+          this.jerooIsland?.redraw();
+          this.jerooIsland?.saveInLocal(content);
+        }
         this.close();
       });
   }

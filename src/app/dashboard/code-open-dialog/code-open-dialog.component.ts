@@ -41,7 +41,9 @@ export class CodeOpenDialogComponent implements OnInit {
   openFile(fileName: string) {
     this.jerooService.load(fileName)
       .subscribe(content => {
-        this.jerooEditor?.loadCode(content);
+        if (content) {
+          this.jerooEditor?.loadCode(content);
+        }
         this.close();
       });
   }
