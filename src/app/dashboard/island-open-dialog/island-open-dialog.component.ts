@@ -3,10 +3,11 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { JerooService } from 'src/app/jeroo.service';
-import {EditorTabsComponent} from '../../editor-tabs/editor-tabs.component';
+import { IslandService } from '../../island.service';
+import { JerooIslandComponent } from '../../island/island.component';
 
 export interface DialogData {
-  jerooEditor: EditorTabsComponent;
+  jerooIsland: JerooIslandComponent;
 }
 
 @Component({
@@ -18,15 +19,16 @@ export interface DialogData {
 export class IslandOpenDialogComponent implements OnInit {
   files: string[] = [];
   form: FormGroup | null = null;
-  jerooEditor: EditorTabsComponent;
+  jerooIsland: JerooIslandComponent;
 
   constructor(
     private fb: FormBuilder,
+    private islandService: IslandService,
     private jerooService: JerooService,
     public dialogRef: MatDialogRef<IslandOpenDialogComponent>,
     @Inject(MAT_DIALOG_DATA) data: DialogData
   ) {
-    this.jerooEditor = data.jerooEditor;
+    this.jerooIsland = data.jerooIsland;
   }
 
   ngOnInit() {
@@ -44,7 +46,9 @@ export class IslandOpenDialogComponent implements OnInit {
   openFile(fileName: string) {
     this.jerooService.load(fileName)
       .subscribe(content => {
-        this.jerooEditor?.loadCode(content);
+        this.islandService.genIslandFromString(content);
+        this.jerooIsland?.redraw();
+        this.jerooIsland?.saveInLocal(content);
         this.close();
       });
   }

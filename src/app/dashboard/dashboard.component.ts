@@ -357,7 +357,7 @@ export class DashboardComponent implements AfterViewInit {
   openIslandFileFromServer() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {
-      jerooEditor: this.jerooEditor
+      jerooIsland: this.jerooIsland
     };
     this.dialog.open(IslandOpenDialogComponent, dialogConfig);
   }
