@@ -1,4 +1,4 @@
-/* **********************************************************************
+<!--
 Jeroo is a programming language learning tool for students and teachers.
 Copyright (C) <2019>  <Benjamin Konz>
 
@@ -14,9 +14,20 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-********************************************************************** */
+-->
 
-export const environment = {
-  production: true,
-  serverLink: '/jeroo-server-service'
-};
+<h1 mat-dialog-title>Save Code</h1>
+<mat-dialog-content [formGroup]="form">
+  <mat-form-field>
+    <mat-label>File Name</mat-label>
+    <input matInput placeholder="name" formControlName="name">
+    <span matSuffix>.jsc</span>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button (click)="close()">Close</button>
+  <button mat-raised-button color="primary" type="submit" (click)="saveToServer()">Save</button>
+</mat-dialog-actions>
+<a #fileSaver class="invisible"></a>
+
+<input type="file" #fileUpload id="fileUpload" name="fileUpload" multiple="multiple" accept="*" style="display: none;" />

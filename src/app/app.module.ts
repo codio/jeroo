@@ -67,9 +67,14 @@ import { CompilationErrorMessageComponent } from './messages/compilation-error-m
 import { LoggingMessageComponent } from './messages/logging-message/logging-message.component';
 import { CodeSaveDialogComponent } from './dashboard/code-save-dialog/code-save-dialog.component';
 import { IslandSaveDialogComponent } from './dashboard/island-save-dialog/island-save-dialog.component';
+import { CodeOpenDialogComponent } from './dashboard/code-open-dialog/code-open-dialog.component';
+import { IslandOpenDialogComponent } from './dashboard/island-open-dialog/island-open-dialog.component';
+import { CodeSaveToServerDialogComponent } from './dashboard/code-save-to-server-dialog/code-save-to-server-dialog.component';
+import { IslandSaveToServerDialogComponent } from './dashboard/island-save-to-server-dialog/island-save-to-server-dialog.component';
 import { RuntimeErrorMessageComponent } from './messages/runtime-error-message/runtime-error-message.component';
 import { EditorWarningDialogComponent } from './editor-warning-dialog/editor-warning-dialog.component';
 
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -96,6 +101,10 @@ import { EditorWarningDialogComponent } from './editor-warning-dialog/editor-war
     LoggingMessageComponent,
     CodeSaveDialogComponent,
     IslandSaveDialogComponent,
+    CodeOpenDialogComponent,
+    IslandOpenDialogComponent,
+    CodeSaveToServerDialogComponent,
+    IslandSaveToServerDialogComponent,
     RuntimeErrorMessageComponent,
     EditorWarningDialogComponent
   ],
@@ -109,6 +118,7 @@ import { EditorWarningDialogComponent } from './editor-warning-dialog/editor-war
     ReactiveFormsModule,
     FontAwesomeModule,
     HammerModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
@@ -123,7 +133,9 @@ import { EditorWarningDialogComponent } from './editor-warning-dialog/editor-war
     PrintCodeDialogComponent,
     EditorPreferencesComponent,
     CodeSaveDialogComponent,
-    IslandSaveDialogComponent
+    IslandSaveDialogComponent,
+    CodeOpenDialogComponent,
+    IslandOpenDialogComponent
   ]
 })
 export class AppModule {

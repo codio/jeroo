@@ -1,0 +1,14 @@
+
+<h1 mat-dialog-title>Open Code File</h1>
+<mat-dialog-content [formGroup]="form">
+  <mat-card>
+    <mat-card-content>
+      <div *ngFor="let codeFile of files" class="file-open">
+        <span id="file-label" (click)="openFile(codeFile)">{{codeFile}}</span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button (click)="close()">Close</button>
+</mat-dialog-actions>

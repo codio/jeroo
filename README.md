@@ -68,3 +68,13 @@ yarn e2e # optional, run end-to-end tests (only works on Firefox)
 ```
 
 The newly built site is located in `jeroo/dist/jeroo`
+
+### Start locally
+
+Server link changed in ```environments/environment.ts```
+
+Port changed in ```angular.json``` ```projects.serve.options.port```
+
+```text
+yarn start
+```

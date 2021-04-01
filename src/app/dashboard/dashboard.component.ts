@@ -17,9 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************** */
 
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import * as Mousetrap from 'mousetrap';
-import { CacheDialogComponent } from '../cache-dialog/cache-dialog.component';
+// import { CacheDialogComponent } from '../cache-dialog/cache-dialog.component';
 import { DashboardDialogAboutComponent } from './dashboard-dialog-about/dashboard-dialog-about.component';
 import { DashboardDialogAwardsComponent } from './dashboard-dialog-awards/dashboard-dialog-awards.component';
 import { DashboardDialogCopyrightComponent } from './dashboard-dialog-copyright/dashboard-dialog-copyright.component';
@@ -32,9 +33,14 @@ import { PrintService } from '../print.service';
 import { EditorPreferencesComponent } from './editor-preferences/editor-preferences.component';
 import { CodeSaveDialogComponent } from './code-save-dialog/code-save-dialog.component';
 import { IslandSaveDialogComponent } from './island-save-dialog/island-save-dialog.component';
+import { CodeSaveToServerDialogComponent } from './code-save-to-server-dialog/code-save-to-server-dialog.component';
+import { IslandSaveToServerDialogComponent } from './island-save-to-server-dialog/island-save-to-server-dialog.component';
+import { CodeOpenDialogComponent } from './code-open-dialog/code-open-dialog.component';
+import { IslandOpenDialogComponent } from './island-open-dialog/island-open-dialog.component';
 import { SelectedTileTypeService } from '../selected-tile-type.service';
 import { TileType } from '../tileType';
 import { EditorWarningDialogComponent } from '../editor-warning-dialog/editor-warning-dialog.component';
+import { JerooService } from '../jeroo.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -76,6 +82,8 @@ export class DashboardComponent implements AfterViewInit {
     private messageService: MessageService,
     private printService: PrintService,
     private selectedTileTypeService: SelectedTileTypeService,
+    private jerooService: JerooService,
+    private router: Router,
     public dialog: MatDialog,
   ) { }
 
@@ -130,7 +138,7 @@ export class DashboardComponent implements AfterViewInit {
       return false;
     });
     mousetrap.bind('ctrl+s', () => {
-      this.saveCode();
+      this.saveCodeToServer();
       return false;
     });
     mousetrap.bind('ctrl+p', () => {
@@ -141,29 +149,66 @@ export class DashboardComponent implements AfterViewInit {
       this.onFormatClick();
       return false;
     });
-    if ((this.jerooEditor?.hasCachedCode() || this.jerooEditor?.hasCachedConfig() || this.jerooIsland?.hasCachedIsland())) {
-      // setTimeout prevents a console error
-      // see: https://github.com/angular/material2/issues/5268
-      setTimeout(() => {
-        const dialogRef = this.dialog.open(CacheDialogComponent);
-        dialogRef.afterClosed().subscribe(loadCache => {
-          if (loadCache) {
-            this.loadEditorFromCache();
-          } else {
-            // warn about deleting the previously saved editor
-            this.dialog.open(EditorWarningDialogComponent)
-              .afterClosed().subscribe((cont) => {
-                if (cont) {
-                  this.jerooEditor?.resetCache();
-                  this.jerooEditor?.resetPreferences();
-                  this.jerooIsland?.resetCache();
-                } else {
-                  this.loadEditorFromCache();
-                }
-              });
+
+    const urlTree = this.router.parseUrl(this.router.url);
+    const queryParams = urlTree.queryParams;
+    const fileName = queryParams.fileName;
+    this.loadStateFromServer(fileName);
+
+    // if ((this.jerooEditor?.hasCachedCode() || this.jerooEditor?.hasCachedConfig() || this.jerooIsland?.hasCachedIsland())) {
+    //   // setTimeout prevents a console error
+    //   // see: https://github.com/angular/material2/issues/5268
+    //   setTimeout(() => {
+    //     const dialogRef = this.dialog.open(CacheDialogComponent);
+    //     dialogRef.afterClosed().subscribe(loadCache => {
+    //       if (loadCache) {
+    //         this.loadEditorFromCache();
+    //       } else {
+    //         // warn about deleting the previously saved editor
+    //         this.dialog.open(EditorWarningDialogComponent)
+    //           .afterClosed().subscribe((cont) => {
+    //             if (cont) {
+    //               this.jerooEditor?.resetCache();
+    //               this.jerooEditor?.resetPreferences();
+    //               this.jerooIsland?.resetCache();
+    //             } else {
+    //               this.loadEditorFromCache();
+    //             }
+    //           });
+    //       }
+    //     });
+    //   });
+    // }
+  }
+
+  loadStateFromServer(fileName: string) {
+    if (this.jerooEditor?.hasCachedCode()) {
+      this.jerooEditor?.resetCache();
+    }
+    if (this.jerooEditor?.hasCachedConfig()) {
+      this.jerooEditor?.resetPreferences();
+    }
+    if (this.jerooIsland?.hasCachedIsland()) {
+      this.jerooIsland?.resetCache();
+    }
+    if (fileName?.includes('.jev')) {
+      this.jerooService.load(fileName)
+        .subscribe((content: string | null) => {
+          if (content !== null) {
+            this.islandService.genIslandFromString(content);
+            this.jerooIsland?.setFileName(fileName.replace('.jev', ''));
+            this.jerooIsland?.redraw();
+            this.jerooIsland?.saveInLocal(content);
           }
         });
-      });
+    } else if (fileName?.includes('.jsc')) {
+      this.jerooService.load(fileName)
+        .subscribe(content => {
+          if (content !== null) {
+            this.jerooEditor?.setFileName(fileName.replace('.jsc', ''));
+            this.jerooEditor?.loadCode(content);
+          }
+        });
     }
   }
 
@@ -212,6 +257,23 @@ export class DashboardComponent implements AfterViewInit {
       editorCode: this.jerooEditor?.getCode()
     };
     this.dialog.open(CodeSaveDialogComponent, dialogConfig);
+  }
+
+  saveCodeToServer() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      editorCode: this.jerooEditor?.getCode(),
+      fileName: this.jerooEditor?.getFileName()
+    };
+    this.dialog.open(CodeSaveToServerDialogComponent, dialogConfig);
+  }
+
+  openCodeFileFromServer() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      jerooEditor: this.jerooEditor
+    };
+    this.dialog.open(CodeOpenDialogComponent, dialogConfig);
   }
 
   printCode() {
@@ -328,6 +390,22 @@ export class DashboardComponent implements AfterViewInit {
 
   saveIsland() {
     this.dialog.open(IslandSaveDialogComponent);
+  }
+
+  saveIslandToServer() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      fileName: this.jerooIsland?.getFileName()
+    };
+    this.dialog.open(IslandSaveToServerDialogComponent, dialogConfig);
+  }
+
+  openIslandFileFromServer() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      jerooIsland: this.jerooIsland
+    };
+    this.dialog.open(IslandOpenDialogComponent, dialogConfig);
   }
 
   printIsland() {

@@ -57,6 +57,7 @@ export class EditorTabsComponent implements AfterViewInit {
   selectedTabIndex = SelectedTab.Main;
   private instructions: Array<Instruction> = [];
   private previousInstruction: Instruction | null = null;
+  private fileName: string;
 
   editorStateValue: EditorState = {
     reset: true,
@@ -81,6 +82,7 @@ export class EditorTabsComponent implements AfterViewInit {
               public codeService: CodeService,
               public dialog: MatDialog,
               @Inject(LOCAL_STORAGE) private storage: WebStorageService) {
+    this.fileName = '';
   }
 
   ngAfterViewInit() {
@@ -389,9 +391,18 @@ export class EditorTabsComponent implements AfterViewInit {
 
   clearCode() {
     if (!this.mainMethodEditor?.isReadOnly() && !this.extensionMethodsEditor?.isReadOnly()) {
+      this.setFileName('');
       this.mainMethodEditor?.setText('');
       this.extensionMethodsEditor?.setText('');
       this.resetCache();
     }
+  }
+
+  setFileName(fileName: string) {
+    this.fileName = fileName;
+  }
+
+  getFileName() {
+    return this.fileName;
   }
 }

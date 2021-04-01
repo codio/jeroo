@@ -49,10 +49,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <button mat-icon-button matTooltip="New File" [disabled]="!editorEditingEnabled()" (click)="newCodeFile()">
                   <fa-icon icon="file"></fa-icon>
                 </button>
-                <button mat-icon-button matTooltip="Open File" [disabled]="!editorEditingEnabled()" (click)="openCodeFile()">
+                <button mat-icon-button matTooltip="Open File" style="display: none;" [disabled]="!editorEditingEnabled()" (click)="openCodeFile()">
                   <fa-icon icon="folder"></fa-icon>
                 </button>
-                <button mat-icon-button matTooltip="Save" (click)="saveCode()">
+                <button mat-icon-button matTooltip="Open File from server" [disabled]="!editorEditingEnabled()" (click)="openCodeFileFromServer()">
+                  <fa-icon icon="folder"></fa-icon>
+                </button>
+                <button mat-icon-button matTooltip="Save" style="display: none;" (click)="saveCode()">
+                  <fa-icon icon="save"></fa-icon>
+                </button>
+                <button mat-icon-button matTooltip="Save to server" (click)="saveCodeToServer()">
                   <fa-icon icon="save"></fa-icon>
                 </button>
               </div>
@@ -100,10 +106,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <button id="newIslandButton" mat-icon-button matTooltip="Create new island layout" [disabled]="!islandEditingEnabled()" (click)="clearIsland()">
                   <fa-icon icon="eraser"></fa-icon>
                 </button>
-                <button mat-icon-button matTooltip="Open an island file" [disabled]="!islandEditingEnabled()" (click)="openIslandFile()">
+                <button mat-icon-button matTooltip="Open an island file" style="display: none;" [disabled]="!islandEditingEnabled()" (click)="openIslandFile()">
                   <fa-icon icon="folder"></fa-icon>
                 </button>
-                <button mat-icon-button matTooltip="Save the island to a file" (click)="saveIsland()">
+                <button mat-icon-button matTooltip="Open an island file from server" [disabled]="!islandEditingEnabled()" (click)="openIslandFileFromServer()">
+                  <fa-icon icon="folder"></fa-icon>
+                </button>
+                <button mat-icon-button matTooltip="Save the island to server" (click)="saveIslandToServer()">
+                  <fa-icon icon="save"></fa-icon>
+                </button>
+                <button mat-icon-button matTooltip="Save the island to a file" style="display: none;" (click)="saveIsland()">
                   <fa-icon icon="save"></fa-icon>
                 </button>
                 <button mat-icon-button matTooltip="Print the island layout" (click)="printIsland()">
@@ -127,11 +139,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <button mat-menu-item [disabled]="!editorEditingEnabled()" (click)="newCodeFile()">
           <fa-icon icon="file"></fa-icon><span class="menu-text">New</span><span class="shortcut-tip">Ctrl+N</span>
         </button>
-        <button mat-menu-item [disabled]="!editorEditingEnabled()" (click)="openCodeFile()">
+        <button mat-menu-item style="display: none;" [disabled]="!editorEditingEnabled()" (click)="openCodeFile()">
+          <fa-icon icon="folder"></fa-icon><span class="menu-text">Open</span><span class="shortcut-tip">Ctrl+O</span>
+        </button>
+        <button mat-menu-item [disabled]="!editorEditingEnabled()" (click)="openCodeFileFromServer()">
           <fa-icon icon="folder"></fa-icon><span class="menu-text">Open</span><span class="shortcut-tip">Ctrl+O</span>
         </button>
         <mat-divider></mat-divider>
-        <button mat-menu-item (click)="saveCode()">
+        <button mat-menu-item style="display: none;" (click)="saveCode()">
+          <fa-icon icon="save"></fa-icon><span class="menu-text">Save</span><span class="shortcut-tip">Ctrl+S</span>
+        </button>
+        <button mat-menu-item (click)="saveCodeToServer()">
           <fa-icon icon="save"></fa-icon><span class="menu-text">Save</span><span class="shortcut-tip">Ctrl+S</span>
         </button>
         <mat-divider></mat-divider>
@@ -193,11 +211,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <button id="newIslandMenuItem" mat-menu-item [disabled]="!islandEditingEnabled()" (click)="clearIsland()">
           <fa-icon icon="eraser"></fa-icon><span class="menu-text">New<span class="shortcut-tip">Ctrl+Shift+N</span></span>
         </button>
-        <button mat-menu-item [disabled]="!islandEditingEnabled()" (click)="openIslandFile()">
+        <button mat-menu-item style="display: none;" [disabled]="!islandEditingEnabled()" (click)="openIslandFile()">
+          <fa-icon icon="folder"></fa-icon><span class="menu-text">Open<span class="shortcut-tip">Ctrl+Shift+O</span></span>
+        </button>
+        <button mat-menu-item [disabled]="!islandEditingEnabled()" (click)="openIslandFileFromServer()">
           <fa-icon icon="folder"></fa-icon><span class="menu-text">Open<span class="shortcut-tip">Ctrl+Shift+O</span></span>
         </button>
         <mat-divider></mat-divider>
-        <button mat-menu-item (click)="saveIsland()">
+        <button mat-menu-item style="display: none;"(click)="saveIsland()">
+          <fa-icon icon="save"></fa-icon><span class="menu-text">Save<span class="shortcut-tip">Ctrl+Shift+S</span></span>
+        </button>
+        <button mat-menu-item (click)="saveIslandToServer()">
           <fa-icon icon="save"></fa-icon><span class="menu-text">Save<span class="shortcut-tip">Ctrl+Shift+S</span></span>
         </button>
         <mat-divider></mat-divider>
