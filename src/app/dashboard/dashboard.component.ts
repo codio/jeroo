@@ -88,6 +88,19 @@ export class DashboardComponent implements AfterViewInit {
   ) { }
 
   ngAfterViewInit() {
+    console.log('ngAfterViewInit')
+    const {codio} = window;
+    if (codio) {
+      codio.loaded()
+        .then(() => {
+            codio.subscribe('getContext', () => this.getContext());
+        })
+        .fail((msg: any) => {
+            /* eslint-disable-next-line no-console */
+            console.log(`codio loaded - error: ${msg}`);
+        });
+    }
+
     const mousetrap = new Mousetrap(document.body);
     mousetrap.bind('f2', () => {
       this.onResetClick();
@@ -210,6 +223,15 @@ export class DashboardComponent implements AfterViewInit {
           }
         });
     }
+  }
+
+  getContext() {
+    const jerooIslandPath = this.jerooIsland?.getFileName();
+    const jerooFilePath = this.jerooEditor?.getFileName();
+    return {
+      codeFile: jerooFilePath?.concat('.jsc'),
+      islandFile: jerooIslandPath?.concat('.jev')
+    };
   }
 
   loadEditorFromCache() {
