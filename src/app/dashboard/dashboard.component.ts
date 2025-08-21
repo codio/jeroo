@@ -94,7 +94,6 @@ export class DashboardComponent implements AfterViewInit {
   ) { }
 
   ngAfterViewInit() {
-    console.log('ngAfterViewInit')
     const {codio} = window;
     if (codio) {
       codio.loaded()
