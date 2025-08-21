@@ -42,6 +42,12 @@ import { TileType } from '../tileType';
 import { EditorWarningDialogComponent } from '../editor-warning-dialog/editor-warning-dialog.component';
 import { JerooService } from '../jeroo.service';
 
+declare global {
+  interface Window {
+      codio: any;
+  }
+}
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
