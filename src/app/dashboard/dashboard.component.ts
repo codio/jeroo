@@ -235,8 +235,8 @@ export class DashboardComponent implements AfterViewInit {
     const jerooIslandPath = this.jerooIsland?.getFileName();
     const jerooFilePath = this.jerooEditor?.getFileName();
     return {
-      codeFile: jerooFilePath?.concat('.jsc'),
-      islandFile: jerooIslandPath?.concat('.jev')
+      codeFile: !!jerooFilePath ? jerooFilePath.concat('.jsc') : undefined,
+      islandFile: !!jerooIslandPath ? jerooIslandPath.concat('.jev') : undefined
     };
   }
 
