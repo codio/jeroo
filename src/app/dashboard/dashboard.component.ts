@@ -42,6 +42,12 @@ import { TileType } from '../tileType';
 import { EditorWarningDialogComponent } from '../editor-warning-dialog/editor-warning-dialog.component';
 import { JerooService } from '../jeroo.service';
 
+declare global {
+  interface Window {
+      codio: any;
+  }
+}
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -88,6 +94,18 @@ export class DashboardComponent implements AfterViewInit {
   ) { }
 
   ngAfterViewInit() {
+    const {codio} = window;
+    if (codio) {
+      codio.loaded()
+        .then(() => {
+            codio.subscribe('getContext', () => this.getContext());
+        })
+        .fail((msg: any) => {
+            /* eslint-disable-next-line no-console */
+            console.log(`codio loaded - error: ${msg}`);
+        });
+    }
+
     const mousetrap = new Mousetrap(document.body);
     mousetrap.bind('f2', () => {
       this.onResetClick();
@@ -210,6 +228,15 @@ export class DashboardComponent implements AfterViewInit {
           }
         });
     }
+  }
+
+  getContext() {
+    const jerooIslandPath = this.jerooIsland?.getFileName();
+    const jerooFilePath = this.jerooEditor?.getFileName();
+    return {
+      codeFile: !!jerooFilePath ? jerooFilePath.concat('.jsc') : undefined,
+      islandFile: !!jerooIslandPath ? jerooIslandPath.concat('.jev') : undefined
+    };
   }
 
   loadEditorFromCache() {
